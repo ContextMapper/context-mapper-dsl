@@ -27,6 +27,7 @@ hs_err_pid*
 *.project
 *.classpath
 **/.settings
+plugin.xml_gen
 
 # Xtext generated sources
 **/src-gen
