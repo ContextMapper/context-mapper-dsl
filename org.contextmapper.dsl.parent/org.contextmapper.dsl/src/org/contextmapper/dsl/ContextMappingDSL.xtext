@@ -1,0 +1,9 @@
+grammar org.contextmapper.dsl.ContextMappingDSL with org.eclipse.xtext.common.Terminals
+
+generate contextMappingDSL "http://www.contextmapper.org/dsl/ContextMappingDSL"
+
+Model:
+	greetings+=Greeting*;
+	
+Greeting:
+	'Hello' name=ID '!';
