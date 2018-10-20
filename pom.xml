@@ -8,6 +8,7 @@
 
 	<properties>
 		<xtextVersion>2.15.0</xtextVersion>
+		<jacoco-version>0.8.2</jacoco-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
@@ -18,6 +19,7 @@
 		<moduleProperties></moduleProperties>
 		<systemProperties></systemProperties>
 		<tycho.testArgLine></tycho.testArgLine>
+		<jacoco.reportPath>./target/jacoco.exec</jacoco.reportPath>
 	</properties>
 	<modules>
 		<module>org.contextmapper.dsl</module>
@@ -224,6 +226,45 @@
 						<failIfNoTests>false</failIfNoTests>
 						<useUIHarness>false</useUIHarness>
 					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.jacoco</groupId>
+					<artifactId>jacoco-maven-plugin</artifactId>
+					<executions>
+						<execution>
+							<id>default-prepare-agent</id>
+							<goals>
+								<goal>prepare-agent</goal>
+							</goals>
+							<configuration>
+								<includes>
+									<include>org.contextmapper.dsl.*</include>
+								</includes>
+								<excludes>
+									<exclude>**/org/eclipse/**/*.class</exclude>
+									<exclude>**.antlr**</exclude>
+									<exclude>**.parseTree**</exclude>
+									<exclude>**Abstract*RuntimeModule.class</exclude>
+									<exclude>**/*SetupGenerated*.class</exclude>
+									<exclude>**/Abstract*Validator.class</exclude>
+									<exclude>**/*GrammarAccess*.class</exclude>
+									<exclude>**/Abstract*UiModule.class</exclude>
+									<exclude>**/Abstract*ProposalProvider.class</exclude>
+									<exclude>**/*Test.class</exclude>
+									<exclude>**/*Internal*</exclude>
+									<exclude>**/*Sequencer*</exclude>
+									<exclude>**/internal/*</exclude>
+								</excludes>
+							</configuration>
+						</execution>
+						<execution>
+							<id>default-report</id>
+							<phase>prepare-package</phase>
+							<goals>
+								<goal>report</goal>
+							</goals>
+						</execution>
+					</executions>
 				</plugin>
 			</plugins>
 		</pluginManagement>
