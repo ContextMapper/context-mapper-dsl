@@ -21,7 +21,7 @@ class ContextMappingDSLParsingTest {
 	@Test
 	def void loadModel() {
 		val result = parseHelper.parse('''
-			Helllo Xtext!
+			Hello Xtext!
 		''')
 		Assertions.assertNotNull(result)
 		val errors = result.eResource.errors
