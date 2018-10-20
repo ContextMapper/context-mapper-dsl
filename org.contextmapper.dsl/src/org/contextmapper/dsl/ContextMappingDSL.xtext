@@ -2,8 +2,22 @@ grammar org.contextmapper.dsl.ContextMappingDSL with org.eclipse.xtext.common.Te
 
 generate contextMappingDSL "http://www.contextmapper.org/dsl/ContextMappingDSL"
 
-Model:
-	greetings+=Greeting*;
-	
-Greeting:
-	'Hello' name=ID '!';
+ContextMappingModel:
+	(map = ContextMap boundedContexts += BoundedContext*) | (boundedContexts += BoundedContext)*
+;
+
+ContextMap:
+	{ContextMap} // make sure there is always a context map
+	'ContextMap'
+	OPEN
+		boundedContexts += [BoundedContext]*
+	CLOSE
+;
+
+BoundedContext:
+	'BoundedContext' name=ID
+;
+
+// define terminals
+terminal OPEN: '{';
+terminal CLOSE: '}';
