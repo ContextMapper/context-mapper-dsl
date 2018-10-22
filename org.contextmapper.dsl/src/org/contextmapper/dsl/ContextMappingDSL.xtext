@@ -11,11 +11,71 @@ ContextMap:
 	'ContextMap'
 	OPEN
 		boundedContexts += [BoundedContext]*
+		relationships += Relationship*
 	CLOSE
 ;
 
 BoundedContext:
 	'BoundedContext' name=ID
+;
+
+Relationship:
+	SymmetricRelationship | UpstreamDownstreamRelationship
+;
+
+SymmetricRelationship:
+	Partnership | SharedKernel
+;
+
+Partnership:
+	'Partnership'
+	OPEN
+		participant1 = [BoundedContext]
+		participant2 = [BoundedContext]
+	CLOSE
+;
+
+SharedKernel:
+	'Shared' 'Kernel'
+	OPEN
+		participant1 = [BoundedContext]
+		participant2 = [BoundedContext]
+	CLOSE
+;
+
+UpstreamDownstreamRelationship:
+	CustomerSupplierRelationship |
+	'Upstream' 'Downstream'
+	OPEN
+		upstream = UpstreamContext
+		downstream = DownstreamContext
+	CLOSE
+;
+
+CustomerSupplierRelationship:
+	'Customer' 'Supplier'
+	OPEN
+		upstream = UpstreamContext
+		downstream = DownstreamContext
+	CLOSE
+;
+
+UpstreamContext:
+	context = [BoundedContext] 'as' 'Upstream'
+	roles += UpstreamRoles*
+;
+
+DownstreamContext:
+	context = [BoundedContext] 'as' 'Downstream'
+	roles += DownstreamRoles*
+;
+
+enum UpstreamRoles:
+	PUBLISHED_LANGUAGE | OPEN_HOST_SERVICE
+;
+
+enum DownstreamRoles:
+	ANTICORRUPTION_LAYER | CONFORMIST
 ;
 
 // define terminals

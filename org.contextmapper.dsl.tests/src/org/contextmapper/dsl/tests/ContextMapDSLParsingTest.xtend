@@ -50,7 +50,6 @@ class ContextMapDSLParsingTest {
 		assertThatNoParsingErrorsOccurred(result);
 		assertNotNull(result.map);
 		assertEquals(2, result.map.boundedContexts.size);
-		//assertEquals(2, result.boundedContexts);
 
 		val contextNames = result.map.boundedContexts.stream.map[name].collect(Collectors.toList);
 		assertTrue(contextNames.contains("testContext"));
