@@ -3,7 +3,7 @@ grammar org.contextmapper.dsl.ContextMappingDSL with org.eclipse.xtext.common.Te
 generate contextMappingDSL "http://www.contextmapper.org/dsl/ContextMappingDSL"
 
 ContextMappingModel:
-	(map = ContextMap boundedContexts += BoundedContext*) | (boundedContexts += BoundedContext)*
+	(map = ContextMap boundedContexts += BoundedContext* subdomains += Subdomain*) | (boundedContexts += BoundedContext* subdomains += Subdomain*)
 ;
 
 ContextMap:
@@ -16,7 +16,23 @@ ContextMap:
 ;
 
 BoundedContext:
-	'BoundedContext' name=ID
+	'BoundedContext' name=ID ('implements' (implementedSubdomains+=[Subdomain]) ("," implementedSubdomains+=[Subdomain])*)?
+;
+
+Subdomain:
+	CoreDomain | SupportingDomain | GenericSubdomain
+;
+
+CoreDomain:
+	'CoreDomain' name=ID
+;
+
+SupportingDomain:
+	'SupportingDomain' name=ID
+;
+
+GenericSubdomain:
+	'GenericSubdomain' name=ID
 ;
 
 Relationship:
