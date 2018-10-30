@@ -30,4 +30,18 @@ class BoundedContextDSLParsingTest {
 		assertEquals(1, result.boundedContexts.size);
 		assertEquals("testContext", result.boundedContexts.get(0).name);
 	}
+
+	@Test
+	def void canDefineContextType() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext testContext {
+				type = FEATURE
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+	}
 }

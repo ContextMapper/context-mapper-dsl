@@ -20,6 +20,11 @@ ContextMap:
 
 BoundedContext:
 	'BoundedContext' name=ID ('implements' (implementedSubdomains+=[Subdomain]) ("," implementedSubdomains+=[Subdomain])*)?
+	(
+		OPEN
+			('type' '=' type=BoundedContextType)?
+		CLOSE
+	)?
 ;
 
 Subdomain:
@@ -103,6 +108,10 @@ enum ContextMapState:
 
 enum ContextMapType:
 	ORGANIGRAM | SYSTEM_LANDSCAPE
+;
+
+enum BoundedContextType:
+	FEATURE | APPLICATION | SYSTEM | TEAM
 ;
 
 // define terminals
