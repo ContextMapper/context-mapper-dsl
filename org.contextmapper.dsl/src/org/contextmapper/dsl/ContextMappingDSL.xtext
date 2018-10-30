@@ -10,6 +10,7 @@ ContextMap:
 	{ContextMap} // make sure there is always a context map
 	'ContextMap'
 	OPEN
+		('domainVisionStatement' '=' domainVisionStatement=STRING)?
 		boundedContexts += [BoundedContext]*
 		relationships += Relationship*
 	CLOSE

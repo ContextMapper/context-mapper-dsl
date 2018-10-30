@@ -55,4 +55,19 @@ class ContextMapDSLParsingTest {
 		assertTrue(contextNames.contains("testContext"));
 		assertTrue(contextNames.contains("anotherTestContext"));
 	}
+
+	@Test
+	def void canAddDomainVisionStatement() {
+		// given
+		val String dslSnippet = '''
+			ContextMap {
+				domainVisionStatement = "this is a short description stating the vision of my project ..."
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertEquals("this is a short description stating the vision of my project ...", result.map.domainVisionStatement);
+	}
 }
