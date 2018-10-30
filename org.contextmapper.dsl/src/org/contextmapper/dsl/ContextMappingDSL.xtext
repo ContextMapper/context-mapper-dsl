@@ -11,7 +11,8 @@ ContextMap:
 	'ContextMap'
 	OPEN
 		(('domainVisionStatement' '=' domainVisionStatement=STRING)? &
-		('state' '=' contextMapState=ContextMapState)?)
+		('state' '=' state=ContextMapState)? &
+		('type' '=' type=ContextMapType)?)
 		boundedContexts += [BoundedContext]*
 		relationships += Relationship*
 	CLOSE
@@ -98,6 +99,10 @@ enum DownstreamRoles:
 
 enum ContextMapState:
 	AS_IS | TO_BE
+;
+
+enum ContextMapType:
+	ORGANIGRAM | SYSTEM_LANDSCAPE
 ;
 
 // define terminals
