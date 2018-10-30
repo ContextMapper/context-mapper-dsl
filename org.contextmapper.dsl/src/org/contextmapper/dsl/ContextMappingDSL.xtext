@@ -10,7 +10,8 @@ ContextMap:
 	{ContextMap} // make sure there is always a context map
 	'ContextMap'
 	OPEN
-		('domainVisionStatement' '=' domainVisionStatement=STRING)?
+		(('domainVisionStatement' '=' domainVisionStatement=STRING)? &
+		('state' '=' contextMapState=ContextMapState)?)
 		boundedContexts += [BoundedContext]*
 		relationships += Relationship*
 	CLOSE
@@ -93,6 +94,10 @@ enum UpstreamRoles:
 
 enum DownstreamRoles:
 	ANTICORRUPTION_LAYER | CONFORMIST
+;
+
+enum ContextMapState:
+	AS_IS | TO_BE
 ;
 
 // define terminals
