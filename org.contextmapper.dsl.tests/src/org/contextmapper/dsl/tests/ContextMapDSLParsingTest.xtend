@@ -12,6 +12,8 @@ import org.junit.jupiter.api.^extension.ExtendWith
 import static org.contextmapper.dsl.tests.util.ParsingErrorAssertions.*
 import static org.junit.jupiter.api.Assertions.*
 import java.util.stream.Collectors
+import org.contextmapper.dsl.contextMappingDSL.ContextMapState
+import org.contextmapper.dsl.contextMappingDSL.ContextMapType
 
 @ExtendWith(InjectionExtension)
 @InjectWith(ContextMappingDSLInjectorProvider)
@@ -54,5 +56,50 @@ class ContextMapDSLParsingTest {
 		val contextNames = result.map.boundedContexts.stream.map[name].collect(Collectors.toList);
 		assertTrue(contextNames.contains("testContext"));
 		assertTrue(contextNames.contains("anotherTestContext"));
+	}
+
+	@Test
+	def void canAddDomainVisionStatement() {
+		// given
+		val String dslSnippet = '''
+			ContextMap {
+				domainVisionStatement = "this is a short description stating the vision of my project ..."
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertEquals("this is a short description stating the vision of my project ...", result.map.domainVisionStatement);
+	}
+
+	@Test
+	def void canDefineContextMapState() {
+		// given
+		val String dslSnippet = '''
+			ContextMap {
+				state = AS_IS
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertEquals(ContextMapState.AS_IS, result.map.state);
+	}
+
+	@Test
+	def void canDefineContextMapType() {
+		// given
+		val String dslSnippet = '''
+			ContextMap {
+				type = SYSTEM_LANDSCAPE
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertEquals(ContextMapType.SYSTEM_LANDSCAPE, result.map.type);
 	}
 }

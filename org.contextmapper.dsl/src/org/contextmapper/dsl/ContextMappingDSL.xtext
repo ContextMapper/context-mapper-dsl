@@ -10,6 +10,9 @@ ContextMap:
 	{ContextMap} // make sure there is always a context map
 	'ContextMap'
 	OPEN
+		(('domainVisionStatement' '=' domainVisionStatement=STRING)? &
+		('state' '=' state=ContextMapState)? &
+		('type' '=' type=ContextMapType)?)
 		boundedContexts += [BoundedContext]*
 		relationships += Relationship*
 	CLOSE
@@ -17,6 +20,12 @@ ContextMap:
 
 BoundedContext:
 	'BoundedContext' name=ID ('implements' (implementedSubdomains+=[Subdomain]) ("," implementedSubdomains+=[Subdomain])*)?
+	(
+		OPEN
+			(('type' '=' type=BoundedContextType)? &
+			(('responsibilities' '=' responsibilities+=Responsibility) ("," responsibilities+=Responsibility)*)?)
+		CLOSE
+	)?
 ;
 
 Subdomain:
@@ -86,12 +95,28 @@ DownstreamContext:
 	roles += DownstreamRoles*
 ;
 
+Responsibility:
+	name=ID
+;
+
 enum UpstreamRoles:
 	PUBLISHED_LANGUAGE | OPEN_HOST_SERVICE
 ;
 
 enum DownstreamRoles:
 	ANTICORRUPTION_LAYER | CONFORMIST
+;
+
+enum ContextMapState:
+	AS_IS | TO_BE
+;
+
+enum ContextMapType:
+	ORGANIGRAM | SYSTEM_LANDSCAPE
+;
+
+enum BoundedContextType:
+	FEATURE | APPLICATION | SYSTEM | TEAM
 ;
 
 // define terminals
