@@ -22,7 +22,8 @@ BoundedContext:
 	'BoundedContext' name=ID ('implements' (implementedSubdomains+=[Subdomain]) ("," implementedSubdomains+=[Subdomain])*)?
 	(
 		OPEN
-			('type' '=' type=BoundedContextType)?
+			(('type' '=' type=BoundedContextType)? &
+			(('responsibilities' '=' responsibilities+=Responsibility) ("," responsibilities+=Responsibility)*)?)
 		CLOSE
 	)?
 ;
@@ -92,6 +93,10 @@ UpstreamContext:
 DownstreamContext:
 	context = [BoundedContext] 'as' 'Downstream'
 	roles += DownstreamRoles*
+;
+
+Responsibility:
+	name=ID
 ;
 
 enum UpstreamRoles:
