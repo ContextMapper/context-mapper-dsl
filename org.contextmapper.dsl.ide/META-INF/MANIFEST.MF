@@ -12,5 +12,7 @@ Require-Bundle: org.contextmapper.dsl,
  org.antlr.runtime;bundle-version="[3.2.0,3.2.1)"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.contextmapper.dsl.ide.contentassist.antlr.internal,
- org.contextmapper.dsl.ide.contentassist.antlr
+ org.contextmapper.dsl.ide.contentassist.antlr,
+ org.contextmapper.tactic.dsl.ide.contentassist.antlr.internal,
+ org.contextmapper.tactic.dsl.ide.contentassist.antlr
 

@@ -30,8 +30,27 @@ Workflow {
 			}
 		}
 		language = StandardLanguage {
+			name = "org.contextmapper.dsl.TacticDSL"
+			fileExtensions = "bcdesign"
+
+			serializer = {
+				generateStub = false
+			}
+			validator = {
+				// composedCheck = "org.eclipse.xtext.validation.NamesAreUniqueValidator"
+				// Generates checks for @Deprecated grammar annotations, an IssueProvider and a corresponding PropertyPage
+				generateDeprecationValidation = true
+			}
+			junitSupport = {
+				junitVersion = "5"
+				generateStub = false
+			}
+		}
+		language = StandardLanguage {
 			name = "org.contextmapper.dsl.ContextMappingDSL"
 			fileExtensions = "cml"
+
+			referencedResource = "platform:/resource/org.contextmapper.dsl/src/org/contextmapper/dsl/TacticDSL.xtext"
 
 			serializer = {
 				generateStub = false

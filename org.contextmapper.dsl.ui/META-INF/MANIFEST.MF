@@ -22,5 +22,7 @@ Import-Package: org.apache.log4j
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.contextmapper.dsl.ui.contentassist,
  org.contextmapper.dsl.ui.quickfix,
- org.contextmapper.dsl.ui.internal
+ org.contextmapper.dsl.ui.internal,
+ org.contextmapper.tactic.dsl.ui.quickfix,
+ org.contextmapper.tactic.dsl.ui.contentassist
 Bundle-Activator: org.contextmapper.dsl.ui.internal.DslActivator
