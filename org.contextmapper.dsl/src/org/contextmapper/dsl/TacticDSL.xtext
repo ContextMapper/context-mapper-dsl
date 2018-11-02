@@ -1,0 +1,552 @@
+/*
+ * Copyright 2013 The Sculptor Project Team, including the original 
+ * author or authors.
+ *
+ * Modifications Copyright 2018 The 'Context Mapper' Project Team
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * NOTICE: This grammar is originally written by the Sculptor Project Team (https://github.com/sculptor/base)
+ * and was copied to this project since we needed a DSL for Tactic DDD patterns.
+ *
+ * A few changes were made to the original:
+ * 	- changed the name in order to have it within our package name space
+ * 	- removed the 'Dsl' prefix from the grammar rules to increase consistency with our own DSL
+ * 	- added the aggregate pattern
+ */
+
+grammar org.contextmapper.tactic.dsl.TacticDDDLanguage with org.eclipse.xtext.common.Terminals
+
+generate tacticdsl "http://contextmapper.org/tactic/dsl/tacticdsl"
+
+
+TacticDDDModel :
+  (imports+=Import)*
+  app=Application;
+
+Import :
+	'import' importURI=STRING;
+
+Application :
+  (doc=STRING)?
+  (("Application" name=ID "{"
+    "basePackage" "=" basePackage=JavaIdentifier) |
+  ("ApplicationPart"  name=ID "{"))
+
+    (modules+=Module)*
+  "}";
+
+Module :
+  (doc=STRING)?
+  "Module" name=ID "{"
+    (external?="external")?
+    ("basePackage" "=" basePackage=JavaIdentifier )?
+    ("hint" "=" hint=STRING)?
+    ((services+=Service) |
+     (resources+=Resource) |
+     (consumers+=Consumer) |
+     (domainObjects+=SimpleDomainObject))*
+  "}";
+
+Service :
+  (doc=STRING)?
+  "Service" name=ID "{"
+  	(
+  	 ((gapClass?="gap") | (noGapClass?="nogap"))? &
+     ("hint" "=" hint=STRING)? &
+  	 (webService?="webservice")? &
+  	 (subscribe=Subscribe)?
+  	)
+    (dependencies+=Dependency)*
+    (operations+=ServiceOperation)*
+  "}";
+
+Resource :
+  (doc=STRING)?
+  "Resource" name=ID "{"
+  	(
+  	 ((gapClass?="gap") | (noGapClass?="nogap"))? &
+     ("hint" "=" hint=STRING)? &
+     (scaffold?="scaffold")? &
+     ("path" "=" path=STRING)?
+  	)
+    (dependencies+=ServiceDependency)*
+    (operations+=ResourceOperation)*
+  "}";
+
+Consumer :
+  (doc=STRING)?
+  "Consumer" name=ID "{"
+    ("hint" "=" hint=STRING)?
+    (dependencies+=Dependency)*
+    ("unmarshall to" ("@")?messageRoot=[DomainObject])?
+    (
+     (("queueName" | "topicName") "=" channel=ChannelIdentifier )? &
+     (subscribe=Subscribe)?
+    )
+  "}";
+
+Subscribe :
+	"subscribe" "to" topic=ChannelIdentifier ("eventBus" "=" eventBus=ID)?
+;
+
+Publish :
+	"publish" (("@")?eventType=[Event])? "to" topic=ChannelIdentifier ("eventBus" "=" eventBus=ID)?
+;
+
+Event :
+	DomainEvent | CommandEvent;
+
+DomainObjectTypedElement :
+  ServiceOperation | RepositoryOperation | DomainObjectOperation | Parameter;
+
+ServiceOperation :
+  (doc=STRING)?
+  (visibility=Visibility)?
+  (returnType=ComplexType)?
+  name=ID ("(" (parameters+=Parameter)?("," parameters+=Parameter)* ")")?
+    (
+      ("throws" throws=ThrowsIdentifier)? &
+	  ("hint" "=" hint=STRING)? &
+	  (publish=Publish)?
+    )
+    (delegateHolder=ServiceOperationDelegate)? ";"
+;
+
+ServiceOperationDelegate :
+    DELEGATE ("@")? delegate=[ServiceRepositoryOption]"."delegateOperation=[ServiceRepositoryOperationOption];
+
+ServiceRepositoryOption :
+	Repository | Service;
+
+ServiceRepositoryOperationOption :
+	RepositoryOperation | ServiceOperation;
+
+ResourceOperation :
+  (doc=STRING)?
+  (visibility=Visibility)?
+  (returnType=ComplexType)?
+  name=ID ("(" (parameters+=Parameter)?("," parameters+=Parameter)* ")")?
+    (
+      ("throws" throws=ThrowsIdentifier)? &
+	  ("hint" "=" hint=STRING)? &
+	  (httpMethod=HttpMethod)? &
+	  ("path" "=" path=STRING)? &
+	  ("return" "=" returnString=STRING)?
+    )
+    (delegateHolder=ResourceOperationDelegate)? ";"
+;
+
+ResourceOperationDelegate :
+    DELEGATE ("@")? delegate=[Service]"."delegateOperation=[ServiceOperation];
+
+enum HttpMethod :
+	None | GET="GET" | POST="POST" | PUT="PUT" | DELETE="DELETE";
+
+RepositoryOperation :
+  (doc=STRING)?
+  (visibility=Visibility)?
+  (returnType=ComplexType)?
+  name=ID ("(" (parameters+=Parameter)?("," parameters+=Parameter)* ")")?
+    (
+      ("throws" throws=ThrowsIdentifier)? &
+      ("hint" "=" hint=STRING)? &
+      (cache?="cache")? &
+      ((gapOperation?="gap") | (noGapOperation?="nogap"))? &
+      ("query" "=" query=STRING)? &
+      ("condition" "=" condition=STRING)? &
+      ("select" "=" select=STRING)? &
+      ("groupBy" "=" groupBy=STRING)? &
+      ("orderBy" "=" orderBy=STRING)? &
+      (construct?="construct")? &
+      (build?="build")? &
+      (map?="map")? &
+      (publish=Publish)?
+    )
+    (delegateToAccessObject?=DELEGATE (("AccessObject") | (accessObjectName=ID)))? ";"
+;
+
+Parameter :
+  (doc=STRING)?
+  parameterType=ComplexType name=ID;
+
+ComplexType :
+  (collectionType=CollectionType"<"(("@"domainObjectType=[SimpleDomainObject]) | (type=Type) | (type=Type"<""@"domainObjectType=[SimpleDomainObject]">"))">") |
+  (mapCollectionType=MAP_COLLECTION_TYPE"<"(mapKeyType=Type | "@"mapKeyDomainObjectType=[SimpleDomainObject])","(("@"domainObjectType=[SimpleDomainObject]) | (type=Type) | (type=Type"<""@"domainObjectType=[SimpleDomainObject]">"))">") |
+  ("@"domainObjectType=[SimpleDomainObject]) |
+  (type=Type) |
+  (type=Type"<""@"domainObjectType=[SimpleDomainObject]">");
+
+SimpleDomainObject :
+  BasicType | Enum | DomainObject | DataTransferObject | Trait;
+
+DomainObject :
+  Entity | ValueObject | Event;
+
+Entity :
+  (doc=STRING)?
+  (abstract?="abstract")? "Entity" name=ID ("extends" (("@"extends=[Entity]) | (extendsName=JavaIdentifier)))?
+  ("with" ("@")?traits+=[Trait])* "{"
+    ("package" "=" package=JavaIdentifier )?
+    (((notOptimisticLocking?=NOT "optimisticLocking") | ("optimisticLocking"))? &
+     ((notAuditable?=NOT "auditable") | ("auditable"))? &
+     ((cache?="cache") | (NOT "cache"))? &
+     ((gapClass?="gap") | (noGapClass?="nogap"))? &
+     (scaffold?="scaffold")? &
+     ("hint" "=" hint=STRING)? &
+     ("databaseTable" "=" databaseTable=STRING)? &
+     ("discriminatorValue" "=" discriminatorValue=STRING)? &
+     ("discriminatorColumn" "=" discriminatorColumn=STRING)? &
+     ("discriminatorType" "=" discriminatorType=DiscriminatorType)? &
+     ("discriminatorLength" "=" discriminatorLength=STRING)? &
+     ("inheritanceType" "=" inheritanceType=InheritanceType)? &
+     ("validate" "=" validate=STRING)? &
+     ((notAggregateRoot?=NOT "aggregateRoot") | ("aggregateRoot"))? &
+     ("belongsTo" (("@")?belongsTo=[DomainObject]))?)
+    ((attributes+=Attribute) |
+     (references+=Reference) |
+     (operations+=DomainObjectOperation))*
+    (repository=Repository)?
+  "}";
+
+ValueObject :
+  (doc=STRING)?
+  (abstract?="abstract")? "ValueObject" name=ID ("extends" (("@"extends=[ValueObject]) | (extendsName=JavaIdentifier)))?
+  ("with" ("@")?traits+=[Trait])* "{"
+    ("package" "=" package=JavaIdentifier )?
+    (((notOptimisticLocking?=NOT "optimisticLocking") | ("optimisticLocking"))? &
+     ((notImmutable?=NOT "immutable") | ("immutable"))? &
+     ((cache?="cache") | (NOT "cache"))? &
+     ((gapClass?="gap") | (noGapClass?="nogap"))? &
+     (scaffold?="scaffold")? &
+     ("hint" "=" hint=STRING)? &
+     ("databaseTable" "=" databaseTable=STRING)? &
+     ("discriminatorValue" "=" discriminatorValue=STRING)? &
+     ("discriminatorColumn" "=" discriminatorColumn=STRING)? &
+     ("discriminatorType" "=" discriminatorType=DiscriminatorType)? &
+     ("discriminatorLength" "=" discriminatorLength=STRING)? &
+     ("inheritanceType" "=" inheritanceType=InheritanceType)? &
+     ("validate" "=" validate=STRING)? &
+     ((persistent?="persistent") | (notPersistent?=NOT "persistent"))? &
+     ((notAggregateRoot?=NOT "aggregateRoot") | ("aggregateRoot"))? &
+     ("belongsTo" (("@")?belongsTo=[DomainObject]))?)
+    ((attributes+=Attribute) |
+     (references+=Reference) |
+     (operations+=DomainObjectOperation))*
+    (repository=Repository)?
+  "}";
+
+DomainEvent :
+  (doc=STRING)?
+  (abstract?="abstract")? "DomainEvent" name=ID ("extends" (("@"extends=[DomainEvent]) | (extendsName=JavaIdentifier)))?
+  ("with" ("@")?traits+=[Trait])* "{"
+    ("package" "=" package=JavaIdentifier )?
+    (
+     ((cache?="cache") | (NOT "cache"))? &
+     ((gapClass?="gap") | (noGapClass?="nogap"))? &
+     (scaffold?="scaffold")? &
+     ("hint" "=" hint=STRING)? &
+     ("databaseTable" "=" databaseTable=STRING)? &
+     ("discriminatorValue" "=" discriminatorValue=STRING)? &
+     ("discriminatorColumn" "=" discriminatorColumn=STRING)? &
+     ("discriminatorType" "=" discriminatorType=DiscriminatorType)? &
+     ("discriminatorLength" "=" discriminatorLength=STRING)? &
+     ("inheritanceType" "=" inheritanceType=InheritanceType)? &
+     ("validate" "=" validate=STRING)? &
+     ((persistent?="persistent") | (notPersistent?=NOT "persistent"))? &
+     ((notAggregateRoot?=NOT "aggregateRoot") | ("aggregateRoot"))? &
+     ("belongsTo" (("@")?belongsTo=[DomainObject]))?
+    )
+    ((attributes+=Attribute) |
+     (references+=Reference) |
+     (operations+=DomainObjectOperation))*
+    (repository=Repository)?
+  "}";
+
+CommandEvent :
+  (doc=STRING)?
+  (abstract?="abstract")? "CommandEvent" name=ID ("extends" (("@"extends=[CommandEvent]) | (extendsName=JavaIdentifier)))?
+  ("with" ("@")?traits+=[Trait])* "{"
+    ("package" "=" package=JavaIdentifier )?
+    (
+     ((cache?="cache") | (NOT "cache"))? &
+     ((gapClass?="gap") | (noGapClass?="nogap"))? &
+     (scaffold?="scaffold")? &
+     ("hint" "=" hint=STRING)? &
+     ("databaseTable" "=" databaseTable=STRING)? &
+     ("discriminatorValue" "=" discriminatorValue=STRING)? &
+     ("discriminatorColumn" "=" discriminatorColumn=STRING)? &
+     ("discriminatorType" "=" discriminatorType=DiscriminatorType)? &
+     ("discriminatorLength" "=" discriminatorLength=STRING)? &
+     ("inheritanceType" "=" inheritanceType=InheritanceType)? &
+     ("validate" "=" validate=STRING)? &
+     ((persistent?="persistent") | (NOT "persistent"))? &
+     ((notAggregateRoot?=NOT "aggregateRoot") | ("aggregateRoot"))? &
+     ("belongsTo" (("@")?belongsTo=[DomainObject]))?
+    )
+    ((attributes+=Attribute) |
+     (references+=Reference) |
+     (operations+=DomainObjectOperation))*
+    (repository=Repository)?
+  "}";
+
+Trait :
+  (doc=STRING)?
+  "Trait" name=ID "{"
+    ("package" "=" package=JavaIdentifier )?
+    ("hint" "=" hint=STRING)?
+    ((attributes+=Attribute) |
+     (references+=Reference) |
+     (operations+=DomainObjectOperation))*
+
+  "}";
+
+DomainObjectOperation :
+  (doc=STRING)?
+  OP (abstract?="abstract")? (visibility=Visibility)?
+  (returnType=ComplexType)?
+  name=ID ("(" (parameters+=Parameter)?("," parameters+=Parameter)* ")")?
+    (
+      ("throws" throws=ThrowsIdentifier)? &
+	  ("hint" "=" hint=STRING)?
+    )
+    ";";
+
+DataTransferObject :
+  (doc=STRING)?
+  (abstract?="abstract")? "DataTransferObject" name=ID ("extends" (("@"extends=[DataTransferObject]) | (extendsName=JavaIdentifier)))? "{"
+    ("package" "=" package=JavaIdentifier )?
+    (
+     ((gapClass?="gap") | (noGapClass?="nogap"))? &
+     ("hint" "=" hint=STRING)? &
+     ("validate" "=" validate=STRING)?
+    )
+    ((attributes+=DtoAttribute) |
+     (references+=DtoReference))*
+  "}";
+
+BasicType :
+  (doc=STRING)?
+  "BasicType" name=ID
+  ("with" ("@")?traits+=[Trait])* "{"
+    ("package" "=" package=JavaIdentifier )?
+    (((notImmutable?=NOT "immutable") | ("immutable"))? &
+     ((gapClass?="gap") | (noGapClass?="nogap"))? &
+     ("hint" "=" hint=STRING)?
+    )
+    ((attributes+=Attribute) |
+     (references+=Reference) |
+     (operations+=DomainObjectOperation))*
+  "}";
+
+Attribute :
+  (doc=STRING)?
+  (visibility=Visibility)? (collectionType=CollectionType"<")? type=Type (">")? name=ID
+    ((key?="key")? &
+     ((notChangeable?=NOT "changeable") | ("changeable"))? &
+     ((required?="required") | (NOT "required"))? &
+     (((nullable?="nullable") | (NOT "nullable")) ("=" nullableMessage=STRING)?)? &
+     (index?="index")? &
+     ((assertFalse?="assertFalse") ("=" assertFalseMessage=STRING)?)? &
+     ((assertTrue?="assertTrue") ("=" assertTrueMessage=STRING)?)? &
+     ("hint" "=" hint=STRING)? &
+     ((creditCardNumber?="creditCardNumber") ("=" creditCardNumberMessage=STRING)?)? &
+     ("digits" "=" digits=STRING)? &
+     ((email?="email") ("=" emailMessage=STRING)?)? &
+     ((future?="future") ("=" futureMessage=STRING)?)? &
+     ((past?="past") ("=" pastMessage=STRING)?)? &
+     ("max" "=" max=STRING)? &
+     ("min" "=" min=STRING)? &
+     ("decimalMax" "=" decimalMax=STRING)? &
+     ("decimalMin" "=" decimalMin=STRING)? &
+     ((notEmpty?="notEmpty") ("=" notEmptyMessage=STRING)?)? &
+     ((notBlank?="notBlank") ("=" notBlankMessage=STRING)?)? &
+     ("pattern" "=" pattern=STRING)? &
+     ("range" "=" range=STRING)? &
+     ("size" "=" size=STRING)? &
+     ("length" "=" length=STRING)? &
+     ("scriptAssert" "=" scriptAssert=STRING)? &
+     ("url" "=" url=STRING)? &
+     ("validate" "=" validate=STRING)? &
+     (transient?="transient")? &
+     ("databaseColumn" "=" databaseColumn=STRING)? &
+     ("databaseType" "=" databaseType=STRING)?) (";")?;
+
+Reference :
+  (doc=STRING)?
+  REF (visibility=Visibility)? (collectionType=CollectionType"<")? (("@")?domainObjectType=[SimpleDomainObject]) (">")? name=ID
+    ((key?="key")? &
+     ((notChangeable?=NOT "changeable") | ("changeable"))? &
+     ((required?="required") | (NOT "required"))? &
+     (((nullable?="nullable") | (NOT "nullable")) ("=" nullableMessage=STRING)?)? &
+     ("hint" "=" hint=STRING)? &
+     ("cascade" "=" cascade=STRING)? &
+     ("fetch" "=" fetch=STRING)? &
+     ((cache?="cache") | (NOT "cache"))? &
+     ((inverse?="inverse") | (NOT "inverse"))? &
+     ("databaseColumn" "=" databaseColumn=STRING)? &
+     ("databaseJoinTable" "=" databaseJoinTable=STRING)? &
+     ("databaseJoinColumn" "=" databaseJoinColumn=STRING)? &
+     ((notEmpty?="notEmpty") ("=" notEmptyMessage=STRING)?)? &
+     ("size" "=" size=STRING)? &
+     ((valid?="valid") ("=" validMessage=STRING)?)? &
+     ("validate" "=" validate=STRING)? &
+     (transient?="transient")? &
+     ("orderby" "=" orderBy=STRING)? &
+     ((orderColumn?="orderColumn") ("=" orderColumnName=STRING)?)? &
+     (oppositeHolder=OppositeHolder)?)
+    (";")?;
+
+DtoAttribute :
+  (doc=STRING)?
+  (visibility=Visibility)? (collectionType=CollectionType"<")? type=Type (">")? name=ID
+    ((key?="key")? &
+     ((notChangeable?=NOT "changeable") | ("changeable"))? &
+     ((required?="required") | (NOT "required"))? &
+     (((nullable?="nullable") | (NOT "nullable")) ("=" nullableMessage=STRING)?)? &
+     (transient?="transient")? &
+     ((assertFalse?="assertFalse") ("=" assertFalseMessage=STRING)?)? &
+     ((assertTrue?="assertTrue") ("=" assertTrueMessage=STRING)?)? &
+     ((creditCardNumber?="creditCardNumber") ("=" creditCardNumberMessage=STRING)?)? &
+     ("digits" "=" digits=STRING)? &
+     ((email?="email") ("=" emailMessage=STRING)?)? &
+     ((future?="future") ("=" futureMessage=STRING)?)? &
+     ((past?="past") ("=" pastMessage=STRING)?)? &
+     ("max" "=" max=STRING)? &
+     ("min" "=" min=STRING)? &
+     ("decimalMax" "=" decimalMax=STRING)? &
+     ("decimalMin" "=" decimalMin=STRING)? &
+     ((notEmpty?="notEmpty") ("=" notEmptyMessage=STRING)?)? &
+     ((notBlank?="notBlank") ("=" notBlankMessage=STRING)?)? &
+     ("pattern" "=" pattern=STRING)? &
+     ("range" "=" range=STRING)? &
+     ("size" "=" size=STRING)? &
+     ("length" "=" length=STRING)? &
+     ("scriptAssert" "=" scriptAssert=STRING)? &
+     ("url" "=" url=STRING)? &
+     ("validate" "=" validate=STRING)? &
+     ("hint" "=" hint=STRING)?
+	) (";")?;
+
+DtoReference :
+  (doc=STRING)?
+  REF (visibility=Visibility)? (collectionType=CollectionType"<")? (("@")?domainObjectType=[SimpleDomainObject]) (">")? name=ID
+    ((key?="key")? &
+     ((notChangeable?=NOT "changeable") | ("changeable"))? &
+     ((required?="required") | (NOT "required"))? &
+     (((nullable?="nullable") | (NOT "nullable")) ("=" nullableMessage=STRING)?)? &
+     (transient?="transient")? &
+     ((notEmpty?="notEmpty") ("=" notEmptyMessage=STRING)?)? &
+     ("size" "=" size=STRING)? &
+     ((valid?="valid") ("=" validMessage=STRING)?)? &
+     ("validate" "=" validate=STRING)? &
+     ("hint" "=" hint=STRING)?
+	) (";")?;
+
+OppositeHolder :
+	OPPOSITE opposite=[Reference];
+
+Repository :
+  (doc=STRING)?
+  "Repository" name=ID "{"
+    (
+      ((gapClass?="gap") | (noGapClass?="nogap"))? &
+      ("hint" "=" hint=STRING)? &
+      (subscribe=Subscribe)?
+    )
+    (dependencies+=Dependency)*
+    (operations+=RepositoryOperation)*
+  "}";
+
+ServiceDependency :
+  ('>'|'inject') ("@"dependency=[Service]);
+
+Dependency :
+  ('>'|'inject') (("@"dependency=[ServiceRepositoryOption])|name=ID);
+
+Enum :
+  (doc=STRING)?
+  "enum" name=ID "{"
+    ("package" "=" package=JavaIdentifier )?
+    ("hint" "=" hint=STRING)?
+    (ordinal?="ordinal")?
+    (attributes+=EnumAttribute)*
+    (values+=EnumValue) ("," values+=EnumValue)* (";")?
+  "}";
+
+EnumAttribute :
+  (doc=STRING)?
+  type=Type name=ID (key?="key")? (";")?;
+
+EnumValue :
+  (doc=STRING)?
+  name=ID ("(" parameters+=EnumParameter ("," parameters+=EnumParameter)* ")")?;
+
+EnumParameter :
+	((value=STRING) | (integerValue = INT));
+
+AnyProperty :
+	Property | DtoProperty;
+
+Property :
+	Attribute | Reference;
+
+DtoProperty :
+	DtoAttribute | DtoReference;
+
+enum InheritanceType :
+	JOINED="JOINED" | SINGLE_TABLE="SINGLE_TABLE";
+
+enum DiscriminatorType :
+	STRING="STRING" | CHAR="CHAR" | INTEGER="INTEGER";
+
+Type :
+  ("String"|"int"|"Integer"|"long"|"Long"|"boolean"|"Boolean"|"Date"|"DateTime"|"Timestamp"|"BigDecimal"|"BigInteger"|
+  	"double"|"Double"|"float"|"Float"|"Key"|"PagingPagarameter"|"PagedResult"|"Blob"|"Clob"|"Object[]"|
+  	JavaIdentifier);
+
+enum CollectionType :
+	None | Set="Set" | List="List" | Bag="Bag" | Collection="Collection";
+
+terminal MAP_COLLECTION_TYPE :
+  "Map";
+
+enum Visibility :
+  public="public" | protected="protected" | private="private" | package="package";
+
+JavaIdentifier :
+  (ID ("." ID)*);
+
+ChannelIdentifier :
+  (ID (((".") | ("/") | (":")) ID)*);
+
+ThrowsIdentifier :
+  (JavaIdentifier ("," JavaIdentifier)*);
+
+terminal NOT :
+  ('!'|'not');
+
+terminal DELEGATE :
+  ('=>'|('delegates to'));
+
+terminal OPPOSITE :
+  ('<->'|'opposite');
+
+terminal REF :
+  ('-'|'reference');
+
+terminal OP :
+  ('*'|'def');
+
