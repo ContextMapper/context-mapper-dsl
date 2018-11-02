@@ -26,8 +26,7 @@ ContextMap:
 	{ContextMap} // make sure there is always a context map
 	'ContextMap'
 	OPEN
-		(('domainVisionStatement' '=' domainVisionStatement=STRING)? &
-		('state' '=' state=ContextMapState)? &
+		(('state' '=' state=ContextMapState)? &
 		('type' '=' type=ContextMapType)?)
 		boundedContexts += [BoundedContext]*
 		relationships += Relationship*
@@ -38,9 +37,12 @@ BoundedContext:
 	'BoundedContext' name=ID ('implements' (implementedSubdomains+=[Subdomain]) ("," implementedSubdomains+=[Subdomain])*)?
 	(
 		OPEN
-			(('type' '=' type=BoundedContextType)? &
-			(('responsibilities' '=' responsibilities+=Responsibility) ("," responsibilities+=Responsibility)*)?)
+			(('domainVisionStatement' '=' domainVisionStatement=STRING)? &
+			('type' '=' type=BoundedContextType)? &
+			(('responsibilities' '=' responsibilities+=Responsibility) ("," responsibilities+=Responsibility)*)? &
+			('knowledgeLevel' '=' knowledgeLevel=KnowledgeLevel)?)
 			modules += Module*
+			aggregates += Aggregate*
 		CLOSE
 	)?
 ;
@@ -51,14 +53,29 @@ Subdomain:
 
 CoreDomain:
 	'CoreDomain' name=ID
+	(
+		OPEN
+			('domainVisionStatement' '=' domainVisionStatement=STRING)?
+		CLOSE
+	)?
 ;
 
 SupportingDomain:
 	'SupportingDomain' name=ID
+	(
+		OPEN
+			('domainVisionStatement' '=' domainVisionStatement=STRING)?
+		CLOSE
+	)?
 ;
 
 GenericSubdomain:
 	'GenericSubdomain' name=ID
+	(
+		OPEN
+			('domainVisionStatement' '=' domainVisionStatement=STRING)?
+		CLOSE
+	)?
 ;
 
 Relationship:
@@ -87,7 +104,7 @@ SharedKernel:
 
 UpstreamDownstreamRelationship:
 	CustomerSupplierRelationship |
-	'Upstream' 'Downstream'
+	'Upstream-Downstream'
 	OPEN
 		upstream = UpstreamContext
 		downstream = DownstreamContext
@@ -95,7 +112,7 @@ UpstreamDownstreamRelationship:
 ;
 
 CustomerSupplierRelationship:
-	'Customer' 'Supplier'
+	'Customer-Supplier'
 	OPEN
 		upstream = UpstreamContext
 		downstream = DownstreamContext
@@ -104,16 +121,12 @@ CustomerSupplierRelationship:
 
 UpstreamContext:
 	context = [BoundedContext] 'as' 'Upstream'
-	roles += UpstreamRoles*
+	('implements' (roles += UpstreamRoles) ("," roles+=UpstreamRoles)*)?
 ;
 
 DownstreamContext:
 	context = [BoundedContext] 'as' 'Downstream'
-	roles += DownstreamRoles*
-;
-
-Responsibility:
-	name=ID
+	('implements' (roles += DownstreamRoles) ("," roles+=DownstreamRoles)*)?
 ;
 
 enum UpstreamRoles:

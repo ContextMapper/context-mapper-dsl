@@ -78,4 +78,19 @@ class SubdomainsDSLParsingTest {
 		assertTrue(subdomainNames.contains("core"));
 		assertTrue(subdomainNames.contains("support1"));
 	}
+
+	@Test
+	def void canDefineVisionStatement() {
+		// given
+		val String dslSnippet = '''
+			CoreDomain core {
+				domainVisionStatement = "my domain vision for this subdomain"
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertEquals("my domain vision for this subdomain", result.subdomains.get(0).domainVisionStatement);
+	}
 }

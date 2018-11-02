@@ -30,12 +30,11 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 				 testContext
 				 anotherTestContext
 
-				 Upstream Downstream {
+				 Upstream-Downstream {
 					testContext as Upstream
-						PUBLISHED_LANGUAGE
-						OPEN_HOST_SERVICE
+						implements PUBLISHED_LANGUAGE, OPEN_HOST_SERVICE
 					anotherTestContext as Downstream
-						CONFORMIST
+						implements CONFORMIST
 				 }
 			}
 
@@ -68,11 +67,11 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 				 testContext
 				 anotherTestContext
 
-				 Customer Supplier {
+				 Customer-Supplier {
 					testContext as Upstream
-						OPEN_HOST_SERVICE
+						implements OPEN_HOST_SERVICE
 					anotherTestContext as Downstream
-						ANTICORRUPTION_LAYER
+						implements ANTICORRUPTION_LAYER
 				 }
 			}
 
