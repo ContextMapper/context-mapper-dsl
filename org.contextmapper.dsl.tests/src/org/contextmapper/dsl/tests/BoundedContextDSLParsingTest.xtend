@@ -12,6 +12,7 @@ import static org.contextmapper.dsl.tests.util.ParsingErrorAssertions.*
 import static org.junit.jupiter.api.Assertions.*
 import org.contextmapper.dsl.contextMappingDSL.BoundedContextType
 import java.util.stream.Collectors
+import org.contextmapper.tactic.dsl.tacticdsl.KnowledgeLevel
 
 @ExtendWith(InjectionExtension)
 @InjectWith(ContextMappingDSLInjectorProvider)
@@ -69,7 +70,7 @@ class BoundedContextDSLParsingTest {
 		// given
 		val String dslSnippet = '''
 			BoundedContext testContext {
-				responsibilities = resp1, resp2
+				responsibilities = resp1{"a responsibility description..."}, resp2
 			}
 		''';
 		// when
@@ -81,5 +82,35 @@ class BoundedContextDSLParsingTest {
 		val responsibilities = result.boundedContexts.get(0).responsibilities.stream.map[name].collect(Collectors.toList);
 		assertTrue(responsibilities.contains("resp1"));
 		assertTrue(responsibilities.contains("resp2"));
+	}
+
+	@Test
+	def void canAddVisionStatement() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext testContext {
+				domainVisionStatement = "this is my vision"
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertEquals("this is my vision", result.boundedContexts.get(0).domainVisionStatement);
+	}
+
+	@Test
+	def void canDefineKnowledgeLevel() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext testContext {
+				knowledgeLevel = META
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertEquals(KnowledgeLevel.META, result.boundedContexts.get(0).knowledgeLevel);
 	}
 }
