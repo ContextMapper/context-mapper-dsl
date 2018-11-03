@@ -1,5 +1,7 @@
 package org.contextmapper.dsl.validation;
 
+import static org.contextmapper.dsl.validation.ValidationMessages.CUSTOMER_SUPPLIER_NOT_ALLOW_OHS_ACL_CONFORMIST_ERROR_MESSAGE;
+
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLPackage;
 import org.contextmapper.dsl.contextMappingDSL.CustomerSupplierRelationship;
 import org.contextmapper.dsl.contextMappingDSL.DownstreamRoles;
@@ -9,8 +11,6 @@ import org.eclipse.xtext.validation.Check;
 import org.eclipse.xtext.validation.EValidatorRegistrar;
 
 public class BoundedContextRelationshipSemanticsValidator extends AbstractDeclarativeValidator {
-
-	public static final String CUSTOMER_SUPPLIER_NOT_ALLOW_OHS_ACL_CONFORMIST_ERROR_MESSAGE = "Two contexts within a Customer-Supplier relationship should not implement OHS/ACL/CONFORMIST.";
 
 	@Override
 	public void register(EValidatorRegistrar registrar) {

@@ -59,8 +59,11 @@ Workflow {
 			}
 			validator = {
 				composedCheck = "org.contextmapper.dsl.validation.BoundedContextRelationshipSemanticsValidator"
+				composedCheck = "org.contextmapper.dsl.validation.ContextMapSemanticsValidator"
+
 				// Generates checks for @Deprecated grammar annotations, an IssueProvider and a corresponding PropertyPage
 				generateDeprecationValidation = true
+
 				generateXtendStub = false
 				generateStub = false
 			}

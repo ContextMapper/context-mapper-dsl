@@ -19,6 +19,8 @@ import org.junit.jupiter.api.^extension.ExtendWith
 import static org.contextmapper.dsl.tests.util.ParsingErrorAssertions.*
 import static org.junit.jupiter.api.Assertions.*
 
+import static org.contextmapper.dsl.validation.ValidationMessages.*
+
 @ExtendWith(InjectionExtension)
 @InjectWith(ContextMappingDSLInjectorProvider)
 class UpstreamDownstreamRelationshipDSLParsingTest {
@@ -40,7 +42,7 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 						implements PUBLISHED_LANGUAGE, OPEN_HOST_SERVICE
 					anotherTestContext as Downstream
 						implements CONFORMIST
-				 }
+					}
 			}
 
 			BoundedContext testContext
@@ -108,7 +110,7 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 					testContext as Upstream
 						implements OPEN_HOST_SERVICE
 					anotherTestContext as Downstream
-				 }
+					}
 			}
 
 			BoundedContext testContext
@@ -118,7 +120,8 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 		val ContextMappingModel result = parseHelper.parse(dslSnippet);
 		// then
 		assertThatNoParsingErrorsOccurred(result);
-		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.UPSTREAM_CONTEXT, "", BoundedContextRelationshipSemanticsValidator.CUSTOMER_SUPPLIER_NOT_ALLOW_OHS_ACL_CONFORMIST_ERROR_MESSAGE);
+		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.UPSTREAM_CONTEXT, "",
+			CUSTOMER_SUPPLIER_NOT_ALLOW_OHS_ACL_CONFORMIST_ERROR_MESSAGE);
 	}
 
 	@Test
@@ -143,7 +146,8 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 		val ContextMappingModel result = parseHelper.parse(dslSnippet);
 		// then
 		assertThatNoParsingErrorsOccurred(result);
-		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.DOWNSTREAM_CONTEXT, "", BoundedContextRelationshipSemanticsValidator.CUSTOMER_SUPPLIER_NOT_ALLOW_OHS_ACL_CONFORMIST_ERROR_MESSAGE);
+		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.DOWNSTREAM_CONTEXT, "",
+			CUSTOMER_SUPPLIER_NOT_ALLOW_OHS_ACL_CONFORMIST_ERROR_MESSAGE);
 	}
 
 	@Test
@@ -168,7 +172,32 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 		val ContextMappingModel result = parseHelper.parse(dslSnippet);
 		// then
 		assertThatNoParsingErrorsOccurred(result);
-		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.DOWNSTREAM_CONTEXT, "", BoundedContextRelationshipSemanticsValidator.CUSTOMER_SUPPLIER_NOT_ALLOW_OHS_ACL_CONFORMIST_ERROR_MESSAGE);
+		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.DOWNSTREAM_CONTEXT, "",
+			CUSTOMER_SUPPLIER_NOT_ALLOW_OHS_ACL_CONFORMIST_ERROR_MESSAGE);
+	}
+
+	@Test
+	def void expectRelationshipContextsBePartOfMap() {
+		// given
+		val String dslSnippet = '''
+			ContextMap {
+				 anotherTestContext
+
+				 Customer-Supplier {
+					testContext as Upstream
+					anotherTestContext as Downstream
+				 }
+			}
+
+			BoundedContext testContext
+			BoundedContext anotherTestContext
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.CUSTOMER_SUPPLIER_RELATIONSHIP, "",
+			String.format(RELATIONSHIP_CONTEXT_NOT_ON_MAP_ERROR_MESSAGE, "testContext"));
 	}
 
 }
