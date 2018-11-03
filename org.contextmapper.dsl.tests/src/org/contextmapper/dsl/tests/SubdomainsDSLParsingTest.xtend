@@ -32,6 +32,7 @@ class SubdomainsDSLParsingTest {
 		val ContextMappingModel result = parseHelper.parse(dslSnippet);
 		// then
 		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
 		assertEquals(3, result.subdomains.size);
 
 		val subdomainNames = result.subdomains.stream.map[name].collect(Collectors.toList);
@@ -54,6 +55,7 @@ class SubdomainsDSLParsingTest {
 		val ContextMappingModel result = parseHelper.parse(dslSnippet);
 		// then
 		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
 		assertEquals(1, result.boundedContexts.get(0).implementedSubdomains.size);
 		assertEquals("core", result.boundedContexts.get(0).implementedSubdomains.get(0).name);
 	}
@@ -72,6 +74,7 @@ class SubdomainsDSLParsingTest {
 		val ContextMappingModel result = parseHelper.parse(dslSnippet);
 		// then
 		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
 		assertEquals(2, result.boundedContexts.get(0).implementedSubdomains.size);
 
 		val subdomainNames = result.boundedContexts.get(0).implementedSubdomains.stream.map[name].collect(Collectors.toList);
@@ -91,6 +94,7 @@ class SubdomainsDSLParsingTest {
 		val ContextMappingModel result = parseHelper.parse(dslSnippet);
 		// then
 		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
 		assertEquals("my domain vision for this subdomain", result.subdomains.get(0).domainVisionStatement);
 	}
 }

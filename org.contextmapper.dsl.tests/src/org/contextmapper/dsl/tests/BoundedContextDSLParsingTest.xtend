@@ -30,6 +30,7 @@ class BoundedContextDSLParsingTest {
 		val ContextMappingModel result = parseHelper.parse(dslSnippet);
 		// then
 		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
 		assertEquals(1, result.boundedContexts.size);
 		assertEquals("testContext", result.boundedContexts.get(0).name);
 	}
@@ -46,6 +47,7 @@ class BoundedContextDSLParsingTest {
 		val ContextMappingModel result = parseHelper.parse(dslSnippet);
 		// then
 		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
 		assertEquals(BoundedContextType.FEATURE, result.boundedContexts.get(0).type);
 	}
 
@@ -61,6 +63,7 @@ class BoundedContextDSLParsingTest {
 		val ContextMappingModel result = parseHelper.parse(dslSnippet);
 		// then
 		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
 		assertEquals(1, result.boundedContexts.get(0).responsibilities.size)
 		assertEquals("resp1", result.boundedContexts.get(0).responsibilities.get(0).name)
 	}
@@ -77,6 +80,7 @@ class BoundedContextDSLParsingTest {
 		val ContextMappingModel result = parseHelper.parse(dslSnippet);
 		// then
 		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
 		assertEquals(2, result.boundedContexts.get(0).responsibilities.size)
 
 		val responsibilities = result.boundedContexts.get(0).responsibilities.stream.map[name].collect(Collectors.toList);
@@ -96,6 +100,7 @@ class BoundedContextDSLParsingTest {
 		val ContextMappingModel result = parseHelper.parse(dslSnippet);
 		// then
 		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
 		assertEquals("this is my vision", result.boundedContexts.get(0).domainVisionStatement);
 	}
 
@@ -111,6 +116,7 @@ class BoundedContextDSLParsingTest {
 		val ContextMappingModel result = parseHelper.parse(dslSnippet);
 		// then
 		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
 		assertEquals(KnowledgeLevel.META, result.boundedContexts.get(0).knowledgeLevel);
 	}
 }

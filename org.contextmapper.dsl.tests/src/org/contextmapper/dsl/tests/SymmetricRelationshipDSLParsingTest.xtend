@@ -41,6 +41,7 @@ class SymmetricRelationshipDSLParsingTest {
 		val ContextMappingModel result = parseHelper.parse(dslSnippet);
 		// then
 		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
 		assertEquals(1, result.map.relationships.size);
 
 		val Relationship relationship = result.map.relationships.get(0)
@@ -72,6 +73,7 @@ class SymmetricRelationshipDSLParsingTest {
 		val ContextMappingModel result = parseHelper.parse(dslSnippet);
 		// then
 		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
 		assertEquals(1, result.map.relationships.size);
 
 		val Relationship relationship = result.map.relationships.get(0)

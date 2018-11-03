@@ -32,6 +32,7 @@ class AggregateDSLParsingTest {
 		val ContextMappingModel result = parseHelper.parse(dslSnippet);
 		// then
 		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
 		assertEquals(1, result.boundedContexts.get(0).aggregates.size)
 		assertEquals("myAggregate", result.boundedContexts.get(0).aggregates.get(0).name)
 	}
@@ -50,6 +51,7 @@ class AggregateDSLParsingTest {
 		val ContextMappingModel result = parseHelper.parse(dslSnippet);
 		// then
 		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
 		assertEquals(1, result.boundedContexts.get(0).aggregates.get(0).responsibilities.size);
 		assertEquals("CalcCustomerRisk", result.boundedContexts.get(0).aggregates.get(0).responsibilities.get(0).name);
 		assertEquals("can calculate customer risks...", result.boundedContexts.get(0).aggregates.get(0).responsibilities.get(0).description);
@@ -69,6 +71,7 @@ class AggregateDSLParsingTest {
 		val ContextMappingModel result = parseHelper.parse(dslSnippet);
 		// then
 		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
 		assertEquals(KnowledgeLevel.CONCRETE, result.boundedContexts.get(0).aggregates.get(0).knowledgeLevel);
 	}
 }
