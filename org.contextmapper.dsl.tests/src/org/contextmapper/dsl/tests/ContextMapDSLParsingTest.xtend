@@ -1,19 +1,20 @@
 package org.contextmapper.dsl.tests
 
 import com.google.inject.Inject
-import java.util.ArrayList
+import java.util.stream.Collectors
+import org.contextmapper.dsl.contextMappingDSL.ContextMapState
+import org.contextmapper.dsl.contextMappingDSL.ContextMapType
+import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLPackage
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.extensions.InjectionExtension
 import org.eclipse.xtext.testing.util.ParseHelper
+import org.eclipse.xtext.testing.validation.ValidationTestHelper
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.^extension.ExtendWith
 
 import static org.contextmapper.dsl.tests.util.ParsingErrorAssertions.*
 import static org.junit.jupiter.api.Assertions.*
-import java.util.stream.Collectors
-import org.contextmapper.dsl.contextMappingDSL.ContextMapState
-import org.contextmapper.dsl.contextMappingDSL.ContextMapType
 
 @ExtendWith(InjectionExtension)
 @InjectWith(ContextMappingDSLInjectorProvider)
@@ -31,6 +32,7 @@ class ContextMapDSLParsingTest {
 		val ContextMappingModel result = parseHelper.parse(dslSnippet);
 		// then
 		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
 		assertNotNull(result.map);
 	}
 
@@ -50,6 +52,7 @@ class ContextMapDSLParsingTest {
 		val ContextMappingModel result = parseHelper.parse(dslSnippet);
 		// then
 		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
 		assertNotNull(result.map);
 		assertEquals(2, result.map.boundedContexts.size);
 
@@ -70,6 +73,7 @@ class ContextMapDSLParsingTest {
 		val ContextMappingModel result = parseHelper.parse(dslSnippet);
 		// then
 		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
 		assertEquals(ContextMapState.AS_IS, result.map.state);
 	}
 
@@ -85,6 +89,7 @@ class ContextMapDSLParsingTest {
 		val ContextMappingModel result = parseHelper.parse(dslSnippet);
 		// then
 		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
 		assertEquals(ContextMapType.SYSTEM_LANDSCAPE, result.map.type);
 	}
 }
