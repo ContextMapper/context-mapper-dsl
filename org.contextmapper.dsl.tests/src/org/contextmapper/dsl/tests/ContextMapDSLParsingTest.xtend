@@ -15,12 +15,15 @@ import org.junit.jupiter.api.^extension.ExtendWith
 
 import static org.contextmapper.dsl.tests.util.ParsingErrorAssertions.*
 import static org.junit.jupiter.api.Assertions.*
+import static org.contextmapper.dsl.validation.ValidationMessages.*
 
 @ExtendWith(InjectionExtension)
 @InjectWith(ContextMappingDSLInjectorProvider)
 class ContextMapDSLParsingTest {
 	@Inject
 	ParseHelper<ContextMappingModel> parseHelper
+
+	ValidationTestHelper validationTestHelper = new ValidationTestHelper();
 
 	@Test
 	def void canDefineContextMap() {
@@ -91,5 +94,48 @@ class ContextMapDSLParsingTest {
 		assertThatNoParsingErrorsOccurred(result);
 		assertThatNoValidationErrorsOccurred(result);
 		assertEquals(ContextMapType.SYSTEM_LANDSCAPE, result.map.type);
+	}
+
+	@Test
+	def void throwErrorIfBoundedContextsOnOrganizationalMapAreNotOfTypeTeam() {
+		// given
+		val String dslSnippet = '''
+			ContextMap {
+				type = ORGANIZATIONAL
+
+				notATeam
+			}
+
+			BoundedContext notATeam {
+				type = SYSTEM
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.CONTEXT_MAP, "",
+			String.format(ORGANIZATIONAL_MAP_CONTEXT_IS_NOT_TYPE_TEAM, "SYSTEM"));
+	}
+
+	@Test
+	def void throwErrorIfTeamBoundedContextIsOnSystemLandscape() {
+		// given
+		val String dslSnippet = '''
+			ContextMap {
+				type = SYSTEM_LANDSCAPE
+
+				aTeam
+			}
+
+			BoundedContext aTeam {
+				type = TEAM
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.CONTEXT_MAP, "",
+			String.format(SYSTEM_LANDSCAPE_MAP_CONTAINS_TEAM));
 	}
 }
