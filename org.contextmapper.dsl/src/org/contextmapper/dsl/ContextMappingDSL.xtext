@@ -142,7 +142,7 @@ enum ContextMapState:
 ;
 
 enum ContextMapType:
-	ORGANIGRAM | SYSTEM_LANDSCAPE
+	SYSTEM_LANDSCAPE | ORGANIZATIONAL
 ;
 
 enum BoundedContextType:
