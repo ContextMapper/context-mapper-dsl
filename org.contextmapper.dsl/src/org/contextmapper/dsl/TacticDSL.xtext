@@ -74,7 +74,7 @@ Module :
     ((services+=Service) |
      (resources+=Resource) |
      (consumers+=Consumer) |
-     (domainObjects+=SimpleDomainObject)
+     (domainObjects+=SimpleDomainObject) |
      (aggregates+=Aggregate))*
   "}";
 
