@@ -47,6 +47,10 @@ Workflow {
 				junitVersion = "5"
 				generateStub = false
 			}
+			generator = {
+				generateXtendStub = false
+				generateStub = false
+			}
 		}
 		language = StandardLanguage {
 			name = "org.contextmapper.dsl.ContextMappingDSL"
@@ -69,6 +73,10 @@ Workflow {
 			}
 			junitSupport = {
 				junitVersion = "5"
+				generateStub = false
+			}
+			generator = {
+				generateXtendStub = false
 				generateStub = false
 			}
 		}
