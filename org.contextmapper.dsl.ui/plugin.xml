@@ -258,11 +258,12 @@
 			<keywordReference id="org.contextmapper.dsl.ui.keyword_ContextMappingDSL"/>
 		</page>
 	</extension>
+	<!-- don't want to automatically call all generators at save at the moment...
 	<extension point="org.eclipse.xtext.builder.participant">
 		<participant
 			class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.eclipse.xtext.builder.IXtextBuilderParticipant"
 			fileExtensions="cml"/>
-	</extension>
+	</extension>-->
 	<extension point="org.eclipse.ui.preferencePages">
 		<page
 			category="org.contextmapper.dsl.ContextMappingDSL"
@@ -430,5 +431,41 @@
 			extension="cml"
 			type="text">
 		</fileTypes>
+	</extension>
+	<extension point="org.eclipse.ui.handlers">
+		<handler class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.contextmapper.dsl.ui.handler.ServiceCutterGenerationHandler"
+			commandId="org.contextmapper.dsl.ui.handler.ServiceCutterGenerationCommand">
+		</handler>
+		<handler class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.contextmapper.dsl.ui.handler.PlantUMLGenerationHandler"
+			commandId="org.contextmapper.dsl.ui.handler.PlantUMLGenerationCommand">
+		</handler>
+	</extension>
+	<extension point="org.eclipse.ui.commands">
+		<command name="Generate ServiceCutter Input" id="org.contextmapper.dsl.ui.handler.ServiceCutterGenerationCommand"></command>
+		<command name="Generate PlantUML Diagram" id="org.contextmapper.dsl.ui.handler.PlantUMLGenerationCommand"></command>
+	</extension>
+	<extension point="org.eclipse.ui.menus">
+		<menuContribution locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+			<menu id="org.contextmapper.dsl.ui.menu" label="Context Mapper">
+	            <command defaultHandler="org.contextmapper.dsl.ui.handler.ServiceCutterGenerationHandler" commandId="org.contextmapper.dsl.ui.handler.ServiceCutterGenerationCommand" style="push">
+					<visibleWhen checkEnabled="false">
+						<iterate>
+							<adapt type="org.eclipse.core.resources.IResource">
+								<test property="org.eclipse.core.resources.name" value="*.cml"/>
+							</adapt>
+						</iterate>
+					</visibleWhen>
+				</command>
+				<command defaultHandler="org.contextmapper.dsl.ui.handler.PlantUMLGenerationHandler" commandId="org.contextmapper.dsl.ui.handler.PlantUMLGenerationCommand" style="push">
+					<visibleWhen checkEnabled="false">
+						<iterate>
+							<adapt type="org.eclipse.core.resources.IResource">
+								<test property="org.eclipse.core.resources.name" value="*.cml"/>
+							</adapt>
+						</iterate>
+					</visibleWhen>
+				</command>
+			</menu>
+		</menuContribution>
 	</extension>
 </plugin>
