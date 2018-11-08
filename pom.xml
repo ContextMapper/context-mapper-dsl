@@ -31,6 +31,12 @@
 		<module>org.contextmapper.dsl.tests</module>
 		<module>org.contextmapper.dsl.ui.tests</module>
 	</modules>
+
+	<scm>
+		<connection>scm:git:https://github.com/stefan-ka/context-mapping-dsl.git</connection>
+		<developerConnection>scm:git:https://github.com/stefan-ka/context-mapping-dsl.git</developerConnection>
+	</scm>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -111,6 +117,15 @@
 					</environments>
 				</configuration>
 			</plugin>
+			<plugin>
+			   <groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.5.3</version>
+				<configuration>
+					<preparationGoals>org.eclipse.tycho:tycho-versions-plugin:${tycho-version}:update-eclipse-metadata org.apache.maven.plugins:maven-scm-plugin:1.9.5:add org.apache.maven.plugins:maven-scm-plugin:1.9.5:checkin</preparationGoals>
+					<completionGoals>org.eclipse.tycho:tycho-versions-plugin:${tycho-version}:update-eclipse-metadata org.apache.maven.plugins:maven-scm-plugin:1.9.5:add org.apache.maven.plugins:maven-scm-plugin:1.9.5:checkin</completionGoals>
+				</configuration>
+			 </plugin>
 		</plugins>
 		<pluginManagement>
 			<plugins>
