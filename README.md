@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/stefan-ka/context-mapping-dsl.svg?token=jy7qsL9QVYqmygVYPcq3&branch=master)](https://travis-ci.com/stefan-ka/context-mapping-dsl)
+[![Build Status](https://travis-ci.com/stefan-ka/context-mapping-dsl.svg?token=jy7qsL9QVYqmygVYPcq3&branch=master)](https://travis-ci.com/stefan-ka/context-mapping-dsl) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 # ContextMapper DSL
 ContextMapper is an open source tool providing a Domain-specific Language based on Domain-Driven Design (DDD) patterns for context mapping and service decomposition. 
@@ -49,4 +49,5 @@ After importing the project you will have lots of build errors. This is because 
 
 That's it. You should have a clean workspace now without build errors.
 
-  
+## Licence
+ContextMapper is released under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
