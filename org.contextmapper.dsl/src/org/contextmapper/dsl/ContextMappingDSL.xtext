@@ -73,14 +73,14 @@ SymmetricRelationship:
 
 Partnership:
 	('@'name=ID)?
-	(participant1 = [BoundedContext] 'Partnership' participant2 = [BoundedContext]) |
-	(participant1 = [BoundedContext] '<->' participant2 = [BoundedContext] ':' 'Partnership') 
+	((participant1 = [BoundedContext] 'Partnership' participant2 = [BoundedContext]) |
+	(participant1 = [BoundedContext] '<->' participant2 = [BoundedContext] ':' 'Partnership')) 
 ;
 
 SharedKernel:
 	('@'name=ID)?
-	(participant1 = [BoundedContext] 'Shared-Kernel' participant2 = [BoundedContext]) |
-	(participant1 = [BoundedContext] '<->' participant2 = [BoundedContext]) ':' 'Shared-Kernel' 
+	((participant1 = [BoundedContext] 'Shared-Kernel' participant2 = [BoundedContext]) |
+	(participant1 = [BoundedContext] '<->' participant2 = [BoundedContext] ':' 'Shared-Kernel')) 
 ;
 
 UpstreamDownstreamRelationship:
