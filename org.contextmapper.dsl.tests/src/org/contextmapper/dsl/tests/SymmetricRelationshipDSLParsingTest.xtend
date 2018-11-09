@@ -1,3 +1,18 @@
+/*
+ * Copyright 2018 The Context Mapper Project Team
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.contextmapper.dsl.tests
 
 import com.google.inject.Inject
@@ -28,10 +43,38 @@ class SymmetricRelationshipDSLParsingTest {
 				 testContext
 				 anotherTestContext
 
-				 Partnership {
-					testContext
-					anotherTestContext
-				 }
+				 @testrel
+				 testContext Partnership anotherTestContext
+			}
+
+			BoundedContext testContext
+			BoundedContext anotherTestContext
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		assertEquals(1, result.map.relationships.size);
+
+		val Relationship relationship = result.map.relationships.get(0)
+		assertTrue(relationship.class.interfaces.contains(Partnership))
+
+		val Partnership partnership = relationship as Partnership;
+		assertEquals("testrel", partnership.name);
+		assertEquals("testContext", partnership.participant1.name);
+		assertEquals("anotherTestContext", partnership.participant2.name);
+	}
+
+	@Test
+	def void canDefinePartnershipInAlternativeSyntax() {
+		// given
+		val String dslSnippet = '''
+			ContextMap {
+				 testContext
+				 anotherTestContext
+
+				 testContext <-> anotherTestContext : Partnership
 			}
 
 			BoundedContext testContext
@@ -60,10 +103,36 @@ class SymmetricRelationshipDSLParsingTest {
 				 testContext
 				 anotherTestContext
 
-				 Shared Kernel {
-					testContext
-					anotherTestContext
-				 }
+				 testContext Shared-Kernel anotherTestContext
+			}
+
+			BoundedContext testContext
+			BoundedContext anotherTestContext
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		assertEquals(1, result.map.relationships.size);
+
+		val Relationship relationship = result.map.relationships.get(0)
+		assertTrue(relationship.class.interfaces.contains(SharedKernel))
+
+		val SharedKernel sharedKernel = relationship as SharedKernel;
+		assertEquals("testContext", sharedKernel.participant1.name);
+		assertEquals("anotherTestContext", sharedKernel.participant2.name);
+	}
+
+	@Test
+	def void canDefineSharedKernelInAlternativeSyntax() {
+		// given
+		val String dslSnippet = '''
+			ContextMap {
+				 testContext
+				 anotherTestContext
+
+				 testContext <-> anotherTestContext : Shared-Kernel
 			}
 
 			BoundedContext testContext
