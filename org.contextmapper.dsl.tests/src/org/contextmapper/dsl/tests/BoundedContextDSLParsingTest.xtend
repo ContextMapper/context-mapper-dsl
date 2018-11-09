@@ -1,24 +1,44 @@
+/*
+ * Copyright 2018 The Context Mapper Project Team
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.contextmapper.dsl.tests
 
 import com.google.inject.Inject
+import java.util.stream.Collectors
+import org.contextmapper.dsl.contextMappingDSL.BoundedContextType
+import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLPackage
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel
+import org.contextmapper.tactic.dsl.tacticdsl.KnowledgeLevel
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.extensions.InjectionExtension
 import org.eclipse.xtext.testing.util.ParseHelper
+import org.eclipse.xtext.testing.validation.ValidationTestHelper
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.^extension.ExtendWith
 
 import static org.contextmapper.dsl.tests.util.ParsingErrorAssertions.*
 import static org.junit.jupiter.api.Assertions.*
-import org.contextmapper.dsl.contextMappingDSL.BoundedContextType
-import java.util.stream.Collectors
-import org.contextmapper.tactic.dsl.tacticdsl.KnowledgeLevel
+import static org.contextmapper.dsl.validation.ValidationMessages.*
 
 @ExtendWith(InjectionExtension)
 @InjectWith(ContextMappingDSLInjectorProvider)
 class BoundedContextDSLParsingTest {
 	@Inject
 	ParseHelper<ContextMappingModel> parseHelper
+
+	ValidationTestHelper validationTestHelper = new ValidationTestHelper();
 
 	@Test
 	def void canDefineBoundedContext() {
@@ -119,4 +139,57 @@ class BoundedContextDSLParsingTest {
 		assertThatNoValidationErrorsOccurred(result);
 		assertEquals(KnowledgeLevel.META, result.boundedContexts.get(0).knowledgeLevel);
 	}
+
+	@Test
+	def void canDefineImplementationTechnology() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext testContext {
+				implementationTechnology = "Java / Spring Boot App"
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		assertEquals("Java / Spring Boot App", result.boundedContexts.get(0).implementationTechnology);
+	}
+
+	@Test
+	def void canDefineTeamRealizesContext() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext TeamA realizes ContextA {
+				type = TEAM
+			}
+			BoundedContext ContextA {
+				type = FEATURE
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+	}
+
+	@Test
+	def void cannotDefineRealizationIfBoundedContextIsNotTeam() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext NotATeam realizes ContextA {
+				type = SYSTEM
+			}
+			BoundedContext ContextA {
+				type = FEATURE
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.BOUNDED_CONTEXT, "",
+			String.format(ONLY_TEAMS_CAN_REALIZE_OTHER_BOUNDED_CONTEXT, "NotATeam"));
+	} 
 }

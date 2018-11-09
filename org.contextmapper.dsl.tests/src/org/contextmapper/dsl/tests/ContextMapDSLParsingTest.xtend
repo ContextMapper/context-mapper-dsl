@@ -1,3 +1,18 @@
+/*
+ * Copyright 2018 The Context Mapper Project Team
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.contextmapper.dsl.tests
 
 import com.google.inject.Inject
@@ -40,7 +55,7 @@ class ContextMapDSLParsingTest {
 	}
 
 	@Test
-	def void canAddBoundedContextToMapByValue() {
+	def void canAddBoundedContextToMap() {
 		// given
 		val String dslSnippet = '''
 			ContextMap {
@@ -137,5 +152,30 @@ class ContextMapDSLParsingTest {
 		// then
 		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.CONTEXT_MAP, "",
 			String.format(SYSTEM_LANDSCAPE_MAP_CONTAINS_TEAM));
+	}
+
+	@Test
+	def void canDefineBoundedContextBeforeContextMap() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext testContext
+			BoundedContext anotherTestContext
+
+			ContextMap {
+				 testContext
+				 anotherTestContext
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		assertNotNull(result.map);
+		assertEquals(2, result.map.boundedContexts.size);
+
+		val contextNames = result.map.boundedContexts.stream.map[name].collect(Collectors.toList);
+		assertTrue(contextNames.contains("testContext"));
+		assertTrue(contextNames.contains("anotherTestContext"));
 	}
 }

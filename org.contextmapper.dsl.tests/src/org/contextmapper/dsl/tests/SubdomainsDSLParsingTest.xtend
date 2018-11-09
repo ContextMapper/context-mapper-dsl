@@ -1,3 +1,18 @@
+/*
+ * Copyright 2018 The Context Mapper Project Team
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.contextmapper.dsl.tests
 
 import com.google.inject.Inject
@@ -24,9 +39,9 @@ class SubdomainsDSLParsingTest {
 		val String dslSnippet = '''
 			BoundedContext testContext
 
-			CoreDomain core
-			SupportingDomain support1
-			GenericSubdomain generic
+			Subdomain core
+			Subdomain support1
+			Subdomain generic
 		''';
 		// when
 		val ContextMappingModel result = parseHelper.parse(dslSnippet);
@@ -47,9 +62,15 @@ class SubdomainsDSLParsingTest {
 		val String dslSnippet = '''
 			BoundedContext testContext implements core
 
-			CoreDomain core
-			SupportingDomain support1
-			GenericSubdomain generic
+			Subdomain core {
+				type = CORE_DOMAIN
+			}
+			Subdomain support1 {
+				type = SUPPORTING_DOMAIN
+			}
+			Subdomain generic {
+				type = GENERIC_SUBDOMAIN
+			}
 		''';
 		// when
 		val ContextMappingModel result = parseHelper.parse(dslSnippet);
@@ -66,9 +87,15 @@ class SubdomainsDSLParsingTest {
 		val String dslSnippet = '''
 			BoundedContext testContext implements core, support1
 
-			CoreDomain core
-			SupportingDomain support1
-			GenericSubdomain generic
+			Subdomain core {
+				type = CORE_DOMAIN
+			}
+			Subdomain support1 {
+				type = SUPPORTING_DOMAIN
+			}
+			Subdomain generic {
+				type = GENERIC_SUBDOMAIN
+			}
 		''';
 		// when
 		val ContextMappingModel result = parseHelper.parse(dslSnippet);
@@ -86,7 +113,8 @@ class SubdomainsDSLParsingTest {
 	def void canDefineVisionStatement() {
 		// given
 		val String dslSnippet = '''
-			CoreDomain core {
+			Subdomain core {
+				type = CORE_DOMAIN
 				domainVisionStatement = "my domain vision for this subdomain"
 			}
 		''';
@@ -96,5 +124,29 @@ class SubdomainsDSLParsingTest {
 		assertThatNoParsingErrorsOccurred(result);
 		assertThatNoValidationErrorsOccurred(result);
 		assertEquals("my domain vision for this subdomain", result.subdomains.get(0).domainVisionStatement);
+	}
+
+	@Test
+	def void canAddEntityToSubdomain() {
+		// given
+		val String dslSnippet = '''
+			Subdomain core {
+				type = CORE_DOMAIN
+				domainVisionStatement = "my domain vision for this subdomain"
+
+				Entity MyCoreEntity {
+					String attr1
+					string attr2
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		assertEquals(1, result.subdomains.get(0).entities.size);
+		assertEquals("MyCoreEntity", result.subdomains.get(0).entities.get(0).name);
+		assertEquals(2, result.subdomains.get(0).entities.get(0).attributes.size);
 	}
 }

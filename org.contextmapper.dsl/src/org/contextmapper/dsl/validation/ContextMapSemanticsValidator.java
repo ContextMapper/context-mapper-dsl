@@ -1,3 +1,18 @@
+/*
+ * Copyright 2018 The Context Mapper Project Team
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.contextmapper.dsl.validation;
 
 import static org.contextmapper.dsl.contextMappingDSL.BoundedContextType.TEAM;
@@ -42,8 +57,8 @@ public class ContextMapSemanticsValidator extends AbstractDeclarativeValidator {
 				attributeRelContext1 = SYMMETRIC_RELATIONSHIP__PARTICIPANT1;
 				attributeRelContext2 = SYMMETRIC_RELATIONSHIP__PARTICIPANT2;
 			} else if (relationship instanceof UpstreamDownstreamRelationship) {
-				context1 = ((UpstreamDownstreamRelationship) relationship).getUpstream().getContext();
-				context2 = ((UpstreamDownstreamRelationship) relationship).getDownstream().getContext();
+				context1 = ((UpstreamDownstreamRelationship) relationship).getUpstream();
+				context2 = ((UpstreamDownstreamRelationship) relationship).getDownstream();
 				attributeRelContext1 = UPSTREAM_DOWNSTREAM_RELATIONSHIP__UPSTREAM;
 				attributeRelContext2 = UPSTREAM_DOWNSTREAM_RELATIONSHIP__DOWNSTREAM;
 			}
