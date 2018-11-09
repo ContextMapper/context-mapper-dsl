@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Automatic-Module-Name: org.contextmapper.dsl
 Bundle-ManifestVersion: 2
 Bundle-Name: org.contextmapper.dsl
-Bundle-Vendor: My Company
+Bundle-Vendor: Context Mapper
 Bundle-Version: 0.0.1.qualifier
 Bundle-SymbolicName: org.contextmapper.dsl; singleton:=true
 Bundle-ActivationPolicy: lazy
@@ -14,12 +14,16 @@ Require-Bundle: org.eclipse.xtext,
  org.eclipse.xtext.util,
  org.eclipse.emf.common,
  org.eclipse.xtend.lib;bundle-version="2.14.0",
- org.antlr.runtime;bundle-version="[3.2.0,3.2.1)"
+ org.antlr.runtime;bundle-version="[3.2.0,3.2.1)",
+ com.fasterxml.jackson.core.jackson-databind;bundle-version="2.5.0",
+ com.fasterxml.jackson.core.jackson-core;bundle-version="2.9.2"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.contextmapper.dsl.serializer,
  org.contextmapper.dsl.validation,
  org.contextmapper.dsl.contextMappingDSL.impl,
  org.contextmapper.dsl.generator,
+ org.contextmapper.dsl.generator.servicecutter.model,
+ org.contextmapper.dsl.generator.servicecutter.converter,
  org.contextmapper.dsl.parser.antlr.internal,
  org.contextmapper.dsl,
  org.contextmapper.dsl.parser.antlr,

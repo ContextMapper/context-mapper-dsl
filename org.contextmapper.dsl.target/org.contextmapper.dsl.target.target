@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?>
-<target name="org.contextmapper.dsl.target" sequenceNumber="1">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><?pde version="3.8"?><target name="org.contextmapper.dsl.target" sequenceNumber="1">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.jdt.feature.group" version="0.0.0"/>
@@ -33,5 +31,9 @@
 	<unit id="org.objectweb.asm.tree" version="6.2.1.v20180823-1831"/>
 	<repository location="http://download.eclipse.org/modeling/tmf/xtext/updates/orbit/2018-09"/>
 </location>
+	<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+		<unit id="com.fasterxml.jackson.core.jackson-databind" version="2.5.0.v201504151636"/>
+		<repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20160520211859/repository/"/>
+	</location>
 </locations>
 </target>

@@ -15,21 +15,39 @@
  */
 package org.contextmapper.dsl.generator;
 
+import java.util.List;
+
+import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
+import org.contextmapper.dsl.generator.servicecutter.converter.ContextMappingModelToServiceCutterERDConverter;
+import org.contextmapper.dsl.generator.servicecutter.model.EntityRelationshipDiagram;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.generator.AbstractGenerator;
 import org.eclipse.xtext.generator.IFileSystemAccess2;
 import org.eclipse.xtext.generator.IGeneratorContext;
+import org.eclipse.xtext.xbase.lib.IteratorExtensions;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Iterators;
 
 public class ServiceCutterInputGenerator extends AbstractGenerator {
 
 	@Override
 	public void doGenerate(final Resource resource, final IFileSystemAccess2 fsa, final IGeneratorContext context) {
-		//List<ContextMappingModel> contextMappingModels = IteratorExtensions.<ContextMappingModel>toList(
-		//		Iterators.<ContextMappingModel>filter(resource.getAllContents(), ContextMappingModel.class));
-		StringConcatenation builder = new StringConcatenation();
-		builder.append("Generator not yet implemented.");
-		fsa.generateFile("serviceCutterInput.txt", builder);
+		List<ContextMappingModel> contextMappingModels = IteratorExtensions.<ContextMappingModel>toList(
+				Iterators.<ContextMappingModel>filter(resource.getAllContents(), ContextMappingModel.class));
+
+		if (contextMappingModels.size() > 0) {
+			ContextMappingModel model = contextMappingModels.get(0);
+			ContextMappingModelToServiceCutterERDConverter converter = new ContextMappingModelToServiceCutterERDConverter();
+			EntityRelationshipDiagram erd = converter.convert(model.getMap());
+			ObjectMapper objectMapper = new ObjectMapper();
+			try {
+				fsa.generateFile("serviceCutterInput-ERD.txt", objectMapper.writeValueAsString(erd));
+			} catch (JsonProcessingException e) {
+				throw new RuntimeException("JSON conversion error occured!", e);
+			}
+		}
 	}
 
 }
