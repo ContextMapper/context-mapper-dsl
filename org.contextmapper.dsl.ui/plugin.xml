@@ -439,10 +439,14 @@
 		<handler class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.contextmapper.dsl.ui.handler.PlantUMLGenerationHandler"
 			commandId="org.contextmapper.dsl.ui.handler.PlantUMLGenerationCommand">
 		</handler>
+		<handler class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.contextmapper.dsl.ui.handler.XMIGenerationHandler"
+			commandId="org.contextmapper.dsl.ui.handler.XMIGenerationCommand">
+		</handler>
 	</extension>
 	<extension point="org.eclipse.ui.commands">
 		<command name="Generate ServiceCutter Input" id="org.contextmapper.dsl.ui.handler.ServiceCutterGenerationCommand"></command>
 		<command name="Generate PlantUML Diagram" id="org.contextmapper.dsl.ui.handler.PlantUMLGenerationCommand"></command>
+		<command name="Save Model as XMI" id="org.contextmapper.dsl.ui.handler.XMIGenerationCommand"></command>
 	</extension>
 	<extension point="org.eclipse.ui.menus">
 		<menuContribution locationURI="popup:org.eclipse.ui.popup.any?after=additions">
@@ -465,6 +469,15 @@
 						</iterate>
 					</visibleWhen>
 				</command>
+				<command defaultHandler="org.contextmapper.dsl.ui.handler.XMIGenerationHandler" commandId="org.contextmapper.dsl.ui.handler.XMIGenerationCommand" style="push">
+					<visibleWhen checkEnabled="false">
+						<iterate>
+							<adapt type="org.eclipse.core.resources.IResource">
+								<test property="org.eclipse.core.resources.name" value="*.cml"/>
+							</adapt>
+						</iterate>
+					</visibleWhen>
+				</command>				
 			</menu>
 		</menuContribution>
 	</extension>
