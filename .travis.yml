@@ -1,5 +1,6 @@
 language: java
 jdk:
 - oraclejdk8
-
+if: NOT (tag =~ ^v)
 script: xvfb-run ./mvnw test integration-test -B
+
