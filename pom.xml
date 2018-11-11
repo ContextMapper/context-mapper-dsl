@@ -129,6 +129,25 @@
 					<completionGoals>org.eclipse.tycho:tycho-versions-plugin:${tycho-version}:update-eclipse-metadata org.apache.maven.plugins:maven-scm-plugin:1.9.5:add org.apache.maven.plugins:maven-scm-plugin:1.9.5:checkin</completionGoals>
 				</configuration>
 			 </plugin>
+			 <plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-scm-plugin</artifactId>
+				<version>1.11.1</version>
+				<executions>
+					<execution>
+						<id>default-cli</id>
+						<goals>
+							<goal>add</goal>
+							<goal>checkin</goal>
+						</goals>
+						<configuration>
+							<includes>**/META-INF/MANIFEST.MF,**/feature.xml,**/*.product,**/category.xml,**/pom.xml</includes>
+							<excludes>**/target/**</excludes>
+							<message>Release commit: v${project.version}</message>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 		<pluginManagement>
 			<plugins>
