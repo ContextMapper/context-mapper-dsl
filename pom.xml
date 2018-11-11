@@ -35,6 +35,7 @@
 	<scm>
 		<connection>scm:git:https://github.com/stefan-ka/context-mapping-dsl.git</connection>
 		<developerConnection>scm:git:https://github.com/stefan-ka/context-mapping-dsl.git</developerConnection>
+		<url>http://github.com/stefan-ka/context-mapping-dsl/tree/master</url>
 	</scm>
 
 	<build>
