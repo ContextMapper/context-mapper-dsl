@@ -1,8 +1,7 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.contextmapper.dsl</groupId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<artifactId>org.contextmapper.dsl.parent</artifactId>
 	<packaging>pom</packaging>
 
@@ -15,10 +14,10 @@
 		<!-- Tycho settings -->
 		<tycho-version>1.2.0</tycho-version>
 		<!-- Define overridable properties for tycho-surefire-plugin -->
-		<platformSystemProperties></platformSystemProperties>
-		<moduleProperties></moduleProperties>
-		<systemProperties></systemProperties>
-		<tycho.testArgLine></tycho.testArgLine>
+		<platformSystemProperties />
+		<moduleProperties />
+		<systemProperties />
+		<tycho.testArgLine />
 		<jacoco.reportPath>./target/jacoco.exec</jacoco.reportPath>
 	</properties>
 	<modules>
@@ -35,7 +34,8 @@
 	<scm>
 		<connection>scm:git:https://${env.GITHUB_USERNAME}:${env.GITHUB_PASSWORD}@github.com/stefan-ka/context-mapping-dsl.git</connection>
 		<developerConnection>scm:git:https://${env.GITHUB_USERNAME}:${env.GITHUB_PASSWORD}@github.com/stefan-ka/context-mapping-dsl.git</developerConnection>
-	</scm>
+	  <tag>v0.0.1</tag>
+  </scm>
 
 	<build>
 		<plugins>
@@ -208,7 +208,7 @@
 										</goals>
 									</pluginExecutionFilter>
 									<action>
-										<ignore></ignore>
+										<ignore />
 									</action>
 								</pluginExecution>
 								<pluginExecution>
@@ -230,7 +230,7 @@
 										</goals>
 									</pluginExecutionFilter>
 									<action>
-										<ignore></ignore>
+										<ignore />
 									</action>
 								</pluginExecution>
 								<pluginExecution>
@@ -249,7 +249,7 @@
 										</goals>
 									</pluginExecutionFilter>
 									<action>
-										<ignore></ignore>
+										<ignore />
 									</action>
 								</pluginExecution>
 								<pluginExecution>
@@ -271,7 +271,7 @@
 										</goals>
 									</pluginExecutionFilter>
 									<action>
-										<ignore></ignore>
+										<ignore />
 									</action>
 								</pluginExecution>
 							</pluginExecutions>
