@@ -4,5 +4,5 @@
 git checkout -qf master;
 
 # perform release
-./mvnw --settings ./.travis/settings.xml clean install release:prepare release:perform -B
+./mvnw --settings ./.travis/settings.xml clean release:prepare release:perform -B
 
