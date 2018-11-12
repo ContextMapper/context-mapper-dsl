@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Automatic-Module-Name: org.contextmapper.dsl.ide
 Bundle-ManifestVersion: 2
 Bundle-Name: org.contextmapper.dsl.ide
-Bundle-Vendor: My Company
+Bundle-Vendor: Context Mapper
 Bundle-Version: 0.0.2.qualifier
 Bundle-SymbolicName: org.contextmapper.dsl.ide; singleton:=true
 Bundle-ActivationPolicy: lazy
