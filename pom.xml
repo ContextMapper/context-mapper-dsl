@@ -140,7 +140,7 @@
 							<goal>checkin</goal>
 						</goals>
 						<configuration>
-							<includes>**/META-INF/MANIFEST.MF,**/feature.xml,**/*.product,**/category.xml,**/pom.xml</includes>
+							<includes>**/META-INF/MANIFEST.MF,**/feature.xml,**/*.product,**/category.xml</includes>
 							<excludes>**/target/**</excludes>
 							<message>Release commit: v${project.version}</message>
 						</configuration>
