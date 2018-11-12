@@ -142,7 +142,7 @@
 						<configuration>
 							<includes>**/META-INF/MANIFEST.MF,**/feature.xml,**/*.product,**/category.xml</includes>
 							<excludes>**/target/**</excludes>
-							<message>Release commit: v${project.version}</message>
+							<message>Prepare for release: v${project.version}</message>
 						</configuration>
 					</execution>
 				</executions>
