@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.contextmapper.dsl</groupId>
@@ -8,7 +10,29 @@
 	<artifactId>org.contextmapper.dsl.repository</artifactId>
 	<packaging>eclipse-repository</packaging>
 
+	<properties>
+		<bintray.repo>context-mapping-dsl</bintray.repo>
+		<bintray.package>releases</bintray.package>
+		<site.label>ContextMapper DSL Composite Site</site.label>
+		<bintray.owner>contextmapper</bintray.owner>
+		<bintray.releases.path>releases</bintray.releases.path>
+		<bintray.composite.path>updates</bintray.composite.path>
+		<bintray.zip.path>zipped</bintray.zip.path>
+		<child.repository.path.prefix>../../releases/</child.repository.path.prefix>
+	</properties>
+
 	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-p2-repository-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<finalName>${project.artifactId}-${qualifiedVersion}</finalName>
+				</configuration>
+			</plugin>
+		</plugins>
+
 		<pluginManagement>
 			<plugins>
 				<plugin>
@@ -45,6 +69,105 @@
 		</pluginManagement>
 	</build>
 
-	<dependencies>
-	</dependencies>
+	<profiles>
+		<profile>
+			<id>release-composite</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<version>${maven-antrun-plugin.version}</version>
+						<executions>
+							<execution>
+								<id>update-local-repository</id>
+								<phase>prepare-package</phase>
+								<configuration>
+									<target>
+										<ant antfile="${basedir}/bintray.ant"
+											target="get-composite-metadata">
+										</ant>
+									</target>
+								</configuration>
+								<goals>
+									<goal>run</goal>
+								</goals>
+							</execution>
+
+							<execution>
+								<id>deploy-repository</id>
+								<phase>verify</phase>
+								<configuration>
+									<target>
+										<ant antfile="${basedir}/bintray.ant"
+											target="push-to-bintray">
+										</ant>
+									</target>
+								</configuration>
+								<goals>
+									<goal>run</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+					<plugin>
+						<groupId>org.eclipse.tycho.extras</groupId>
+						<artifactId>tycho-eclipserun-plugin</artifactId>
+						<version>${tycho-version}</version>
+						<configuration>
+							<!-- Update p2 composite metadata or create it -->
+							<!-- IMPORTANT: DO NOT split the arg line -->
+							<appArgLine>-application org.eclipse.ant.core.antRunner -buildfile packaging-p2composite.ant p2.composite.add -Dsite.label="${site.label}" -Dproject.build.directory=${project.build.directory} -DunqualifiedVersion=${unqualifiedVersion} -Dchild.repository.path.prefix="${child.repository.path.prefix}"</appArgLine>
+							<repositories>
+								<repository>
+									<id>mars</id>
+									<layout>p2</layout>
+									<url>http://download.eclipse.org/releases/mars</url>
+								</repository>
+							</repositories>
+							<dependencies>
+								<dependency>
+									<artifactId>org.eclipse.ant.core</artifactId>
+									<type>eclipse-plugin</type>
+								</dependency>
+								<dependency>
+									<artifactId>org.apache.ant</artifactId>
+									<type>eclipse-plugin</type>
+								</dependency>
+								<dependency>
+									<artifactId>org.eclipse.equinox.p2.repository.tools</artifactId>
+									<type>eclipse-plugin</type>
+								</dependency>
+								<dependency>
+									<artifactId>org.eclipse.equinox.p2.core.feature</artifactId>
+									<type>eclipse-feature</type>
+								</dependency>
+								<dependency>
+									<artifactId>org.eclipse.equinox.p2.extras.feature</artifactId>
+									<type>eclipse-feature</type>
+								</dependency>
+								<dependency>
+									<artifactId>org.eclipse.equinox.ds</artifactId>
+									<type>eclipse-plugin</type>
+								</dependency>
+							</dependencies>
+						</configuration>
+						<executions>
+							<execution>
+								<id>add-p2-composite-repository</id>
+								<phase>package</phase>
+								<goals>
+									<goal>eclipse-run</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>

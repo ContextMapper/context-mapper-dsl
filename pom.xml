@@ -19,6 +19,7 @@
 		<systemProperties />
 		<tycho.testArgLine />
 		<jacoco.reportPath>./target/jacoco.exec</jacoco.reportPath>
+		<maven-antrun-plugin.version>1.7</maven-antrun-plugin.version>
 	</properties>
 	<modules>
 		<module>org.contextmapper.dsl</module>

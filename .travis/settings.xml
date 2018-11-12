@@ -1,11 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
-  <interactiveMode>false</interactiveMode>
-  <servers>
-    <server>
-      <id>github</id>
-      <username>${env.GITHUB_USERNAME}</username>
-      <password>${env.GITHUB_PASSWORD}</password>
-    </server>
-  </servers>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+	<interactiveMode>false</interactiveMode>
+	<servers>
+		<server>
+			<id>github</id>
+			<username>${env.GITHUB_USERNAME}</username>
+			<password>${env.GITHUB_PASSWORD}</password>
+		</server>
+	</servers>
+	<profiles>
+		<profile>
+			<id>release-composite</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+				<bintray.user>${env.BINTRAY_USERNAME}</bintray.user>
+				<bintray.apikey>${env.BINTRAY_API_KEY}</bintray.apikey>
+			</properties>
+		</profile>
+	</profiles>
 </settings>

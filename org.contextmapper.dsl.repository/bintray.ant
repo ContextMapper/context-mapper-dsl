@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Handle p2 composite metadata from Bintray" basedir=".">
+
+	<!--
+	These must be set from outside
+	<property name="bintray.user" value="" />
+	<property name="bintray.apikey" value="" />
+	<property name="bintray.repo" value="" />
+	<property name="bintray.package" value="" />
+	<property name="bintray.releases.path" value="" />
+	<property name="bintray.composite.path" value="" />
+	<property name="bintray.zip.path" value="" />
+	-->
+
+	<property name="bintray.url" value="https://dl.bintray.com/${bintray.owner}/${bintray.repo}" />
+	<property name="bintray.package.version" value="${unqualifiedVersion}" />
+	<property name="bintray.releases.target.path" value="${bintray.releases.path}/${bintray.package.version}" />
+
+	<property name="main.composite.url" value="${bintray.url}/${bintray.composite.path}" />
+	<property name="target" value="target" />
+	<property name="composite.repository.directory" value="composite-child" />
+	<property name="main.composite.repository.directory" value="composite-main" />
+
+	<property name="compositeArtifacts" value="compositeArtifacts.xml" />
+	<property name="compositeContent" value="compositeContent.xml" />
+
+	<property name="local.p2.repository" value="target/repository" />
+
+	<target name="getMajorMinorVersion">
+		<script language="javascript">
+			<![CDATA[
+
+	                // getting the value
+	                buildnumber = project.getProperty("unqualifiedVersion");
+	                index = buildnumber.lastIndexOf(".");
+	                counter = buildnumber.substring(0, index);
+	    			project.setProperty("majorMinorVersion",counter);
+
+	            ]]>
+		</script>
+	</target>
+
+	<!-- Take from the remote URL the possible existing metadata -->
+	<target name="get-composite-metadata" depends="getMajorMinorVersion" >
+		<get-metadata url="${main.composite.url}" dest="${target}/${main.composite.repository.directory}" />
+		<get-metadata url="${main.composite.url}/${majorMinorVersion}" dest="${target}/${composite.repository.directory}" />
+		<antcall target="preprocess-metadata" />
+	</target>
+
+	<macrodef name="get-metadata" description="Retrieve the p2 composite metadata">
+		<attribute name="url" />
+		<attribute name="dest" />
+		<sequential>
+			<echo message="Creating directory @{dest}..." />
+			<mkdir dir="@{dest}" />
+			<get-file file="${compositeArtifacts}" url="@{url}" dest="@{dest}" />
+			<get-file file="${compositeContent}" url="@{url}" dest="@{dest}" />
+		</sequential>
+	</macrodef>
+
+	<macrodef name="get-file" description="Use Ant Get task the file">
+		<attribute name="file" />
+		<attribute name="url" />
+		<attribute name="dest" />
+		<sequential>
+			<!-- If the remote file does not exist then fail gracefully -->
+			<echo message="Getting @{file} from @{url} into @{dest}..." />
+			<get dest="@{dest}" ignoreerrors="true">
+				<url url="@{url}/@{file}" />
+			</get>
+		</sequential>
+	</macrodef>
+
+	<!-- p2.atomic.composite.loading must be set to false otherwise we won't be able
+		to add a child to the composite repository without having all the children available -->
+	<target name="preprocess-metadata" description="Preprocess p2 composite metadata">
+		<replaceregexp byline="true">
+			<regexp pattern="property name='p2.atomic.composite.loading' value='true'" />
+			<substitution expression="property name='p2.atomic.composite.loading' value='false'" />
+			<fileset dir="${target}">
+				<include name="${composite.repository.directory}/*.xml" />
+				<include name="${main.composite.repository.directory}/*.xml" />
+			</fileset>
+		</replaceregexp>
+	</target>
+
+	<!-- p2.atomic.composite.loading must be set to true
+		see https://bugs.eclipse.org/bugs/show_bug.cgi?id=356561 -->
+	<target name="postprocess-metadata" description="Preprocess p2 composite metadata">
+		<replaceregexp byline="true">
+			<regexp pattern="property name='p2.atomic.composite.loading' value='false'" />
+			<substitution expression="property name='p2.atomic.composite.loading' value='true'" />
+			<fileset dir="${target}">
+				<include name="${composite.repository.directory}/*.xml" />
+				<include name="${main.composite.repository.directory}/*.xml" />
+			</fileset>
+		</replaceregexp>
+	</target>
+
+	<target name="push-to-bintray" >
+		<antcall target="postprocess-metadata" />
+		<antcall target="push-p2-repo-to-bintray" />
+		<antcall target="push-p2-repo-zipped-to-bintray" />
+		<antcall target="push-composite-to-bintray" />
+		<antcall target="push-main-composite-to-bintray" />
+	</target>
+
+	<target name="push-p2-repo-to-bintray">
+		<apply executable="curl" parallel="false" relative="true" addsourcefile="false">
+			<arg value="-XPUT" />
+			<targetfile />
+
+			<fileset dir="${local.p2.repository}" />
+
+			<compositemapper>
+				<mergemapper to="-T" />
+				<globmapper from="*" to="${local.p2.repository}/*" />
+				<mergemapper to="-u${bintray.user}:${bintray.apikey}" />
+				<globmapper from="*" to="https://api.bintray.com/content/${bintray.owner}/${bintray.repo}/${bintray.releases.target.path}/*;bt_package=${bintray.package};bt_version=${bintray.package.version};publish=1" />
+			</compositemapper>
+		</apply>
+	</target>
+
+	<target name="push-p2-repo-zipped-to-bintray">
+		<apply executable="curl" parallel="false" relative="true" addsourcefile="false">
+			<arg value="-XPUT" />
+			<targetfile />
+
+			<fileset dir="${target}" includes="*.zip" />
+
+			<compositemapper>
+				<mergemapper to="-T" />
+				<globmapper from="*" to="${target}/*" />
+				<mergemapper to="-u${bintray.user}:${bintray.apikey}" />
+				<globmapper from="*" to="https://api.bintray.com/content/${bintray.owner}/${bintray.repo}/${bintray.zip.path}/*;bt_package=${bintray.package};bt_version=${bintray.package.version};publish=1" />
+			</compositemapper>
+		</apply>
+	</target>
+
+	<target name="push-composite-to-bintray" depends="getMajorMinorVersion" >
+		<apply executable="curl" parallel="false" relative="true" addsourcefile="false">
+			<arg value="-XPUT" />
+			<targetfile />
+
+			<fileset dir="${target}/${composite.repository.directory}" />
+
+			<compositemapper>
+				<mergemapper to="-T" />
+				<globmapper from="*" to="${target}/${composite.repository.directory}/*" />
+				<mergemapper to="-u${bintray.user}:${bintray.apikey}" />
+				<globmapper from="*" to="https://api.bintray.com/content/${bintray.owner}/${bintray.repo}/${bintray.composite.path}/${majorMinorVersion}/*;publish=1" />
+			</compositemapper>
+		</apply>
+	</target>
+
+	<target name="push-main-composite-to-bintray" >
+		<apply executable="curl" parallel="false" relative="true" addsourcefile="false">
+			<arg value="-XPUT" />
+			<targetfile />
+
+			<fileset dir="${target}/${main.composite.repository.directory}" />
+
+			<compositemapper>
+				<mergemapper to="-T" />
+				<globmapper from="*" to="${target}/${main.composite.repository.directory}/*" />
+				<mergemapper to="-u${bintray.user}:${bintray.apikey}" />
+				<globmapper from="*" to="https://api.bintray.com/content/${bintray.owner}/${bintray.repo}/${bintray.composite.path}/*;publish=1" />
+			</compositemapper>
+		</apply>
+	</target>
+
+</project>
