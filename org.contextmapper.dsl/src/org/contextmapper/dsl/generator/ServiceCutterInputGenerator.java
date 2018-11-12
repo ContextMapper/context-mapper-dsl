@@ -28,6 +28,7 @@ import org.eclipse.xtext.xbase.lib.IteratorExtensions;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.common.collect.Iterators;
 
 public class ServiceCutterInputGenerator extends AbstractGenerator {
@@ -39,11 +40,13 @@ public class ServiceCutterInputGenerator extends AbstractGenerator {
 
 		if (contextMappingModels.size() > 0) {
 			ContextMappingModel model = contextMappingModels.get(0);
+			String modelName = resource.getURI().trimFileExtension().lastSegment();
 			ContextMappingModelToServiceCutterERDConverter converter = new ContextMappingModelToServiceCutterERDConverter();
-			EntityRelationshipDiagram erd = converter.convert(model.getMap());
+			EntityRelationshipDiagram erd = converter.convert(modelName, model.getMap());
 			ObjectMapper objectMapper = new ObjectMapper();
+			objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
 			try {
-				fsa.generateFile("serviceCutterInput-ERD.txt", objectMapper.writeValueAsString(erd));
+				fsa.generateFile(modelName + ".json", objectMapper.writeValueAsString(erd));
 			} catch (JsonProcessingException e) {
 				throw new RuntimeException("JSON conversion error occured!", e);
 			}

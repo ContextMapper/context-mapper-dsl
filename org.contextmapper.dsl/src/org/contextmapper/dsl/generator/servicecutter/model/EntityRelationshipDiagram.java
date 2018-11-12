@@ -27,12 +27,14 @@ import com.google.common.collect.Lists;
  */
 public class EntityRelationshipDiagram {
 
+	private String name;
 	private List<Entity> entities;
-	private List<EntityRelation> entityRelations;
+	private List<EntityRelation> relations;
 
-	public EntityRelationshipDiagram() {
+	public EntityRelationshipDiagram(String name) {
+		this.name = name;
 		this.entities = Lists.newArrayList();
-		this.entityRelations = Lists.newArrayList();
+		this.relations = Lists.newArrayList();
 	}
 
 	public List<Entity> getEntities() {
@@ -43,12 +45,16 @@ public class EntityRelationshipDiagram {
 		this.entities.add(entity);
 	}
 
-	public List<EntityRelation> getEntityRelations() {
-		return entityRelations;
+	public List<EntityRelation> getRelations() {
+		return relations;
 	}
 
 	public void addEntityRelation(EntityRelation entityRelation) {
-		this.entityRelations.add(entityRelation);
+		this.relations.add(entityRelation);
+	}
+
+	public String getName() {
+		return name;
 	}
 
 }

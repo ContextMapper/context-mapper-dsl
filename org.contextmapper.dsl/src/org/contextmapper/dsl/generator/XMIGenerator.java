@@ -44,7 +44,7 @@ public class XMIGenerator extends AbstractGenerator {
 		if (contextMappingModels.size() > 0) {
 			ContextMappingModel model = contextMappingModels.get(0);
 			EcoreUtil.resolveAll(model);
-			Resource xmiResource = resourceSet.createResource(resource.getURI().appendFileExtension("xmi"));
+			Resource xmiResource = resourceSet.createResource(resource.getURI().trimFileExtension().appendFileExtension("xmi"));
 			xmiResource.getContents().add(model);
 			try {
 				xmiResource.save(null);

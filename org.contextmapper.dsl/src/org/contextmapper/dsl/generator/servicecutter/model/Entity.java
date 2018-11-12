@@ -28,11 +28,11 @@ import com.google.common.collect.Lists;
 public class Entity {
 
 	private String name;
-	private List<Nanoentity> nanoEntities;
+	private List<String> nanoentities;
 
 	public Entity(String name) {
 		this.name = name;
-		this.nanoEntities = Lists.newArrayList();
+		this.nanoentities = Lists.newArrayList();
 	}
 
 	public String getName() {
@@ -43,12 +43,12 @@ public class Entity {
 		this.name = name;
 	}
 
-	public List<Nanoentity> getNanoEntities() {
-		return nanoEntities;
+	public List<String> getNanoentities() {
+		return nanoentities;
 	}
 
-	public void addNanoEntity(Nanoentity nanoEntity) {
-		this.nanoEntities.add(nanoEntity);
+	public void addNanoEntity(String nanoEntity) {
+		this.nanoentities.add(nanoEntity);
 	}
 
 }

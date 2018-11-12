@@ -23,29 +23,29 @@ package org.contextmapper.dsl.generator.servicecutter.model;
  */
 public class EntityRelation {
 
-	private Entity origin;
-	private Entity destination;
+	private String origin;
+	private String destination;
 	private Relationtype type;
 
-	public EntityRelation(Entity origin, Entity destination, Relationtype type) {
+	public EntityRelation(String origin, String destination, Relationtype type) {
 		this.origin = origin;
 		this.destination = destination;
 		this.type = type;
 	}
 
-	public Entity getOrigin() {
+	public String getOrigin() {
 		return origin;
 	}
 
-	public void setOrigin(Entity origin) {
+	public void setOrigin(String origin) {
 		this.origin = origin;
 	}
 
-	public Entity getDestination() {
+	public String getDestination() {
 		return destination;
 	}
 
-	public void setDestination(Entity destination) {
+	public void setDestination(String destination) {
 		this.destination = destination;
 	}
 
