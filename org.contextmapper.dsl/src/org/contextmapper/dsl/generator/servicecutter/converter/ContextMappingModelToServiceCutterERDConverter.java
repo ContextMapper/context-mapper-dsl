@@ -56,8 +56,7 @@ public class ContextMappingModelToServiceCutterERDConverter {
 
 	private void mapBoundedContext(BoundedContext bc) {
 		Entity boundedContextEntity = new Entity(bc.getName() + "_BC");
-		List<Aggregate> allAggregates = EcoreUtil2.<Aggregate>eAllOfType(EcoreUtil.getRootContainer(bc),
-				Aggregate.class);
+		List<Aggregate> allAggregates = EcoreUtil2.<Aggregate>eAllOfType(bc, Aggregate.class);
 		for (Aggregate aggregate : allAggregates) {
 			target.addEntityRelation(new EntityRelation(boundedContextEntity.getName(),
 					mapAggregate(aggregate).getName(), Relationtype.AGGREGATION));
@@ -94,15 +93,15 @@ public class ContextMappingModelToServiceCutterERDConverter {
 
 	private void initializeEntityLookupTable(ContextMap contextMap) {
 		// use Entities
-		List<org.contextmapper.tactic.dsl.tacticdsl.Entity> allEntities = EcoreUtil2.<org.contextmapper.tactic.dsl.tacticdsl.Entity>eAllOfType(
+		List<org.contextmapper.tactic.dsl.tacticdsl.Entity> allEntities = EcoreUtil2.<org.contextmapper.tactic.dsl.tacticdsl.Entity>getAllContentsOfType(
 				EcoreUtil.getRootContainer(contextMap), org.contextmapper.tactic.dsl.tacticdsl.Entity.class);
 		for (org.contextmapper.tactic.dsl.tacticdsl.Entity entity : allEntities) {
 			this.dslEntityLookupTable.put(entity.getName(), entity);
 		}
 
 		// use Domain Events
-		List<DomainEvent> allDomainEvents = EcoreUtil2.<DomainEvent>eAllOfType(EcoreUtil.getRootContainer(contextMap),
-				DomainEvent.class);
+		List<DomainEvent> allDomainEvents = EcoreUtil2
+				.<DomainEvent>getAllContentsOfType(EcoreUtil.getRootContainer(contextMap), DomainEvent.class);
 		for (DomainEvent domainEvent : allDomainEvents) {
 			this.dslEntityLookupTable.put(domainEvent.getName(), domainEvent);
 		}
