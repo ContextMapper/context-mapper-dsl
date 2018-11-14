@@ -40,5 +40,15 @@ Export-Package: org.contextmapper.dsl.serializer,
  org.contextmapper.tactic.dsl.services,
  org.contextmapper.tactic.dsl.parser.antlr.internal,
  org.contextmapper.tactic.dsl.serializer,
- org.contextmapper.tactic.dsl.parser.antlr
+ org.contextmapper.tactic.dsl.parser.antlr,
+ org.contextmapper.servicecutter.dsl.scoping,
+ org.contextmapper.servicecutter.dsl.parser.antlr,
+ org.contextmapper.servicecutter.dsl,
+ org.contextmapper.servicecutter.dsl.services,
+ org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.util,
+ org.contextmapper.servicecutter.dsl.validation,
+ org.contextmapper.servicecutter.dsl.parser.antlr.internal,
+ org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.impl,
+ org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL,
+ org.contextmapper.servicecutter.dsl.serializer
 Import-Package: org.apache.log4j

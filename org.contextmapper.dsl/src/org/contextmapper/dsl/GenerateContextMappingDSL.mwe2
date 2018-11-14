@@ -68,9 +68,34 @@ Workflow {
 			}
 		}
 		language = StandardLanguage {
+			name = "org.contextmapper.dsl.ServiceCutterConfigurationDSL"
+			fileExtensions = "servicecutter"
+
+			referencedResource = "platform:/resource/org.contextmapper.dsl/src/org/contextmapper/dsl/TacticDSL.xtext"
+
+			serializer = {
+				generateStub = false
+			}
+			validator = {
+				// Generates checks for @Deprecated grammar annotations, an IssueProvider and a corresponding PropertyPage
+				generateDeprecationValidation = true
+				generateXtendStub = false
+				generateStub = false
+			}
+			junitSupport = {
+				junitVersion = "5"
+				generateStub = false
+			}
+			generator = {
+				generateXtendStub = false
+				generateStub = false
+			}
+		}
+		language = StandardLanguage {
 			name = "org.contextmapper.dsl.ContextMappingDSL"
 			fileExtensions = "cml"
 
+			referencedResource = "platform:/resource/org.contextmapper.dsl/src/org/contextmapper/dsl/ServiceCutterConfigurationDSL.xtext"
 			referencedResource = "platform:/resource/org.contextmapper.dsl/src/org/contextmapper/dsl/TacticDSL.xtext"
 
 			serializer = {

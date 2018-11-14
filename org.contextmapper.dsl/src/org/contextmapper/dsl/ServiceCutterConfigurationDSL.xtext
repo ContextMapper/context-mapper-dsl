@@ -1,0 +1,138 @@
+/*
+ * Copyright 2018 The Context Mapper Project Team
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+grammar org.contextmapper.servicecutter.dsl.ServiceCutterConfigurationDSL with org.eclipse.xtext.common.Terminals
+
+generate serviceCutterConfigurationDSL "http://www.contextmapper.org/servicecutter/dsl/ServiceCutterConfigurationDSL"
+
+ServiceCutterConfigurationModel:
+	(useCases += UseCase)* &
+	(compatibilities = Compatibilities)? &  
+	(aggregates += Aggregate)* & 
+	(entities += Entity)* &
+	(predefinedServices += PredefinedService)* &
+	(securityAccessGroups += SecurityAccessGroup)* &
+	(separatedSecurityZones += SeparatedSecurityZone)* &
+	(sharedOwnerGroups += SharedOwnerGroup)*
+;
+
+UseCase:
+	'UseCase' name=ID OPEN
+		('isLatencyCritical' '=' isLatencyCritical?='true')? &
+		(('reads' nanoentitiesRead+=STRING) ("," nanoentitiesRead+=STRING)*)? &
+		(('writes' nanoentitiesWritten+=STRING) ("," nanoentitiesWritten+=STRING)*)? 
+	CLOSE
+;
+
+Compatibilities:
+	{Compatibilities}
+	'Compatibilities' OPEN
+		(availabilityCriticality += AvailabilityCriticality)*
+		(consistencyCriticality += ConsistencyCriticality)*
+		(contentVolatility += ContentVolatility)*
+		(securityCriticality += SecurityCriticality)*
+		(storageSimilarity += StorageSimilarity)*
+		(structuralVolatility += StructuralVolatility)*
+	CLOSE
+;
+
+Characteristic:
+	AvailabilityCriticality | ConsistencyCriticality | ContentVolatility | SecurityCriticality | StorageSimilarity | StructuralVolatility
+;
+
+AvailabilityCriticality:
+	'AvailabilityCriticality' characteristic=ID OPEN
+		((nanoentities+=STRING) ("," nanoentities+=STRING)*)?
+	CLOSE
+;
+
+ConsistencyCriticality:
+	'ConsistencyCriticality' characteristic=ID OPEN
+		((nanoentities+=STRING) ("," nanoentities+=STRING)*)?
+	CLOSE
+;
+
+ContentVolatility:
+	'ContentVolatility' OPEN
+		'characteristic' characteristic=ID
+		((nanoentities+=STRING) ("," nanoentities+=STRING)*)?
+	CLOSE
+;
+
+SecurityCriticality:
+	'SecurityCriticality' OPEN
+		'characteristic' characteristic=ID
+		((nanoentities+=STRING) ("," nanoentities+=STRING)*)?
+	CLOSE
+;
+
+StorageSimilarity:
+	'StorageSimilarity' OPEN
+		'characteristic' characteristic=ID
+		((nanoentities+=STRING) ("," nanoentities+=STRING)*)?
+	CLOSE
+;
+
+StructuralVolatility:
+	'StructuralVolatility' OPEN
+		'characteristic' characteristic=ID
+		((nanoentities+=STRING) ("," nanoentities+=STRING)*)?
+	CLOSE
+;
+
+RelatedGroup:
+	Aggregate | Entity | PredefinedService | SecurityAccessGroup | SeparatedSecurityZone | SharedOwnerGroup
+;
+
+Aggregate:
+	'Aggregate' name=ID OPEN
+		((nanoentities+=STRING) ("," nanoentities+=STRING)*)?
+	CLOSE
+;
+
+Entity:
+	'Entity' name=ID OPEN
+		((nanoentities+=STRING) ("," nanoentities+=STRING)*)?
+	CLOSE
+;
+
+PredefinedService:
+	'PredefinedService' name=ID OPEN
+		((nanoentities+=STRING) ("," nanoentities+=STRING)*)?
+	CLOSE
+;
+
+SecurityAccessGroup:
+	'SecurityAccessGroup' name=ID OPEN
+		((nanoentities+=STRING) ("," nanoentities+=STRING)*)?
+	CLOSE
+;
+
+SeparatedSecurityZone:
+	'SeparatedSecurityZone' name=ID OPEN
+		((nanoentities+=STRING) ("," nanoentities+=STRING)*)?
+	CLOSE
+;
+
+SharedOwnerGroup:
+	'SharedOwnerGroup' name=ID OPEN
+		((nanoentities+=STRING) ("," nanoentities+=STRING)*)?
+	CLOSE
+;
+
+// define terminals
+terminal OPEN: '{';
+terminal CLOSE: '}';
