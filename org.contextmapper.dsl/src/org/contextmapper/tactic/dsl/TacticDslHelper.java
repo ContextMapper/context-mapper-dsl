@@ -71,7 +71,7 @@ public class TacticDslHelper {
 					if (domainObj.getExtendsName() != null
 							&& domainObj.getExtendsName().equals(domainObject.getName())) {
 						subclasses.add(domainObj);
-					} else if (getExtends(domainObj) != null && getExtends(domainObj).equals(domainObject)) {
+					} else if (getSuperclass(domainObj) != null && getSuperclass(domainObj).equals(domainObject)) {
 						subclasses.add(domainObj);
 					}
 				}
@@ -80,7 +80,7 @@ public class TacticDslHelper {
 		return subclasses;
 	}
 
-	public static SimpleDomainObject getExtends(SimpleDomainObject domainObject) {
+	public static SimpleDomainObject getSuperclass(SimpleDomainObject domainObject) {
 		SimpleDomainObject result = null;
 		String extendsName = null;
 		if (domainObject instanceof Entity) {

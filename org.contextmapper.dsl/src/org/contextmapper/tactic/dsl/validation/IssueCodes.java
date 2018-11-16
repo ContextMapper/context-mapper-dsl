@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.contextmapper.tactic.dsl.validation;
 
 /**
@@ -29,5 +28,8 @@ public interface IssueCodes {
 	String CAPITALIZED_NAME = ISSUE_CODE_PREFIX + "capitalized_name";
 	String UNCAPITALIZED_NAME = ISSUE_CODE_PREFIX + "uncapitalized_name";
 	String DUPLICATE_NAME = ISSUE_CODE_PREFIX + "duplicate_name";
+	String USED_RESERVED_KEYWORD = ISSUE_CODE_PREFIX + "used_reserved_keyword";
+	String ALL_LOWERCASE_NAME = ISSUE_CODE_PREFIX + "all_lowercase_name";
+	String NON_PERSISTENT_EVENT = ISSUE_CODE_PREFIX + "non_persistent_event";
 
 }
