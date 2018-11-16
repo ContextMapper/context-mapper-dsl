@@ -7,4 +7,10 @@
 			class = "org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLPackage"
 			genModel = "model/generated/ContextMappingDSL.genmodel" />
 	</extension>
+	<extension point="org.eclipse.emf.ecore.generated_package">
+		<package 
+			uri = "http://www.contextmapper.org/servicecutter/dsl/ServiceCutterConfigurationDSL"
+			class = "org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.ServiceCutterConfigurationDSLPackage"
+			genModel = "model/generated/ServiceCutterConfigurationDSL.genmodel" />
+	</extension>
 </plugin>

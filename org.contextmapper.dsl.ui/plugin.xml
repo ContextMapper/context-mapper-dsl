@@ -13,6 +13,17 @@
 		</editor>
 	</extension>
 	<extension
+		point="org.eclipse.ui.editors">
+		<editor
+			class="org.contextmapper.servicecutter.dsl.ui.ServiceCutterConfigurationDSLExecutableExtensionFactory:org.eclipse.xtext.ui.editor.XtextEditor"
+			contributorClass="org.eclipse.ui.editors.text.TextEditorActionContributor"
+			default="true"
+			extensions="servicecutter"
+			id="org.contextmapper.dsl.ServiceCutterConfigurationDSL"
+			name="ServiceCutter Configuration Editor">
+		</editor>
+	</extension>
+	<extension
 		point="org.eclipse.ui.handlers">
 		<handler
 			class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.eclipse.xtext.ui.editor.hyperlinking.OpenDeclarationHandler"
@@ -227,6 +238,29 @@
 			uriExtension="cml">
 		</resourceServiceProvider>
 	</extension>
+	<extension point="org.eclipse.core.contenttype.contentTypes">
+		<content-type
+			base-type="org.eclipse.core.runtime.text"
+			file-extensions="servicecutter"
+			id="org.contextmapper.dsl.ServiceCutterConfigurationDSL.contenttype"
+			name="ServiceCutter Configuration File"
+			priority="normal">
+		</content-type>
+	</extension>
+	<!-- adding resource factories -->
+	<extension
+		point="org.eclipse.emf.ecore.extension_parser">
+		<parser
+			class="org.contextmapper.servicecutter.dsl.ui.ServiceCutterConfigurationDSLExecutableExtensionFactory:org.eclipse.xtext.resource.IResourceFactory"
+			type="servicecutter">
+		</parser>
+	</extension>
+	<extension point="org.eclipse.xtext.extension_resourceServiceProvider">
+		<resourceServiceProvider
+			class="org.contextmapper.servicecutter.dsl.ui.ServiceCutterConfigurationDSLExecutableExtensionFactory:org.eclipse.xtext.ui.resource.IResourceUIServiceProvider"
+			uriExtension="servicecutter">
+		</resourceServiceProvider>
+	</extension>
 	<!-- marker definitions for org.contextmapper.dsl.ContextMappingDSL -->
 	<extension
 			id="contextmappingdsl.check.fast"
@@ -432,6 +466,36 @@
 			type="text">
 		</fileTypes>
 	</extension>
+	<extension point="org.eclipse.compare.contentViewers">
+		<viewer id="org.contextmapper.dsl.ServiceCutterConfigurationDSL.compare.contentViewers"
+			class="org.contextmapper.servicecutter.dsl.ui.ServiceCutterConfigurationDSLExecutableExtensionFactory:org.eclipse.xtext.ui.compare.InjectableViewerCreator"
+			extensions="servicecutter">
+		</viewer>
+		<contentTypeBinding
+			contentTypeId="org.contextmapper.dsl.ServiceCutterConfigurationDSL.contenttype"
+			contentViewerId="org.contextmapper.dsl.ServiceCutterConfigurationDSL.compare.contentViewers" />
+	</extension>
+	<extension point="org.eclipse.compare.contentMergeViewers">
+		<viewer id="org.contextmapper.dsl.ServiceCutterConfigurationDSL.compare.contentMergeViewers"
+			class="org.contextmapper.servicecutter.dsl.ui.ServiceCutterConfigurationDSLExecutableExtensionFactory:org.eclipse.xtext.ui.compare.InjectableViewerCreator"
+			extensions="servicecutter" label="ContextMappingDSL Compare">
+		</viewer>
+		<contentTypeBinding
+			contentTypeId="org.contextmapper.dsl.ServiceCutterConfigurationDSL.contenttype"
+			contentMergeViewerId="org.contextmapper.dsl.ServiceCutterConfigurationDSL.compare.contentMergeViewers" />
+	</extension>
+	<extension point="org.eclipse.ui.editors.documentProviders">
+		<provider id="org.contextmapper.dsl.ServiceCutterConfigurationDSL.editors.documentProviders"
+			class="org.contextmapper.servicecutter.dsl.ui.ServiceCutterConfigurationDSLExecutableExtensionFactory:org.eclipse.xtext.ui.editor.model.XtextDocumentProvider"
+			extensions="servicecutter">
+		</provider>
+	</extension>
+	<extension point="org.eclipse.team.core.fileTypes">
+		<fileTypes
+			extension="servicecutter"
+			type="text">
+		</fileTypes>
+	</extension>
 	<extension point="org.eclipse.ui.handlers">
 		<handler class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.contextmapper.dsl.ui.handler.ServiceCutterGenerationHandler"
 			commandId="org.contextmapper.dsl.ui.handler.ServiceCutterGenerationCommand">
@@ -442,11 +506,15 @@
 		<handler class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.contextmapper.dsl.ui.handler.XMIGenerationHandler"
 			commandId="org.contextmapper.dsl.ui.handler.XMIGenerationCommand">
 		</handler>
+		<handler class="org.contextmapper.servicecutter.dsl.ui.ServiceCutterConfigurationDSLExecutableExtensionFactory:org.contextmapper.servicecutter.dsl.ui.handler.ServiceCutterConfigurationGenerationHandler"
+			commandId="org.contextmapper.servicecutter.dsl.ui.handler.ServiceCutterConfigurationGenerationCommand">
+		</handler>
 	</extension>
 	<extension point="org.eclipse.ui.commands">
 		<command name="Generate ServiceCutter Input" id="org.contextmapper.dsl.ui.handler.ServiceCutterGenerationCommand"></command>
 		<command name="Generate PlantUML Diagram" id="org.contextmapper.dsl.ui.handler.PlantUMLGenerationCommand"></command>
 		<command name="Save Model as XMI" id="org.contextmapper.dsl.ui.handler.XMIGenerationCommand"></command>
+		<command name="Generate ServiceCutter Configuration" id="org.contextmapper.servicecutter.dsl.ui.handler.ServiceCutterConfigurationGenerationCommand"></command>
 	</extension>
 	<extension point="org.eclipse.ui.menus">
 		<menuContribution locationURI="popup:org.eclipse.ui.popup.any?after=additions">
@@ -474,6 +542,15 @@
 						<iterate>
 							<adapt type="org.eclipse.core.resources.IResource">
 								<test property="org.eclipse.core.resources.name" value="*.cml"/>
+							</adapt>
+						</iterate>
+					</visibleWhen>
+				</command>	
+				<command defaultHandler="org.contextmapper.servicecutter.dsl.ui.handler.ServiceCutterConfigurationGenerationHandler" commandId="org.contextmapper.servicecutter.dsl.ui.handler.ServiceCutterConfigurationGenerationCommand" style="push">
+					<visibleWhen checkEnabled="false">
+						<iterate>
+							<adapt type="org.eclipse.core.resources.IResource">
+								<test property="org.eclipse.core.resources.name" value="*.servicecutter"/>
 							</adapt>
 						</iterate>
 					</visibleWhen>
