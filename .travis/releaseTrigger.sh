@@ -21,7 +21,7 @@ if [ "$CONTINUE_RELEASE" = "Y" ]; then
    -H "Travis-API-Version: 3" \
    -H "Authorization: token $TRAVIS_TOKEN" \
    -d "$TRAVIS_REQUEST" \
-   https://api.travis-ci.com/repo/stefan-ka%2Fcontext-mapping-dsl/requests
+   https://api.travis-ci.com/repo/stefan-ka%2Fcontext-mapper-dsl/requests
 else
   echo "Aborted."
 fi
