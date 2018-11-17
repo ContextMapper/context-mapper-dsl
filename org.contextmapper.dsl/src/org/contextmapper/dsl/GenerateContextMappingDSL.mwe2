@@ -74,6 +74,9 @@ Workflow {
 				generateXtendStub = false
 				generateStub = false
 			}
+			formatter = {
+				generateStub = true
+			}
 		}
 		language = StandardLanguage {
 			name = "org.contextmapper.dsl.ServiceCutterConfigurationDSL"
@@ -138,6 +141,9 @@ Workflow {
 			generator = {
 				generateXtendStub = false
 				generateStub = false
+			}
+			formatter = {
+				generateStub = true
 			}
 		}
 	}

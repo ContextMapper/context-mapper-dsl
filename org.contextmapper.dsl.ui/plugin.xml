@@ -509,12 +509,16 @@
 		<handler class="org.contextmapper.servicecutter.dsl.ui.ServiceCutterConfigurationDSLExecutableExtensionFactory:org.contextmapper.servicecutter.dsl.ui.handler.ServiceCutterConfigurationGenerationHandler"
 			commandId="org.contextmapper.servicecutter.dsl.ui.handler.ServiceCutterConfigurationGenerationCommand">
 		</handler>
+		<handler class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.contextmapper.dsl.ui.handler.CMLByServiceCutterOutputGenerationHandler"
+			commandId="org.contextmapper.dsl.ui.handler.CMLByServiceCutterOutputGenerationCommand">
+		</handler>
 	</extension>
 	<extension point="org.eclipse.ui.commands">
 		<command name="Generate ServiceCutter Input" id="org.contextmapper.dsl.ui.handler.ServiceCutterGenerationCommand"></command>
 		<command name="Generate PlantUML Diagram" id="org.contextmapper.dsl.ui.handler.PlantUMLGenerationCommand"></command>
 		<command name="Save Model as XMI" id="org.contextmapper.dsl.ui.handler.XMIGenerationCommand"></command>
 		<command name="Generate ServiceCutter Configuration" id="org.contextmapper.servicecutter.dsl.ui.handler.ServiceCutterConfigurationGenerationCommand"></command>
+		<command name="Generate ContextMap by ServiceCutter Output" id="org.contextmapper.dsl.ui.handler.CMLByServiceCutterOutputGenerationCommand"></command>
 	</extension>
 	<extension point="org.eclipse.ui.menus">
 		<menuContribution locationURI="popup:org.eclipse.ui.popup.any?after=additions">
@@ -554,7 +558,16 @@
 							</adapt>
 						</iterate>
 					</visibleWhen>
-				</command>				
+				</command>
+				<command defaultHandler="org.contextmapper.dsl.ui.handler.CMLByServiceCutterOutputGenerationHandler" commandId="org.contextmapper.dsl.ui.handler.CMLByServiceCutterOutputGenerationCommand" style="push">
+					<visibleWhen checkEnabled="false">
+						<iterate>
+							<adapt type="org.eclipse.core.resources.IResource">
+								<test property="org.eclipse.core.resources.name" value="*.json"/>
+							</adapt>
+						</iterate>
+					</visibleWhen>
+				</command>
 			</menu>
 		</menuContribution>
 	</extension>

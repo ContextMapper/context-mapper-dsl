@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.contextmapper.dsl.generator.servicecutter.model;
+package org.contextmapper.dsl.generator.servicecutter.input.model;
 
 /**
  * ServiceCutter Relationtype input object (enum).

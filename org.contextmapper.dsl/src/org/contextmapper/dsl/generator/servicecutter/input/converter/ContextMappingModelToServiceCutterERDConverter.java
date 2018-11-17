@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.contextmapper.dsl.generator.servicecutter.converter;
+package org.contextmapper.dsl.generator.servicecutter.input.converter;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,15 +21,17 @@ import java.util.Map;
 
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
-import org.contextmapper.dsl.generator.servicecutter.model.Entity;
-import org.contextmapper.dsl.generator.servicecutter.model.EntityRelation;
-import org.contextmapper.dsl.generator.servicecutter.model.EntityRelationshipDiagram;
-import org.contextmapper.dsl.generator.servicecutter.model.Relationtype;
+import org.contextmapper.dsl.generator.servicecutter.input.model.Entity;
+import org.contextmapper.dsl.generator.servicecutter.input.model.EntityRelation;
+import org.contextmapper.dsl.generator.servicecutter.input.model.EntityRelationshipDiagram;
+import org.contextmapper.dsl.generator.servicecutter.input.model.Relationtype;
 import org.contextmapper.tactic.dsl.tacticdsl.Aggregate;
 import org.contextmapper.tactic.dsl.tacticdsl.Attribute;
 import org.contextmapper.tactic.dsl.tacticdsl.DomainEvent;
 import org.contextmapper.tactic.dsl.tacticdsl.DomainObject;
+import org.contextmapper.tactic.dsl.tacticdsl.Reference;
 import org.contextmapper.tactic.dsl.tacticdsl.SimpleDomainObject;
+import org.contextmapper.tactic.dsl.tacticdsl.ValueObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.xtext.EcoreUtil2;
 
@@ -58,6 +60,7 @@ public class ContextMappingModelToServiceCutterERDConverter {
 		Entity boundedContextEntity = new Entity(bc.getName() + "_BC");
 		List<Aggregate> allAggregates = EcoreUtil2.<Aggregate>eAllOfType(bc, Aggregate.class);
 		for (Aggregate aggregate : allAggregates) {
+			boundedContextEntity.addNanoEntity(aggregate.getName() + "_Aggregate");
 			target.addEntityRelation(new EntityRelation(boundedContextEntity.getName(),
 					mapAggregate(aggregate).getName(), Relationtype.AGGREGATION));
 		}
@@ -67,8 +70,8 @@ public class ContextMappingModelToServiceCutterERDConverter {
 	private Entity mapAggregate(Aggregate aggregate) {
 		Entity aggregrateEntity = new Entity(aggregate.getName() + "_Aggregate");
 		for (SimpleDomainObject simpleDomainObject : aggregate.getDomainObjects()) {
-			if (simpleDomainObject instanceof org.contextmapper.tactic.dsl.tacticdsl.Entity
-					|| simpleDomainObject instanceof DomainEvent) {
+			aggregrateEntity.addNanoEntity(simpleDomainObject.getName());
+			if (isDomainObjectUsed4ServiceCutter(simpleDomainObject)) {
 				DomainObject dslDomainObject = (DomainObject) simpleDomainObject;
 				target.addEntityRelation(new EntityRelation(aggregrateEntity.getName(),
 						mapDomainObject(dslDomainObject).getName(), Relationtype.AGGREGATION));
@@ -78,13 +81,22 @@ public class ContextMappingModelToServiceCutterERDConverter {
 		return aggregrateEntity;
 	}
 
+	private boolean isDomainObjectUsed4ServiceCutter(SimpleDomainObject simpleDomainObject) {
+		return simpleDomainObject instanceof org.contextmapper.tactic.dsl.tacticdsl.Entity
+				|| simpleDomainObject instanceof DomainEvent || simpleDomainObject instanceof ValueObject;
+	}
+
 	private Entity mapDomainObject(DomainObject dslDomainObject) {
 		Entity entityEntity = getEntity(dslDomainObject.getName());
 		for (Attribute attribute : dslDomainObject.getAttributes()) {
 			entityEntity.addNanoEntity(attribute.getName());
-			if (this.dslEntityLookupTable.containsKey(attribute.getType())) {
-				target.addEntityRelation(new EntityRelation(entityEntity.getName(),
-						getEntity(attribute.getType()).getName(), Relationtype.AGGREGATION));
+		}
+		for (Reference reference : dslDomainObject.getReferences()) {
+			String refType = reference.getDomainObjectType().getName();
+			entityEntity.addNanoEntity(reference.getName());
+			if (this.dslEntityLookupTable.containsKey(refType)) {
+				target.addEntityRelation(new EntityRelation(entityEntity.getName(), getEntity(refType).getName(),
+						Relationtype.AGGREGATION));
 			}
 		}
 		target.addEntity(entityEntity);
@@ -93,17 +105,21 @@ public class ContextMappingModelToServiceCutterERDConverter {
 
 	private void initializeEntityLookupTable(ContextMap contextMap) {
 		// use Entities
-		List<org.contextmapper.tactic.dsl.tacticdsl.Entity> allEntities = EcoreUtil2.<org.contextmapper.tactic.dsl.tacticdsl.Entity>getAllContentsOfType(
-				EcoreUtil.getRootContainer(contextMap), org.contextmapper.tactic.dsl.tacticdsl.Entity.class);
-		for (org.contextmapper.tactic.dsl.tacticdsl.Entity entity : allEntities) {
-			this.dslEntityLookupTable.put(entity.getName(), entity);
-		}
+		addDomainObjectToLookupTable(EcoreUtil2.<org.contextmapper.tactic.dsl.tacticdsl.Entity>getAllContentsOfType(
+				EcoreUtil.getRootContainer(contextMap), org.contextmapper.tactic.dsl.tacticdsl.Entity.class));
 
 		// use Domain Events
-		List<DomainEvent> allDomainEvents = EcoreUtil2
-				.<DomainEvent>getAllContentsOfType(EcoreUtil.getRootContainer(contextMap), DomainEvent.class);
-		for (DomainEvent domainEvent : allDomainEvents) {
-			this.dslEntityLookupTable.put(domainEvent.getName(), domainEvent);
+		addDomainObjectToLookupTable(EcoreUtil2
+				.<DomainEvent>getAllContentsOfType(EcoreUtil.getRootContainer(contextMap), DomainEvent.class));
+
+		// use Value Objects
+		addDomainObjectToLookupTable(EcoreUtil2
+				.<ValueObject>getAllContentsOfType(EcoreUtil.getRootContainer(contextMap), ValueObject.class));
+	}
+
+	private void addDomainObjectToLookupTable(List<? extends DomainObject> domainObjects) {
+		for (DomainObject domainObject : domainObjects) {
+			this.dslEntityLookupTable.put(domainObject.getName(), domainObject);
 		}
 	}
 

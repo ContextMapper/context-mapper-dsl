@@ -18,8 +18,8 @@ package org.contextmapper.dsl.generator;
 import java.util.List;
 
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
-import org.contextmapper.dsl.generator.servicecutter.converter.ContextMappingModelToServiceCutterERDConverter;
-import org.contextmapper.dsl.generator.servicecutter.model.EntityRelationshipDiagram;
+import org.contextmapper.dsl.generator.servicecutter.input.converter.ContextMappingModelToServiceCutterERDConverter;
+import org.contextmapper.dsl.generator.servicecutter.input.model.EntityRelationshipDiagram;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtext.generator.AbstractGenerator;
 import org.eclipse.xtext.generator.IFileSystemAccess2;
