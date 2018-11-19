@@ -18,7 +18,7 @@
 			class="org.contextmapper.servicecutter.dsl.ui.ServiceCutterConfigurationDSLExecutableExtensionFactory:org.eclipse.xtext.ui.editor.XtextEditor"
 			contributorClass="org.eclipse.ui.editors.text.TextEditorActionContributor"
 			default="true"
-			extensions="servicecutter"
+			extensions="scl"
 			id="org.contextmapper.dsl.ServiceCutterConfigurationDSL"
 			name="ServiceCutter Configuration Editor">
 		</editor>
@@ -241,7 +241,7 @@
 	<extension point="org.eclipse.core.contenttype.contentTypes">
 		<content-type
 			base-type="org.eclipse.core.runtime.text"
-			file-extensions="servicecutter"
+			file-extensions="scl"
 			id="org.contextmapper.dsl.ServiceCutterConfigurationDSL.contenttype"
 			name="ServiceCutter Configuration File"
 			priority="normal">
@@ -252,13 +252,13 @@
 		point="org.eclipse.emf.ecore.extension_parser">
 		<parser
 			class="org.contextmapper.servicecutter.dsl.ui.ServiceCutterConfigurationDSLExecutableExtensionFactory:org.eclipse.xtext.resource.IResourceFactory"
-			type="servicecutter">
+			type="scl">
 		</parser>
 	</extension>
 	<extension point="org.eclipse.xtext.extension_resourceServiceProvider">
 		<resourceServiceProvider
 			class="org.contextmapper.servicecutter.dsl.ui.ServiceCutterConfigurationDSLExecutableExtensionFactory:org.eclipse.xtext.ui.resource.IResourceUIServiceProvider"
-			uriExtension="servicecutter">
+			uriExtension="scl">
 		</resourceServiceProvider>
 	</extension>
 	<!-- marker definitions for org.contextmapper.dsl.ContextMappingDSL -->
@@ -469,7 +469,7 @@
 	<extension point="org.eclipse.compare.contentViewers">
 		<viewer id="org.contextmapper.dsl.ServiceCutterConfigurationDSL.compare.contentViewers"
 			class="org.contextmapper.servicecutter.dsl.ui.ServiceCutterConfigurationDSLExecutableExtensionFactory:org.eclipse.xtext.ui.compare.InjectableViewerCreator"
-			extensions="servicecutter">
+			extensions="scl">
 		</viewer>
 		<contentTypeBinding
 			contentTypeId="org.contextmapper.dsl.ServiceCutterConfigurationDSL.contenttype"
@@ -478,7 +478,7 @@
 	<extension point="org.eclipse.compare.contentMergeViewers">
 		<viewer id="org.contextmapper.dsl.ServiceCutterConfigurationDSL.compare.contentMergeViewers"
 			class="org.contextmapper.servicecutter.dsl.ui.ServiceCutterConfigurationDSLExecutableExtensionFactory:org.eclipse.xtext.ui.compare.InjectableViewerCreator"
-			extensions="servicecutter" label="ContextMappingDSL Compare">
+			extensions="scl" label="ContextMappingDSL Compare">
 		</viewer>
 		<contentTypeBinding
 			contentTypeId="org.contextmapper.dsl.ServiceCutterConfigurationDSL.contenttype"
@@ -487,12 +487,12 @@
 	<extension point="org.eclipse.ui.editors.documentProviders">
 		<provider id="org.contextmapper.dsl.ServiceCutterConfigurationDSL.editors.documentProviders"
 			class="org.contextmapper.servicecutter.dsl.ui.ServiceCutterConfigurationDSLExecutableExtensionFactory:org.eclipse.xtext.ui.editor.model.XtextDocumentProvider"
-			extensions="servicecutter">
+			extensions="scl">
 		</provider>
 	</extension>
 	<extension point="org.eclipse.team.core.fileTypes">
 		<fileTypes
-			extension="servicecutter"
+			extension="scl"
 			type="text">
 		</fileTypes>
 	</extension>
@@ -506,15 +506,23 @@
 		<handler class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.contextmapper.dsl.ui.handler.XMIGenerationHandler"
 			commandId="org.contextmapper.dsl.ui.handler.XMIGenerationCommand">
 		</handler>
-		<handler class="org.contextmapper.servicecutter.dsl.ui.ServiceCutterConfigurationDSLExecutableExtensionFactory:org.contextmapper.servicecutter.dsl.ui.handler.ServiceCutterConfigurationGenerationHandler"
-			commandId="org.contextmapper.servicecutter.dsl.ui.handler.ServiceCutterConfigurationGenerationCommand">
+		<handler class="org.contextmapper.servicecutter.dsl.ui.ServiceCutterConfigurationDSLExecutableExtensionFactory:org.contextmapper.servicecutter.dsl.ui.handler.ServiceCutterUserRepresentationJSONGenerationHandler"
+			commandId="org.contextmapper.servicecutter.dsl.ui.handler.ServiceCutterUserRepresentationsJSONGenerationCommand">
+		</handler>
+		<handler class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.contextmapper.dsl.ui.handler.CMLByServiceCutterOutputGenerationHandler"
+			commandId="org.contextmapper.dsl.ui.handler.CMLByServiceCutterOutputGenerationCommand">
+		</handler>
+		<handler class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.contextmapper.dsl.ui.handler.ServiceCutterUserRepresentationsExampleGenerationHandler"
+			commandId="org.contextmapper.dsl.ui.handler.ServiceCutterUserRepresentationsExampleGenerationCommand">
 		</handler>
 	</extension>
 	<extension point="org.eclipse.ui.commands">
-		<command name="Generate ServiceCutter Input" id="org.contextmapper.dsl.ui.handler.ServiceCutterGenerationCommand"></command>
-		<command name="Generate PlantUML Diagram" id="org.contextmapper.dsl.ui.handler.PlantUMLGenerationCommand"></command>
+		<command name="ServiceCutter: Generate Input File (JSON)" id="org.contextmapper.dsl.ui.handler.ServiceCutterGenerationCommand"></command>
+		<command name="PlantUML: Generate Diagrams" id="org.contextmapper.dsl.ui.handler.PlantUMLGenerationCommand"></command>
 		<command name="Save Model as XMI" id="org.contextmapper.dsl.ui.handler.XMIGenerationCommand"></command>
-		<command name="Generate ServiceCutter Configuration" id="org.contextmapper.servicecutter.dsl.ui.handler.ServiceCutterConfigurationGenerationCommand"></command>
+		<command name="ServiceCutter: Generate User Representations File (JSON)" id="org.contextmapper.servicecutter.dsl.ui.handler.ServiceCutterUserRepresentationsJSONGenerationCommand"></command>
+		<command name="Generate ContextMap by ServiceCutter Output" id="org.contextmapper.dsl.ui.handler.CMLByServiceCutterOutputGenerationCommand"></command>
+		<command name="ServiceCutter: Initialize User Representations File (Exemplary)" id="org.contextmapper.dsl.ui.handler.ServiceCutterUserRepresentationsExampleGenerationCommand"></command>
 	</extension>
 	<extension point="org.eclipse.ui.menus">
 		<menuContribution locationURI="popup:org.eclipse.ui.popup.any?after=additions">
@@ -528,6 +536,36 @@
 						</iterate>
 					</visibleWhen>
 				</command>
+				<command defaultHandler="org.contextmapper.servicecutter.dsl.ui.handler.ServiceCutterUserRepresentationJSONGenerationHandler" commandId="org.contextmapper.servicecutter.dsl.ui.handler.ServiceCutterUserRepresentationsJSONGenerationCommand" style="push">
+					<visibleWhen checkEnabled="false">
+						<iterate>
+							<adapt type="org.eclipse.core.resources.IResource">
+								<test property="org.eclipse.core.resources.name" value="*.scl"/>
+							</adapt>
+						</iterate>
+					</visibleWhen>
+				</command>
+				<command defaultHandler="org.contextmapper.dsl.ui.handler.CMLByServiceCutterOutputGenerationHandler" commandId="org.contextmapper.dsl.ui.handler.CMLByServiceCutterOutputGenerationCommand" style="push">
+					<visibleWhen checkEnabled="false">
+						<iterate>
+							<adapt type="org.eclipse.core.resources.IResource">
+								<test property="org.eclipse.core.resources.name" value="*.json"/>
+							</adapt>
+						</iterate>
+					</visibleWhen>
+				</command>
+				<command defaultHandler="org.contextmapper.dsl.ui.handler.ServiceCutterUserRepresentationsExampleGenerationHandler" commandId="org.contextmapper.dsl.ui.handler.ServiceCutterUserRepresentationsExampleGenerationCommand" style="push">
+					<visibleWhen checkEnabled="false">
+						<iterate>
+							<adapt type="org.eclipse.core.resources.IResource">
+								<test property="org.eclipse.core.resources.name" value="*.cml"/>
+							</adapt>
+						</iterate>
+					</visibleWhen>
+				</command>
+				<separator
+	         		name="org.contextmapper.dsl.ui.separator1" visible="true">
+				</separator>
 				<command defaultHandler="org.contextmapper.dsl.ui.handler.PlantUMLGenerationHandler" commandId="org.contextmapper.dsl.ui.handler.PlantUMLGenerationCommand" style="push">
 					<visibleWhen checkEnabled="false">
 						<iterate>
@@ -537,6 +575,9 @@
 						</iterate>
 					</visibleWhen>
 				</command>
+				<separator
+	         		name="org.contextmapper.dsl.ui.separator2" visible="true">
+				</separator>
 				<command defaultHandler="org.contextmapper.dsl.ui.handler.XMIGenerationHandler" commandId="org.contextmapper.dsl.ui.handler.XMIGenerationCommand" style="push">
 					<visibleWhen checkEnabled="false">
 						<iterate>
@@ -546,15 +587,6 @@
 						</iterate>
 					</visibleWhen>
 				</command>	
-				<command defaultHandler="org.contextmapper.servicecutter.dsl.ui.handler.ServiceCutterConfigurationGenerationHandler" commandId="org.contextmapper.servicecutter.dsl.ui.handler.ServiceCutterConfigurationGenerationCommand" style="push">
-					<visibleWhen checkEnabled="false">
-						<iterate>
-							<adapt type="org.eclipse.core.resources.IResource">
-								<test property="org.eclipse.core.resources.name" value="*.servicecutter"/>
-							</adapt>
-						</iterate>
-					</visibleWhen>
-				</command>				
 			</menu>
 		</menuContribution>
 	</extension>

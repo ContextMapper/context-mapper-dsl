@@ -13,48 +13,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.contextmapper.dsl.generator.servicecutter.model;
+package org.contextmapper.dsl.generator.servicecutter.input.model;
 
 import java.util.List;
 
 import com.google.common.collect.Lists;
 
 /**
- * ServiceCutter EntityRelationshipDiagram root input object.
+ * ServiceCutter Entity input object.
  * 
  * @author Stefan Kapferer
  *
  */
-public class EntityRelationshipDiagram {
+public class Entity {
 
 	private String name;
-	private List<Entity> entities;
-	private List<EntityRelation> relations;
+	private List<String> nanoentities;
 
-	public EntityRelationshipDiagram(String name) {
+	public Entity(String name) {
 		this.name = name;
-		this.entities = Lists.newArrayList();
-		this.relations = Lists.newArrayList();
-	}
-
-	public List<Entity> getEntities() {
-		return entities;
-	}
-
-	public void addEntity(Entity entity) {
-		this.entities.add(entity);
-	}
-
-	public List<EntityRelation> getRelations() {
-		return relations;
-	}
-
-	public void addEntityRelation(EntityRelation entityRelation) {
-		this.relations.add(entityRelation);
+		this.nanoentities = Lists.newArrayList();
 	}
 
 	public String getName() {
 		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public List<String> getNanoentities() {
+		return nanoentities;
+	}
+
+	public void addNanoEntity(String nanoEntity) {
+		this.nanoentities.add(nanoEntity);
 	}
 
 }

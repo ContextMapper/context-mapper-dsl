@@ -15,16 +15,16 @@
  */
 package org.contextmapper.servicecutter.dsl.ui.handler;
 
-import org.contextmapper.dsl.generator.ServiceCutterConfigurationGenerator;
+import org.contextmapper.dsl.generator.ServiceCutterUserRepresentationsJSONGenerator;
 import org.contextmapper.dsl.ui.handler.AbstractGenerationHandler;
 import org.eclipse.xtext.generator.IGenerator2;
 
 import com.google.inject.Inject;
 
-public class ServiceCutterConfigurationGenerationHandler extends AbstractGenerationHandler {
+public class ServiceCutterUserRepresentationJSONGenerationHandler extends AbstractGenerationHandler {
 
 	@Inject
-	private ServiceCutterConfigurationGenerator generator;
+	private ServiceCutterUserRepresentationsJSONGenerator generator;
 
 	@Override
 	protected IGenerator2 getGenerator() {

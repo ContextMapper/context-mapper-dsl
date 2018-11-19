@@ -283,7 +283,7 @@ DomainEvent :
      ("discriminatorLength" "=" discriminatorLength=STRING)? &
      ("inheritanceType" "=" inheritanceType=InheritanceType)? &
      ("validate" "=" validate=STRING)? &
-     ((persistent?="persistent") | (notPersistent?=NOT "persistent"))? &
+     (persistent?="persistent")? &
      ((notAggregateRoot?=NOT "aggregateRoot") | ("aggregateRoot"))? &
      ("belongsTo" (("@")?belongsTo=[DomainObject]))?
     )
@@ -310,7 +310,7 @@ CommandEvent :
      ("discriminatorLength" "=" discriminatorLength=STRING)? &
      ("inheritanceType" "=" inheritanceType=InheritanceType)? &
      ("validate" "=" validate=STRING)? &
-     ((persistent?="persistent") | (NOT "persistent"))? &
+     (persistent?="persistent")? &
      ((notAggregateRoot?=NOT "aggregateRoot") | ("aggregateRoot"))? &
      ("belongsTo" (("@")?belongsTo=[DomainObject]))?
     )
@@ -532,7 +532,7 @@ enum DiscriminatorType :
 
 Type :
   ("String"|"int"|"Integer"|"long"|"Long"|"boolean"|"Boolean"|"Date"|"DateTime"|"Timestamp"|"BigDecimal"|"BigInteger"|
-  	"double"|"Double"|"float"|"Float"|"Key"|"PagingPagarameter"|"PagedResult"|"Blob"|"Clob"|"Object[]"|
+  	"double"|"Double"|"float"|"Float"|"Key"|"PagingParameter"|"PagedResult"|"Blob"|"Clob"|"Object[]"|
   	JavaIdentifier);
 
 enum CollectionType :

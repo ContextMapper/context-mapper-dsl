@@ -32,8 +32,9 @@
 	<repository location="http://download.eclipse.org/modeling/tmf/xtext/updates/orbit/2018-09"/>
 </location>
 	<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-		<unit id="com.fasterxml.jackson.core.jackson-databind" version="2.5.0.v201504151636"/>
-		<repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20160520211859/repository/"/>
+		<unit id="com.fasterxml.jackson.core.jackson-databind" version="2.9.2.v20180207-1730"/>
+		<unit id="com.fasterxml.jackson.core.jackson-annotations" version="2.9.2.v20180207-1730"/>
+		<repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20180905201904/repository/"/>
 	</location>
 </locations>
 </target>

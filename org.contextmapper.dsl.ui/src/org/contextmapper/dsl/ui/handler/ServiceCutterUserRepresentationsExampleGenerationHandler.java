@@ -13,16 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.contextmapper.dsl.generator.servicecutter.model;
+package org.contextmapper.dsl.ui.handler;
 
-/**
- * ServiceCutter Relationtype input object (enum).
- * 
- * @author Stefan Kapferer
- *
- */
-public enum Relationtype {
+import org.contextmapper.dsl.generator.ServiceCutterUserRepresentationsExampleGenerator;
+import org.eclipse.xtext.generator.IGenerator2;
 
-	AGGREGATION, COMPOSITION, INHERITANCE
+import com.google.inject.Inject;
+
+public class ServiceCutterUserRepresentationsExampleGenerationHandler extends AbstractGenerationHandler {
+
+	@Inject
+	private ServiceCutterUserRepresentationsExampleGenerator generator;
+
+	@Override
+	protected IGenerator2 getGenerator() {
+		return generator;
+	}
 
 }
