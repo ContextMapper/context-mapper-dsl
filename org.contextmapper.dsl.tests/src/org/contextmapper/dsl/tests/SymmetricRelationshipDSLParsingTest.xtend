@@ -152,4 +152,53 @@ class SymmetricRelationshipDSLParsingTest {
 		assertEquals("testContext", sharedKernel.participant1.name);
 		assertEquals("anotherTestContext", sharedKernel.participant2.name);
 	}
+	
+	@Test
+	def void canDefineSharedKernelTechnology() {
+		// given
+		val String dslSnippet = '''
+			ContextMap {
+				add testContext
+				add anotherTestContext
+
+				testContext <-> anotherTestContext : Shared-Kernel {
+				 	implementationTechnology = "RPC"
+			 	}
+			}
+
+			BoundedContext testContext
+			BoundedContext anotherTestContext
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		assertEquals("RPC", result.map.relationships.get(0).implementationTechnology);
+	}
+	
+	@Test
+	def void canDefinePartnershipTechnology() {
+		// given
+		val String dslSnippet = '''
+			ContextMap {
+				add testContext
+				add anotherTestContext
+
+				@testrel
+				testContext Partnership anotherTestContext {
+				 	implementationTechnology = "Messaging"
+			 	}
+			}
+
+			BoundedContext testContext
+			BoundedContext anotherTestContext
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		assertEquals("Messaging", result.map.relationships.get(0).implementationTechnology);
+	}
 }

@@ -373,4 +373,28 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 		assertEquals("myRelName", result.map.relationships.get(0).name);
 	}
 
+	@Test
+	def void canDefineTechnology() {
+		// given
+		val String dslSnippet = '''
+			ContextMap {
+				add testContext
+				add anotherTestContext
+
+				anotherTestContext <- testContext : Customer-Supplier {
+					implementationTechnology = "RESTful HTTP"
+				}
+			}
+
+			BoundedContext testContext
+			BoundedContext anotherTestContext
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		assertEquals("RESTful HTTP", result.map.relationships.get(0).implementationTechnology);
+	}
+
 }
