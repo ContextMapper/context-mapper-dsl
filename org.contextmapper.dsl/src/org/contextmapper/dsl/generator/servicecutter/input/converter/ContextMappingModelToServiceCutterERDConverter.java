@@ -60,7 +60,7 @@ public class ContextMappingModelToServiceCutterERDConverter {
 		Entity boundedContextEntity = new Entity(bc.getName() + "_BC");
 		List<Aggregate> allAggregates = EcoreUtil2.<Aggregate>eAllOfType(bc, Aggregate.class);
 		for (Aggregate aggregate : allAggregates) {
-			boundedContextEntity.addNanoEntity(aggregate.getName() + "_Aggregate");
+			// boundedContextEntity.addNanoEntity(aggregate.getName() + "_Aggregate");
 			target.addEntityRelation(new EntityRelation(boundedContextEntity.getName(),
 					mapAggregate(aggregate).getName(), Relationtype.AGGREGATION));
 		}
@@ -70,7 +70,7 @@ public class ContextMappingModelToServiceCutterERDConverter {
 	private Entity mapAggregate(Aggregate aggregate) {
 		Entity aggregrateEntity = new Entity(aggregate.getName() + "_Aggregate");
 		for (SimpleDomainObject simpleDomainObject : aggregate.getDomainObjects()) {
-			aggregrateEntity.addNanoEntity(simpleDomainObject.getName());
+			// aggregrateEntity.addNanoEntity(simpleDomainObject.getName());
 			if (isDomainObjectUsed4ServiceCutter(simpleDomainObject)) {
 				DomainObject dslDomainObject = (DomainObject) simpleDomainObject;
 				target.addEntityRelation(new EntityRelation(aggregrateEntity.getName(),
@@ -92,11 +92,16 @@ public class ContextMappingModelToServiceCutterERDConverter {
 			entityEntity.addNanoEntity(attribute.getName());
 		}
 		for (Reference reference : dslDomainObject.getReferences()) {
-			String refType = reference.getDomainObjectType().getName();
-			entityEntity.addNanoEntity(reference.getName());
-			if (this.dslEntityLookupTable.containsKey(refType)) {
-				target.addEntityRelation(new EntityRelation(entityEntity.getName(), getEntity(refType).getName(),
-						Relationtype.AGGREGATION));
+			// Handle enums as attributes for now
+			if (reference.getDomainObjectType() instanceof org.contextmapper.tactic.dsl.tacticdsl.Enum) {
+				entityEntity.addNanoEntity(reference.getName());
+			} else {
+				String refType = reference.getDomainObjectType().getName();
+				// entityEntity.addNanoEntity(reference.getName());
+				if (this.dslEntityLookupTable.containsKey(refType)) {
+					target.addEntityRelation(new EntityRelation(entityEntity.getName(), getEntity(refType).getName(),
+							Relationtype.AGGREGATION));
+				}
 			}
 		}
 		target.addEntity(entityEntity);

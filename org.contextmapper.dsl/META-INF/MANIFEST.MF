@@ -15,8 +15,9 @@ Require-Bundle: org.eclipse.xtext,
  org.eclipse.emf.common,
  org.eclipse.xtend.lib;bundle-version="2.14.0",
  org.antlr.runtime;bundle-version="[3.2.0,3.2.1)",
- com.fasterxml.jackson.core.jackson-databind;bundle-version="2.5.0",
- com.fasterxml.jackson.core.jackson-core;bundle-version="2.9.2"
+ com.fasterxml.jackson.core.jackson-databind;bundle-version="2.9.2",
+ com.fasterxml.jackson.core.jackson-core;bundle-version="2.9.2",
+ com.fasterxml.jackson.core.jackson-annotations;bundle-version="2.9.2"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.contextmapper.dsl,
  org.contextmapper.dsl.contextMappingDSL,
@@ -54,6 +55,7 @@ Export-Package: org.contextmapper.dsl,
  org.contextmapper.tactic.dsl.tacticdsl.util,
  org.contextmapper.tactic.dsl.validation,
  org.contextmapper.dsl.formatting2,
- org.contextmapper.tactic.dsl.formatting2
+ org.contextmapper.tactic.dsl.formatting2,
+ org.contextmapper.servicecutter.dsl.formatting2
 Import-Package: org.apache.log4j,
  org.eclipse.core.resources

@@ -13,18 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.contextmapper.servicecutter.dsl.ui.handler;
+package org.contextmapper.dsl.ui.handler;
 
-import org.contextmapper.dsl.generator.ServiceCutterConfigurationGenerator;
-import org.contextmapper.dsl.ui.handler.AbstractGenerationHandler;
+import org.contextmapper.dsl.generator.ServiceCutterUserRepresentationsExampleGenerator;
 import org.eclipse.xtext.generator.IGenerator2;
 
 import com.google.inject.Inject;
 
-public class ServiceCutterConfigurationGenerationHandler extends AbstractGenerationHandler {
+public class ServiceCutterUserRepresentationsExampleGenerationHandler extends AbstractGenerationHandler {
 
 	@Inject
-	private ServiceCutterConfigurationGenerator generator;
+	private ServiceCutterUserRepresentationsExampleGenerator generator;
 
 	@Override
 	protected IGenerator2 getGenerator() {

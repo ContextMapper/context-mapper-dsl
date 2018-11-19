@@ -18,7 +18,7 @@ grammar org.contextmapper.servicecutter.dsl.ServiceCutterConfigurationDSL with o
 
 generate serviceCutterConfigurationDSL "http://www.contextmapper.org/servicecutter/dsl/ServiceCutterConfigurationDSL"
 
-ServiceCutterConfigurationModel:
+ServiceCutterUserRepresentationsModel:
 	(useCases += UseCase)* &
 	(compatibilities = Compatibilities)? &  
 	(aggregates += Aggregate)* & 
@@ -30,23 +30,27 @@ ServiceCutterConfigurationModel:
 ;
 
 UseCase:
-	'UseCase' name=ID OPEN
-		('isLatencyCritical' '=' isLatencyCritical?='true')? &
-		(('reads' nanoentitiesRead+=STRING) ("," nanoentitiesRead+=STRING)*)? &
-		(('writes' nanoentitiesWritten+=STRING) ("," nanoentitiesWritten+=STRING)*)? 
-	CLOSE
+	(doc=ML_COMMENT)?
+	'UseCase' name=ID 
+	(OPEN
+		(('isLatencyCritical' '=' isLatencyCritical?='true')? &
+		(('reads' nanoentitiesRead+=STRING*) ("," nanoentitiesRead+=STRING)*)? &
+        (('writes' nanoentitiesWritten+=STRING*) ("," nanoentitiesWritten+=STRING)*)?)  
+	CLOSE)
 ;
 
 Compatibilities:
-	{Compatibilities}
-	'Compatibilities' OPEN
-		(availabilityCriticality += AvailabilityCriticality)*
+	{Compatibilities} 
+	(doc=ML_COMMENT)?
+	'Compatibilities' 
+	(OPEN
+		((availabilityCriticality += AvailabilityCriticality)*
 		(consistencyCriticality += ConsistencyCriticality)*
 		(contentVolatility += ContentVolatility)*
 		(securityCriticality += SecurityCriticality)*
 		(storageSimilarity += StorageSimilarity)*
-		(structuralVolatility += StructuralVolatility)*
-	CLOSE
+		(structuralVolatility += StructuralVolatility)*)
+	CLOSE)
 ;
 
 Characteristic:
@@ -54,42 +58,56 @@ Characteristic:
 ;
 
 AvailabilityCriticality:
-	'AvailabilityCriticality' characteristic=ID OPEN
-		((nanoentities+=STRING) ("," nanoentities+=STRING)*)?
+	(doc=ML_COMMENT)?
+	'AvailabilityCriticality' 
+	OPEN
+		(('characteristic' characteristic=ID) (characteristicDoc=SL_COMMENT)?
+		(((nanoentities+=STRING) ("," nanoentities+=STRING)*)?))
 	CLOSE
 ;
 
 ConsistencyCriticality:
-	'ConsistencyCriticality' characteristic=ID OPEN
-		((nanoentities+=STRING) ("," nanoentities+=STRING)*)?
+	(doc=ML_COMMENT)?
+	'ConsistencyCriticality' 
+	OPEN
+		(('characteristic' characteristic=ID) (characteristicDoc=SL_COMMENT)?
+		(((nanoentities+=STRING) ("," nanoentities+=STRING)*)?))
 	CLOSE
 ;
 
 ContentVolatility:
-	'ContentVolatility' OPEN
-		'characteristic' characteristic=ID
-		((nanoentities+=STRING) ("," nanoentities+=STRING)*)?
+	(doc=ML_COMMENT)?
+	'ContentVolatility' 
+	OPEN
+		(('characteristic' characteristic=ID) (characteristicDoc=SL_COMMENT)?
+		(((nanoentities+=STRING) ("," nanoentities+=STRING)*)?))
 	CLOSE
 ;
 
 SecurityCriticality:
-	'SecurityCriticality' OPEN
-		'characteristic' characteristic=ID
-		((nanoentities+=STRING) ("," nanoentities+=STRING)*)?
+	(doc=ML_COMMENT)?
+	'SecurityCriticality' 
+	OPEN
+		(('characteristic' characteristic=ID) (characteristicDoc=SL_COMMENT)?
+		(((nanoentities+=STRING) ("," nanoentities+=STRING)*)?))
 	CLOSE
 ;
 
 StorageSimilarity:
-	'StorageSimilarity' OPEN
-		'characteristic' characteristic=ID
-		((nanoentities+=STRING) ("," nanoentities+=STRING)*)?
+	(doc=ML_COMMENT)?
+	'StorageSimilarity' 
+	OPEN
+		(('characteristic' characteristic=ID) (characteristicDoc=SL_COMMENT)?
+		(((nanoentities+=STRING) ("," nanoentities+=STRING)*)?))
 	CLOSE
 ;
 
 StructuralVolatility:
-	'StructuralVolatility' OPEN
-		'characteristic' characteristic=ID
-		((nanoentities+=STRING) ("," nanoentities+=STRING)*)?
+	(doc=ML_COMMENT)?
+	'StructuralVolatility' 
+	OPEN
+		(('characteristic' characteristic=ID) (characteristicDoc=SL_COMMENT)?
+		(((nanoentities+=STRING) ("," nanoentities+=STRING)*)?))
 	CLOSE
 ;
 
@@ -98,38 +116,50 @@ RelatedGroup:
 ;
 
 Aggregate:
-	'Aggregate' name=ID OPEN
-		((nanoentities+=STRING) ("," nanoentities+=STRING)*)?
+	(doc=ML_COMMENT)?
+	'Aggregate' name=ID 
+	OPEN
+		(((nanoentities+=STRING) ("," nanoentities+=STRING)*)?)
 	CLOSE
 ;
 
 Entity:
-	'Entity' name=ID OPEN
-		((nanoentities+=STRING) ("," nanoentities+=STRING)*)?
+	(doc=ML_COMMENT)?
+	'Entity' name=ID 
+	OPEN
+		(((nanoentities+=STRING) ("," nanoentities+=STRING)*)?)
 	CLOSE
 ;
 
 PredefinedService:
-	'PredefinedService' name=ID OPEN
-		((nanoentities+=STRING) ("," nanoentities+=STRING)*)?
+	(doc=ML_COMMENT)?
+	'PredefinedService' name=ID 
+	OPEN
+		(((nanoentities+=STRING) ("," nanoentities+=STRING)*)?)
 	CLOSE
 ;
 
 SecurityAccessGroup:
-	'SecurityAccessGroup' name=ID OPEN
+	(doc=ML_COMMENT)?
+	'SecurityAccessGroup' name=ID 
+	OPEN
 		((nanoentities+=STRING) ("," nanoentities+=STRING)*)?
 	CLOSE
 ;
 
 SeparatedSecurityZone:
-	'SeparatedSecurityZone' name=ID OPEN
-		((nanoentities+=STRING) ("," nanoentities+=STRING)*)?
+	(doc=ML_COMMENT)?
+	'SeparatedSecurityZone' name=ID 
+	OPEN
+		(((nanoentities+=STRING) ("," nanoentities+=STRING)*)?)
 	CLOSE
 ;
 
 SharedOwnerGroup:
-	'SharedOwnerGroup' name=ID OPEN
-		((nanoentities+=STRING) ("," nanoentities+=STRING)*)?
+	(doc=ML_COMMENT)?
+	'SharedOwnerGroup' name=ID 
+	OPEN
+		(((nanoentities+=STRING) ("," nanoentities+=STRING)*)?)
 	CLOSE
 ;
 

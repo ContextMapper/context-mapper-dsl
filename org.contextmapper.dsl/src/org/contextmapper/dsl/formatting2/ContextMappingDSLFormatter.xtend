@@ -39,7 +39,7 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 		var semanticRegion = contextMap.allRegionsFor.assignment(contextMapAccess.boundedContextsAssignment_4)
 		for (var i = 0; i <= (contextMap.boundedContexts.size - 1); i++) {
 			if (i == (contextMap.boundedContexts.size - 1)) {
-				semanticRegion.append[setNewLines(2)]
+				semanticRegion.append[newLine]
 			} else {
 				semanticRegion.append[newLine]
 				semanticRegion = semanticRegion.nextSemanticRegion
