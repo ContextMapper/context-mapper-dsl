@@ -15,7 +15,7 @@
  */
 package org.contextmapper.dsl.validation;
 
-import static org.contextmapper.dsl.validation.ValidationMessages.CUSTOMER_SUPPLIER_NOT_ALLOW_OHS_ACL_CONFORMIST_ERROR_MESSAGE;
+import static org.contextmapper.dsl.validation.ValidationMessages.*;
 
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLPackage;
 import org.contextmapper.dsl.contextMappingDSL.CustomerSupplierRelationship;
@@ -36,17 +36,17 @@ public class BoundedContextRelationshipSemanticsValidator extends AbstractDeclar
 	public void customerSupplierRolesValidator(final CustomerSupplierRelationship relationship) {
 		// Upstream in Customer-Supplier relationship should not implement OHS
 		if (relationship.getUpstreamRoles().contains(UpstreamRole.OPEN_HOST_SERVICE))
-			error(CUSTOMER_SUPPLIER_NOT_ALLOW_OHS_ACL_CONFORMIST_ERROR_MESSAGE, relationship,
+			error(CUSTOMER_SUPPLIER_WITH_OHS_ERROR_MESSAGE, relationship,
 					ContextMappingDSLPackage.Literals.UPSTREAM_DOWNSTREAM_RELATIONSHIP__UPSTREAM_ROLES);
 
 		// Downstream in Customer-Supplier relationship should not implement ACL
 		if (relationship.getDownstreamRoles().contains(DownstreamRole.ANTICORRUPTION_LAYER))
-			error(CUSTOMER_SUPPLIER_NOT_ALLOW_OHS_ACL_CONFORMIST_ERROR_MESSAGE, relationship,
+			warning(CUSTOMER_SUPPLIER_WITH_ACL_WARNING_MESSAGE, relationship,
 					ContextMappingDSLPackage.Literals.UPSTREAM_DOWNSTREAM_RELATIONSHIP__DOWNSTREAM_ROLES);
 
 		// Downstream in Customer-Supplier relationship should not implement CONFORMIST
 		if (relationship.getDownstreamRoles().contains(DownstreamRole.CONFORMIST))
-			error(CUSTOMER_SUPPLIER_NOT_ALLOW_OHS_ACL_CONFORMIST_ERROR_MESSAGE, relationship,
+			error(CUSTOMER_SUPPLIER_WITH_CONFORMIST_ERROR_MESSAGE, relationship,
 					ContextMappingDSLPackage.Literals.UPSTREAM_DOWNSTREAM_RELATIONSHIP__DOWNSTREAM_ROLES);
 	}
 
