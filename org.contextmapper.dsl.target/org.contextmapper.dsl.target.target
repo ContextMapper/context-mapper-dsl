@@ -36,5 +36,15 @@
 		<unit id="com.fasterxml.jackson.core.jackson-annotations" version="2.9.2.v20180207-1730"/>
 		<repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20180905201904/repository/"/>
 	</location>
+	<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+		<unit id="net.sourceforge.plantuml.ecore.feature.feature.group" version="1.1.21"/>
+		<unit id="net.sourceforge.plantuml.feature.feature.group" version="1.1.21"/>
+		<unit id="net.sourceforge.plantuml.lib.feature.feature.group" version="1.2018.12"/>
+		<repository location="http://hallvard.github.io/plantuml/"/>
+	</location>
+	<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+		<unit id="de.jcup.asciidoctoreditor.feature.group" version="1.2.0"/>
+		<repository location="https://dl.bintray.com/de-jcup/asciidoctoreditor"/>
+	</location>
 </locations>
 </target>
