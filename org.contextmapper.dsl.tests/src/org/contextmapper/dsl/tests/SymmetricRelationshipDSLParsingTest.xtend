@@ -40,8 +40,8 @@ class SymmetricRelationshipDSLParsingTest {
 		// given
 		val String dslSnippet = '''
 			ContextMap {
-				 testContext
-				 anotherTestContext
+				 add testContext
+				 add anotherTestContext
 
 				 @testrel
 				 testContext Partnership anotherTestContext
@@ -71,8 +71,8 @@ class SymmetricRelationshipDSLParsingTest {
 		// given
 		val String dslSnippet = '''
 			ContextMap {
-				 testContext
-				 anotherTestContext
+				 add testContext
+				 add anotherTestContext
 
 				 testContext <-> anotherTestContext : Partnership
 			}
@@ -100,8 +100,8 @@ class SymmetricRelationshipDSLParsingTest {
 		// given
 		val String dslSnippet = '''
 			ContextMap {
-				 testContext
-				 anotherTestContext
+				 add testContext
+				 add anotherTestContext
 
 				 testContext Shared-Kernel anotherTestContext
 			}
@@ -129,8 +129,8 @@ class SymmetricRelationshipDSLParsingTest {
 		// given
 		val String dslSnippet = '''
 			ContextMap {
-				 testContext
-				 anotherTestContext
+				 add testContext
+				 add anotherTestContext
 
 				 testContext <-> anotherTestContext : Shared-Kernel
 			}

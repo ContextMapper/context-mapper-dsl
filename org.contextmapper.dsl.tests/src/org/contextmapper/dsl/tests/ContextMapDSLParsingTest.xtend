@@ -59,8 +59,8 @@ class ContextMapDSLParsingTest {
 		// given
 		val String dslSnippet = '''
 			ContextMap {
-				 testContext
-				 anotherTestContext
+				 add testContext
+				 add anotherTestContext
 			}
 
 			BoundedContext testContext
@@ -118,7 +118,7 @@ class ContextMapDSLParsingTest {
 			ContextMap {
 				type = ORGANIZATIONAL
 
-				notATeam
+				add notATeam
 			}
 
 			BoundedContext notATeam {
@@ -140,7 +140,7 @@ class ContextMapDSLParsingTest {
 			ContextMap {
 				type = SYSTEM_LANDSCAPE
 
-				aTeam
+				add aTeam
 			}
 
 			BoundedContext aTeam {
@@ -162,8 +162,8 @@ class ContextMapDSLParsingTest {
 			BoundedContext anotherTestContext
 
 			ContextMap {
-				 testContext
-				 anotherTestContext
+				 add testContext
+				 add anotherTestContext
 			}
 		''';
 		// when
