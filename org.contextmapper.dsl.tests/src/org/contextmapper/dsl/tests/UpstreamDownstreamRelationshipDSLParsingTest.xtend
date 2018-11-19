@@ -1,12 +1,12 @@
 /*
  * Copyright 2018 The Context Mapper Project Team
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *    http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -47,15 +47,15 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 		// given
 		val String dslSnippet = '''
 			ContextMap {
-				testContext
-				anotherTestContext
-
+				add testContext
+				add anotherTestContext
+			
 				testContext Upstream-Downstream anotherTestContext {
-					upstream implements PUBLISHED_LANGUAGE, OPEN_HOST_SERVICE
-					downstream implements CONFORMIST
+				upstream implements PUBLISHED_LANGUAGE, OPEN_HOST_SERVICE
+				downstream implements CONFORMIST
 				}
 			}
-
+			
 			BoundedContext testContext
 			BoundedContext anotherTestContext
 		''';
@@ -83,15 +83,15 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 		// given
 		val String dslSnippet = '''
 			ContextMap {
-				testContext
-				anotherTestContext
-
+				add testContext
+				add anotherTestContext
+			
 				testContext <- anotherTestContext : Upstream-Downstream {
-					upstream implements PUBLISHED_LANGUAGE, OPEN_HOST_SERVICE
-					downstream implements CONFORMIST
+				upstream implements PUBLISHED_LANGUAGE, OPEN_HOST_SERVICE
+				downstream implements CONFORMIST
 				}
 			}
-
+			
 			BoundedContext testContext
 			BoundedContext anotherTestContext
 		''';
@@ -119,15 +119,15 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 		// given
 		val String dslSnippet = '''
 			ContextMap {
-				testContext
-				anotherTestContext
-
+				add testContext
+				add anotherTestContext
+			
 				anotherTestContext -> testContext : Upstream-Downstream {
-					upstream implements PUBLISHED_LANGUAGE, OPEN_HOST_SERVICE
-					downstream implements CONFORMIST
+				upstream implements PUBLISHED_LANGUAGE, OPEN_HOST_SERVICE
+				downstream implements CONFORMIST
 				}
 			}
-
+			
 			BoundedContext testContext
 			BoundedContext anotherTestContext
 		''';
@@ -155,12 +155,12 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 		// given
 		val String dslSnippet = '''
 			ContextMap {
-				 testContext
-				 anotherTestContext
-
+				 add testContext
+				 add anotherTestContext
+			
 				 anotherTestContext Customer-Supplier testContext
 			}
-
+			
 			BoundedContext testContext
 			BoundedContext anotherTestContext
 		''';
@@ -183,12 +183,12 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 		// given
 		val String dslSnippet = '''
 			ContextMap {
-				 testContext
-				 anotherTestContext
-
+				 add testContext
+				 add anotherTestContext
+			
 				 anotherTestContext -> testContext : Customer-Supplier
 			}
-
+			
 			BoundedContext testContext
 			BoundedContext anotherTestContext
 		''';
@@ -211,12 +211,12 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 		// given
 		val String dslSnippet = '''
 			ContextMap {
-				 testContext
-				 anotherTestContext
-
+				 add testContext
+				 add anotherTestContext
+			
 				 testContext <- anotherTestContext : Customer-Supplier
 			}
-
+			
 			BoundedContext testContext
 			BoundedContext anotherTestContext
 		''';
@@ -239,14 +239,14 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 		// given
 		val String dslSnippet = '''
 			ContextMap {
-				testContext
-				anotherTestContext
-
+				add testContext
+				add anotherTestContext
+			
 				anotherTestContext Customer-Supplier testContext {
-					supplier implements OPEN_HOST_SERVICE
+				supplier implements OPEN_HOST_SERVICE
 				}
 			}
-
+			
 			BoundedContext testContext
 			BoundedContext anotherTestContext
 		''';
@@ -255,7 +255,7 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 		// then
 		assertThatNoParsingErrorsOccurred(result);
 		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.UPSTREAM_DOWNSTREAM_RELATIONSHIP, "",
-			CUSTOMER_SUPPLIER_NOT_ALLOW_OHS_ACL_CONFORMIST_ERROR_MESSAGE);
+			CUSTOMER_SUPPLIER_WITH_OHS_ERROR_MESSAGE);
 	}
 
 	@Test
@@ -263,14 +263,14 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 		// given
 		val String dslSnippet = '''
 			ContextMap {
-				 testContext
-				 anotherTestContext
-
+				 add testContext
+				 add anotherTestContext
+			
 				 anotherTestContext Customer-Supplier testContext {
 					customer implements ANTICORRUPTION_LAYER
 				 }
 			}
-
+			
 			BoundedContext testContext
 			BoundedContext anotherTestContext
 		''';
@@ -278,8 +278,8 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 		val ContextMappingModel result = parseHelper.parse(dslSnippet);
 		// then
 		assertThatNoParsingErrorsOccurred(result);
-		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.UPSTREAM_DOWNSTREAM_RELATIONSHIP, "",
-			CUSTOMER_SUPPLIER_NOT_ALLOW_OHS_ACL_CONFORMIST_ERROR_MESSAGE);
+		validationTestHelper.assertWarning(result, ContextMappingDSLPackage.Literals.UPSTREAM_DOWNSTREAM_RELATIONSHIP,
+			"", CUSTOMER_SUPPLIER_WITH_ACL_WARNING_MESSAGE);
 	}
 
 	@Test
@@ -287,14 +287,14 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 		// given
 		val String dslSnippet = '''
 			ContextMap {
-				 testContext
-				 anotherTestContext
-
+				 add testContext
+				 add anotherTestContext
+			
 				 anotherTestContext Customer-Supplier testContext {
 					customer implements CONFORMIST
 				 }
 			}
-
+			
 			BoundedContext testContext
 			BoundedContext anotherTestContext
 		''';
@@ -303,7 +303,7 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 		// then
 		assertThatNoParsingErrorsOccurred(result);
 		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.UPSTREAM_DOWNSTREAM_RELATIONSHIP, "",
-			CUSTOMER_SUPPLIER_NOT_ALLOW_OHS_ACL_CONFORMIST_ERROR_MESSAGE);
+			CUSTOMER_SUPPLIER_WITH_CONFORMIST_ERROR_MESSAGE);
 	}
 
 	@Test
@@ -311,11 +311,11 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 		// given
 		val String dslSnippet = '''
 			ContextMap {
-				 anotherTestContext
-
+				 add anotherTestContext
+			
 				 anotherTestContext Customer-Supplier testContext
 			}
-
+			
 			BoundedContext testContext
 			BoundedContext anotherTestContext
 		''';
@@ -332,13 +332,13 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 		// given
 		val String dslSnippet = '''
 			ContextMap {
-				testContext
-				anotherTestContext
-
+				add testContext
+				add anotherTestContext
+			
 				@myRelName
 				anotherTestContext <- testContext : Upstream-Downstream
 			}
-
+			
 			BoundedContext testContext
 			BoundedContext anotherTestContext
 		''';
@@ -355,13 +355,13 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 		// given
 		val String dslSnippet = '''
 			ContextMap {
-				testContext
-				anotherTestContext
-
+				add testContext
+				add anotherTestContext
+			
 				@myRelName
 				anotherTestContext <- testContext : Customer-Supplier
 			}
-
+			
 			BoundedContext testContext
 			BoundedContext anotherTestContext
 		''';
@@ -371,6 +371,30 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 		assertThatNoParsingErrorsOccurred(result);
 		assertThatNoValidationErrorsOccurred(result);
 		assertEquals("myRelName", result.map.relationships.get(0).name);
+	}
+
+	@Test
+	def void canDefineTechnology() {
+		// given
+		val String dslSnippet = '''
+			ContextMap {
+				add testContext
+				add anotherTestContext
+			
+				anotherTestContext <- testContext : Customer-Supplier {
+				implementationTechnology = "RESTful HTTP"
+				}
+			}
+			
+			BoundedContext testContext
+			BoundedContext anotherTestContext
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		assertEquals("RESTful HTTP", result.map.relationships.get(0).implementationTechnology);
 	}
 
 }

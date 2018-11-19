@@ -32,7 +32,7 @@ ContextMap:
 	OPEN
 		(('state' '=' state=ContextMapState)? &
 		('type' '=' type=ContextMapType)?)
-		boundedContexts += [BoundedContext]*
+		('add' boundedContexts += [BoundedContext])*
 		relationships += Relationship*
 	CLOSE
 ;
@@ -75,12 +75,18 @@ Partnership:
 	('@'name=ID)?
 	((participant1 = [BoundedContext] 'Partnership' participant2 = [BoundedContext]) |
 	(participant1 = [BoundedContext] '<->' participant2 = [BoundedContext] ':' 'Partnership')) 
+	(OPEN
+		('implementationTechnology' '=' implementationTechnology=STRING)?
+	CLOSE)?
 ;
 
 SharedKernel:
 	('@'name=ID)?
 	((participant1 = [BoundedContext] 'Shared-Kernel' participant2 = [BoundedContext]) |
 	(participant1 = [BoundedContext] '<->' participant2 = [BoundedContext] ':' 'Shared-Kernel')) 
+	(OPEN
+		('implementationTechnology' '=' implementationTechnology=STRING)?
+	CLOSE)?
 ;
 
 UpstreamDownstreamRelationship:
@@ -91,6 +97,7 @@ UpstreamDownstreamRelationship:
 		(downstream = [BoundedContext] '->' upstream = [BoundedContext] ':' 'Upstream-Downstream')
 	))
 	(OPEN
+		('implementationTechnology' '=' implementationTechnology=STRING)?
 		(('upstream' 'implements' (upstreamRoles+=UpstreamRole) ("," upstreamRoles+=UpstreamRole)*)? &
 		('downstream' 'implements' (downstreamRoles+=DownstreamRole) ("," downstreamRoles+=DownstreamRole)*)?)
 	CLOSE)?))
@@ -103,6 +110,7 @@ CustomerSupplierRelationship:
 		(upstream = [BoundedContext] '<-' downstream = [BoundedContext] ':' 'Customer-Supplier')
 	)
 	(OPEN
+		('implementationTechnology' '=' implementationTechnology=STRING)?
 		(('supplier' 'implements' (upstreamRoles+=UpstreamRole) ("," upstreamRoles+=UpstreamRole)*)? &
 		('customer' 'implements' (downstreamRoles+=DownstreamRole) ("," downstreamRoles+=DownstreamRole)*)?)
 	CLOSE)?)
