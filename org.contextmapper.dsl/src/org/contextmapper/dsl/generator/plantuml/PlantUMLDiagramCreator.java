@@ -52,7 +52,7 @@ public class PlantUMLDiagramCreator {
 		String relationName = "Shared Kernel";
 		if (!"".equals(relationship.getImplementationTechnology()))
 			relationName = relationName + " (" + relationship.getImplementationTechnology() + ")";
-		printSymmetricComponentRelationship(((Partnership) relationship).getParticipant1().getName(), ((Partnership) relationship).getParticipant2().getName(), relationName);
+		printSymmetricComponentRelationship(((SharedKernel) relationship).getParticipant1().getName(), ((SharedKernel) relationship).getParticipant2().getName(), relationName);
 		linebreak();
 	}
 
