@@ -619,27 +619,23 @@ private val DIGITS_PATTERN = Pattern.compile("[0-9]+[0-9]*")
 
 	@Check
 	def checkRepositoryOnlyForAggregateRoot(DomainObject domainObj) {
-		if (domainObj.getRepository() !== null && belongsToAggregate(domainObj)) {
+		if (domainObj.getRepository() !== null && !domainObj.isAggregateRoot) {
 			error("Only aggregate roots can have Repository", DOMAIN_OBJECT__REPOSITORY)
 		}
 	}
 
 	@Check
 	def checkBelongsToRefersToAggregateRoot(DomainObject domainObj) {
-		if (domainObj.belongsTo !== null && belongsToAggregate(domainObj.belongsTo)) {
+		if (domainObj.belongsTo !== null && !domainObj.belongsTo.aggregateRoot) {
 			error("belongsTo should refer to the aggregate root DomainObject", DOMAIN_OBJECT__BELONGS_TO)
 		}
 	}
 
-	def private boolean belongsToAggregate(DomainObject domainObj) {
-		return (domainObj.notAggregateRoot || domainObj.belongsTo !== null)
-	}
-
 	@Check
 	def checkAggregateRootOnlyForPersistentValueObject(ValueObject domainObj) {
-		if (belongsToAggregate(domainObj) && domainObj.isNotPersistent()) {
-			error("not aggregateRoot is only applicable for persistent ValueObjects",
-					DOMAIN_OBJECT__NOT_AGGREGATE_ROOT)
+		if (domainObj.aggregateRoot && domainObj.isNotPersistent()) {
+			error("aggregateRoot is only applicable for persistent ValueObjects",
+					DOMAIN_OBJECT__AGGREGATE_ROOT)
 		}
 	}
 
