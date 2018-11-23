@@ -47,8 +47,8 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 		// given
 		val String dslSnippet = '''
 			ContextMap {
-				add testContext
-				add anotherTestContext
+				contains testContext
+				contains anotherTestContext
 			
 				testContext Upstream-Downstream anotherTestContext {
 				upstream implements PUBLISHED_LANGUAGE, OPEN_HOST_SERVICE
@@ -83,8 +83,8 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 		// given
 		val String dslSnippet = '''
 			ContextMap {
-				add testContext
-				add anotherTestContext
+				contains testContext
+				contains anotherTestContext
 			
 				testContext <- anotherTestContext : Upstream-Downstream {
 				upstream implements PUBLISHED_LANGUAGE, OPEN_HOST_SERVICE
@@ -119,8 +119,8 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 		// given
 		val String dslSnippet = '''
 			ContextMap {
-				add testContext
-				add anotherTestContext
+				contains testContext
+				contains anotherTestContext
 			
 				anotherTestContext -> testContext : Upstream-Downstream {
 				upstream implements PUBLISHED_LANGUAGE, OPEN_HOST_SERVICE
@@ -155,8 +155,8 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 		// given
 		val String dslSnippet = '''
 			ContextMap {
-				 add testContext
-				 add anotherTestContext
+				 contains testContext
+				 contains anotherTestContext
 			
 				 anotherTestContext Customer-Supplier testContext
 			}
@@ -183,8 +183,8 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 		// given
 		val String dslSnippet = '''
 			ContextMap {
-				 add testContext
-				 add anotherTestContext
+				 contains testContext
+				 contains anotherTestContext
 			
 				 anotherTestContext -> testContext : Customer-Supplier
 			}
@@ -211,8 +211,8 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 		// given
 		val String dslSnippet = '''
 			ContextMap {
-				 add testContext
-				 add anotherTestContext
+				 contains testContext
+				 contains anotherTestContext
 			
 				 testContext <- anotherTestContext : Customer-Supplier
 			}
@@ -239,8 +239,8 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 		// given
 		val String dslSnippet = '''
 			ContextMap {
-				add testContext
-				add anotherTestContext
+				contains testContext
+				contains anotherTestContext
 			
 				anotherTestContext Customer-Supplier testContext {
 				supplier implements OPEN_HOST_SERVICE
@@ -263,8 +263,8 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 		// given
 		val String dslSnippet = '''
 			ContextMap {
-				 add testContext
-				 add anotherTestContext
+				 contains testContext
+				 contains anotherTestContext
 			
 				 anotherTestContext Customer-Supplier testContext {
 					customer implements ANTICORRUPTION_LAYER
@@ -287,8 +287,8 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 		// given
 		val String dslSnippet = '''
 			ContextMap {
-				 add testContext
-				 add anotherTestContext
+				 contains testContext
+				 contains anotherTestContext
 			
 				 anotherTestContext Customer-Supplier testContext {
 					customer implements CONFORMIST
@@ -311,7 +311,7 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 		// given
 		val String dslSnippet = '''
 			ContextMap {
-				 add anotherTestContext
+				 contains anotherTestContext
 			
 				 anotherTestContext Customer-Supplier testContext
 			}
@@ -332,8 +332,8 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 		// given
 		val String dslSnippet = '''
 			ContextMap {
-				add testContext
-				add anotherTestContext
+				contains testContext
+				contains anotherTestContext
 			
 				@myRelName
 				anotherTestContext <- testContext : Upstream-Downstream
@@ -355,8 +355,8 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 		// given
 		val String dslSnippet = '''
 			ContextMap {
-				add testContext
-				add anotherTestContext
+				contains testContext
+				contains anotherTestContext
 			
 				@myRelName
 				anotherTestContext <- testContext : Customer-Supplier
@@ -378,8 +378,8 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 		// given
 		val String dslSnippet = '''
 			ContextMap {
-				add testContext
-				add anotherTestContext
+				contains testContext
+				contains anotherTestContext
 			
 				anotherTestContext <- testContext : Customer-Supplier {
 				implementationTechnology = "RESTful HTTP"

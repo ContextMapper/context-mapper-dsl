@@ -40,8 +40,8 @@ class SymmetricRelationshipDSLParsingTest {
 		// given
 		val String dslSnippet = '''
 			ContextMap {
-				 add testContext
-				 add anotherTestContext
+				 contains testContext
+				 contains anotherTestContext
 
 				 @testrel
 				 testContext Partnership anotherTestContext
@@ -71,8 +71,8 @@ class SymmetricRelationshipDSLParsingTest {
 		// given
 		val String dslSnippet = '''
 			ContextMap {
-				 add testContext
-				 add anotherTestContext
+				 contains testContext
+				 contains anotherTestContext
 
 				 testContext <-> anotherTestContext : Partnership
 			}
@@ -100,8 +100,8 @@ class SymmetricRelationshipDSLParsingTest {
 		// given
 		val String dslSnippet = '''
 			ContextMap {
-				 add testContext
-				 add anotherTestContext
+				 contains testContext
+				 contains anotherTestContext
 
 				 testContext Shared-Kernel anotherTestContext
 			}
@@ -129,8 +129,8 @@ class SymmetricRelationshipDSLParsingTest {
 		// given
 		val String dslSnippet = '''
 			ContextMap {
-				 add testContext
-				 add anotherTestContext
+				 contains testContext
+				 contains anotherTestContext
 
 				 testContext <-> anotherTestContext : Shared-Kernel
 			}
@@ -158,8 +158,8 @@ class SymmetricRelationshipDSLParsingTest {
 		// given
 		val String dslSnippet = '''
 			ContextMap {
-				add testContext
-				add anotherTestContext
+				contains testContext
+				contains anotherTestContext
 
 				testContext <-> anotherTestContext : Shared-Kernel {
 				 	implementationTechnology = "RPC"
@@ -182,8 +182,8 @@ class SymmetricRelationshipDSLParsingTest {
 		// given
 		val String dslSnippet = '''
 			ContextMap {
-				add testContext
-				add anotherTestContext
+				contains testContext
+				contains anotherTestContext
 
 				@testrel
 				testContext Partnership anotherTestContext {
