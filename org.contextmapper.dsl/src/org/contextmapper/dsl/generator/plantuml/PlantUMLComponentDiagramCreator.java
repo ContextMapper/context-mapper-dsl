@@ -44,7 +44,7 @@ public class PlantUMLComponentDiagramCreator extends AbstractPlantUMLDiagramCrea
 	private void printSharedKernelRelationship(SharedKernel relationship) {
 		String relationName = "Shared Kernel";
 		if (relationship.getImplementationTechnology() != null && !"".equals(relationship.getImplementationTechnology()))
-			relationName = relationName + " (" + relationship.getImplementationTechnology().concat("a") + ")";
+			relationName = relationName + " (" + relationship.getImplementationTechnology() + ")";
 		printSymmetricComponentRelationship(((SharedKernel) relationship).getParticipant1().getName(), ((SharedKernel) relationship).getParticipant2().getName(), relationName);
 		linebreak();
 	}
