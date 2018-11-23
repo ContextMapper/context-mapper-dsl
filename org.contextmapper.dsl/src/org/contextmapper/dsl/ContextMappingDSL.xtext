@@ -32,7 +32,7 @@ ContextMap:
 	OPEN
 		(('state' '=' state=ContextMapState)? &
 		('type' '=' type=ContextMapType)?)
-		('add' boundedContexts += [BoundedContext])*
+		('contains' boundedContexts += [BoundedContext])*
 		relationships += Relationship*
 	CLOSE
 ;
