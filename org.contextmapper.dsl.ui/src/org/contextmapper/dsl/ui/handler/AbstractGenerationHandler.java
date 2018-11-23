@@ -15,6 +15,7 @@
  */
 package org.contextmapper.dsl.ui.handler;
 
+import org.contextmapper.dsl.ui.internal.DslActivator;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -23,13 +24,17 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.handlers.HandlerUtil;
+import org.eclipse.ui.statushandlers.StatusManager;
 import org.eclipse.xtext.builder.EclipseResourceFileSystemAccess2;
 import org.eclipse.xtext.generator.GeneratorContext;
 import org.eclipse.xtext.generator.IGenerator2;
@@ -70,14 +75,21 @@ public abstract class AbstractGenerationHandler extends AbstractHandler implemen
 					}
 				}
 
-				final EclipseResourceFileSystemAccess2 fsa = fileAccessProvider.get();
-				fsa.setProject(project);
-				fsa.setOutputPath("src-gen");
-				fsa.setMonitor(new NullProgressMonitor());
-				URI uri = URI.createPlatformResourceURI(file.getFullPath().toString(), true);
-				ResourceSet rs = resourceSetProvider.get(project);
-				Resource r = rs.getResource(uri, true);
-				getGenerator().doGenerate(r, fsa, new GeneratorContext());
+				try {
+					final EclipseResourceFileSystemAccess2 fsa = fileAccessProvider.get();
+					fsa.setProject(project);
+					fsa.setOutputPath("src-gen");
+					fsa.setMonitor(new NullProgressMonitor());
+					URI uri = URI.createPlatformResourceURI(file.getFullPath().toString(), true);
+					ResourceSet rs = resourceSetProvider.get(project);
+					Resource r = rs.getResource(uri, true);
+					getGenerator().doGenerate(r, fsa, new GeneratorContext());
+				} catch (Exception e) {
+					String message = e.getMessage() != null && !"".equals(e.getMessage()) ? e.getMessage() : e.getClass().getName() + " occurred in " + this.getClass().getName();
+					Status status = new Status(IStatus.ERROR, DslActivator.PLUGIN_ID, message, e);
+					StatusManager.getManager().handle(status);
+					ErrorDialog.openError(HandlerUtil.getActiveShell(event), "Error", "Exception occured during execution of command!", status);
+				}
 			}
 		}
 		return null;

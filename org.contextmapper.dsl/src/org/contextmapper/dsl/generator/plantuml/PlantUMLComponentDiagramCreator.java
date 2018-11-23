@@ -35,7 +35,7 @@ public class PlantUMLComponentDiagramCreator extends AbstractPlantUMLDiagramCrea
 
 	private void printPartnershipRelationship(Partnership relationship) {
 		String relationName = "Partnership";
-		if (!"".equals(relationship.getImplementationTechnology()))
+		if (relationship.getImplementationTechnology() != null && !"".equals(relationship.getImplementationTechnology()))
 			relationName = relationName + " (" + relationship.getImplementationTechnology() + ")";
 		printSymmetricComponentRelationship(((Partnership) relationship).getParticipant1().getName(), ((Partnership) relationship).getParticipant2().getName(), relationName);
 		linebreak();
@@ -43,8 +43,8 @@ public class PlantUMLComponentDiagramCreator extends AbstractPlantUMLDiagramCrea
 
 	private void printSharedKernelRelationship(SharedKernel relationship) {
 		String relationName = "Shared Kernel";
-		if (!"".equals(relationship.getImplementationTechnology()))
-			relationName = relationName + " (" + relationship.getImplementationTechnology() + ")";
+		if (relationship.getImplementationTechnology() != null && !"".equals(relationship.getImplementationTechnology()))
+			relationName = relationName + " (" + relationship.getImplementationTechnology().concat("a") + ")";
 		printSymmetricComponentRelationship(((SharedKernel) relationship).getParticipant1().getName(), ((SharedKernel) relationship).getParticipant2().getName(), relationName);
 		linebreak();
 	}
@@ -60,10 +60,6 @@ public class PlantUMLComponentDiagramCreator extends AbstractPlantUMLDiagramCrea
 		printInterfaceExposure(upDownRelationship.getUpstream().getName(), interfaceId, upstreamRolesToArray(upDownRelationship.getUpstreamRoles()));
 		printInterfaceUsage(upDownRelationship.getDownstream().getName(), interfaceId, downstreamRolesToArray(upDownRelationship.getDownstreamRoles()));
 		linebreak();
-	}
-
-	public String createClassDiagram(BoundedContext boundedContext) {
-		return "bounded context class diagram...";
 	}
 
 	private void printComponent(String name) {

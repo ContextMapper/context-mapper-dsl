@@ -17,7 +17,9 @@ package org.contextmapper.dsl.generator;
 
 import java.util.List;
 
+import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
+import org.contextmapper.dsl.generator.plantuml.PlantUMLClassDiagramCreator;
 import org.contextmapper.dsl.generator.plantuml.PlantUMLComponentDiagramCreator;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtext.generator.AbstractGenerator;
@@ -41,11 +43,9 @@ public class PlantUMLGenerator extends AbstractGenerator {
 
 			String fileName = resource.getURI().trimFileExtension().lastSegment();
 			fsa.generateFile(fileName + "_ContextMap." + PLANT_UML_FILE_EXT, new PlantUMLComponentDiagramCreator().createDiagram(model.getMap()));
-			// for (BoundedContext boundedContext : model.getMap().getBoundedContexts()) {
-			// fsa.generateFile(fileName + "_BC_" + boundedContext.getName() + "." +
-			// PLANT_UML_FILE_EXT,
-			// new PlantUMLDiagramCreator().createClassDiagram(boundedContext));
-			// }
+			for (BoundedContext boundedContext : model.getMap().getBoundedContexts()) {
+				fsa.generateFile(fileName + "_BC_" + boundedContext.getName() + "." + PLANT_UML_FILE_EXT, new PlantUMLClassDiagramCreator().createDiagram(boundedContext));
+			}
 		}
 	}
 

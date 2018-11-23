@@ -19,18 +19,24 @@ import org.contextmapper.dsl.generator.CMLByServiceCutterOutputGenerator;
 import org.contextmapper.dsl.generator.servicecutter.output.factory.ServiceCutterOutputModelFactory;
 import org.contextmapper.dsl.generator.servicecutter.output.factory.ServiceCutterOutputModelReadingException;
 import org.contextmapper.dsl.generator.servicecutter.output.model.ServiceCutterOutputModel;
+import org.contextmapper.dsl.ui.internal.DslActivator;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.equinox.log.Logger;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.handlers.HandlerUtil;
+import org.eclipse.ui.statushandlers.StatusManager;
 import org.eclipse.xtext.builder.EclipseResourceFileSystemAccess2;
 import org.eclipse.xtext.resource.IResourceDescriptions;
 import org.eclipse.xtext.ui.resource.IResourceSetProvider;
@@ -73,6 +79,11 @@ public class CMLByServiceCutterOutputGenerationHandler extends AbstractHandler i
 					generator.doGenerate(uri, model);
 				} catch (ServiceCutterOutputModelReadingException e) {
 					MessageDialog.openError(HandlerUtil.getActiveShell(event), "Input Error", e.getMessage());
+				} catch (Exception e) {
+					String message = e.getMessage() != null && !"".equals(e.getMessage()) ? e.getMessage() : e.getClass().getName() + " occurred in " + this.getClass().getName();
+					Status status = new Status(IStatus.ERROR, DslActivator.PLUGIN_ID, message, e);
+					StatusManager.getManager().handle(status);
+					ErrorDialog.openError(HandlerUtil.getActiveShell(event), "Error", "Exception occured during execution of command!", status);
 				}
 			}
 		}

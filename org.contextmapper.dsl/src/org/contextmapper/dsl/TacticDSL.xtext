@@ -231,7 +231,7 @@ Entity :
      ("discriminatorLength" "=" discriminatorLength=STRING)? &
      ("inheritanceType" "=" inheritanceType=InheritanceType)? &
      ("validate" "=" validate=STRING)? &
-     ((notAggregateRoot?=NOT "aggregateRoot") | ("aggregateRoot"))? &
+     ((aggregateRoot?="aggregateRoot"))? &
      ("belongsTo" (("@")?belongsTo=[DomainObject]))?)
     ((attributes+=Attribute) |
      (references+=Reference) |
@@ -258,7 +258,7 @@ ValueObject :
      ("inheritanceType" "=" inheritanceType=InheritanceType)? &
      ("validate" "=" validate=STRING)? &
      ((persistent?="persistent") | (notPersistent?=NOT "persistent"))? &
-     ((notAggregateRoot?=NOT "aggregateRoot") | ("aggregateRoot"))? &
+     ((aggregateRoot?="aggregateRoot"))? &
      ("belongsTo" (("@")?belongsTo=[DomainObject]))?)
     ((attributes+=Attribute) |
      (references+=Reference) |
@@ -284,7 +284,7 @@ DomainEvent :
      ("inheritanceType" "=" inheritanceType=InheritanceType)? &
      ("validate" "=" validate=STRING)? &
      (persistent?="persistent")? &
-     ((notAggregateRoot?=NOT "aggregateRoot") | ("aggregateRoot"))? &
+     ((aggregateRoot?="aggregateRoot"))? &
      ("belongsTo" (("@")?belongsTo=[DomainObject]))?
     )
     ((attributes+=Attribute) |
@@ -311,7 +311,7 @@ CommandEvent :
      ("inheritanceType" "=" inheritanceType=InheritanceType)? &
      ("validate" "=" validate=STRING)? &
      (persistent?="persistent")? &
-     ((notAggregateRoot?=NOT "aggregateRoot") | ("aggregateRoot"))? &
+     ((aggregateRoot?="aggregateRoot"))? &
      ("belongsTo" (("@")?belongsTo=[DomainObject]))?
     )
     ((attributes+=Attribute) |
