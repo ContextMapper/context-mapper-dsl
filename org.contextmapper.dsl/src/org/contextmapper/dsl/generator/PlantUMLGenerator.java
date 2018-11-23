@@ -17,9 +17,8 @@ package org.contextmapper.dsl.generator;
 
 import java.util.List;
 
-import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
-import org.contextmapper.dsl.generator.plantuml.PlantUMLDiagramCreator;
+import org.contextmapper.dsl.generator.plantuml.PlantUMLComponentDiagramCreator;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtext.generator.AbstractGenerator;
 import org.eclipse.xtext.generator.IFileSystemAccess2;
@@ -34,19 +33,19 @@ public class PlantUMLGenerator extends AbstractGenerator {
 
 	@Override
 	public void doGenerate(final Resource resource, final IFileSystemAccess2 fsa, final IGeneratorContext context) {
-		List<ContextMappingModel> contextMappingModels = IteratorExtensions.<ContextMappingModel>toList(
-				Iterators.<ContextMappingModel>filter(resource.getAllContents(), ContextMappingModel.class));
+		List<ContextMappingModel> contextMappingModels = IteratorExtensions
+				.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(resource.getAllContents(), ContextMappingModel.class));
 
 		if (contextMappingModels.size() > 0) {
 			ContextMappingModel model = contextMappingModels.get(0);
 
 			String fileName = resource.getURI().trimFileExtension().lastSegment();
-			fsa.generateFile(fileName + "_ContextMap." + PLANT_UML_FILE_EXT,
-					new PlantUMLDiagramCreator().createComponentDiagram(model.getMap()));
-			for (BoundedContext boundedContext : model.getMap().getBoundedContexts()) {
-				fsa.generateFile(fileName + "_BC_" + boundedContext.getName() + "." + PLANT_UML_FILE_EXT,
-						new PlantUMLDiagramCreator().createClassDiagram(boundedContext));
-			}
+			fsa.generateFile(fileName + "_ContextMap." + PLANT_UML_FILE_EXT, new PlantUMLComponentDiagramCreator().createDiagram(model.getMap()));
+			// for (BoundedContext boundedContext : model.getMap().getBoundedContexts()) {
+			// fsa.generateFile(fileName + "_BC_" + boundedContext.getName() + "." +
+			// PLANT_UML_FILE_EXT,
+			// new PlantUMLDiagramCreator().createClassDiagram(boundedContext));
+			// }
 		}
 	}
 
