@@ -1,5 +1,7 @@
 package org.contextmapper.dsl.generator.servicecutter.output.factory;
 
+import java.io.File;
+
 import org.contextmapper.dsl.generator.servicecutter.output.model.ServiceCutterOutputModel;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -21,9 +23,17 @@ public class ServiceCutterOutputModelFactory {
 		try {
 			URI resolvedFile = CommonPlugin.resolve(jsonFileURI);
 			IFile jsonFile = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(resolvedFile.toFileString()));
-			return objectMapper.readValue(jsonFile.getFullPath().toFile(), ServiceCutterOutputModel.class);
+			return createFromJsonFile(jsonFile.getFullPath().toFile());
 		} catch (Exception e) {
 			throw new ServiceCutterOutputModelReadingException(jsonFileURI.toPlatformString(true));
+		}
+	}
+
+	public ServiceCutterOutputModel createFromJsonFile(File jsonFile) {
+		try {
+			return objectMapper.readValue(jsonFile, ServiceCutterOutputModel.class);
+		} catch (Exception e) {
+			throw new ServiceCutterOutputModelReadingException(jsonFile.getAbsolutePath());
 		}
 	}
 
