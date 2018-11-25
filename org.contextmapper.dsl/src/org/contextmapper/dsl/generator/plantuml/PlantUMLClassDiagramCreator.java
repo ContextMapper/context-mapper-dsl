@@ -45,7 +45,7 @@ public class PlantUMLClassDiagramCreator extends AbstractPlantUMLDiagramCreator<
 			sb.append(module.getBasePackage()).append(".").append(module.getName());
 		else
 			sb.append(module.getName());
-		sb.append("{");
+		sb.append(" {");
 		linebreak();
 		for (Aggregate aggregate : module.getAggregates()) {
 			printAggregate(aggregate, 1);

@@ -148,6 +148,18 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>prepare-agent</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 		<pluginManagement>
 			<plugins>
@@ -310,41 +322,22 @@
 				<plugin>
 					<groupId>org.jacoco</groupId>
 					<artifactId>jacoco-maven-plugin</artifactId>
-					<executions>
-						<execution>
-							<id>default-prepare-agent</id>
-							<goals>
-								<goal>prepare-agent</goal>
-							</goals>
-							<configuration>
-								<includes>
-									<include>org.contextmapper.dsl.*</include>
-								</includes>
-								<excludes>
-									<exclude>**/org/eclipse/**/*.class</exclude>
-									<exclude>**.antlr**</exclude>
-									<exclude>**.parseTree**</exclude>
-									<exclude>**Abstract*RuntimeModule.class</exclude>
-									<exclude>**/*SetupGenerated*.class</exclude>
-									<exclude>**/Abstract*Validator.class</exclude>
-									<exclude>**/*GrammarAccess*.class</exclude>
-									<exclude>**/Abstract*UiModule.class</exclude>
-									<exclude>**/Abstract*ProposalProvider.class</exclude>
-									<exclude>**/*Test.class</exclude>
-									<exclude>**/*Internal*</exclude>
-									<exclude>**/*Sequencer*</exclude>
-									<exclude>**/internal/*</exclude>
-								</excludes>
-							</configuration>
-						</execution>
-						<execution>
-							<id>default-report</id>
-							<phase>prepare-package</phase>
-							<goals>
-								<goal>report</goal>
-							</goals>
-						</execution>
-					</executions>
+					<version>${jacoco-version}</version>
+					<configuration>
+						<excludes>
+							<!-- Exclude ANTRL internals -->
+							<exclude>**/dsl/parser/antlr/internal/*.class</exclude>
+							<exclude>**/org/contextmapper/dsl/serializer/*.class</exclude>
+							<exclude>**/org/contextmapper/tactic/dsl/parser/antlr/*.class</exclude>
+							<exclude>**/org/contextmapper/servicecutter/dsl/parser/antlr/*.class</exclude>
+							
+							<!-- Exclude Xtext formatters -->
+							<exclude>**/formatting2/*.class</exclude>
+							
+							<!-- Exclude Sculptor Code -->
+							<exclude>**/org/contextmapper/tactic/dsl/scoping/*.class</exclude>
+						</excludes>
+					</configuration>
 				</plugin>
 			</plugins>
 		</pluginManagement>

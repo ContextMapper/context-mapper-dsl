@@ -73,7 +73,7 @@ public class ServiceCutterOutputToContextMappingModelConverter {
 		return contextMappingModel;
 	}
 
-	public List<Entity> convertEntities(char serviceId, List<String> nanoEntities) {
+	private List<Entity> convertEntities(char serviceId, List<String> nanoEntities) {
 		List<Entity> entities = Lists.newArrayList();
 		for (String nanoEntity : nanoEntities) {
 			String entityName = serviceId + "_" + nanoEntity.split("\\.")[0];
@@ -88,7 +88,7 @@ public class ServiceCutterOutputToContextMappingModelConverter {
 		return entities;
 	}
 
-	public List<Relationship> convertRelationships(List<ServiceRelation> serviceRelations) {
+	private List<Relationship> convertRelationships(List<ServiceRelation> serviceRelations) {
 		List<Relationship> relationships = Lists.newArrayList();
 		for (ServiceRelation relation : serviceRelations) {
 			if ("OUTGOING".equals(relation.getDirection())) {

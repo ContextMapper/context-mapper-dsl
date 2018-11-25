@@ -37,24 +37,12 @@ public class EntityRelation {
 		return origin;
 	}
 
-	public void setOrigin(String origin) {
-		this.origin = origin;
-	}
-
 	public String getDestination() {
 		return destination;
 	}
 
-	public void setDestination(String destination) {
-		this.destination = destination;
-	}
-
 	public Relationtype getType() {
 		return type;
-	}
-
-	public void setType(Relationtype type) {
-		this.type = type;
 	}
 
 }
