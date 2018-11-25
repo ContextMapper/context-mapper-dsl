@@ -5,7 +5,7 @@ echo "This will trigger a release job on Travis. Are you sure you want to contin
 read CONTINUE_RELEASE
 
 if [ "$CONTINUE_RELEASE" = "Y" ]; then
-  TRAVIS_TOKEN=$(travis token)
+  TRAVIS_TOKEN=$(travis token --com)
   TRAVIS_REQUEST='{
    "request": {
    "message": "Trigger Release",
