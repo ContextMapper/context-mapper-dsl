@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/ContextMapper/context-mapper-dsl.svg?branch=master)](https://travis-ci.com/ContextMapper/context-mapper-dsl) [![codecov](https://codecov.io/gh/stefan-ka/context-mapper-dsl/branch/master/graph/badge.svg?token=l8qlcQnX6N)](https://codecov.io/gh/stefan-ka/context-mapper-dsl) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Build Status](https://travis-ci.com/ContextMapper/context-mapper-dsl.svg?branch=master)](https://travis-ci.com/ContextMapper/context-mapper-dsl) [![codecov](https://codecov.io/gh/ContextMapper/context-mapper-dsl/branch/master/graph/badge.svg)](https://codecov.io/gh/ContextMapper/context-mapper-dsl) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 # ContextMapper DSL
 ContextMapper is an open source tool providing a Domain-specific Language based on Domain-Driven Design (DDD) patterns for context mapping and (in the future) service decomposition. 
