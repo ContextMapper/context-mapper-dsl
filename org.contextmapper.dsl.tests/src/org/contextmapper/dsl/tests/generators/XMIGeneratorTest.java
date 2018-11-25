@@ -9,7 +9,7 @@ import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
-import org.contextmapper.dsl.generator.ServiceCutterUserRepresentationsExampleGenerator;
+import org.contextmapper.dsl.generator.XMIGenerator;
 import org.contextmapper.dsl.tests.generators.mocks.ContextMappingModelResourceMock;
 import org.contextmapper.dsl.tests.generators.mocks.IFileSystemAccess2Mock;
 import org.contextmapper.dsl.tests.generators.mocks.IGeneratorContextMock;
@@ -18,19 +18,19 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class ServiceCutterUserRepresentationsExampleGeneratorTest {
+class XMIGeneratorTest {
 
-	private ServiceCutterUserRepresentationsExampleGenerator generator;
+	private XMIGenerator generator;
 	private String dummyInputFilePath = "/integ-test-files/model.cml";
-	private String resultFiltPath = "/integ-test-files/model_user-representations.scl";
+	private String resultFiltPath = "/integ-test-files/model.xmi";
 
 	@BeforeEach
 	public void prepare() {
-		this.generator = new ServiceCutterUserRepresentationsExampleGenerator();
+		this.generator = new XMIGenerator();
 	}
 
 	@Test
-	void canCreateUserRepresentationsFile() {
+	void canCreateXMIModelFromCML() {
 		// given
 		ContextMappingModel model = ContextMappingDSLFactory.eINSTANCE.createContextMappingModel();
 		ContextMap contextMap = ContextMappingDSLFactory.eINSTANCE.createContextMap();
