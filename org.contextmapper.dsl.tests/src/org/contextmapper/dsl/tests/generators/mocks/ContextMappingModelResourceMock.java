@@ -14,20 +14,25 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.util.EcoreUtil.ContentTreeIterator;
 import org.eclipse.xtext.EcoreUtil2;
-import org.eclipse.xtext.parsetree.reconstr.impl.NodeIterator;
 
 public class ContextMappingModelResourceMock implements Resource {
 
 	private ContextMappingModel contextMappingModel;
 	private String filename;
 	private String extension;
+	private URI uri;
 
 	public ContextMappingModelResourceMock(ContextMappingModel contextMappingModel, String filename, String extension) {
 		this.contextMappingModel = contextMappingModel;
 		this.filename = filename;
 		this.extension = extension;
+		this.uri = null;
+	}
+
+	public ContextMappingModelResourceMock(ContextMappingModel contextMappingModel, URI uri) {
+		this.contextMappingModel = contextMappingModel;
+		this.uri = uri;
 	}
 
 	@Override
@@ -55,6 +60,8 @@ public class ContextMappingModelResourceMock implements Resource {
 
 	@Override
 	public URI getURI() {
+		if (uri != null)
+			return uri;
 		return new URIMock(filename, extension);
 	}
 

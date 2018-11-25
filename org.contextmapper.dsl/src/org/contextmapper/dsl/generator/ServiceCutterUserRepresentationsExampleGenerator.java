@@ -18,9 +18,9 @@ package org.contextmapper.dsl.generator;
 import java.io.IOException;
 import java.util.List;
 
-import org.contextmapper.dsl.ContextMappingDSLStandaloneSetup;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.generator.servicecutter.input.userrepresentations.UserRepresentationsExampleFactory;
+import org.contextmapper.servicecutter.dsl.ServiceCutterConfigurationDSLStandaloneSetup;
 import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.ServiceCutterUserRepresentationsModel;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -41,7 +41,7 @@ public class ServiceCutterUserRepresentationsExampleGenerator extends AbstractGe
 		List<ContextMappingModel> contextMappingModels = IteratorExtensions.<ContextMappingModel>toList(
 				Iterators.<ContextMappingModel>filter(resource.getAllContents(), ContextMappingModel.class));
 
-		Injector injector = new ContextMappingDSLStandaloneSetup().createInjectorAndDoEMFRegistration();
+		Injector injector = new ServiceCutterConfigurationDSLStandaloneSetup().createInjectorAndDoEMFRegistration();
 		XtextResourceSet resourceSet = injector.getInstance(XtextResourceSet.class);
 
 		if (contextMappingModels.size() > 0) {
