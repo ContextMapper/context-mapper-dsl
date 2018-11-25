@@ -5,7 +5,7 @@ echo "This will trigger a release job on Travis. Are you sure you want to contin
 read CONTINUE_RELEASE
 
 if [ "$CONTINUE_RELEASE" = "Y" ]; then
-  TRAVIS_TOKEN=$(travis token --pro)
+  TRAVIS_TOKEN=$(travis token)
   TRAVIS_REQUEST='{
    "request": {
    "message": "Trigger Release",
@@ -21,7 +21,7 @@ if [ "$CONTINUE_RELEASE" = "Y" ]; then
    -H "Travis-API-Version: 3" \
    -H "Authorization: token $TRAVIS_TOKEN" \
    -d "$TRAVIS_REQUEST" \
-   https://api.travis-ci.com/repo/stefan-ka%2Fcontext-mapper-dsl/requests
+   https://api.travis-ci.com/repo/ContextMapper%2Fcontext-mapper-dsl/requests
 else
   echo "Aborted."
 fi
