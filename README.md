@@ -1,9 +1,18 @@
 [![Build Status](https://travis-ci.com/ContextMapper/context-mapper-dsl.svg?branch=master)](https://travis-ci.com/ContextMapper/context-mapper-dsl) [![codecov](https://codecov.io/gh/ContextMapper/context-mapper-dsl/branch/master/graph/badge.svg)](https://codecov.io/gh/ContextMapper/context-mapper-dsl) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 # ContextMapper DSL
-ContextMapper is an open source tool providing a Domain-specific Language based on Domain-Driven Design (DDD) patterns for context mapping and (in the future) service decomposition. 
+ContextMapper is an open source tool providing a Domain-specific Language based on Domain-Driven Design (DDD) patterns for context mapping and service decomposition. 
 
 With the ContextMapper DSL language you can express DDD context maps. Once you have modeled your system with the language you can use the provided generators to create UML diagrams or calculate proposals for service decomposition.
+
+## Features
+* ContextMapper DSL language support (CML files; find examples [here](https://github.com/ContextMapper/context-mapper-examples))
+    * Write context maps with bounded contexts and their relationships (Strategic DDD)
+    * Specify bounded contexts (Tactic DDD): Tactic DSL based on [Sculptor](https://github.com/sculptor/sculptor)
+* Generate [PlantUML](http://plantuml.com/) component diagram from context map
+* Generate [PlantUML](http://plantuml.com/) class diagram from bounded context (tactic DDD)
+* Generate [ServiceCutter](https://github.com/ServiceCutter/ServiceCutter) input files for service decomposition proposals
+* Convert [ServiceCutter](https://github.com/ServiceCutter/ServiceCutter) output back into context map (CML)
 
 ## System Requirements
 To use the ContextMapper DSL you need the following tools:
@@ -11,11 +20,12 @@ To use the ContextMapper DSL you need the following tools:
 * [Java JDK](https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) (JDK 8 or newer)
 * [Eclipse](https://www.eclipse.org/downloads/packages/)
 * ContextMapper Eclipse Plugin (Eclipse Update Site: [https://dl.bintray.com/contextmapper/context-mapping-dsl/updates/](https://dl.bintray.com/contextmapper/context-mapping-dsl/updates/))
+* We recommend to install the [PlantUML Eclipse Plugin](https://github.com/hallvard/plantuml) to directly display the generated UML diagrams (Update site: [http://hallvard.github.io/plantuml/](http://hallvard.github.io/plantuml/)).
 
 ## Getting Started
 Install the Eclipe plugin for creating context maps with ContextMapper DSL by using the following update site: [https://dl.bintray.com/contextmapper/context-mapping-dsl/updates/](https://dl.bintray.com/contextmapper/context-mapping-dsl/updates/)
 
-_TODO: provide example project and further instructions_
+Examples which introduce the language (CML) capabilities can be found here: [https://github.com/ContextMapper/context-mapper-examples](https://github.com/ContextMapper/context-mapper-examples)
 
 ## Development
 If you want to contribute and setup the IDE on your local system follow the following instructions. [Here](./wiki/Development) you get the instructions in more details.
