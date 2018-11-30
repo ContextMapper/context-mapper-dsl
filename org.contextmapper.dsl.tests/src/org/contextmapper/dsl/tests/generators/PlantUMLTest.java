@@ -48,7 +48,7 @@ class PlantUMLTest {
 
 		// then
 		assertTrue(plantUML.startsWith("@startuml"));
-		assertTrue(plantUML.endsWith("@enduml\n"));
+		assertTrue(plantUML.endsWith("@enduml" + System.lineSeparator()));
 	}
 
 	@Test
@@ -60,7 +60,7 @@ class PlantUMLTest {
 		String plantUML = creator.createDiagram(contextMap);
 
 		// then
-		assertTrue(plantUML.contains("skinparam componentStyle uml2\n"));
+		assertTrue(plantUML.contains("skinparam componentStyle uml2" + System.lineSeparator()));
 	}
 
 }

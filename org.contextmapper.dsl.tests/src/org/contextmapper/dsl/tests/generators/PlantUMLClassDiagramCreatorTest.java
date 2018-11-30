@@ -89,8 +89,9 @@ class PlantUMLClassDiagramCreatorTest {
 		String plantUML = this.creator.createDiagram(boundedContext);
 
 		// then
-		assertTrue(plantUML.contains("package mySuperModule {\n"));
-		assertTrue(plantUML.contains("	package \"'testAggregate' Aggregate\" <<Rectangle>> {\n	}\n}\n"));
+		assertTrue(plantUML.contains("package mySuperModule {" + System.lineSeparator()));
+		assertTrue(plantUML
+				.contains("	package \"'testAggregate' Aggregate\" <<Rectangle>> {" + System.lineSeparator() + "	}" + System.lineSeparator() + "}" + System.lineSeparator()));
 	}
 
 	@Test
@@ -105,7 +106,7 @@ class PlantUMLClassDiagramCreatorTest {
 		String plantUML = this.creator.createDiagram(boundedContext);
 
 		// then
-		assertTrue(plantUML.contains("package \"'testAggregate' Aggregate\" <<Rectangle>> {\n}\n"));
+		assertTrue(plantUML.contains("package \"'testAggregate' Aggregate\" <<Rectangle>> {" + System.lineSeparator() + "}" + System.lineSeparator()));
 	}
 
 	@Test
@@ -127,7 +128,7 @@ class PlantUMLClassDiagramCreatorTest {
 		String plantUML = this.creator.createDiagram(boundedContext);
 
 		// then
-		assertTrue(plantUML.contains("	class Test <<Entity>> {\n" + "		int amount\n" + "	}\n"));
+		assertTrue(plantUML.contains("	class Test <<Entity>> {" + System.lineSeparator() + "		int amount" + System.lineSeparator() + "	}" + System.lineSeparator()));
 	}
 
 	@Test
@@ -146,7 +147,7 @@ class PlantUMLClassDiagramCreatorTest {
 		String plantUML = this.creator.createDiagram(boundedContext);
 
 		// then
-		assertTrue(plantUML.contains("	class Test <<Aggregate Root>> {\n" + "	}\n"));
+		assertTrue(plantUML.contains("	class Test <<Aggregate Root>> {" + System.lineSeparator() + "	}" + System.lineSeparator()));
 	}
 
 	@Test
@@ -164,7 +165,7 @@ class PlantUMLClassDiagramCreatorTest {
 		String plantUML = this.creator.createDiagram(boundedContext);
 
 		// then
-		assertTrue(plantUML.contains("	class TestValue <<Value Object>> {\n" + "	}\n"));
+		assertTrue(plantUML.contains("	class TestValue <<Value Object>> {" + System.lineSeparator() + "	}" + System.lineSeparator()));
 	}
 
 	@Test
@@ -182,7 +183,7 @@ class PlantUMLClassDiagramCreatorTest {
 		String plantUML = this.creator.createDiagram(boundedContext);
 
 		// then
-		assertTrue(plantUML.contains("	class TestEvent <<Domain Event>> {\n" + "	}\n"));
+		assertTrue(plantUML.contains("	class TestEvent <<Domain Event>> {" + System.lineSeparator() + "	}" + System.lineSeparator()));
 	}
 
 	@Test
@@ -200,7 +201,7 @@ class PlantUMLClassDiagramCreatorTest {
 		String plantUML = this.creator.createDiagram(boundedContext);
 
 		// then
-		assertTrue(plantUML.contains("	class TestCommandEvent <<Command Event>> {\n" + "	}\n"));
+		assertTrue(plantUML.contains("	class TestCommandEvent <<Command Event>> {" + System.lineSeparator() + "	}" + System.lineSeparator()));
 	}
 
 	@Test
@@ -224,7 +225,8 @@ class PlantUMLClassDiagramCreatorTest {
 		String plantUML = this.creator.createDiagram(boundedContext);
 
 		// then
-		assertTrue(plantUML.contains("	enum TestType {\n" + "		VAL1\n		VAL2\n	}\n"));
+		assertTrue(plantUML.contains(
+				"	enum TestType {" + System.lineSeparator() + "		VAL1" + System.lineSeparator() + "		VAL2" + System.lineSeparator() + "	}" + System.lineSeparator()));
 	}
 
 	@Test
@@ -249,9 +251,10 @@ class PlantUMLClassDiagramCreatorTest {
 		String plantUML = this.creator.createDiagram(boundedContext);
 
 		// then
-		assertTrue(plantUML.contains("	class Address <<Entity>> {\n" + "	}\n"));
-		assertTrue(plantUML.contains("	class Customer <<Entity>> {\n" + "		Address entity2Ref\n	}\n"));
-		assertTrue(plantUML.contains("Customer --> Address\n"));
+		assertTrue(plantUML.contains("	class Address <<Entity>> {" + System.lineSeparator() + "	}" + System.lineSeparator()));
+		assertTrue(plantUML
+				.contains("	class Customer <<Entity>> {" + System.lineSeparator() + "		Address entity2Ref" + System.lineSeparator() + "	}" + System.lineSeparator()));
+		assertTrue(plantUML.contains("Customer --> Address" + System.lineSeparator()));
 	}
 
 }
