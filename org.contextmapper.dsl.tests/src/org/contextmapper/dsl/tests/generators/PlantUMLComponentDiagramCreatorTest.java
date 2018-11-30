@@ -51,7 +51,7 @@ class PlantUMLComponentDiagramCreatorTest {
 		String plantUML = this.creator.createDiagram(contextMap);
 
 		// then
-		assertTrue(plantUML.contains("component [mySuperBoundedContext]\n"));
+		assertTrue(plantUML.contains("component [mySuperBoundedContext]" + System.lineSeparator()));
 	}
 
 	@Test
@@ -74,9 +74,9 @@ class PlantUMLComponentDiagramCreatorTest {
 		String plantUML = this.creator.createDiagram(contextMap);
 
 		// then
-		assertTrue(plantUML.contains("component [myContext1]\n"));
-		assertTrue(plantUML.contains("component [myContext2]\n"));
-		assertTrue(plantUML.contains("[myContext1]<-->[myContext2] : Partnership (ourTechnology)\n"));
+		assertTrue(plantUML.contains("component [myContext1]" + System.lineSeparator()));
+		assertTrue(plantUML.contains("component [myContext2]" + System.lineSeparator()));
+		assertTrue(plantUML.contains("[myContext1]<-->[myContext2] : Partnership (ourTechnology)" + System.lineSeparator()));
 	}
 
 	@Test
@@ -99,9 +99,9 @@ class PlantUMLComponentDiagramCreatorTest {
 		String plantUML = this.creator.createDiagram(contextMap);
 
 		// then
-		assertTrue(plantUML.contains("component [myContext1]\n"));
-		assertTrue(plantUML.contains("component [myContext2]\n"));
-		assertTrue(plantUML.contains("[myContext1]<-->[myContext2] : Shared Kernel (ourTechnology)\n"));
+		assertTrue(plantUML.contains("component [myContext1]" + System.lineSeparator()));
+		assertTrue(plantUML.contains("component [myContext2]" + System.lineSeparator()));
+		assertTrue(plantUML.contains("[myContext1]<-->[myContext2] : Shared Kernel (ourTechnology)" + System.lineSeparator()));
 	}
 
 	@Test
@@ -126,11 +126,11 @@ class PlantUMLComponentDiagramCreatorTest {
 		String plantUML = this.creator.createDiagram(contextMap);
 
 		// then
-		assertTrue(plantUML.contains("component [myContext1]\n"));
-		assertTrue(plantUML.contains("component [myContext2]\n"));
-		assertTrue(plantUML.contains("interface \"SOAP\" as myContext2_to_myContext1\n"));
-		assertTrue(plantUML.contains("[myContext1] --> myContext2_to_myContext1 : OPEN_HOST_SERVICE\n"));
-		assertTrue(plantUML.contains("myContext2_to_myContext1 <.. [myContext2] : use : ANTICORRUPTION_LAYER\n"));
+		assertTrue(plantUML.contains("component [myContext1]" + System.lineSeparator()));
+		assertTrue(plantUML.contains("component [myContext2]" + System.lineSeparator()));
+		assertTrue(plantUML.contains("interface \"SOAP\" as myContext2_to_myContext1" + System.lineSeparator()));
+		assertTrue(plantUML.contains("[myContext1] --> myContext2_to_myContext1 : OPEN_HOST_SERVICE" + System.lineSeparator()));
+		assertTrue(plantUML.contains("myContext2_to_myContext1 <.. [myContext2] : use : ANTICORRUPTION_LAYER" + System.lineSeparator()));
 	}
 
 	@Test
@@ -155,11 +155,11 @@ class PlantUMLComponentDiagramCreatorTest {
 		String plantUML = this.creator.createDiagram(contextMap);
 
 		// then
-		assertTrue(plantUML.contains("component [myContext1]\n"));
-		assertTrue(plantUML.contains("component [myContext2]\n"));
-		assertTrue(plantUML.contains("interface \"Customer-Supplier (SOAP)\" as myContext2_to_myContext1\n"));
-		assertTrue(plantUML.contains("[myContext1] --> myContext2_to_myContext1 : OPEN_HOST_SERVICE\n"));
-		assertTrue(plantUML.contains("myContext2_to_myContext1 <.. [myContext2] : use : ANTICORRUPTION_LAYER\n"));
+		assertTrue(plantUML.contains("component [myContext1]" + System.lineSeparator()));
+		assertTrue(plantUML.contains("component [myContext2]" + System.lineSeparator()));
+		assertTrue(plantUML.contains("interface \"Customer-Supplier (SOAP)\" as myContext2_to_myContext1" + System.lineSeparator()));
+		assertTrue(plantUML.contains("[myContext1] --> myContext2_to_myContext1 : OPEN_HOST_SERVICE" + System.lineSeparator()));
+		assertTrue(plantUML.contains("myContext2_to_myContext1 <.. [myContext2] : use : ANTICORRUPTION_LAYER" + System.lineSeparator()));
 	}
 
 }
