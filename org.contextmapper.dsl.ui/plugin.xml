@@ -8,6 +8,7 @@
 			contributorClass="org.eclipse.ui.editors.text.TextEditorActionContributor"
 			default="true"
 			extensions="cml"
+			icon="icons/cml.png"
 			id="org.contextmapper.dsl.ContextMappingDSL"
 			name="ContextMappingDSL Editor">
 		</editor>
@@ -19,6 +20,7 @@
 			contributorClass="org.eclipse.ui.editors.text.TextEditorActionContributor"
 			default="true"
 			extensions="scl"
+			icon="icons/cml.png"
 			id="org.contextmapper.dsl.ServiceCutterConfigurationDSL"
 			name="ServiceCutter Configuration Editor">
 		</editor>
@@ -526,7 +528,7 @@
 	</extension>
 	<extension point="org.eclipse.ui.menus">
 		<menuContribution locationURI="popup:org.eclipse.ui.popup.any?after=additions">
-			<menu id="org.contextmapper.dsl.ui.menu" label="Context Mapper">
+			<menu id="org.contextmapper.dsl.ui.menu" label="Context Mapper" icon="icons/cml.png">
 	            <command defaultHandler="org.contextmapper.dsl.ui.handler.ServiceCutterGenerationHandler" commandId="org.contextmapper.dsl.ui.handler.ServiceCutterGenerationCommand" style="push">
 					<visibleWhen checkEnabled="false">
 						<iterate>
