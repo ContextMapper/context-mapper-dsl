@@ -31,7 +31,7 @@ import com.google.common.collect.Iterators;
 
 public class PlantUMLGenerator extends AbstractGenerator {
 
-	private static final String PLANT_UML_FILE_EXT = "plantuml";
+	private static final String PLANT_UML_FILE_EXT = "puml";
 
 	@Override
 	public void doGenerate(final Resource resource, final IFileSystemAccess2 fsa, final IGeneratorContext context) {
