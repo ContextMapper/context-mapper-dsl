@@ -52,8 +52,8 @@ class PlantUMLGeneratorTest {
 		this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem, new IGeneratorContextMock());
 
 		// then
-		assertTrue(filesystem.getGeneratedFilesMap().containsKey("testmodel_ContextMap.plantuml"));
-		assertTrue(filesystem.getGeneratedFilesMap().containsKey("testmodel_BC_TestContext.plantuml"));
+		assertTrue(filesystem.getGeneratedFilesMap().containsKey("testmodel_ContextMap.puml"));
+		assertTrue(filesystem.getGeneratedFilesMap().containsKey("testmodel_BC_TestContext.puml"));
 	}
 	
 }
