@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature id="org.contextmapper.dsl.feature"
 	label="ContextMappingDSL Feature "
-	version="1.0.2">
+	version="1.0.3.qualifier">
 	<plugin
 			id="org.contextmapper.dsl"
 			download-size="0"
