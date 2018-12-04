@@ -5,6 +5,8 @@ ContextMapper is an open source tool providing a Domain-specific Language based 
 
 With the ContextMapper DSL language you can express DDD context maps. Once you have modeled your system with the language you can use the provided generators to create UML diagrams or calculate proposals for service decomposition.
 
+Checkout our website [https://contextmapper.github.io/](https://contextmapper.github.io/) to get started.
+
 ## Features
 * ContextMapper DSL language support (CML files; find examples [here](https://github.com/ContextMapper/context-mapper-examples))
     * Write context maps with bounded contexts and their relationships (Strategic DDD)
@@ -30,6 +32,8 @@ To use the ContextMapper DSL you need the following tools:
 Install the Eclipe plugin for creating context maps with ContextMapper DSL by using the following update site: [https://dl.bintray.com/contextmapper/context-mapping-dsl/updates/](https://dl.bintray.com/contextmapper/context-mapping-dsl/updates/)
 
 Examples which introduce the language (CML) capabilities can be found here: [https://github.com/ContextMapper/context-mapper-examples](https://github.com/ContextMapper/context-mapper-examples)
+
+Further instructions, user guides and documentation can be found on our website [https://contextmapper.github.io/](https://contextmapper.github.io/).
 
 ## Development
 If you want to contribute and setup the IDE on your local system follow the following instructions. [Here](./wiki/Development) you get the instructions in more details.
