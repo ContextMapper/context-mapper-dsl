@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-	<feature id="org.contextmapper.dsl.feature" version="0.0.0">
-		<category name="main"/>
-	</feature>
-	<feature id="org.contextmapper.dsl.feature.source" version="0.0.0">
-		<category name="main.source"/>
-	</feature>
-	<category-def name="main" label="ContextMappingDSL"/>
-	<category-def name="main.source" label="ContextMappingDSL (Sources)"/>
+   <feature id="org.contextmapper.dsl.feature" version="0.0.0">
+      <category name="main"/>
+   </feature>
+   <feature id="org.contextmapper.dsl.feature.source" version="0.0.0">
+      <category name="main.source"/>
+   </feature>
+   <bundle id="org.eclipse.emf.henshin.interpreter" version="1.4.0.201611301251">
+      <category name="main"/>
+   </bundle>
+   <bundle id="org.eclipse.emf.henshin.model" version="1.4.0.201611301251">
+      <category name="main"/>
+   </bundle>
+   <category-def name="main" label="ContextMappingDSL"/>
+   <category-def name="main.source" label="ContextMappingDSL (Sources)"/>
+   <repository-reference location="http://download.eclipse.org/modeling/emft/henshin/updates/release/" enabled="true" />
 </site>

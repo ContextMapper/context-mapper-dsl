@@ -812,6 +812,10 @@ private val DIGITS_PATTERN = Pattern.compile("[0-9]+[0-9]*")
 
 	@Check
 	def checkDomainObjectDuplicateName(SimpleDomainObject obj) {
+		// for this proof of concept: allow duplicate entities
+		if(obj instanceof Entity)
+			return;
+
 		if (obj.name !== null && obj.rootContainer.eAllOfClass(typeof(SimpleDomainObject)).filter [it.name == obj.name].size > 1) {
 			error("Duplicate name.  There is already an existing Domain Object named '"
 				+ obj.name + "'.", SIMPLE_DOMAIN_OBJECT__NAME, obj.name

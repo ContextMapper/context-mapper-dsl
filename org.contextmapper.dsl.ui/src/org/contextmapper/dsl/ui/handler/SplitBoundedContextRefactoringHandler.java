@@ -1,0 +1,94 @@
+/*
+ * Copyright 2018 The Context Mapper Project Team
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.contextmapper.dsl.ui.handler;
+
+import java.net.URL;
+
+import org.contextmapper.dsl.refactoring.HenshinSplitBoundedContextRefactoring;
+import org.contextmapper.dsl.ui.internal.DslActivator;
+import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.commands.IHandler;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.URIUtil;
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.ui.handlers.HandlerUtil;
+import org.eclipse.ui.statushandlers.StatusManager;
+import org.eclipse.xtext.builder.EclipseResourceFileSystemAccess2;
+import org.eclipse.xtext.resource.IResourceDescriptions;
+import org.eclipse.xtext.ui.editor.XtextEditor;
+import org.eclipse.xtext.ui.editor.utils.EditorUtils;
+import org.eclipse.xtext.ui.resource.IResourceSetProvider;
+import org.osgi.framework.Bundle;
+
+import com.google.inject.Inject;
+import com.google.inject.Provider;
+
+public class SplitBoundedContextRefactoringHandler extends AbstractHandler implements IHandler {
+
+	@Inject
+	private Provider<EclipseResourceFileSystemAccess2> fileAccessProvider;
+
+	@Inject
+	IResourceDescriptions resourceDescriptions;
+
+	@Inject
+	IResourceSetProvider resourceSetProvider;
+
+	@Override
+	public Object execute(ExecutionEvent event) throws ExecutionException {
+		try {
+			XtextEditor xEditor = EditorUtils.getActiveXtextEditor();
+			IResource xResource = xEditor.getResource();
+			
+			final EclipseResourceFileSystemAccess2 fsa = fileAccessProvider.get();
+			fsa.setProject(xResource.getProject());
+			fsa.setMonitor(new NullProgressMonitor());
+			URI uri = URI.createPlatformResourceURI(xResource.getFullPath().toString(), true);
+			
+			ResourceSet rs = resourceSetProvider.get(xResource.getProject());
+			Resource resource = rs.getResource(uri, true);
+			
+			Bundle bundle = DslActivator.getInstance().getBundle();
+			URL henshinFileURL = FileLocator.find(bundle, new Path("henshin-transformations/ContextMapRefactorings.henshin"), null);
+			henshinFileURL = FileLocator.toFileURL(henshinFileURL);
+			
+			HenshinSplitBoundedContextRefactoring refactoring = new HenshinSplitBoundedContextRefactoring(URIUtil.toFile(URIUtil.toURI(henshinFileURL)).getAbsolutePath());
+			refactoring.doRefactor(resource, fsa);
+		} catch (Exception e) {
+			String message = e.getMessage() != null && !"".equals(e.getMessage()) ? e.getMessage() : e.getClass().getName() + " occurred in " + this.getClass().getName();
+			Status status = new Status(IStatus.ERROR, DslActivator.PLUGIN_ID, message, e);
+			StatusManager.getManager().handle(status);
+			ErrorDialog.openError(HandlerUtil.getActiveShell(event), "Error", "Exception occured during execution of command!", status);
+		}
+		return null;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return true;
+	}
+
+}
