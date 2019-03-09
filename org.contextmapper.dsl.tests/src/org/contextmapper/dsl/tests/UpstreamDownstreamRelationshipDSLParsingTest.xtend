@@ -50,10 +50,7 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 				contains testContext
 				contains anotherTestContext
 			
-				testContext Upstream-Downstream anotherTestContext {
-				upstream implements PUBLISHED_LANGUAGE, OPEN_HOST_SERVICE
-				downstream implements CONFORMIST
-				}
+				testContext [OHS,PL]Upstream-Downstream[CF] anotherTestContext
 			}
 			
 			BoundedContext testContext
@@ -86,10 +83,7 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 				contains testContext
 				contains anotherTestContext
 			
-				testContext <- anotherTestContext : Upstream-Downstream {
-				upstream implements PUBLISHED_LANGUAGE, OPEN_HOST_SERVICE
-				downstream implements CONFORMIST
-				}
+				testContext [U,OHS,PL]->[D,CF] anotherTestContext
 			}
 			
 			BoundedContext testContext
@@ -122,10 +116,7 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 				contains testContext
 				contains anotherTestContext
 			
-				anotherTestContext -> testContext : Upstream-Downstream {
-				upstream implements PUBLISHED_LANGUAGE, OPEN_HOST_SERVICE
-				downstream implements CONFORMIST
-				}
+				anotherTestContext [D,CF]<-[U,OHS,PL] testContext
 			}
 			
 			BoundedContext testContext
@@ -186,7 +177,7 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 				 contains testContext
 				 contains anotherTestContext
 			
-				 anotherTestContext -> testContext : Customer-Supplier
+				 anotherTestContext [C]<-[S] testContext
 			}
 			
 			BoundedContext testContext
@@ -214,7 +205,7 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 				 contains testContext
 				 contains anotherTestContext
 			
-				 testContext <- anotherTestContext : Customer-Supplier
+				 testContext [S]->[C] anotherTestContext
 			}
 			
 			BoundedContext testContext
@@ -242,9 +233,7 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 				contains testContext
 				contains anotherTestContext
 			
-				anotherTestContext Customer-Supplier testContext {
-				supplier implements OPEN_HOST_SERVICE
-				}
+				anotherTestContext Customer-Supplier[OHS] testContext
 			}
 			
 			BoundedContext testContext
@@ -266,9 +255,7 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 				 contains testContext
 				 contains anotherTestContext
 			
-				 anotherTestContext Customer-Supplier testContext {
-					customer implements ANTICORRUPTION_LAYER
-				 }
+				 anotherTestContext [ACL]Customer-Supplier testContext
 			}
 			
 			BoundedContext testContext
@@ -290,9 +277,7 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 				 contains testContext
 				 contains anotherTestContext
 			
-				 anotherTestContext Customer-Supplier testContext {
-					customer implements CONFORMIST
-				 }
+				 anotherTestContext [CF]Customer-Supplier testContext
 			}
 			
 			BoundedContext testContext
@@ -336,7 +321,7 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 				contains anotherTestContext
 			
 				@myRelName
-				anotherTestContext <- testContext : Upstream-Downstream
+				anotherTestContext [U]->[D] testContext
 			}
 			
 			BoundedContext testContext
@@ -359,7 +344,7 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 				contains anotherTestContext
 			
 				@myRelName
-				anotherTestContext <- testContext : Customer-Supplier
+				anotherTestContext [S]->[C] testContext
 			}
 			
 			BoundedContext testContext
@@ -381,7 +366,7 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 				contains testContext
 				contains anotherTestContext
 			
-				anotherTestContext <- testContext : Customer-Supplier {
+				anotherTestContext [S]->[C] testContext {
 				implementationTechnology = "RESTful HTTP"
 				}
 			}

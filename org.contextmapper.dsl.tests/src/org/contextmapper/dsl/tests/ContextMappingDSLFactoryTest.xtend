@@ -169,11 +169,11 @@ class ContextMappingDSLFactoryTest {
 		val factory = ContextMappingDSLFactory.eINSTANCE
 		// when
 		val upstreamRoleOHS = factory.createFromString(ContextMappingDSLPackage.Literals.UPSTREAM_ROLE,
-			"OPEN_HOST_SERVICE");
+			"OHS");
 		val asString = factory.convertToString(ContextMappingDSLPackage.Literals.UPSTREAM_ROLE, upstreamRoleOHS);
 		// then
 		assertTrue(upstreamRoleOHS.equals(UpstreamRole.OPEN_HOST_SERVICE));
-		assertEquals("OPEN_HOST_SERVICE", asString);
+		assertEquals("OHS", asString);
 	}
 
 	@Test
@@ -182,12 +182,12 @@ class ContextMappingDSLFactoryTest {
 		val factory = ContextMappingDSLFactory.eINSTANCE
 		// when
 		val downstreamRoleCONFORMIST = factory.createFromString(ContextMappingDSLPackage.Literals.DOWNSTREAM_ROLE,
-			"CONFORMIST");
+			"CF");
 		val asString = factory.convertToString(ContextMappingDSLPackage.Literals.DOWNSTREAM_ROLE,
 			downstreamRoleCONFORMIST);
 		// then
 		assertTrue(downstreamRoleCONFORMIST.equals(DownstreamRole.CONFORMIST));
-		assertEquals("CONFORMIST", asString);
+		assertEquals("CF", asString);
 	}
 
 	@Test

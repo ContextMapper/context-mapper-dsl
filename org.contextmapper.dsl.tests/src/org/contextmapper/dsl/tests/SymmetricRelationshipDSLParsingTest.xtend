@@ -74,7 +74,7 @@ class SymmetricRelationshipDSLParsingTest {
 				 contains testContext
 				 contains anotherTestContext
 
-				 testContext <-> anotherTestContext : Partnership
+				 testContext [P]<->[P] anotherTestContext
 			}
 
 			BoundedContext testContext
@@ -132,7 +132,7 @@ class SymmetricRelationshipDSLParsingTest {
 				 contains testContext
 				 contains anotherTestContext
 
-				 testContext <-> anotherTestContext : Shared-Kernel
+				 testContext [SK]<->[SK] anotherTestContext
 			}
 
 			BoundedContext testContext
@@ -161,7 +161,7 @@ class SymmetricRelationshipDSLParsingTest {
 				contains testContext
 				contains anotherTestContext
 
-				testContext <-> anotherTestContext : Shared-Kernel {
+				testContext [SK]<->[SK] anotherTestContext {
 				 	implementationTechnology = "RPC"
 			 	}
 			}
