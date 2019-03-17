@@ -74,6 +74,39 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 
 		assertTrue(upstreamDownstreamRelationship.downstreamRoles.contains(DownstreamRole.CONFORMIST))
 	}
+	
+	@Test
+	def void canDefineDownstreamUpstream() {
+		// given
+		val String dslSnippet = '''
+			ContextMap {
+				contains testContext
+				contains anotherTestContext
+			
+				anotherTestContext [CF]Downstream-Upstream[OHS,PL] testContext
+			}
+			
+			BoundedContext testContext
+			BoundedContext anotherTestContext
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+
+		val Relationship relationship = result.map.relationships.get(0)
+		assertTrue(relationship.class.interfaces.contains(UpstreamDownstreamRelationship))
+
+		val UpstreamDownstreamRelationship upstreamDownstreamRelationship = relationship as UpstreamDownstreamRelationship
+		assertEquals("testContext", upstreamDownstreamRelationship.upstream.name)
+		assertEquals("anotherTestContext", upstreamDownstreamRelationship.downstream.name)
+
+		assertTrue(upstreamDownstreamRelationship.upstreamRoles.contains(UpstreamRole.OPEN_HOST_SERVICE))
+		assertTrue(upstreamDownstreamRelationship.upstreamRoles.contains(UpstreamRole.PUBLISHED_LANGUAGE))
+
+		assertTrue(upstreamDownstreamRelationship.downstreamRoles.contains(DownstreamRole.CONFORMIST))
+	}
 
 	@Test
 	def void canDefineUpstreamDownstreamInAlternativeSyntaxLeft() {
@@ -150,6 +183,34 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 				 contains anotherTestContext
 			
 				 anotherTestContext Customer-Supplier testContext
+			}
+			
+			BoundedContext testContext
+			BoundedContext anotherTestContext
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+
+		val Relationship relationship = result.map.relationships.get(0)
+		assertTrue(relationship.class.interfaces.contains(CustomerSupplierRelationship))
+
+		val CustomerSupplierRelationship customerSupplierRelationship = relationship as CustomerSupplierRelationship
+		assertEquals("testContext", customerSupplierRelationship.upstream.name)
+		assertEquals("anotherTestContext", customerSupplierRelationship.downstream.name)
+	}
+	
+	@Test
+	def void canDefineSupplierCustomer() {
+		// given
+		val String dslSnippet = '''
+			ContextMap {
+				 contains testContext
+				 contains anotherTestContext
+			
+				 testContext Supplier-Customer anotherTestContext
 			}
 			
 			BoundedContext testContext
