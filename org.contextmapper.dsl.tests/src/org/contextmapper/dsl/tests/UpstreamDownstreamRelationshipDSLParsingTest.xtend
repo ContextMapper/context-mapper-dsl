@@ -381,8 +381,7 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 				contains testContext
 				contains anotherTestContext
 			
-				@myRelName
-				anotherTestContext [U]->[D] testContext
+				anotherTestContext [U]->[D] testContext : myRelName
 			}
 			
 			BoundedContext testContext
@@ -404,8 +403,7 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 				contains testContext
 				contains anotherTestContext
 			
-				@myRelName
-				anotherTestContext [S]->[C] testContext
+				anotherTestContext [S]->[C] testContext : myRelName
 			}
 			
 			BoundedContext testContext
