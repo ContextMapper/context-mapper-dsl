@@ -73,8 +73,13 @@ SymmetricRelationship:
 
 Partnership:
 	('@'name=ID)?
-	((participant1 = [BoundedContext] 'Partnership' participant2 = [BoundedContext]) |
-	(participant1 = [BoundedContext] '[''P'']''<->''[''P'']' participant2 = [BoundedContext])) 
+	(
+		(participant1 = [BoundedContext] 'Partnership' participant2 = [BoundedContext]) |
+		(participant1 = [BoundedContext] '[''P'']' '<->' '[''P'']' participant2 = [BoundedContext]) | 
+		('[''P'']' participant1 = [BoundedContext] '<->' '[''P'']' participant2 = [BoundedContext]) | 
+		(participant1 = [BoundedContext] '[''P'']' '<->' participant2 = [BoundedContext] '[''P'']') |
+		('[''P'']' participant1 = [BoundedContext] '<->' participant2 = [BoundedContext] '[''P'']')
+	) 
 	(OPEN
 		('implementationTechnology' '=' implementationTechnology=STRING)?
 	CLOSE)?
@@ -82,8 +87,13 @@ Partnership:
 
 SharedKernel:
 	('@'name=ID)?
-	((participant1 = [BoundedContext] 'Shared-Kernel' participant2 = [BoundedContext]) |
-	(participant1 = [BoundedContext] '[''SK'']''<->''[''SK'']' participant2 = [BoundedContext])) 
+	(
+		(participant1 = [BoundedContext] 'Shared-Kernel' participant2 = [BoundedContext]) |
+		(participant1 = [BoundedContext] '[''SK'']' '<->' '[''SK'']' participant2 = [BoundedContext]) |
+		('[''SK'']' participant1 = [BoundedContext] '<->' '[''SK'']' participant2 = [BoundedContext]) |
+		(participant1 = [BoundedContext] '[''SK'']' '<->' participant2 = [BoundedContext] '[''SK'']') |
+		('[''SK'']' participant1 = [BoundedContext] '<->' participant2 = [BoundedContext] '[''SK'']')
+	) 
 	(OPEN
 		('implementationTechnology' '=' implementationTechnology=STRING)?
 	CLOSE)?
@@ -93,17 +103,25 @@ UpstreamDownstreamRelationship:
 	CustomerSupplierRelationship | 
 	(
 		(
+			(upstream = [BoundedContext] ('['((upstreamRoles+=UpstreamRole) ("," upstreamRoles+=UpstreamRole)*)?']')?'Upstream-Downstream'('['((downstreamRoles+=DownstreamRole) ("," downstreamRoles+=DownstreamRole)*)?']')? downstream = [BoundedContext]) |
+			(downstream = [BoundedContext] ('['((downstreamRoles+=DownstreamRole) ("," downstreamRoles+=DownstreamRole)*)?']')?'Downstream-Upstream'('['((upstreamRoles+=UpstreamRole) ("," upstreamRoles+=UpstreamRole)*)?']')? upstream = [BoundedContext]) | 
 			(
-				(upstream = [BoundedContext] ('['((upstreamRoles+=UpstreamRole) ("," upstreamRoles+=UpstreamRole)*)?']')?'Upstream-Downstream'('['((downstreamRoles+=DownstreamRole) ("," downstreamRoles+=DownstreamRole)*)?']')? downstream = [BoundedContext]) |
-				(downstream = [BoundedContext] ('['((downstreamRoles+=DownstreamRole) ("," downstreamRoles+=DownstreamRole)*)?']')?'Downstream-Upstream'('['((upstreamRoles+=UpstreamRole) ("," upstreamRoles+=UpstreamRole)*)?']')? upstream = [BoundedContext]) | 
-				(upstream = [BoundedContext] '[''U'(','(upstreamRoles+=UpstreamRole) ("," upstreamRoles+=UpstreamRole)*)?']''->''[''D'(','(downstreamRoles+=DownstreamRole) ("," downstreamRoles+=DownstreamRole)*)?']' downstream = [BoundedContext]) |
-				(downstream = [BoundedContext] '[''D'(','(downstreamRoles+=DownstreamRole) ("," downstreamRoles+=DownstreamRole)*)?']''<-''[''U'(','(upstreamRoles+=UpstreamRole) ("," upstreamRoles+=UpstreamRole)*)?']' upstream = [BoundedContext])
+				(upstream = [BoundedContext] '[''U'(','(upstreamRoles+=UpstreamRole) ("," upstreamRoles+=UpstreamRole)*)?']' '->' '[''D'(','(downstreamRoles+=DownstreamRole) ("," downstreamRoles+=DownstreamRole)*)?']' downstream = [BoundedContext]) |
+				('[''U'(','(upstreamRoles+=UpstreamRole) ("," upstreamRoles+=UpstreamRole)*)?']' upstream = [BoundedContext] '->''[''D'(','(downstreamRoles+=DownstreamRole) ("," downstreamRoles+=DownstreamRole)*)?']' downstream = [BoundedContext]) |
+				(upstream = [BoundedContext] '[''U'(','(upstreamRoles+=UpstreamRole) ("," upstreamRoles+=UpstreamRole)*)?']''->' downstream = [BoundedContext] '[''D'(','(downstreamRoles+=DownstreamRole) ("," downstreamRoles+=DownstreamRole)*)?']') |
+				('[''U'(','(upstreamRoles+=UpstreamRole) ("," upstreamRoles+=UpstreamRole)*)?']' upstream = [BoundedContext] '->' downstream = [BoundedContext] '[''D'(','(downstreamRoles+=DownstreamRole) ("," downstreamRoles+=DownstreamRole)*)?']')
+			) |
+			(
+				(downstream = [BoundedContext] '[''D'(','(downstreamRoles+=DownstreamRole) ("," downstreamRoles+=DownstreamRole)*)?']' '<-' '[''U'(','(upstreamRoles+=UpstreamRole) ("," upstreamRoles+=UpstreamRole)*)?']' upstream = [BoundedContext]) |
+				('[''D'(','(downstreamRoles+=DownstreamRole) ("," downstreamRoles+=DownstreamRole)*)?']' downstream = [BoundedContext] '<-''[''U'(','(upstreamRoles+=UpstreamRole) ("," upstreamRoles+=UpstreamRole)*)?']' upstream = [BoundedContext]) |
+				(downstream = [BoundedContext] '[''D'(','(downstreamRoles+=DownstreamRole) ("," downstreamRoles+=DownstreamRole)*)?']''<-' upstream = [BoundedContext] '[''U'(','(upstreamRoles+=UpstreamRole) ("," upstreamRoles+=UpstreamRole)*)?']') |
+				('[''D'(','(downstreamRoles+=DownstreamRole) ("," downstreamRoles+=DownstreamRole)*)?']' downstream = [BoundedContext] '<-' upstream = [BoundedContext] '[''U'(','(upstreamRoles+=UpstreamRole) ("," upstreamRoles+=UpstreamRole)*)?']')
 			)
-			(':' name=ID)?
-			(OPEN
-				('implementationTechnology' '=' implementationTechnology=STRING)?
-			CLOSE)?
 		)
+		(':' name=ID)?
+		(OPEN
+			('implementationTechnology' '=' implementationTechnology=STRING)?
+		CLOSE)?
 	)
 ;
 
@@ -112,8 +130,18 @@ CustomerSupplierRelationship:
 		(
 			(downstream = [BoundedContext] ('['((downstreamRoles+=DownstreamRole) ("," downstreamRoles+=DownstreamRole)*)?']')?'Customer-Supplier'('['((upstreamRoles+=UpstreamRole) ("," upstreamRoles+=UpstreamRole)*)?']')? upstream = [BoundedContext]) |
 			(upstream = [BoundedContext] ('['((upstreamRoles+=UpstreamRole) ("," upstreamRoles+=UpstreamRole)*)?']')?'Supplier-Customer'('['((downstreamRoles+=DownstreamRole) ("," downstreamRoles+=DownstreamRole)*)?']')? downstream = [BoundedContext]) | 
-			(upstream = [BoundedContext] '['('U'',')?'S'(','(upstreamRoles+=UpstreamRole) ("," upstreamRoles+=UpstreamRole)*)?']''->''['('D'',')?'C'(','(downstreamRoles+=DownstreamRole) ("," downstreamRoles+=DownstreamRole)*)?']' downstream = [BoundedContext]) |
-			(downstream = [BoundedContext] '['('D'',')?'C'(','(downstreamRoles+=DownstreamRole) ("," downstreamRoles+=DownstreamRole)*)?']''<-''['('U'',')?'S'(','(upstreamRoles+=UpstreamRole) ("," upstreamRoles+=UpstreamRole)*)?']' upstream = [BoundedContext])
+			(
+				(upstream = [BoundedContext] '['('U'',')?'S'(','(upstreamRoles+=UpstreamRole) ("," upstreamRoles+=UpstreamRole)*)?']' '->' '['('D'',')?'C'(','(downstreamRoles+=DownstreamRole) ("," downstreamRoles+=DownstreamRole)*)?']' downstream = [BoundedContext]) |
+				('['('U'',')?'S'(','(upstreamRoles+=UpstreamRole) ("," upstreamRoles+=UpstreamRole)*)?']' upstream = [BoundedContext] '->' '['('D'',')?'C'(','(downstreamRoles+=DownstreamRole) ("," downstreamRoles+=DownstreamRole)*)?']' downstream = [BoundedContext]) |
+				(upstream = [BoundedContext] '['('U'',')?'S'(','(upstreamRoles+=UpstreamRole) ("," upstreamRoles+=UpstreamRole)*)?']' '->' downstream = [BoundedContext] '['('D'',')?'C'(','(downstreamRoles+=DownstreamRole) ("," downstreamRoles+=DownstreamRole)*)?']') |
+				('['('U'',')?'S'(','(upstreamRoles+=UpstreamRole) ("," upstreamRoles+=UpstreamRole)*)?']' upstream = [BoundedContext] '->' downstream = [BoundedContext] '['('D'',')?'C'(','(downstreamRoles+=DownstreamRole) ("," downstreamRoles+=DownstreamRole)*)?']')
+			) |
+			(
+				(downstream = [BoundedContext] '['('D'',')?'C'(','(downstreamRoles+=DownstreamRole) ("," downstreamRoles+=DownstreamRole)*)?']' '<-' '['('U'',')?'S'(','(upstreamRoles+=UpstreamRole) ("," upstreamRoles+=UpstreamRole)*)?']' upstream = [BoundedContext]) |
+				('['('D'',')?'C'(','(downstreamRoles+=DownstreamRole) ("," downstreamRoles+=DownstreamRole)*)?']' downstream = [BoundedContext] '<-''['('U'',')?'S'(','(upstreamRoles+=UpstreamRole) ("," upstreamRoles+=UpstreamRole)*)?']' upstream = [BoundedContext]) |
+				(downstream = [BoundedContext] '['('D'',')?'C'(','(downstreamRoles+=DownstreamRole) ("," downstreamRoles+=DownstreamRole)*)?']' '<-' upstream = [BoundedContext] '['('U'',')?'S'(','(upstreamRoles+=UpstreamRole) ("," upstreamRoles+=UpstreamRole)*)?']') |
+				('['('D'',')?'C'(','(downstreamRoles+=DownstreamRole) ("," downstreamRoles+=DownstreamRole)*)?']' downstream = [BoundedContext] '<-' upstream = [BoundedContext] '['('U'',')?'S'(','(upstreamRoles+=UpstreamRole) ("," upstreamRoles+=UpstreamRole)*)?']')
+			)
 		)
 		(':' name=ID)?
 		(OPEN

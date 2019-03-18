@@ -67,7 +67,7 @@ class SymmetricRelationshipDSLParsingTest {
 	}
 
 	@Test
-	def void canDefinePartnershipInAlternativeSyntax() {
+	def void canDefinePartnershipInShortSyntaxVariantOne() {
 		// given
 		val String dslSnippet = '''
 			ContextMap {
@@ -75,6 +75,93 @@ class SymmetricRelationshipDSLParsingTest {
 				 contains anotherTestContext
 
 				 testContext [P]<->[P] anotherTestContext
+			}
+
+			BoundedContext testContext
+			BoundedContext anotherTestContext
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		assertEquals(1, result.map.relationships.size);
+
+		val Relationship relationship = result.map.relationships.get(0)
+		assertTrue(relationship.class.interfaces.contains(Partnership))
+
+		val Partnership partnership = relationship as Partnership;
+		assertEquals("testContext", partnership.participant1.name);
+		assertEquals("anotherTestContext", partnership.participant2.name);
+	}
+	
+	@Test
+	def void canDefinePartnershipInShortSyntaxVariantTwo() {
+		// given
+		val String dslSnippet = '''
+			ContextMap {
+				 contains testContext
+				 contains anotherTestContext
+
+				 [P]testContext <-> [P]anotherTestContext
+			}
+
+			BoundedContext testContext
+			BoundedContext anotherTestContext
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		assertEquals(1, result.map.relationships.size);
+
+		val Relationship relationship = result.map.relationships.get(0)
+		assertTrue(relationship.class.interfaces.contains(Partnership))
+
+		val Partnership partnership = relationship as Partnership;
+		assertEquals("testContext", partnership.participant1.name);
+		assertEquals("anotherTestContext", partnership.participant2.name);
+	}
+	
+	@Test
+	def void canDefinePartnershipInShortSyntaxVariantThree() {
+		// given
+		val String dslSnippet = '''
+			ContextMap {
+				 contains testContext
+				 contains anotherTestContext
+
+				 testContext[P] <-> anotherTestContext[P]
+			}
+
+			BoundedContext testContext
+			BoundedContext anotherTestContext
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		assertEquals(1, result.map.relationships.size);
+
+		val Relationship relationship = result.map.relationships.get(0)
+		assertTrue(relationship.class.interfaces.contains(Partnership))
+
+		val Partnership partnership = relationship as Partnership;
+		assertEquals("testContext", partnership.participant1.name);
+		assertEquals("anotherTestContext", partnership.participant2.name);
+	}
+	
+	@Test
+	def void canDefinePartnershipInShortSyntaxVariantFour() {
+		// given
+		val String dslSnippet = '''
+			ContextMap {
+				 contains testContext
+				 contains anotherTestContext
+
+				 [P]testContext <-> anotherTestContext[P]
 			}
 
 			BoundedContext testContext
@@ -125,7 +212,7 @@ class SymmetricRelationshipDSLParsingTest {
 	}
 
 	@Test
-	def void canDefineSharedKernelInAlternativeSyntax() {
+	def void canDefineSharedKernelInShortSyntaxVariantOne() {
 		// given
 		val String dslSnippet = '''
 			ContextMap {
@@ -133,6 +220,93 @@ class SymmetricRelationshipDSLParsingTest {
 				 contains anotherTestContext
 
 				 testContext [SK]<->[SK] anotherTestContext
+			}
+
+			BoundedContext testContext
+			BoundedContext anotherTestContext
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		assertEquals(1, result.map.relationships.size);
+
+		val Relationship relationship = result.map.relationships.get(0)
+		assertTrue(relationship.class.interfaces.contains(SharedKernel))
+
+		val SharedKernel sharedKernel = relationship as SharedKernel;
+		assertEquals("testContext", sharedKernel.participant1.name);
+		assertEquals("anotherTestContext", sharedKernel.participant2.name);
+	}
+	
+	@Test
+	def void canDefineSharedKernelInShortSyntaxVariantTwo() {
+		// given
+		val String dslSnippet = '''
+			ContextMap {
+				 contains testContext
+				 contains anotherTestContext
+
+				 [SK]testContext <-> [SK]anotherTestContext
+			}
+
+			BoundedContext testContext
+			BoundedContext anotherTestContext
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		assertEquals(1, result.map.relationships.size);
+
+		val Relationship relationship = result.map.relationships.get(0)
+		assertTrue(relationship.class.interfaces.contains(SharedKernel))
+
+		val SharedKernel sharedKernel = relationship as SharedKernel;
+		assertEquals("testContext", sharedKernel.participant1.name);
+		assertEquals("anotherTestContext", sharedKernel.participant2.name);
+	}
+	
+	@Test
+	def void canDefineSharedKernelInShortSyntaxVariantThree() {
+		// given
+		val String dslSnippet = '''
+			ContextMap {
+				 contains testContext
+				 contains anotherTestContext
+
+				 testContext[SK] <-> anotherTestContext[SK]
+			}
+
+			BoundedContext testContext
+			BoundedContext anotherTestContext
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		assertEquals(1, result.map.relationships.size);
+
+		val Relationship relationship = result.map.relationships.get(0)
+		assertTrue(relationship.class.interfaces.contains(SharedKernel))
+
+		val SharedKernel sharedKernel = relationship as SharedKernel;
+		assertEquals("testContext", sharedKernel.participant1.name);
+		assertEquals("anotherTestContext", sharedKernel.participant2.name);
+	}
+	
+	@Test
+	def void canDefineSharedKernelInShortSyntaxVariantFour() {
+		// given
+		val String dslSnippet = '''
+			ContextMap {
+				 contains testContext
+				 contains anotherTestContext
+
+				 [SK]testContext <-> anotherTestContext[SK]
 			}
 
 			BoundedContext testContext
