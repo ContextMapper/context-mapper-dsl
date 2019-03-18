@@ -43,8 +43,7 @@ class SymmetricRelationshipDSLParsingTest {
 				 contains testContext
 				 contains anotherTestContext
 
-				 @testrel
-				 testContext Partnership anotherTestContext
+				 testContext Partnership anotherTestContext : testrel
 			}
 
 			BoundedContext testContext
@@ -190,7 +189,7 @@ class SymmetricRelationshipDSLParsingTest {
 				 contains testContext
 				 contains anotherTestContext
 
-				 testContext Shared-Kernel anotherTestContext
+				 testContext Shared-Kernel anotherTestContext : testrel
 			}
 
 			BoundedContext testContext
@@ -209,6 +208,7 @@ class SymmetricRelationshipDSLParsingTest {
 		val SharedKernel sharedKernel = relationship as SharedKernel;
 		assertEquals("testContext", sharedKernel.participant1.name);
 		assertEquals("anotherTestContext", sharedKernel.participant2.name);
+		assertEquals("testrel", sharedKernel.name);
 	}
 
 	@Test
@@ -359,8 +359,7 @@ class SymmetricRelationshipDSLParsingTest {
 				contains testContext
 				contains anotherTestContext
 
-				@testrel
-				testContext Partnership anotherTestContext {
+				testContext Partnership anotherTestContext : testrel {
 				 	implementationTechnology = "Messaging"
 			 	}
 			}

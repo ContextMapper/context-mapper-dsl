@@ -72,28 +72,28 @@ SymmetricRelationship:
 ;
 
 Partnership:
-	('@'name=ID)?
 	(
 		(participant1 = [BoundedContext] 'Partnership' participant2 = [BoundedContext]) |
 		(participant1 = [BoundedContext] '[''P'']' '<->' '[''P'']' participant2 = [BoundedContext]) | 
 		('[''P'']' participant1 = [BoundedContext] '<->' '[''P'']' participant2 = [BoundedContext]) | 
 		(participant1 = [BoundedContext] '[''P'']' '<->' participant2 = [BoundedContext] '[''P'']') |
 		('[''P'']' participant1 = [BoundedContext] '<->' participant2 = [BoundedContext] '[''P'']')
-	) 
+	)
+	(':' name=ID)? 
 	(OPEN
 		('implementationTechnology' '=' implementationTechnology=STRING)?
 	CLOSE)?
 ;
 
 SharedKernel:
-	('@'name=ID)?
 	(
 		(participant1 = [BoundedContext] 'Shared-Kernel' participant2 = [BoundedContext]) |
 		(participant1 = [BoundedContext] '[''SK'']' '<->' '[''SK'']' participant2 = [BoundedContext]) |
 		('[''SK'']' participant1 = [BoundedContext] '<->' '[''SK'']' participant2 = [BoundedContext]) |
 		(participant1 = [BoundedContext] '[''SK'']' '<->' participant2 = [BoundedContext] '[''SK'']') |
 		('[''SK'']' participant1 = [BoundedContext] '<->' participant2 = [BoundedContext] '[''SK'']')
-	) 
+	)
+	(':' name=ID)? 
 	(OPEN
 		('implementationTechnology' '=' implementationTechnology=STRING)?
 	CLOSE)?
