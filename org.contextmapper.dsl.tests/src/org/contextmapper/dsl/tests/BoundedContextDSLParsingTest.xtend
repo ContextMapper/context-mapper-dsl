@@ -17,6 +17,7 @@ package org.contextmapper.dsl.tests
 
 import com.google.inject.Inject
 import java.util.stream.Collectors
+import org.contextmapper.dsl.contextMappingDSL.BoundedContext
 import org.contextmapper.dsl.contextMappingDSL.BoundedContextType
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLPackage
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel
@@ -29,8 +30,8 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.^extension.ExtendWith
 
 import static org.contextmapper.dsl.tests.util.ParsingErrorAssertions.*
-import static org.junit.jupiter.api.Assertions.*
 import static org.contextmapper.dsl.validation.ValidationMessages.*
+import static org.junit.jupiter.api.Assertions.*
 
 @ExtendWith(InjectionExtension)
 @InjectWith(ContextMappingDSLInjectorProvider)
@@ -172,6 +173,36 @@ class BoundedContextDSLParsingTest {
 		// then
 		assertThatNoParsingErrorsOccurred(result);
 		assertThatNoValidationErrorsOccurred(result);
+		
+		val BoundedContext team = result.boundedContexts.findFirst[it.type == BoundedContextType.TEAM];
+		assertEquals("ContextA", team.realizedBoundedContexts.get(0).name);
+	}
+
+	@Test
+	def void teamCanRealizeMultipleBCs() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext TeamA realizes ContextA, ContextB {
+				type = TEAM
+			}
+			BoundedContext ContextA {
+				type = FEATURE
+			}
+
+			BoundedContext ContextB {
+				type = FEATURE
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		
+		val BoundedContext team = result.boundedContexts.findFirst[it.type == BoundedContextType.TEAM];
+		val realizedBCNames = team.realizedBoundedContexts.stream.map[name].collect(Collectors.toList);
+		assertTrue(realizedBCNames.contains("ContextA"));
+		assertTrue(realizedBCNames.contains("ContextB"));
 	}
 
 	@Test
