@@ -38,7 +38,7 @@ ContextMap:
 ;
 
 BoundedContext:
-	'BoundedContext' name=ID (('implements' (implementedSubdomains+=[Subdomain]) ("," implementedSubdomains+=[Subdomain])*)? & ('realizes' bcRealizedByTeam = [BoundedContext])?)
+	'BoundedContext' name=ID (('implements' (implementedSubdomains+=[Subdomain]) ("," implementedSubdomains+=[Subdomain])*)? & ('realizes' (realizedBoundedContexts+=[BoundedContext]) ("," realizedBoundedContexts+=[BoundedContext])*)?)
 	(
 		OPEN
 			(('domainVisionStatement' '=' domainVisionStatement=STRING)? &

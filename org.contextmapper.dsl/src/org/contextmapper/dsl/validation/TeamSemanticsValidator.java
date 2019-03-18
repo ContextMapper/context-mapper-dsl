@@ -33,9 +33,10 @@ public class TeamSemanticsValidator extends AbstractDeclarativeValidator {
 
 	@Check
 	public void onlyTeamsCanRealizeBoundedContexts(final BoundedContext boundedContext) {
-		if (boundedContext.getBcRealizedByTeam() != null && !BoundedContextType.TEAM.equals(boundedContext.getType()))
+		if (boundedContext.getRealizedBoundedContexts() != null && !boundedContext.getRealizedBoundedContexts().isEmpty()
+				&& !BoundedContextType.TEAM.equals(boundedContext.getType()))
 			error(String.format(ONLY_TEAMS_CAN_REALIZE_OTHER_BOUNDED_CONTEXT, boundedContext.getName()), boundedContext,
-					ContextMappingDSLPackage.Literals.BOUNDED_CONTEXT__BC_REALIZED_BY_TEAM);
+					ContextMappingDSLPackage.Literals.BOUNDED_CONTEXT__REALIZED_BOUNDED_CONTEXTS);
 	}
 
 }
