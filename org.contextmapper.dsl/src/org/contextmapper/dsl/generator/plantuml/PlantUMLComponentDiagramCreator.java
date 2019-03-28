@@ -162,10 +162,8 @@ public class PlantUMLComponentDiagramCreator extends AbstractPlantUMLDiagramCrea
 			return "Shared Kernel";
 		else if (relationship instanceof CustomerSupplierRelationship)
 			return "Customer-Supplier";
-		else if (relationship instanceof UpstreamDownstreamRelationship)
-			return "Upstream-Downstream";
 		else
-			return "Unknown relationship type";
+			return "Upstream-Downstream";
 	}
 
 }
