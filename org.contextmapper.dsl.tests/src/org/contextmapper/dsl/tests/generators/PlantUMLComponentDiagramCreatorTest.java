@@ -27,6 +27,7 @@ import org.contextmapper.dsl.contextMappingDSL.SharedKernel;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamRole;
 import org.contextmapper.dsl.generator.plantuml.PlantUMLComponentDiagramCreator;
+import org.contextmapper.dsl.validation.ValidationMessages;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -160,6 +161,18 @@ class PlantUMLComponentDiagramCreatorTest {
 		assertTrue(plantUML.contains("interface \"Customer-Supplier (SOAP)\" as myContext2_to_myContext1" + System.lineSeparator()));
 		assertTrue(plantUML.contains("[myContext1] --> myContext2_to_myContext1 : OPEN_HOST_SERVICE" + System.lineSeparator()));
 		assertTrue(plantUML.contains("myContext2_to_myContext1 <.. [myContext2] : use : ANTICORRUPTION_LAYER" + System.lineSeparator()));
+	}
+
+	@Test
+	public void createsNoteIfDiagramIsEmpty() {
+		// given
+		ContextMap contextMap = ContextMappingDSLFactory.eINSTANCE.createContextMap();
+
+		// when
+		String plantUML = this.creator.createDiagram(contextMap);
+
+		// then
+		assertTrue(plantUML.contains("note \"" + ValidationMessages.EMPTY_UML_COMPONENT_DIAGRAM_MESSAGE + "\" as EmptyDiagramError" + System.lineSeparator()));
 	}
 
 }
