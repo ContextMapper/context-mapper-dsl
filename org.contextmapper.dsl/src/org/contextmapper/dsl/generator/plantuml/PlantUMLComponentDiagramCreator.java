@@ -26,12 +26,17 @@ import org.contextmapper.dsl.contextMappingDSL.Relationship;
 import org.contextmapper.dsl.contextMappingDSL.SharedKernel;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamRole;
+import org.contextmapper.dsl.validation.ValidationMessages;
 import org.eclipse.emf.common.util.EList;
 
 public class PlantUMLComponentDiagramCreator extends AbstractPlantUMLDiagramCreator<ContextMap> implements PlantUMLDiagramCreator<ContextMap> {
 
 	@Override
 	protected void printDiagramContent(ContextMap contextMap) {
+		if (contextMap.getBoundedContexts().size() <= 0) {
+			printEmptyDiagramNote();
+			return;
+		}
 		for (BoundedContext boundedContext : contextMap.getBoundedContexts()) {
 			printComponent(boundedContext.getName());
 		}
@@ -46,6 +51,11 @@ public class PlantUMLComponentDiagramCreator extends AbstractPlantUMLDiagramCrea
 			}
 		}
 
+	}
+
+	private void printEmptyDiagramNote() {
+		sb.append("note").append(" ").append("\"").append(ValidationMessages.EMPTY_UML_COMPONENT_DIAGRAM_MESSAGE).append("\"").append(" as EmptyDiagramError");
+		linebreak();
 	}
 
 	private void printPartnershipRelationship(Partnership relationship) {

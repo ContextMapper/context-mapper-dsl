@@ -18,6 +18,7 @@ package org.contextmapper.dsl.generator.plantuml;
 import java.util.List;
 
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
+import org.contextmapper.dsl.validation.ValidationMessages;
 import org.contextmapper.tactic.dsl.tacticdsl.Aggregate;
 import org.contextmapper.tactic.dsl.tacticdsl.Attribute;
 import org.contextmapper.tactic.dsl.tacticdsl.CollectionType;
@@ -45,6 +46,10 @@ public class PlantUMLClassDiagramCreator extends AbstractPlantUMLDiagramCreator<
 	protected void printDiagramContent(BoundedContext boundedContext) {
 		this.relationships = Lists.newArrayList();
 		this.boundedContextsDomainObjects = EcoreUtil2.<SimpleDomainObject>getAllContentsOfType(boundedContext, SimpleDomainObject.class);
+		if(this.boundedContextsDomainObjects.size() <= 0) {
+			printEmptyDiagramNote();
+			return;
+		}
 		for (Module module : boundedContext.getModules()) {
 			printModule(module);
 		}
@@ -52,6 +57,11 @@ public class PlantUMLClassDiagramCreator extends AbstractPlantUMLDiagramCreator<
 			printAggregate(aggregate, 0);
 		}
 		printReferences(0);
+	}
+	
+	private void printEmptyDiagramNote() {
+		sb.append("note").append(" ").append("\"").append(ValidationMessages.EMPTY_UML_CLASS_DIAGRAM_MESSAGE).append("\"").append(" as EmptyDiagramError");
+		linebreak();
 	}
 
 	private void printModule(Module module) {

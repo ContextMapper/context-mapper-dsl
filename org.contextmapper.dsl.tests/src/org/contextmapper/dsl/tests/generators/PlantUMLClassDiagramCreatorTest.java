@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
 import org.contextmapper.dsl.generator.plantuml.PlantUMLClassDiagramCreator;
+import org.contextmapper.dsl.validation.ValidationMessages;
 import org.contextmapper.tactic.dsl.tacticdsl.Aggregate;
 import org.contextmapper.tactic.dsl.tacticdsl.Attribute;
 import org.contextmapper.tactic.dsl.tacticdsl.CommandEvent;
@@ -50,6 +51,7 @@ class PlantUMLClassDiagramCreatorTest {
 		Module testModule = TacticdslFactory.eINSTANCE.createModule();
 		testModule.setName("mySuperModule");
 		boundedContext.getModules().add(testModule);
+		testModule.getDomainObjects().add(TacticdslFactory.eINSTANCE.createSimpleDomainObject());
 
 		// when
 		String plantUML = this.creator.createDiagram(boundedContext);
@@ -66,7 +68,10 @@ class PlantUMLClassDiagramCreatorTest {
 		testModule.setName("mySuperModule");
 		testModule.setBasePackage("org.contextmapper");
 		boundedContext.getModules().add(testModule);
-
+		Entity testEntity = TacticdslFactory.eINSTANCE.createEntity();
+		testEntity.setName("TestEntity");
+		testModule.getDomainObjects().add(testEntity);
+		
 		// when
 		String plantUML = this.creator.createDiagram(boundedContext);
 
@@ -84,6 +89,7 @@ class PlantUMLClassDiagramCreatorTest {
 		Aggregate aggregate = TacticdslFactory.eINSTANCE.createAggregate();
 		aggregate.setName("testAggregate");
 		testModule.getAggregates().add(aggregate);
+		aggregate.getDomainObjects().add(TacticdslFactory.eINSTANCE.createSimpleDomainObject());
 
 		// when
 		String plantUML = this.creator.createDiagram(boundedContext);
@@ -101,6 +107,7 @@ class PlantUMLClassDiagramCreatorTest {
 		Aggregate aggregate = TacticdslFactory.eINSTANCE.createAggregate();
 		aggregate.setName("testAggregate");
 		boundedContext.getAggregates().add(aggregate);
+		aggregate.getDomainObjects().add(TacticdslFactory.eINSTANCE.createSimpleDomainObject());
 
 		// when
 		String plantUML = this.creator.createDiagram(boundedContext);
@@ -255,6 +262,18 @@ class PlantUMLClassDiagramCreatorTest {
 		assertTrue(plantUML
 				.contains("	class Customer <<Entity>> {" + System.lineSeparator() + "		Address entity2Ref" + System.lineSeparator() + "	}" + System.lineSeparator()));
 		assertTrue(plantUML.contains("Customer --> Address" + System.lineSeparator()));
+	}
+	
+	@Test
+	public void createsNoteIfBoundedContextIsEmpty() {
+		// given
+		BoundedContext boundedContext = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
+		
+		// when
+		String plantUML = this.creator.createDiagram(boundedContext);
+		
+		// then
+		assertTrue(plantUML.contains("note \"" + ValidationMessages.EMPTY_UML_CLASS_DIAGRAM_MESSAGE + "\" as EmptyDiagramError" + System.lineSeparator()));
 	}
 
 }
