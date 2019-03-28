@@ -79,6 +79,32 @@ class PlantUMLComponentDiagramCreatorTest {
 		assertTrue(plantUML.contains("component [myContext2]" + System.lineSeparator()));
 		assertTrue(plantUML.contains("[myContext1]<-->[myContext2] : Partnership (ourTechnology)" + System.lineSeparator()));
 	}
+	
+	@Test
+	public void canCreatePartnershipRelationshipWithName() {
+		// given
+		ContextMap contextMap = ContextMappingDSLFactory.eINSTANCE.createContextMap();
+		BoundedContext boundedContext1 = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
+		boundedContext1.setName("myContext1");
+		BoundedContext boundedContext2 = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
+		boundedContext2.setName("myContext2");
+		contextMap.getBoundedContexts().add(boundedContext1);
+		contextMap.getBoundedContexts().add(boundedContext2);
+		Partnership partnership = ContextMappingDSLFactory.eINSTANCE.createPartnership();
+		partnership.setParticipant1(boundedContext1);
+		partnership.setParticipant2(boundedContext2);
+		partnership.setImplementationTechnology("ourTechnology");
+		partnership.setName("myPartnershipTest");
+		contextMap.getRelationships().add(partnership);
+
+		// when
+		String plantUML = this.creator.createDiagram(contextMap);
+
+		// then
+		assertTrue(plantUML.contains("component [myContext1]" + System.lineSeparator()));
+		assertTrue(plantUML.contains("component [myContext2]" + System.lineSeparator()));
+		assertTrue(plantUML.contains("[myContext1]<-->[myContext2] : myPartnershipTest (ourTechnology)" + System.lineSeparator()));
+	}
 
 	@Test
 	public void canCreateSharedKernelRelationship() {
@@ -103,6 +129,32 @@ class PlantUMLComponentDiagramCreatorTest {
 		assertTrue(plantUML.contains("component [myContext1]" + System.lineSeparator()));
 		assertTrue(plantUML.contains("component [myContext2]" + System.lineSeparator()));
 		assertTrue(plantUML.contains("[myContext1]<-->[myContext2] : Shared Kernel (ourTechnology)" + System.lineSeparator()));
+	}
+	
+	@Test
+	public void canCreateSharedKernelRelationshipWithName() {
+		// given
+		ContextMap contextMap = ContextMappingDSLFactory.eINSTANCE.createContextMap();
+		BoundedContext boundedContext1 = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
+		boundedContext1.setName("myContext1");
+		BoundedContext boundedContext2 = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
+		boundedContext2.setName("myContext2");
+		contextMap.getBoundedContexts().add(boundedContext1);
+		contextMap.getBoundedContexts().add(boundedContext2);
+		SharedKernel sharedKernel = ContextMappingDSLFactory.eINSTANCE.createSharedKernel();
+		sharedKernel.setParticipant1(boundedContext1);
+		sharedKernel.setParticipant2(boundedContext2);
+		sharedKernel.setImplementationTechnology("ourTechnology");
+		sharedKernel.setName("mySharedKernel");
+		contextMap.getRelationships().add(sharedKernel);
+
+		// when
+		String plantUML = this.creator.createDiagram(contextMap);
+
+		// then
+		assertTrue(plantUML.contains("component [myContext1]" + System.lineSeparator()));
+		assertTrue(plantUML.contains("component [myContext2]" + System.lineSeparator()));
+		assertTrue(plantUML.contains("[myContext1]<-->[myContext2] : mySharedKernel (ourTechnology)" + System.lineSeparator()));
 	}
 
 	@Test
@@ -130,6 +182,36 @@ class PlantUMLComponentDiagramCreatorTest {
 		assertTrue(plantUML.contains("component [myContext1]" + System.lineSeparator()));
 		assertTrue(plantUML.contains("component [myContext2]" + System.lineSeparator()));
 		assertTrue(plantUML.contains("interface \"SOAP\" as myContext2_to_myContext1" + System.lineSeparator()));
+		assertTrue(plantUML.contains("[myContext1] --> myContext2_to_myContext1 : OPEN_HOST_SERVICE" + System.lineSeparator()));
+		assertTrue(plantUML.contains("myContext2_to_myContext1 <.. [myContext2] : use : ANTICORRUPTION_LAYER" + System.lineSeparator()));
+	}
+	
+	@Test
+	public void canCreateUpstreamDownstreamRelationshipWithName() {
+		// given
+		ContextMap contextMap = ContextMappingDSLFactory.eINSTANCE.createContextMap();
+		BoundedContext boundedContext1 = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
+		boundedContext1.setName("myContext1");
+		BoundedContext boundedContext2 = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
+		boundedContext2.setName("myContext2");
+		contextMap.getBoundedContexts().add(boundedContext1);
+		contextMap.getBoundedContexts().add(boundedContext2);
+		UpstreamDownstreamRelationship relationship = ContextMappingDSLFactory.eINSTANCE.createUpstreamDownstreamRelationship();
+		relationship.setUpstream(boundedContext1);
+		relationship.setDownstream(boundedContext2);
+		relationship.setImplementationTechnology("SOAP");
+		relationship.setName("myRel");
+		relationship.getUpstreamRoles().add(UpstreamRole.OPEN_HOST_SERVICE);
+		relationship.getDownstreamRoles().add(DownstreamRole.ANTICORRUPTION_LAYER);
+		contextMap.getRelationships().add(relationship);
+
+		// when
+		String plantUML = this.creator.createDiagram(contextMap);
+
+		// then
+		assertTrue(plantUML.contains("component [myContext1]" + System.lineSeparator()));
+		assertTrue(plantUML.contains("component [myContext2]" + System.lineSeparator()));
+		assertTrue(plantUML.contains("interface \"myRel (SOAP)\" as myContext2_to_myContext1" + System.lineSeparator()));
 		assertTrue(plantUML.contains("[myContext1] --> myContext2_to_myContext1 : OPEN_HOST_SERVICE" + System.lineSeparator()));
 		assertTrue(plantUML.contains("myContext2_to_myContext1 <.. [myContext2] : use : ANTICORRUPTION_LAYER" + System.lineSeparator()));
 	}
@@ -162,7 +244,63 @@ class PlantUMLComponentDiagramCreatorTest {
 		assertTrue(plantUML.contains("[myContext1] --> myContext2_to_myContext1 : OPEN_HOST_SERVICE" + System.lineSeparator()));
 		assertTrue(plantUML.contains("myContext2_to_myContext1 <.. [myContext2] : use : ANTICORRUPTION_LAYER" + System.lineSeparator()));
 	}
+	
+	@Test
+	public void canCreateCustomerSupplierRelationshipWithName() {
+		// given
+		ContextMap contextMap = ContextMappingDSLFactory.eINSTANCE.createContextMap();
+		BoundedContext boundedContext1 = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
+		boundedContext1.setName("myContext1");
+		BoundedContext boundedContext2 = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
+		boundedContext2.setName("myContext2");
+		contextMap.getBoundedContexts().add(boundedContext1);
+		contextMap.getBoundedContexts().add(boundedContext2);
+		CustomerSupplierRelationship relationship = ContextMappingDSLFactory.eINSTANCE.createCustomerSupplierRelationship();
+		relationship.setUpstream(boundedContext1);
+		relationship.setDownstream(boundedContext2);
+		relationship.setImplementationTechnology("SOAP");
+		relationship.setName("MyCS");
+		relationship.getUpstreamRoles().add(UpstreamRole.OPEN_HOST_SERVICE);
+		relationship.getDownstreamRoles().add(DownstreamRole.ANTICORRUPTION_LAYER);
+		contextMap.getRelationships().add(relationship);
 
+		// when
+		String plantUML = this.creator.createDiagram(contextMap);
+
+		// then
+		assertTrue(plantUML.contains("component [myContext1]" + System.lineSeparator()));
+		assertTrue(plantUML.contains("component [myContext2]" + System.lineSeparator()));
+		assertTrue(plantUML.contains("interface \"MyCS (SOAP)\" as myContext2_to_myContext1" + System.lineSeparator()));
+		assertTrue(plantUML.contains("[myContext1] --> myContext2_to_myContext1 : OPEN_HOST_SERVICE" + System.lineSeparator()));
+		assertTrue(plantUML.contains("myContext2_to_myContext1 <.. [myContext2] : use : ANTICORRUPTION_LAYER" + System.lineSeparator()));
+	}
+
+	@Test
+	public void canCreateUpstreamDownstreamRelationshipWithoutNameAndTechnology() {
+		// given
+		ContextMap contextMap = ContextMappingDSLFactory.eINSTANCE.createContextMap();
+		BoundedContext boundedContext1 = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
+		boundedContext1.setName("myContext1");
+		BoundedContext boundedContext2 = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
+		boundedContext2.setName("myContext2");
+		contextMap.getBoundedContexts().add(boundedContext1);
+		contextMap.getBoundedContexts().add(boundedContext2);
+		UpstreamDownstreamRelationship relationship = ContextMappingDSLFactory.eINSTANCE.createUpstreamDownstreamRelationship();
+		relationship.setUpstream(boundedContext1);
+		relationship.setDownstream(boundedContext2);
+		contextMap.getRelationships().add(relationship);
+		
+		// when
+		String plantUML = this.creator.createDiagram(contextMap);
+
+		// then
+		assertTrue(plantUML.contains("component [myContext1]" + System.lineSeparator()));
+		assertTrue(plantUML.contains("component [myContext2]" + System.lineSeparator()));
+		assertTrue(plantUML.contains("interface \"Upstream-Downstream\" as myContext2_to_myContext1" + System.lineSeparator()));
+		assertTrue(plantUML.contains("[myContext1] --> myContext2_to_myContext1" + System.lineSeparator()));
+		assertTrue(plantUML.contains("myContext2_to_myContext1 <.. [myContext2] : use" + System.lineSeparator()));
+	}
+	
 	@Test
 	public void createsNoteIfDiagramIsEmpty() {
 		// given

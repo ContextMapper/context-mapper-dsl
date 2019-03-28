@@ -24,6 +24,7 @@ import org.contextmapper.dsl.contextMappingDSL.DownstreamRole;
 import org.contextmapper.dsl.contextMappingDSL.Partnership;
 import org.contextmapper.dsl.contextMappingDSL.Relationship;
 import org.contextmapper.dsl.contextMappingDSL.SharedKernel;
+import org.contextmapper.dsl.contextMappingDSL.SymmetricRelationship;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamRole;
 import org.contextmapper.dsl.validation.ValidationMessages;
@@ -59,29 +60,21 @@ public class PlantUMLComponentDiagramCreator extends AbstractPlantUMLDiagramCrea
 	}
 
 	private void printPartnershipRelationship(Partnership relationship) {
-		String relationName = "Partnership";
-		if (relationship.getImplementationTechnology() != null && !"".equals(relationship.getImplementationTechnology()))
-			relationName = relationName + " (" + relationship.getImplementationTechnology() + ")";
-		printSymmetricComponentRelationship(((Partnership) relationship).getParticipant1().getName(), ((Partnership) relationship).getParticipant2().getName(), relationName);
+		printSymmetricComponentRelationship(((Partnership) relationship).getParticipant1().getName(), ((Partnership) relationship).getParticipant2().getName(),
+				getRelationshipLabel(relationship));
 		linebreak();
 	}
 
 	private void printSharedKernelRelationship(SharedKernel relationship) {
-		String relationName = "Shared Kernel";
-		if (relationship.getImplementationTechnology() != null && !"".equals(relationship.getImplementationTechnology()))
-			relationName = relationName + " (" + relationship.getImplementationTechnology() + ")";
-		printSymmetricComponentRelationship(((SharedKernel) relationship).getParticipant1().getName(), ((SharedKernel) relationship).getParticipant2().getName(), relationName);
+		printSymmetricComponentRelationship(((SharedKernel) relationship).getParticipant1().getName(), ((SharedKernel) relationship).getParticipant2().getName(),
+				getRelationshipLabel(relationship));
 		linebreak();
 	}
 
 	private void printUpstreamDownstreamRelationship(UpstreamDownstreamRelationship relationship) {
 		UpstreamDownstreamRelationship upDownRelationship = (UpstreamDownstreamRelationship) relationship;
 		String interfaceId = upDownRelationship.getDownstream().getName() + "_to_" + upDownRelationship.getUpstream().getName();
-		String technology = upDownRelationship.getImplementationTechnology() != null && !"".equals(upDownRelationship.getImplementationTechnology())
-				? upDownRelationship.getImplementationTechnology()
-				: "Technology not defined!";
-		String interfaceName = upDownRelationship instanceof CustomerSupplierRelationship ? "Customer-Supplier (" + technology + ")" : technology;
-		printInterface(interfaceName, interfaceId);
+		printInterface(getRelationshipLabel(relationship), interfaceId);
 		printInterfaceExposure(upDownRelationship.getUpstream().getName(), interfaceId, upstreamRolesToArray(upDownRelationship.getUpstreamRoles()));
 		printInterfaceUsage(upDownRelationship.getDownstream().getName(), interfaceId, downstreamRolesToArray(upDownRelationship.getDownstreamRoles()));
 		linebreak();
@@ -122,6 +115,55 @@ public class PlantUMLComponentDiagramCreator extends AbstractPlantUMLDiagramCrea
 
 	private String[] downstreamRolesToArray(EList<DownstreamRole> roles) {
 		return roles.stream().map(role -> role.getName()).collect(Collectors.toList()).toArray(new String[roles.size()]);
+	}
+
+	private String getRelationshipLabel(Relationship relationship) {
+		if (relationship instanceof SymmetricRelationship)
+			return getSymmetricRelationshipLabel((SymmetricRelationship) relationship);
+		else
+			return getAsymmetricRelationshipLabel((UpstreamDownstreamRelationship) relationship);
+	}
+
+	private String getSymmetricRelationshipLabel(SymmetricRelationship relationship) {
+		StringBuilder label = new StringBuilder();
+		if (relationship.getName() != null && !"".equals(relationship.getName())) {
+			label.append(relationship.getName());
+		} else {
+			label.append(getRelationshipTypeLabel(relationship));
+		}
+		if (relationship.getImplementationTechnology() != null && !"".equals(relationship.getImplementationTechnology())) {
+			label.append(" (").append(relationship.getImplementationTechnology()).append(")");
+		}
+		return label.toString();
+	}
+
+	private String getAsymmetricRelationshipLabel(UpstreamDownstreamRelationship relationship) {
+		StringBuilder label = new StringBuilder();
+		if (relationship.getName() != null && !"".equals(relationship.getName())) {
+			label.append(relationship.getName());
+		} else if (relationship instanceof CustomerSupplierRelationship) {
+			label.append(getRelationshipTypeLabel(relationship));
+		}
+		if ("".equals(label.toString()) && relationship.getImplementationTechnology() != null && !"".equals(relationship.getImplementationTechnology())) {
+			label.append(relationship.getImplementationTechnology());
+		} else if (relationship.getImplementationTechnology() != null && !"".equals(relationship.getImplementationTechnology())) {
+			label.append(" (").append(relationship.getImplementationTechnology()).append(")");
+		}
+		if ("".equals(label.toString())) {
+			label.append(getRelationshipTypeLabel(relationship));
+		}
+		return label.toString();
+	}
+
+	private String getRelationshipTypeLabel(Relationship relationship) {
+		if (relationship instanceof Partnership)
+			return "Partnership";
+		else if (relationship instanceof SharedKernel)
+			return "Shared Kernel";
+		else if (relationship instanceof CustomerSupplierRelationship)
+			return "Customer-Supplier";
+		else
+			return "Upstream-Downstream";
 	}
 
 }
