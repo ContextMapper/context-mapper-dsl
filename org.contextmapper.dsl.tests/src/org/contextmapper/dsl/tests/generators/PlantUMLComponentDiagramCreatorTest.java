@@ -79,7 +79,7 @@ class PlantUMLComponentDiagramCreatorTest {
 		assertTrue(plantUML.contains("component [myContext2]" + System.lineSeparator()));
 		assertTrue(plantUML.contains("[myContext1]<-->[myContext2] : Partnership (ourTechnology)" + System.lineSeparator()));
 	}
-	
+
 	@Test
 	public void canCreatePartnershipRelationshipWithName() {
 		// given
@@ -130,7 +130,7 @@ class PlantUMLComponentDiagramCreatorTest {
 		assertTrue(plantUML.contains("component [myContext2]" + System.lineSeparator()));
 		assertTrue(plantUML.contains("[myContext1]<-->[myContext2] : Shared Kernel (ourTechnology)" + System.lineSeparator()));
 	}
-	
+
 	@Test
 	public void canCreateSharedKernelRelationshipWithName() {
 		// given
@@ -185,7 +185,7 @@ class PlantUMLComponentDiagramCreatorTest {
 		assertTrue(plantUML.contains("[myContext1] --> myContext2_to_myContext1 : OPEN_HOST_SERVICE" + System.lineSeparator()));
 		assertTrue(plantUML.contains("myContext2_to_myContext1 <.. [myContext2] : use : ANTICORRUPTION_LAYER" + System.lineSeparator()));
 	}
-	
+
 	@Test
 	public void canCreateUpstreamDownstreamRelationshipWithName() {
 		// given
@@ -244,7 +244,7 @@ class PlantUMLComponentDiagramCreatorTest {
 		assertTrue(plantUML.contains("[myContext1] --> myContext2_to_myContext1 : OPEN_HOST_SERVICE" + System.lineSeparator()));
 		assertTrue(plantUML.contains("myContext2_to_myContext1 <.. [myContext2] : use : ANTICORRUPTION_LAYER" + System.lineSeparator()));
 	}
-	
+
 	@Test
 	public void canCreateCustomerSupplierRelationshipWithName() {
 		// given
@@ -289,7 +289,7 @@ class PlantUMLComponentDiagramCreatorTest {
 		relationship.setUpstream(boundedContext1);
 		relationship.setDownstream(boundedContext2);
 		contextMap.getRelationships().add(relationship);
-		
+
 		// when
 		String plantUML = this.creator.createDiagram(contextMap);
 
@@ -300,7 +300,7 @@ class PlantUMLComponentDiagramCreatorTest {
 		assertTrue(plantUML.contains("[myContext1] --> myContext2_to_myContext1" + System.lineSeparator()));
 		assertTrue(plantUML.contains("myContext2_to_myContext1 <.. [myContext2] : use" + System.lineSeparator()));
 	}
-	
+
 	@Test
 	public void createsNoteIfDiagramIsEmpty() {
 		// given
@@ -311,6 +311,45 @@ class PlantUMLComponentDiagramCreatorTest {
 
 		// then
 		assertTrue(plantUML.contains("note \"" + ValidationMessages.EMPTY_UML_COMPONENT_DIAGRAM_MESSAGE + "\" as EmptyDiagramError" + System.lineSeparator()));
+	}
+
+	@Test
+	public void canAddDomainVisionStatementForBC() {
+		// given
+		ContextMap contextMap = ContextMappingDSLFactory.eINSTANCE.createContextMap();
+		BoundedContext boundedContext = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
+		boundedContext.setName("mySuperBoundedContext");
+		boundedContext.setDomainVisionStatement("this is my super test vision statement");
+		contextMap.getBoundedContexts().add(boundedContext);
+
+		// when
+		String plantUML = this.creator.createDiagram(contextMap);
+
+		// then
+		assertTrue(plantUML.contains("component [mySuperBoundedContext]" + System.lineSeparator()));
+		assertTrue(plantUML.contains("note right of [mySuperBoundedContext]" + System.lineSeparator()));
+		assertTrue(plantUML.contains("this is my super test vision statement " + System.lineSeparator()));
+		assertTrue(plantUML.contains("end note" + System.lineSeparator()));
+	}
+	
+	@Test
+	public void canAddDomainVisionStatementForBCWithLongLine() {
+		// given
+		ContextMap contextMap = ContextMappingDSLFactory.eINSTANCE.createContextMap();
+		BoundedContext boundedContext = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
+		boundedContext.setName("mySuperBoundedContext");
+		boundedContext.setDomainVisionStatement("this is my super and very long test vision statement");
+		contextMap.getBoundedContexts().add(boundedContext);
+
+		// when
+		String plantUML = this.creator.createDiagram(contextMap);
+
+		// then
+		assertTrue(plantUML.contains("component [mySuperBoundedContext]" + System.lineSeparator()));
+		assertTrue(plantUML.contains("note right of [mySuperBoundedContext]" + System.lineSeparator()));
+		assertTrue(plantUML.contains("this is my super and very long " + System.lineSeparator()));
+		assertTrue(plantUML.contains("test vision statement " + System.lineSeparator()));
+		assertTrue(plantUML.contains("end note" + System.lineSeparator()));
 	}
 
 }

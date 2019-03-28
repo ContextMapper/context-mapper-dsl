@@ -39,7 +39,7 @@ public class PlantUMLComponentDiagramCreator extends AbstractPlantUMLDiagramCrea
 			return;
 		}
 		for (BoundedContext boundedContext : contextMap.getBoundedContexts()) {
-			printComponent(boundedContext.getName());
+			printComponent(boundedContext);
 		}
 		linebreak();
 		for (Relationship relationship : contextMap.getRelationships()) {
@@ -80,8 +80,27 @@ public class PlantUMLComponentDiagramCreator extends AbstractPlantUMLDiagramCrea
 		linebreak();
 	}
 
-	private void printComponent(String name) {
-		sb.append("component").append(" ").append("[" + name + "]");
+	private void printComponent(BoundedContext bc) {
+		sb.append("component").append(" ").append("[" + bc.getName() + "]");
+		linebreak();
+		if (bc.getDomainVisionStatement() != null && !"".equals(bc.getDomainVisionStatement()))
+			printNoteForComponent(bc.getDomainVisionStatement(), bc.getName());
+	}
+
+	private void printNoteForComponent(String note, String component) {
+		sb.append("note right of ").append("[").append(component).append("]");
+		linebreak();
+		int charCounter = 0;
+		for (String word : note.split(" ")) {
+			sb.append(word).append(" ");
+			charCounter += word.length() + 1;
+			if (charCounter >= 30) {
+				charCounter = 0;
+				linebreak();
+			}
+		}
+		linebreak();
+		sb.append("end note");
 		linebreak();
 	}
 
