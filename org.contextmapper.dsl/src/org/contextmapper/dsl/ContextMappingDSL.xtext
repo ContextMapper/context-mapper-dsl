@@ -16,6 +16,8 @@
 
 grammar org.contextmapper.dsl.ContextMappingDSL with org.contextmapper.tactic.dsl.TacticDDDLanguage
 
+import "http://contextmapper.org/tactic/dsl/tacticdsl" as tacticdsl
+
 generate contextMappingDSL "http://www.contextmapper.org/dsl/ContextMappingDSL"
 
 ContextMappingModel:
@@ -121,6 +123,7 @@ UpstreamDownstreamRelationship:
 		(':' name=ID)?
 		(OPEN (
 			('implementationTechnology' '=' implementationTechnology=STRING)? &
+			(('exposedAggregates' '=' upstreamExposedAggregates += [tacticdsl::Aggregate]) ("," upstreamExposedAggregates += [tacticdsl::Aggregate])*)? &
 			('governanceRights'('[''D'']')? '=' downstreamGovernanceRights=GovernanceRights)?
 		)
 		CLOSE)?
@@ -148,6 +151,7 @@ CustomerSupplierRelationship:
 		(':' name=ID)?
 		(OPEN (
 			('implementationTechnology' '=' implementationTechnology=STRING)? &
+			(('exposedAggregates' '=' upstreamExposedAggregates += [tacticdsl::Aggregate]) ("," upstreamExposedAggregates += [tacticdsl::Aggregate])*)? &
 			('governanceRights'('[''D'']' | '[''C'']' | '[''D'',''C'']')? '=' downstreamGovernanceRights=GovernanceRights)?
 		)
 		CLOSE)?
