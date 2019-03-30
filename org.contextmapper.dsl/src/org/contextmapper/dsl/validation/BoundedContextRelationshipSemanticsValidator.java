@@ -19,6 +19,7 @@ import static org.contextmapper.dsl.validation.ValidationMessages.CUSTOMER_SUPPL
 import static org.contextmapper.dsl.validation.ValidationMessages.CUSTOMER_SUPPLIER_WITH_CONFORMIST_ERROR_MESSAGE;
 import static org.contextmapper.dsl.validation.ValidationMessages.CUSTOMER_SUPPLIER_WITH_OHS_ERROR_MESSAGE;
 import static org.contextmapper.dsl.validation.ValidationMessages.DUPLICATE_RELATIONSHIP_DECLARATION;
+import static org.contextmapper.dsl.validation.ValidationMessages.SELF_RELATIONSHIP_NOT_ALLOWED;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -76,6 +77,26 @@ public class BoundedContextRelationshipSemanticsValidator extends AbstractDeclar
 						ContextMappingDSLPackage.Literals.CONTEXT_MAP__RELATIONSHIPS, relationshipIndex);
 			} else {
 				pairs.add(pair);
+			}
+			relationshipIndex++;
+		}
+	}
+
+	@Check
+	public void prohibitSelfRelationship(final ContextMap contextMap) {
+		int relationshipIndex = 0;
+		for (Relationship relationship : contextMap.getRelationships()) {
+			BoundedContext context1;
+			BoundedContext context2;
+			if (relationship instanceof SymmetricRelationship) {
+				context1 = ((SymmetricRelationship) relationship).getParticipant1();
+				context2 = ((SymmetricRelationship) relationship).getParticipant2();
+			} else {
+				context1 = ((UpstreamDownstreamRelationship) relationship).getUpstream();
+				context2 = ((UpstreamDownstreamRelationship) relationship).getDownstream();
+			}
+			if (context1 == context2) {
+				error(String.format(SELF_RELATIONSHIP_NOT_ALLOWED), contextMap, ContextMappingDSLPackage.Literals.CONTEXT_MAP__RELATIONSHIPS, relationshipIndex);
 			}
 			relationshipIndex++;
 		}
