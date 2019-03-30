@@ -1,12 +1,12 @@
 /*
  * Copyright 2018 The Context Mapper Project Team
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *    http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -62,7 +62,7 @@ class ContextMapDSLParsingTest {
 				 contains testContext
 				 contains anotherTestContext
 			}
-
+			
 			BoundedContext testContext
 			BoundedContext anotherTestContext
 		''';
@@ -117,10 +117,10 @@ class ContextMapDSLParsingTest {
 		val String dslSnippet = '''
 			ContextMap {
 				type = ORGANIZATIONAL
-
+			
 				contains notATeam
 			}
-
+			
 			BoundedContext notATeam {
 				type = SYSTEM
 			}
@@ -139,10 +139,10 @@ class ContextMapDSLParsingTest {
 		val String dslSnippet = '''
 			ContextMap {
 				type = SYSTEM_LANDSCAPE
-
+			
 				contains aTeam
 			}
-
+			
 			BoundedContext aTeam {
 				type = TEAM
 			}
@@ -160,7 +160,7 @@ class ContextMapDSLParsingTest {
 		val String dslSnippet = '''
 			BoundedContext testContext
 			BoundedContext anotherTestContext
-
+			
 			ContextMap {
 				 contains testContext
 				 contains anotherTestContext
@@ -177,5 +177,51 @@ class ContextMapDSLParsingTest {
 		val contextNames = result.map.boundedContexts.stream.map[name].collect(Collectors.toList);
 		assertTrue(contextNames.contains("testContext"));
 		assertTrue(contextNames.contains("anotherTestContext"));
+	}
+
+	@Test
+	def void throwErrorIfRelationshipIsNotUnique() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext testContext
+			BoundedContext anotherTestContext
+			
+			ContextMap {
+				 contains testContext
+				 contains anotherTestContext
+				 
+				 testContext [P]<->[P] anotherTestContext
+				 
+				 testContext [U]->[D] anotherTestContext
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.CONTEXT_MAP, "",
+			String.format(DUPLICATE_RELATIONSHIP_DECLARATION, "testContext", "anotherTestContext"));
+	}
+
+	@Test
+	def void throwErrorForSelfRelationship() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext testContext
+			
+			ContextMap {
+				 contains testContext
+				 
+				 testContext [P]<->[P] testContext
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.CONTEXT_MAP, "",
+			String.format(SELF_RELATIONSHIP_NOT_ALLOWED));
 	}
 }

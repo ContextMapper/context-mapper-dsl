@@ -25,6 +25,8 @@ public class ValidationMessages {
 	public static final String SYSTEM_LANDSCAPE_MAP_CONTAINS_TEAM = "A Bounded Context of type 'TEAM' is not allowed on a SYSTEM_LANDSCAPE map.";
 	public static final String ONLY_TEAMS_CAN_REALIZE_OTHER_BOUNDED_CONTEXT = "Only teams can realize bounded contexts. '%s' is not a team!";
 	public static final String EXPOSED_AGGREGATE_NOT_PART_OF_UPSTREAM_CONTEXT = "The aggregate '%s' is not part of the upstream context '%s'.";
+	public static final String DUPLICATE_RELATIONSHIP_DECLARATION = "The relationship between the bounded contexts '%s' and '%s' has been declared multiple times. Bounded context relationships must be unique.";
+	public static final String SELF_RELATIONSHIP_NOT_ALLOWED = "Bounded context relationships must be declared between two different bounded contexts.";
 	
 	/* Generator problems */
 	public static final String EMPTY_UML_COMPONENT_DIAGRAM_MESSAGE = "Sorry, we cannot generate anything. Your Context Map seems to be empty...";
