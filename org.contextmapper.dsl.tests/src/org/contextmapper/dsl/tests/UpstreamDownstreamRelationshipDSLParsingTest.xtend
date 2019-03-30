@@ -551,7 +551,7 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 				contains anotherTestContext
 			
 				anotherTestContext [S]->[C] testContext {
-				implementationTechnology = "RESTful HTTP"
+					implementationTechnology = "RESTful HTTP"
 				}
 			}
 			
@@ -564,6 +564,54 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 		assertThatNoParsingErrorsOccurred(result);
 		assertThatNoValidationErrorsOccurred(result);
 		assertEquals("RESTful HTTP", result.map.relationships.get(0).implementationTechnology);
+	}
+
+	@Test
+	def void canParseAttributesInAnyOrder1() {
+		// given
+		val String dslSnippet = '''
+			ContextMap {
+				contains testContext
+				contains anotherTestContext
+			
+				anotherTestContext [S]->[C] testContext {
+					implementationTechnology = "RESTful HTTP"
+					governanceRights[D] = INFLUENCER
+				}
+			}
+			
+			BoundedContext testContext
+			BoundedContext anotherTestContext
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+	}
+	
+	@Test
+	def void canParseAttributesInAnyOrder2() {
+		// given
+		val String dslSnippet = '''
+			ContextMap {
+				contains testContext
+				contains anotherTestContext
+			
+				anotherTestContext [S]->[C] testContext {
+					governanceRights[D] = INFLUENCER
+					implementationTechnology = "RESTful HTTP"
+				}
+			}
+			
+			BoundedContext testContext
+			BoundedContext anotherTestContext
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
 	}
 
 }

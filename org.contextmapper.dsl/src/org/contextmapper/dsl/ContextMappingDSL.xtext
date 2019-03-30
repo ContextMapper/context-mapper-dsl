@@ -119,8 +119,10 @@ UpstreamDownstreamRelationship:
 			)
 		)
 		(':' name=ID)?
-		(OPEN
-			('implementationTechnology' '=' implementationTechnology=STRING)?
+		(OPEN (
+			('implementationTechnology' '=' implementationTechnology=STRING)? &
+			('governanceRights'('[''D'']')? '=' downstreamGovernanceRights=GovernanceRights)?
+		)
 		CLOSE)?
 	)
 ;
@@ -144,8 +146,10 @@ CustomerSupplierRelationship:
 			)
 		)
 		(':' name=ID)?
-		(OPEN
-			('implementationTechnology' '=' implementationTechnology=STRING)?
+		(OPEN (
+			('implementationTechnology' '=' implementationTechnology=STRING)? &
+			('governanceRights'('[''D'']' | '[''C'']' | '[''D'',''C'']')? '=' downstreamGovernanceRights=GovernanceRights)?
+		)
 		CLOSE)?
 	)
 ;
@@ -172,6 +176,10 @@ enum BoundedContextType:
 
 enum SubDomainType:
 	CORE_DOMAIN | SUPPORTING_DOMAIN | GENERIC_SUBDOMAIN
+;
+
+enum GovernanceRights:
+	INFLUENCER | OPINION_LEADER | VETO_RIGHT | DECISION_MAKER | MONOPOLIST
 ;
 
 // define terminals
