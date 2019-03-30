@@ -178,4 +178,29 @@ class ContextMapDSLParsingTest {
 		assertTrue(contextNames.contains("testContext"));
 		assertTrue(contextNames.contains("anotherTestContext"));
 	}
+	
+	@Test
+	def void throwErrorIfRelationshipIsNotUnique() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext testContext
+			BoundedContext anotherTestContext
+
+			ContextMap {
+				 contains testContext
+				 contains anotherTestContext
+				 
+				 testContext [P]<->[P] anotherTestContext
+				 
+				 testContext [U]->[D] anotherTestContext
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.CONTEXT_MAP, "",
+			String.format(DUPLICATE_RELATIONSHIP_DECLARATION, "testContext", "anotherTestContext"));
+	}
 }
