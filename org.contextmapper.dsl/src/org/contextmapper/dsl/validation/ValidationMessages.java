@@ -24,6 +24,7 @@ public class ValidationMessages {
 	public static final String ORGANIZATIONAL_MAP_CONTEXT_IS_NOT_TYPE_TEAM = "A Bounded Context of type '%s' is not allowed on organizational maps. Please use Contexts of type 'Team'.";
 	public static final String SYSTEM_LANDSCAPE_MAP_CONTAINS_TEAM = "A Bounded Context of type 'TEAM' is not allowed on a SYSTEM_LANDSCAPE map.";
 	public static final String ONLY_TEAMS_CAN_REALIZE_OTHER_BOUNDED_CONTEXT = "Only teams can realize bounded contexts. '%s' is not a team!";
+	public static final String EXPOSED_AGGREGATE_NOT_PART_OF_UPSTREAM_CONTEXT = "The aggregate '%s' is not part of the upstream context '%s'.";
 	
 	/* Generator problems */
 	public static final String EMPTY_UML_COMPONENT_DIAGRAM_MESSAGE = "Sorry, we cannot generate anything. Your Context Map seems to be empty...";
