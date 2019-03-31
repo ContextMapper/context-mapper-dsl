@@ -404,7 +404,7 @@
 			</attribute>
 		</markerResolutionGenerator>
 	</extension>
-	<!-- Rename Refactoring -->
+	<!-- Refactorings -->
 	<extension point="org.eclipse.ui.handlers">
 		<handler 
 			class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.contextmapper.dsl.ui.handler.SplitBoundedContextRefactoringHandler"
@@ -445,14 +445,13 @@
 		</menuContribution>
 		<menuContribution
         locationURI="popup:#TextEditorContext?after=group.edit">
-			<command defaultHandler="org.contextmapper.dsl.ui.handler.SplitBoundedContextRefactoringHandler" commandId="org.contextmapper.dsl.ui.handler.org.contextmapper.dsl.ui.handler.SplitBoundedContextRefactoringCommand"
-				style="push">
-				<visibleWhen checkEnabled="false">
-					<reference
-						definitionId="org.contextmapper.dsl.ContextMappingDSL.Editor.opened">
-					</reference>
-				</visibleWhen>
-			</command>
+        	<menu id="org.contextmapper.dsl.ui.refactoring.menu" label="Context Mapper: Refactor" icon="icons/cml.png">
+        		<command defaultHandler="org.contextmapper.dsl.ui.handler.SplitBoundedContextRefactoringHandler" commandId="org.contextmapper.dsl.ui.handler.org.contextmapper.dsl.ui.handler.SplitBoundedContextRefactoringCommand"
+					style="push">
+					<visibleWhen checkEnabled="true">
+					</visibleWhen>
+				</command>
+        	</menu>
 		</menuContribution>
 	</extension>
 	<extension point="org.eclipse.ui.preferencePages">

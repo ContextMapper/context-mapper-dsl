@@ -17,6 +17,7 @@ package org.contextmapper.dsl.ui.handler;
 
 import java.net.URL;
 
+import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.refactoring.HenshinSplitBoundedContextRefactoring;
 import org.contextmapper.dsl.ui.internal.DslActivator;
 import org.eclipse.core.commands.AbstractHandler;
@@ -31,22 +32,30 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.URIUtil;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.statushandlers.StatusManager;
 import org.eclipse.xtext.builder.EclipseResourceFileSystemAccess2;
+import org.eclipse.xtext.resource.EObjectAtOffsetHelper;
 import org.eclipse.xtext.resource.IResourceDescriptions;
+import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.ui.editor.XtextEditor;
 import org.eclipse.xtext.ui.editor.utils.EditorUtils;
 import org.eclipse.xtext.ui.resource.IResourceSetProvider;
+import org.eclipse.xtext.util.concurrent.IUnitOfWork;
 import org.osgi.framework.Bundle;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
 public class SplitBoundedContextRefactoringHandler extends AbstractHandler implements IHandler {
+
+	@Inject
+	private EObjectAtOffsetHelper eObjectAtOffsetHelper;
 
 	@Inject
 	private Provider<EclipseResourceFileSystemAccess2> fileAccessProvider;
@@ -62,19 +71,19 @@ public class SplitBoundedContextRefactoringHandler extends AbstractHandler imple
 		try {
 			XtextEditor xEditor = EditorUtils.getActiveXtextEditor();
 			IResource xResource = xEditor.getResource();
-			
+
 			final EclipseResourceFileSystemAccess2 fsa = fileAccessProvider.get();
 			fsa.setProject(xResource.getProject());
 			fsa.setMonitor(new NullProgressMonitor());
 			URI uri = URI.createPlatformResourceURI(xResource.getFullPath().toString(), true);
-			
+
 			ResourceSet rs = resourceSetProvider.get(xResource.getProject());
 			Resource resource = rs.getResource(uri, true);
-			
+
 			Bundle bundle = DslActivator.getInstance().getBundle();
 			URL henshinFileURL = FileLocator.find(bundle, new Path("henshin-transformations/ContextMapRefactorings.henshin"), null);
 			henshinFileURL = FileLocator.toFileURL(henshinFileURL);
-			
+
 			HenshinSplitBoundedContextRefactoring refactoring = new HenshinSplitBoundedContextRefactoring(URIUtil.toFile(URIUtil.toURI(henshinFileURL)).getAbsolutePath());
 			refactoring.doRefactor(resource, fsa);
 		} catch (Exception e) {
@@ -86,9 +95,48 @@ public class SplitBoundedContextRefactoringHandler extends AbstractHandler imple
 		return null;
 	}
 
+	private EObject getSelectedElement() {
+		final XtextEditor editor = EditorUtils.getActiveXtextEditor();
+		if (editor != null) {
+			final ITextSelection selection = (ITextSelection) editor.getSelectionProvider().getSelection();
+			ContextMapperRefactoringContext context = editor.getDocument().priorityReadOnly(new IUnitOfWork<ContextMapperRefactoringContext, XtextResource>() {
+				@Override
+				public ContextMapperRefactoringContext exec(XtextResource resource) throws Exception {
+					EObject selectedElement = eObjectAtOffsetHelper.resolveElementAt(resource, selection.getOffset());
+					if (selectedElement != null) {
+						return new ContextMapperRefactoringContext(selectedElement);
+					}
+					return null;
+				}
+
+			});
+			if (context != null) {
+				return context.selectedObject;
+			}
+		}
+		return null;
+	}
+	
+	private boolean editorHasChanges() {
+		final XtextEditor editor = EditorUtils.getActiveXtextEditor();
+		if (editor != null) {
+			return editor.isDirty();
+		}
+		return false;
+	}
+
 	@Override
 	public boolean isEnabled() {
-		return true;
+		EObject obj = getSelectedElement();
+		return obj != null && obj instanceof BoundedContext && !editorHasChanges();
+	}
+
+	private class ContextMapperRefactoringContext {
+		private EObject selectedObject;
+
+		public ContextMapperRefactoringContext(EObject selectedObject) {
+			this.selectedObject = selectedObject;
+		}
 	}
 
 }
