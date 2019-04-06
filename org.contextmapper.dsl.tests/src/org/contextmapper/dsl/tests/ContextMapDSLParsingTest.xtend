@@ -94,6 +94,30 @@ class ContextMapDSLParsingTest {
 		assertTrue(contextNames.contains("testContext"));
 		assertTrue(contextNames.contains("anotherTestContext"));
 	}
+	
+	@Test
+	def void canAddBoundedContextToMapInOneLine() {
+		// given
+		val String dslSnippet = '''
+			ContextMap {
+				 contains testContext, anotherTestContext
+			}
+			
+			BoundedContext testContext
+			BoundedContext anotherTestContext
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		assertNotNull(result.map);
+		assertEquals(2, result.map.boundedContexts.size);
+
+		val contextNames = result.map.boundedContexts.stream.map[name].collect(Collectors.toList);
+		assertTrue(contextNames.contains("testContext"));
+		assertTrue(contextNames.contains("anotherTestContext"));
+	}
 
 	@Test
 	def void canDefineContextMapState() {
