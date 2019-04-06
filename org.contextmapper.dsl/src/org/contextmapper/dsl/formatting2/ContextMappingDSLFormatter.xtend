@@ -36,8 +36,11 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 		for (boundedContext : contextMappingModel.boundedContexts) {
 			boundedContext.format
 		}
-		for (subdomain : contextMappingModel.subdomains) {
-			subdomain.format
+		for(domain : contextMappingModel.domains) {
+			domain.format
+			for (subdomain : domain.subdomains) {
+				subdomain.format
+			}
 		}
 	}
 

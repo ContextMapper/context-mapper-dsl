@@ -24,7 +24,7 @@ ContextMappingModel:
 	(
 		(map = ContextMap)? &
 		(boundedContexts += BoundedContext)* &
-		(subdomains += Subdomain)*
+		(domains += Domain)*
 	)
 ;
 
@@ -50,6 +50,15 @@ BoundedContext:
 			('knowledgeLevel' '=' knowledgeLevel=KnowledgeLevel)?)
 			modules += Module*
 			aggregates += Aggregate*
+		CLOSE
+	)?
+;
+
+Domain:
+	'Domain' name=ID
+	(
+		OPEN
+			(subdomains += Subdomain)*
 		CLOSE
 	)?
 ;

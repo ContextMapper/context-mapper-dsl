@@ -18,6 +18,7 @@ package org.contextmapper.dsl.tests
 import com.google.inject.Inject
 import java.util.stream.Collectors
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel
+import org.contextmapper.dsl.contextMappingDSL.Domain
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.extensions.InjectionExtension
 import org.eclipse.xtext.testing.util.ParseHelper
@@ -29,9 +30,25 @@ import static org.junit.jupiter.api.Assertions.*
 
 @ExtendWith(InjectionExtension)
 @InjectWith(ContextMappingDSLInjectorProvider)
-class SubdomainsDSLParsingTest {
+class DomainDSLParsingTest {
 	@Inject
 	ParseHelper<ContextMappingModel> parseHelper
+
+	@Test
+	def void canDefineDomain() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext testContext
+
+			Domain Insurance
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+
+	}
 
 	@Test
 	def void canDefineSubdomains() {
@@ -39,18 +56,22 @@ class SubdomainsDSLParsingTest {
 		val String dslSnippet = '''
 			BoundedContext testContext
 
-			Subdomain core
-			Subdomain support1
-			Subdomain generic
+			Domain Insurance {
+				Subdomain core
+				Subdomain support1
+				Subdomain generic
+			}
 		''';
 		// when
 		val ContextMappingModel result = parseHelper.parse(dslSnippet);
 		// then
 		assertThatNoParsingErrorsOccurred(result);
 		assertThatNoValidationErrorsOccurred(result);
-		assertEquals(3, result.subdomains.size);
+		
+		val Domain domain = result.domains.get(0);
+		assertEquals(3, domain.subdomains.size);
 
-		val subdomainNames = result.subdomains.stream.map[name].collect(Collectors.toList);
+		val subdomainNames = domain.subdomains.stream.map[name].collect(Collectors.toList);
 		assertTrue(subdomainNames.contains("core"));
 		assertTrue(subdomainNames.contains("support1"));
 		assertTrue(subdomainNames.contains("generic"));
@@ -62,14 +83,16 @@ class SubdomainsDSLParsingTest {
 		val String dslSnippet = '''
 			BoundedContext testContext implements core
 
-			Subdomain core {
-				type = CORE_DOMAIN
-			}
-			Subdomain support1 {
-				type = SUPPORTING_DOMAIN
-			}
-			Subdomain generic {
-				type = GENERIC_SUBDOMAIN
+			Domain Insurance {
+				Subdomain core {
+					type = CORE_DOMAIN
+				}
+				Subdomain support1 {
+					type = SUPPORTING_DOMAIN
+				}
+				Subdomain generic {
+					type = GENERIC_SUBDOMAIN
+				}
 			}
 		''';
 		// when
@@ -87,14 +110,16 @@ class SubdomainsDSLParsingTest {
 		val String dslSnippet = '''
 			BoundedContext testContext implements core, support1
 
-			Subdomain core {
-				type = CORE_DOMAIN
-			}
-			Subdomain support1 {
-				type = SUPPORTING_DOMAIN
-			}
-			Subdomain generic {
-				type = GENERIC_SUBDOMAIN
+			Domain Insurance {
+				Subdomain core {
+					type = CORE_DOMAIN
+				}
+				Subdomain support1 {
+					type = SUPPORTING_DOMAIN
+				}
+				Subdomain generic {
+					type = GENERIC_SUBDOMAIN
+				}
 			}
 		''';
 		// when
@@ -113,30 +138,10 @@ class SubdomainsDSLParsingTest {
 	def void canDefineVisionStatement() {
 		// given
 		val String dslSnippet = '''
-			Subdomain core {
-				type = CORE_DOMAIN
-				domainVisionStatement = "my domain vision for this subdomain"
-			}
-		''';
-		// when
-		val ContextMappingModel result = parseHelper.parse(dslSnippet);
-		// then
-		assertThatNoParsingErrorsOccurred(result);
-		assertThatNoValidationErrorsOccurred(result);
-		assertEquals("my domain vision for this subdomain", result.subdomains.get(0).domainVisionStatement);
-	}
-
-	@Test
-	def void canAddEntityToSubdomain() {
-		// given
-		val String dslSnippet = '''
-			Subdomain core {
-				type = CORE_DOMAIN
-				domainVisionStatement = "my domain vision for this subdomain"
-
-				Entity MyCoreEntity {
-					String attr1
-					string attr2
+			Domain Insurance {
+				Subdomain core {
+					type = CORE_DOMAIN
+					domainVisionStatement = "my domain vision for this subdomain"
 				}
 			}
 		''';
@@ -145,8 +150,32 @@ class SubdomainsDSLParsingTest {
 		// then
 		assertThatNoParsingErrorsOccurred(result);
 		assertThatNoValidationErrorsOccurred(result);
-		assertEquals(1, result.subdomains.get(0).entities.size);
-		assertEquals("MyCoreEntity", result.subdomains.get(0).entities.get(0).name);
-		assertEquals(2, result.subdomains.get(0).entities.get(0).attributes.size);
+		assertEquals("my domain vision for this subdomain", result.domains.get(0).subdomains.get(0).domainVisionStatement);
+	}
+
+	@Test
+	def void canAddEntityToSubdomain() {
+		// given
+		val String dslSnippet = '''
+			Domain Insurance {
+				Subdomain core {
+					type = CORE_DOMAIN
+					domainVisionStatement = "my domain vision for this subdomain"
+	
+					Entity MyCoreEntity {
+						String attr1
+						string attr2
+					}
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		assertEquals(1, result.domains.get(0).subdomains.get(0).entities.size);
+		assertEquals("MyCoreEntity", result.domains.get(0).subdomains.get(0).entities.get(0).name);
+		assertEquals(2, result.domains.get(0).subdomains.get(0).entities.get(0).attributes.size);
 	}
 }
