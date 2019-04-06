@@ -18,6 +18,7 @@ package org.contextmapper.dsl.generator.plantuml;
 import java.util.List;
 
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
+import org.contextmapper.dsl.contextMappingDSL.Subdomain;
 import org.contextmapper.dsl.validation.ValidationMessages;
 import org.contextmapper.tactic.dsl.tacticdsl.Aggregate;
 import org.contextmapper.tactic.dsl.tacticdsl.Attribute;
@@ -46,7 +47,7 @@ public class PlantUMLClassDiagramCreator extends AbstractPlantUMLDiagramCreator<
 	protected void printDiagramContent(BoundedContext boundedContext) {
 		this.relationships = Lists.newArrayList();
 		this.boundedContextsDomainObjects = EcoreUtil2.<SimpleDomainObject>getAllContentsOfType(boundedContext, SimpleDomainObject.class);
-		if(this.boundedContextsDomainObjects.size() <= 0) {
+		if (this.boundedContextsDomainObjects.size() <= 0) {
 			printEmptyDiagramNote();
 			return;
 		}
@@ -57,8 +58,30 @@ public class PlantUMLClassDiagramCreator extends AbstractPlantUMLDiagramCreator<
 			printAggregate(aggregate, 0);
 		}
 		printReferences(0);
+		printSubdomainLegend(boundedContext.getImplementedSubdomains());
 	}
-	
+
+	private void printSubdomainLegend(List<Subdomain> subdomains) {
+		if (subdomains.isEmpty())
+			return;
+		sb.append("legend left");
+		linebreak();
+		for (Subdomain subdomain : subdomains) {
+			if (subdomain.getEntities().isEmpty()) {
+				sb.append("  ").append("This bounded context implements the subdomain '" + subdomain.getName() + "'.");
+			} else {
+				sb.append("  ").append("This bounded context implements the subdomain '" + subdomain.getName() + "', which contains the following entities:");
+			}
+			linebreak();
+			for (Entity entity : subdomain.getEntities()) {
+				sb.append("  ").append(" - ").append(entity.getName());
+				linebreak();
+			}
+		}
+		sb.append("endlegend");
+		linebreak();
+	}
+
 	private void printEmptyDiagramNote() {
 		sb.append("note").append(" ").append("\"").append(ValidationMessages.EMPTY_UML_CLASS_DIAGRAM_MESSAGE).append("\"").append(" as EmptyDiagramError");
 		linebreak();
