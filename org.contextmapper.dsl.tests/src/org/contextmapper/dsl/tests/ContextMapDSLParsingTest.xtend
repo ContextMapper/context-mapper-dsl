@@ -53,6 +53,22 @@ class ContextMapDSLParsingTest {
 		assertThatNoValidationErrorsOccurred(result);
 		assertNotNull(result.map);
 	}
+	
+	@Test
+	def void canDefineContextMapWithName() {
+		// given
+		val String dslSnippet = '''
+			ContextMap myContextMap {}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		assertNotNull(result.map);
+		
+		assertEquals("myContextMap", result.map.name)
+	}
 
 	@Test
 	def void canAddBoundedContextToMap() {

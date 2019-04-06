@@ -30,7 +30,7 @@ ContextMappingModel:
 
 ContextMap:
 	{ContextMap} // make sure there is always a context map
-	'ContextMap'
+	'ContextMap' (name=ID)?
 	OPEN
 		(('state' '=' state=ContextMapState)? &
 		('type' '=' type=ContextMapType)?)

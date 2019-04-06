@@ -51,7 +51,7 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 		)[indent]
 
 		// new line for each bounded context reference
-		var semanticRegion = contextMap.allRegionsFor.assignment(contextMapAccess.boundedContextsAssignment_4_1)
+		var semanticRegion = contextMap.allRegionsFor.assignment(contextMapAccess.boundedContextsAssignment_5_1)
 		for (var i = 0; i <= (contextMap.boundedContexts.size - 1); i++) {
 			if (i == (contextMap.boundedContexts.size - 1)) {
 				semanticRegion.append[newLine]
