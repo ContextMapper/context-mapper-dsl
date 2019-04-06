@@ -19,7 +19,7 @@ import com.google.inject.Inject
 import java.util.ArrayList
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel
 import org.contextmapper.dsl.contextMappingDSL.CustomerSupplierRelationship
-import org.contextmapper.dsl.contextMappingDSL.GovernanceRights
+import org.contextmapper.dsl.contextMappingDSL.DownstreamGovernanceRights
 import org.contextmapper.dsl.contextMappingDSL.Relationship
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship
 import org.contextmapper.dsl.contextMappingDSL.UpstreamRole
@@ -44,55 +44,50 @@ class UpstreamDownstreamGovernanceRightsTest {
 	@Test
 	def void canDefineGovernanceRights() {
 		// given
-		val String dslSnippetTemplate = '''
+		val String dslSnippet = '''
 			ContextMap {
 				contains testContext
 				contains anotherTestContext
 			
 				testContext [U,OHS,PL]->[D] anotherTestContext {
-					<<governanceRights>>
+					downstreamRights = INFLUENCER
 				}
 			}
 			
 			BoundedContext testContext
 			BoundedContext anotherTestContext
 		''';
-		val dslSnippets = new ArrayList<String>;
-		dslSnippets.add(dslSnippetTemplate.replace("<<governanceRights>>", "governanceRights = INFLUENCER"));
-		dslSnippets.add(dslSnippetTemplate.replace("<<governanceRights>>", "governanceRights[D] = INFLUENCER"));
 		
-		for(dslSnippet : dslSnippets) {
-			// when
-			val ContextMappingModel result = parseHelper.parse(dslSnippet);
-			
-			// then
-			assertThatNoParsingErrorsOccurred(result);
-			assertThatNoValidationErrorsOccurred(result);
-	
-			val Relationship relationship = result.map.relationships.get(0)
-			assertTrue(relationship.class.interfaces.contains(UpstreamDownstreamRelationship))
-	
-			val UpstreamDownstreamRelationship upstreamDownstreamRelationship = relationship as UpstreamDownstreamRelationship
-			assertEquals("testContext", upstreamDownstreamRelationship.upstream.name)
-			assertEquals("anotherTestContext", upstreamDownstreamRelationship.downstream.name)
-	
-			assertTrue(upstreamDownstreamRelationship.upstreamRoles.contains(UpstreamRole.OPEN_HOST_SERVICE))
-			assertTrue(upstreamDownstreamRelationship.upstreamRoles.contains(UpstreamRole.PUBLISHED_LANGUAGE))
-	
-			assertEquals(GovernanceRights.INFLUENCER, upstreamDownstreamRelationship.downstreamGovernanceRights);
-		}
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+
+		val Relationship relationship = result.map.relationships.get(0)
+		assertTrue(relationship.class.interfaces.contains(UpstreamDownstreamRelationship))
+
+		val UpstreamDownstreamRelationship upstreamDownstreamRelationship = relationship as UpstreamDownstreamRelationship
+		assertEquals("testContext", upstreamDownstreamRelationship.upstream.name)
+		assertEquals("anotherTestContext", upstreamDownstreamRelationship.downstream.name)
+
+		assertTrue(upstreamDownstreamRelationship.upstreamRoles.contains(UpstreamRole.OPEN_HOST_SERVICE))
+		assertTrue(upstreamDownstreamRelationship.upstreamRoles.contains(UpstreamRole.PUBLISHED_LANGUAGE))
+
+		assertEquals(DownstreamGovernanceRights.INFLUENCER, upstreamDownstreamRelationship.downstreamGovernanceRights);
 	}
 	
 	@Test
 	def void canDefineGovernanceRightsOnCustomerSupplier() {
 		// given
-		val String dslSnippetTemplate = '''
+		val String dslSnippet = '''
 			ContextMap {
 				contains testContext
 				contains anotherTestContext
 			
 				testContext [U,S]->[D,C] anotherTestContext {
-					<<governanceRights>>
+					downstreamRights = VETO_RIGHT
 				}
 			}
 			
@@ -100,29 +95,21 @@ class UpstreamDownstreamGovernanceRightsTest {
 			BoundedContext anotherTestContext
 		''';
 		
-		val dslSnippets = new ArrayList<String>;
-		dslSnippets.add(dslSnippetTemplate.replace("<<governanceRights>>", "governanceRights[D] = VETO_RIGHT"));
-		dslSnippets.add(dslSnippetTemplate.replace("<<governanceRights>>", "governanceRights[D,C] = VETO_RIGHT"));
-		dslSnippets.add(dslSnippetTemplate.replace("<<governanceRights>>", "governanceRights[C] = VETO_RIGHT"));
-		dslSnippets.add(dslSnippetTemplate.replace("<<governanceRights>>", "governanceRights = VETO_RIGHT"));
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
 		
-		for(dslSnippet : dslSnippets) {
-			// when
-			val ContextMappingModel result = parseHelper.parse(dslSnippet);
-			
-			// then
-			assertThatNoParsingErrorsOccurred(result);
-			assertThatNoValidationErrorsOccurred(result);
-	
-			val Relationship relationship = result.map.relationships.get(0)
-			assertTrue(relationship.class.interfaces.contains(CustomerSupplierRelationship))
-	
-			val CustomerSupplierRelationship customerSupplierRelationship = relationship as CustomerSupplierRelationship
-			assertEquals("testContext", customerSupplierRelationship.upstream.name)
-			assertEquals("anotherTestContext", customerSupplierRelationship.downstream.name)
-	
-			assertEquals(GovernanceRights.VETO_RIGHT, customerSupplierRelationship.downstreamGovernanceRights);
-		}
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+
+		val Relationship relationship = result.map.relationships.get(0)
+		assertTrue(relationship.class.interfaces.contains(CustomerSupplierRelationship))
+
+		val CustomerSupplierRelationship customerSupplierRelationship = relationship as CustomerSupplierRelationship
+		assertEquals("testContext", customerSupplierRelationship.upstream.name)
+		assertEquals("anotherTestContext", customerSupplierRelationship.downstream.name)
+
+		assertEquals(DownstreamGovernanceRights.VETO_RIGHT, customerSupplierRelationship.downstreamGovernanceRights);
 	}
 	
 }
