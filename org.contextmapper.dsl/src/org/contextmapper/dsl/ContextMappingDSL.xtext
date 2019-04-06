@@ -124,7 +124,7 @@ UpstreamDownstreamRelationship:
 		(OPEN (
 			('implementationTechnology' '=' implementationTechnology=STRING)? &
 			(('exposedAggregates' '=' upstreamExposedAggregates += [tacticdsl::Aggregate]) ("," upstreamExposedAggregates += [tacticdsl::Aggregate])*)? &
-			('governanceRights'('[''D'']')? '=' downstreamGovernanceRights=GovernanceRights)?
+			('downstreamRights' '=' downstreamGovernanceRights=DownstreamGovernanceRights)?
 		)
 		CLOSE)?
 	)
@@ -152,7 +152,7 @@ CustomerSupplierRelationship:
 		(OPEN (
 			('implementationTechnology' '=' implementationTechnology=STRING)? &
 			(('exposedAggregates' '=' upstreamExposedAggregates += [tacticdsl::Aggregate]) ("," upstreamExposedAggregates += [tacticdsl::Aggregate])*)? &
-			('governanceRights'('[''D'']' | '[''C'']' | '[''D'',''C'']')? '=' downstreamGovernanceRights=GovernanceRights)?
+			('downstreamRights' '=' downstreamGovernanceRights=DownstreamGovernanceRights)?
 		)
 		CLOSE)?
 	)
@@ -182,7 +182,7 @@ enum SubDomainType:
 	CORE_DOMAIN | SUPPORTING_DOMAIN | GENERIC_SUBDOMAIN
 ;
 
-enum GovernanceRights:
+enum DownstreamGovernanceRights:
 	INFLUENCER | OPINION_LEADER | VETO_RIGHT | DECISION_MAKER | MONOPOLIST
 ;
 

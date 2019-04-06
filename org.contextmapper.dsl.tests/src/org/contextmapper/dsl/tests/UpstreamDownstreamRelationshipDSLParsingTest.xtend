@@ -576,7 +576,7 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 			
 				anotherTestContext [S]->[C] testContext {
 					implementationTechnology = "RESTful HTTP"
-					governanceRights[D] = INFLUENCER
+					downstreamRights = INFLUENCER
 				}
 			}
 			
@@ -599,7 +599,7 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 				contains anotherTestContext
 			
 				anotherTestContext [S]->[C] testContext {
-					governanceRights[D] = INFLUENCER
+					downstreamRights = INFLUENCER
 					implementationTechnology = "RESTful HTTP"
 				}
 			}
