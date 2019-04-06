@@ -19,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
+import org.contextmapper.dsl.contextMappingDSL.Subdomain;
 import org.contextmapper.dsl.generator.plantuml.PlantUMLClassDiagramCreator;
 import org.contextmapper.dsl.validation.ValidationMessages;
 import org.contextmapper.tactic.dsl.tacticdsl.Aggregate;
@@ -71,7 +72,7 @@ class PlantUMLClassDiagramCreatorTest {
 		Entity testEntity = TacticdslFactory.eINSTANCE.createEntity();
 		testEntity.setName("TestEntity");
 		testModule.getDomainObjects().add(testEntity);
-		
+
 		// when
 		String plantUML = this.creator.createDiagram(boundedContext);
 
@@ -263,17 +264,71 @@ class PlantUMLClassDiagramCreatorTest {
 				.contains("	class Customer <<Entity>> {" + System.lineSeparator() + "		Address entity2Ref" + System.lineSeparator() + "	}" + System.lineSeparator()));
 		assertTrue(plantUML.contains("Customer --> Address" + System.lineSeparator()));
 	}
-	
+
 	@Test
 	public void createsNoteIfBoundedContextIsEmpty() {
 		// given
 		BoundedContext boundedContext = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
-		
+
 		// when
 		String plantUML = this.creator.createDiagram(boundedContext);
-		
+
 		// then
 		assertTrue(plantUML.contains("note \"" + ValidationMessages.EMPTY_UML_CLASS_DIAGRAM_MESSAGE + "\" as EmptyDiagramError" + System.lineSeparator()));
+	}
+
+	@Test
+	public void createsNoteForImplementedSubdomain() {
+		// given
+		BoundedContext boundedContext = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
+		Subdomain subdomain = ContextMappingDSLFactory.eINSTANCE.createSubdomain();
+		subdomain.setName("mySubdomain");
+		boundedContext.setName("myBoundedContext");
+		boundedContext.getImplementedSubdomains().add(subdomain);
+		Aggregate aggregate = TacticdslFactory.eINSTANCE.createAggregate();
+		aggregate.setName("testAggregate");
+		boundedContext.getAggregates().add(aggregate);
+		aggregate.getDomainObjects().add(TacticdslFactory.eINSTANCE.createSimpleDomainObject());
+
+		// when
+		String plantUML = this.creator.createDiagram(boundedContext);
+
+		// then
+		assertTrue(plantUML.contains("legend left"));
+		assertTrue(plantUML.contains("  This bounded context implements the subdomain '" + subdomain.getName() + "'." + System.lineSeparator()));
+		assertTrue(plantUML.contains("endlegend"));
+	}
+
+	@Test
+	public void createsNoteForImplementedSubdomainWithEntities() {
+		// given
+		BoundedContext boundedContext = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
+		Subdomain subdomain = ContextMappingDSLFactory.eINSTANCE.createSubdomain();
+		subdomain.setName("mySubdomain");
+		boundedContext.setName("myBoundedContext");
+		boundedContext.getImplementedSubdomains().add(subdomain);
+		Aggregate aggregate = TacticdslFactory.eINSTANCE.createAggregate();
+		aggregate.setName("testAggregate");
+		boundedContext.getAggregates().add(aggregate);
+		aggregate.getDomainObjects().add(TacticdslFactory.eINSTANCE.createSimpleDomainObject());
+
+		Entity entity1 = TacticdslFactory.eINSTANCE.createEntity();
+		Entity entity2 = TacticdslFactory.eINSTANCE.createEntity();
+		entity1.setName("TestEntity1");
+		entity2.setName("TestEntity2");
+
+		subdomain.getEntities().add(entity1);
+		subdomain.getEntities().add(entity2);
+
+		// when
+		String plantUML = this.creator.createDiagram(boundedContext);
+
+		// then
+		assertTrue(plantUML.contains("legend left"));
+		assertTrue(plantUML.contains("  This bounded context implements the subdomain '" + subdomain.getName() + "', which contains the following entities:" + System.lineSeparator()));
+		assertTrue(plantUML.contains("   - TestEntity1"));
+		assertTrue(plantUML.contains("   - TestEntity2"));
+		assertTrue(plantUML.contains("endlegend"));
 	}
 
 }
