@@ -16,41 +16,31 @@
 package org.contextmapper.dsl.generator;
 
 import java.io.IOException;
-import java.util.List;
 
 import org.contextmapper.dsl.ContextMappingDSLStandaloneSetup;
-import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
+import org.contextmapper.dsl.contextMappingDSL.ContextMap;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.eclipse.xtext.generator.AbstractGenerator;
 import org.eclipse.xtext.generator.IFileSystemAccess2;
-import org.eclipse.xtext.generator.IGeneratorContext;
 import org.eclipse.xtext.resource.XtextResourceSet;
-import org.eclipse.xtext.xbase.lib.IteratorExtensions;
 
-import com.google.common.collect.Iterators;
 import com.google.inject.Injector;
 
-public class XMIGenerator extends AbstractGenerator {
+public class XMIGenerator extends AbstractContextMapGenerator {
 
 	@Override
-	public void doGenerate(final Resource resource, final IFileSystemAccess2 fsa, final IGeneratorContext context) {
-		List<ContextMappingModel> contextMappingModels = IteratorExtensions.<ContextMappingModel>toList(
-				Iterators.<ContextMappingModel>filter(resource.getAllContents(), ContextMappingModel.class));
-
+	protected void generateFromContextMap(ContextMap contextmap, IFileSystemAccess2 fsa, URI inputFileURI) {
 		Injector injector = new ContextMappingDSLStandaloneSetup().createInjectorAndDoEMFRegistration();
 		XtextResourceSet resourceSet = injector.getInstance(XtextResourceSet.class);
 
-		if (contextMappingModels.size() > 0) {
-			ContextMappingModel model = contextMappingModels.get(0);
-			EcoreUtil.resolveAll(model);
-			Resource xmiResource = resourceSet.createResource(resource.getURI().trimFileExtension().appendFileExtension("xmi"));
-			xmiResource.getContents().add(model);
-			try {
-				xmiResource.save(null);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		EcoreUtil.resolveAll(contextMappingModel);
+		Resource xmiResource = resourceSet.createResource(inputFileURI.trimFileExtension().appendFileExtension("xmi"));
+		xmiResource.getContents().add(contextMappingModel);
+		try {
+			xmiResource.save(null);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 

@@ -15,41 +15,29 @@
  */
 package org.contextmapper.dsl.generator;
 
-import java.util.List;
-
-import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
+import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.generator.servicecutter.input.converter.ContextMappingModelToServiceCutterERDConverter;
 import org.contextmapper.dsl.generator.servicecutter.input.model.EntityRelationshipDiagram;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.xtext.generator.AbstractGenerator;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.xtext.generator.IFileSystemAccess2;
-import org.eclipse.xtext.generator.IGeneratorContext;
-import org.eclipse.xtext.xbase.lib.IteratorExtensions;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.google.common.collect.Iterators;
 
-public class ServiceCutterInputGenerator extends AbstractGenerator {
+public class ServiceCutterInputGenerator extends AbstractContextMapGenerator {
 
 	@Override
-	public void doGenerate(final Resource resource, final IFileSystemAccess2 fsa, final IGeneratorContext context) {
-		List<ContextMappingModel> contextMappingModels = IteratorExtensions.<ContextMappingModel>toList(
-				Iterators.<ContextMappingModel>filter(resource.getAllContents(), ContextMappingModel.class));
-
-		if (contextMappingModels.size() > 0) {
-			ContextMappingModel model = contextMappingModels.get(0);
-			String modelName = resource.getURI().trimFileExtension().lastSegment();
-			ContextMappingModelToServiceCutterERDConverter converter = new ContextMappingModelToServiceCutterERDConverter();
-			EntityRelationshipDiagram erd = converter.convert(modelName, model.getMap());
-			ObjectMapper objectMapper = new ObjectMapper();
-			objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
-			try {
-				fsa.generateFile(modelName + ".json", objectMapper.writeValueAsString(erd));
-			} catch (JsonProcessingException e) {
-				throw new RuntimeException("JSON conversion error occured!", e);
-			}
+	protected void generateFromContextMap(ContextMap contextmap, IFileSystemAccess2 fsa, URI inputFileURI) {
+		String modelName = inputFileURI.trimFileExtension().lastSegment();
+		ContextMappingModelToServiceCutterERDConverter converter = new ContextMappingModelToServiceCutterERDConverter();
+		EntityRelationshipDiagram erd = converter.convert(modelName, contextmap);
+		ObjectMapper objectMapper = new ObjectMapper();
+		objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+		try {
+			fsa.generateFile(modelName + ".json", objectMapper.writeValueAsString(erd));
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException("JSON conversion error occured!", e);
 		}
 	}
 

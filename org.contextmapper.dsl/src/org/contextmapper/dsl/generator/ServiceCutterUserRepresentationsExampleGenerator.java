@@ -16,51 +16,42 @@
 package org.contextmapper.dsl.generator;
 
 import java.io.IOException;
-import java.util.List;
 
-import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
+import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.generator.servicecutter.input.userrepresentations.UserRepresentationsExampleFactory;
 import org.contextmapper.servicecutter.dsl.ServiceCutterConfigurationDSLStandaloneSetup;
 import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.ServiceCutterUserRepresentationsModel;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.eclipse.xtext.generator.AbstractGenerator;
 import org.eclipse.xtext.generator.IFileSystemAccess2;
-import org.eclipse.xtext.generator.IGeneratorContext;
+import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.resource.XtextResourceSet;
-import org.eclipse.xtext.xbase.lib.IteratorExtensions;
 
-import com.google.common.collect.Iterators;
 import com.google.inject.Injector;
 
-public class ServiceCutterUserRepresentationsExampleGenerator extends AbstractGenerator {
+public class ServiceCutterUserRepresentationsExampleGenerator extends AbstractContextMapGenerator {
 
 	@Override
-	public void doGenerate(final Resource resource, final IFileSystemAccess2 fsa, final IGeneratorContext context) {
-		List<ContextMappingModel> contextMappingModels = IteratorExtensions.<ContextMappingModel>toList(
-				Iterators.<ContextMappingModel>filter(resource.getAllContents(), ContextMappingModel.class));
-
+	protected void generateFromContextMap(ContextMap contextmap, IFileSystemAccess2 fsa, URI inputFileURI) {
 		Injector injector = new ServiceCutterConfigurationDSLStandaloneSetup().createInjectorAndDoEMFRegistration();
 		XtextResourceSet resourceSet = injector.getInstance(XtextResourceSet.class);
+		resourceSet.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
+		EcoreUtil.resolveAll(contextMappingModel);
+		
+		UserRepresentationsExampleFactory factory = new UserRepresentationsExampleFactory();
+		ServiceCutterUserRepresentationsModel model = factory.createExampleModel(contextMappingModel);
 
-		if (contextMappingModels.size() > 0) {
-			ContextMappingModel contextMappingModel = contextMappingModels.get(0);
-			UserRepresentationsExampleFactory factory = new UserRepresentationsExampleFactory();
-			ServiceCutterUserRepresentationsModel model = factory.createExampleModel(contextMappingModel);
-
-			EcoreUtil.resolveAll(model);
-			URI inputURI = resource.getURI().trimFileExtension();
-			String fileName = inputURI.lastSegment();
-			URI outputURI = inputURI.trimSegments(1).appendSegment(fileName + "_user-representations")
-					.appendFileExtension("scl");
-			Resource sclResource = resourceSet.createResource(outputURI);
-			sclResource.getContents().add(model);
-			try {
-				sclResource.save(null);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		EcoreUtil.resolveAll(model);
+		URI inputURI = inputFileURI.trimFileExtension();
+		String fileName = inputURI.lastSegment();
+		URI outputURI = inputURI.trimSegments(1).appendSegment(fileName + "_user-representations").appendFileExtension("scl");
+		Resource sclResource = resourceSet.createResource(outputURI);
+		sclResource.getContents().add(model);
+		try {
+			sclResource.save(null);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 

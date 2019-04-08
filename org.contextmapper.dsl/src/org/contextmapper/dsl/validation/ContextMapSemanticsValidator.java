@@ -24,10 +24,13 @@ import static org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLPackage.L
 import static org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLPackage.Literals.UPSTREAM_DOWNSTREAM_RELATIONSHIP__DOWNSTREAM;
 import static org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLPackage.Literals.UPSTREAM_DOWNSTREAM_RELATIONSHIP__UPSTREAM;
 import static org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLPackage.Literals.UPSTREAM_DOWNSTREAM_RELATIONSHIP__UPSTREAM_EXPOSED_AGGREGATES;
+import static org.contextmapper.dsl.validation.ValidationMessages.EXPOSED_AGGREGATE_NOT_PART_OF_UPSTREAM_CONTEXT;
 import static org.contextmapper.dsl.validation.ValidationMessages.ORGANIZATIONAL_MAP_CONTEXT_IS_NOT_TYPE_TEAM;
 import static org.contextmapper.dsl.validation.ValidationMessages.RELATIONSHIP_CONTEXT_NOT_ON_MAP_ERROR_MESSAGE;
 import static org.contextmapper.dsl.validation.ValidationMessages.SYSTEM_LANDSCAPE_MAP_CONTAINS_TEAM;
-import static org.contextmapper.dsl.validation.ValidationMessages.EXPOSED_AGGREGATE_NOT_PART_OF_UPSTREAM_CONTEXT;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
@@ -81,7 +84,8 @@ public class ContextMapSemanticsValidator extends AbstractDeclarativeValidator {
 				BoundedContext upstreamContext = ((UpstreamDownstreamRelationship) relationship).getUpstream();
 				int aggregateRefIndex = 0;
 				for (Aggregate aggregate : relationship.getUpstreamExposedAggregates()) {
-					if (!upstreamContext.getAggregates().contains(aggregate))
+					List<String> aggregates = upstreamContext.getAggregates().stream().map(a -> a.getName()).collect(Collectors.toList());
+					if (!aggregates.contains(aggregate.getName()))
 						error(String.format(EXPOSED_AGGREGATE_NOT_PART_OF_UPSTREAM_CONTEXT, aggregate.getName(), upstreamContext.getName()), relationship,
 								UPSTREAM_DOWNSTREAM_RELATIONSHIP__UPSTREAM_EXPOSED_AGGREGATES, aggregateRefIndex);
 					aggregateRefIndex++;
