@@ -1,0 +1,38 @@
+/* Insurance Example Context Map */
+ContextMap {
+	contains CustomerManagement
+	contains PolicyManagement
+	
+	PolicyManagement [D,ACL]<-[U,OHS,PL] CustomerManagement
+}
+
+/* Bounded Context Definitions */
+BoundedContext CustomerManagement {
+	
+	Aggregate Customers {
+		Entity Customer{
+			String firstName
+			String familyName
+			Account customerBankAccount
+		}
+		Entity Account {
+			String iban
+			String bankName
+		}
+	} 
+	
+	Aggregate CustomerSelfService {
+		Entity Account {
+			String username
+			String password
+			Customer owner
+		}
+	}
+	
+}
+
+BoundedContext PolicyManagement {
+	Aggregate Contracts {
+		Entity Contract {}
+	}
+}

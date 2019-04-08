@@ -404,8 +404,17 @@
 			</attribute>
 		</markerResolutionGenerator>
 	</extension>
-	<!-- Rename Refactoring -->
+	<!-- Refactorings -->
 	<extension point="org.eclipse.ui.handlers">
+		<handler 
+			class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.contextmapper.dsl.ui.handler.SplitBoundedContextRefactoringHandler"
+			commandId="org.contextmapper.dsl.ui.handler.org.contextmapper.dsl.ui.handler.SplitBoundedContextRefactoringCommand">
+			<activeWhen>
+				<reference
+					definitionId="org.contextmapper.dsl.ContextMappingDSL.Editor.opened">
+				</reference>
+			</activeWhen>
+		</handler>
 		<handler 
 			class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.eclipse.xtext.ui.refactoring.ui.DefaultRenameElementHandler"
 			commandId="org.eclipse.xtext.ui.refactoring.RenameElement">
@@ -415,6 +424,12 @@
 				</reference>
 			</activeWhen>
 		</handler>
+	</extension>
+	<extension
+	      point="org.eclipse.ui.commands">
+	      <command name="Split by Duplicate Entity Name..." categoryId="org.eclipse.xtext.ui.category.refactoring"
+             id="org.contextmapper.dsl.ui.handler.org.contextmapper.dsl.ui.handler.SplitBoundedContextRefactoringCommand">
+	      </command>
 	</extension>
 	<extension point="org.eclipse.ui.menus">
 		<menuContribution
@@ -427,6 +442,16 @@
 					</reference>
 				</visibleWhen>
 			</command>
+		</menuContribution>
+		<menuContribution
+        locationURI="popup:#TextEditorContext?after=group.edit">
+        	<menu id="org.contextmapper.dsl.ui.refactoring.menu" label="Context Mapper: Refactor" icon="icons/cml.png">
+        		<command defaultHandler="org.contextmapper.dsl.ui.handler.SplitBoundedContextRefactoringHandler" commandId="org.contextmapper.dsl.ui.handler.org.contextmapper.dsl.ui.handler.SplitBoundedContextRefactoringCommand"
+					style="push">
+					<visibleWhen checkEnabled="true">
+					</visibleWhen>
+				</command>
+        	</menu>
 		</menuContribution>
 	</extension>
 	<extension point="org.eclipse.ui.preferencePages">
@@ -591,5 +616,8 @@
 				</command>	
 			</menu>
 		</menuContribution>
+	</extension>
+	<extension point="org.eclipse.ui.startup">
+		<startup class="org.contextmapper.dsl.ui.startup.ContextMapperPluginStartup"/>
 	</extension>
 </plugin>
