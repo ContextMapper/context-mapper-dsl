@@ -101,7 +101,7 @@ public class HenshinSplitBoundedContextRefactoring {
 		return duplicates;
 	}
 
-	private class NoDuplicateEntityFoundException extends RuntimeException {
+	public class NoDuplicateEntityFoundException extends RuntimeException {
 		private static final long serialVersionUID = 1L;
 
 		public NoDuplicateEntityFoundException() {
