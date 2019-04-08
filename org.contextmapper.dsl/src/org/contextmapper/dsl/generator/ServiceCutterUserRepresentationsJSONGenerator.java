@@ -19,13 +19,8 @@ import java.util.List;
 
 import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.Characteristic;
 import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.Compatibilities;
-import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.ConsistencyCriticality;
-import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.ContentVolatility;
 import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.RelatedGroup;
-import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.SecurityCriticality;
 import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.ServiceCutterUserRepresentationsModel;
-import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.StorageSimilarity;
-import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.StructuralVolatility;
 import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.UseCase;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtext.generator.AbstractGenerator;

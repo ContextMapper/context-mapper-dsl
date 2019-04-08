@@ -16,9 +16,11 @@
 package org.contextmapper.dsl.tests
 
 import com.google.inject.Inject
+import java.util.ArrayList
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel
 import org.contextmapper.dsl.contextMappingDSL.Partnership
 import org.contextmapper.dsl.contextMappingDSL.Relationship
+import org.contextmapper.dsl.contextMappingDSL.SharedKernel
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.extensions.InjectionExtension
 import org.eclipse.xtext.testing.util.ParseHelper
@@ -27,7 +29,6 @@ import org.junit.jupiter.api.^extension.ExtendWith
 
 import static org.contextmapper.dsl.tests.util.ParsingErrorAssertions.*
 import static org.junit.jupiter.api.Assertions.*
-import org.contextmapper.dsl.contextMappingDSL.SharedKernel
 
 @ExtendWith(InjectionExtension)
 @InjectWith(ContextMappingDSLInjectorProvider)
@@ -36,7 +37,7 @@ class SymmetricRelationshipDSLParsingTest {
 	ParseHelper<ContextMappingModel> parseHelper
 
 	@Test
-	def void canDefinePartnership() {
+	def void canDefinePartnershipWithName() {
 		// given
 		val String dslSnippet = '''
 			ContextMap {
@@ -66,123 +67,44 @@ class SymmetricRelationshipDSLParsingTest {
 	}
 
 	@Test
-	def void canDefinePartnershipInShortSyntaxVariantOne() {
+	def void canDefinePartnership() {
 		// given
-		val String dslSnippet = '''
+		val String dslSnippetTemplate = '''
 			ContextMap {
 				 contains testContext
 				 contains anotherTestContext
 
-				 testContext [P]<->[P] anotherTestContext
+				 <<relationship>>
 			}
 
 			BoundedContext testContext
 			BoundedContext anotherTestContext
 		''';
-		// when
-		val ContextMappingModel result = parseHelper.parse(dslSnippet);
-		// then
-		assertThatNoParsingErrorsOccurred(result);
-		assertThatNoValidationErrorsOccurred(result);
-		assertEquals(1, result.map.relationships.size);
-
-		val Relationship relationship = result.map.relationships.get(0)
-		assertTrue(relationship.class.interfaces.contains(Partnership))
-
-		val Partnership partnership = relationship as Partnership;
-		assertEquals("testContext", partnership.participant1.name);
-		assertEquals("anotherTestContext", partnership.participant2.name);
+		val dslSnippets = new ArrayList<String>;
+		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "testContext [P]<->[P] anotherTestContext"));
+		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "[P]testContext <-> [P]anotherTestContext"));
+		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "testContext[P] <-> anotherTestContext[P]"));
+		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "[P]testContext <-> anotherTestContext[P]"));
+		
+		for(String dslSnippet : dslSnippets) {
+			// when
+			val ContextMappingModel result = parseHelper.parse(dslSnippet);
+			// then
+			assertThatNoParsingErrorsOccurred(result);
+			assertThatNoValidationErrorsOccurred(result);
+			assertEquals(1, result.map.relationships.size);
+	
+			val Relationship relationship = result.map.relationships.get(0)
+			assertTrue(relationship.class.interfaces.contains(Partnership))
+	
+			val Partnership partnership = relationship as Partnership;
+			assertEquals("testContext", partnership.participant1.name);
+			assertEquals("anotherTestContext", partnership.participant2.name);			
+		}
 	}
 	
 	@Test
-	def void canDefinePartnershipInShortSyntaxVariantTwo() {
-		// given
-		val String dslSnippet = '''
-			ContextMap {
-				 contains testContext
-				 contains anotherTestContext
-
-				 [P]testContext <-> [P]anotherTestContext
-			}
-
-			BoundedContext testContext
-			BoundedContext anotherTestContext
-		''';
-		// when
-		val ContextMappingModel result = parseHelper.parse(dslSnippet);
-		// then
-		assertThatNoParsingErrorsOccurred(result);
-		assertThatNoValidationErrorsOccurred(result);
-		assertEquals(1, result.map.relationships.size);
-
-		val Relationship relationship = result.map.relationships.get(0)
-		assertTrue(relationship.class.interfaces.contains(Partnership))
-
-		val Partnership partnership = relationship as Partnership;
-		assertEquals("testContext", partnership.participant1.name);
-		assertEquals("anotherTestContext", partnership.participant2.name);
-	}
-	
-	@Test
-	def void canDefinePartnershipInShortSyntaxVariantThree() {
-		// given
-		val String dslSnippet = '''
-			ContextMap {
-				 contains testContext
-				 contains anotherTestContext
-
-				 testContext[P] <-> anotherTestContext[P]
-			}
-
-			BoundedContext testContext
-			BoundedContext anotherTestContext
-		''';
-		// when
-		val ContextMappingModel result = parseHelper.parse(dslSnippet);
-		// then
-		assertThatNoParsingErrorsOccurred(result);
-		assertThatNoValidationErrorsOccurred(result);
-		assertEquals(1, result.map.relationships.size);
-
-		val Relationship relationship = result.map.relationships.get(0)
-		assertTrue(relationship.class.interfaces.contains(Partnership))
-
-		val Partnership partnership = relationship as Partnership;
-		assertEquals("testContext", partnership.participant1.name);
-		assertEquals("anotherTestContext", partnership.participant2.name);
-	}
-	
-	@Test
-	def void canDefinePartnershipInShortSyntaxVariantFour() {
-		// given
-		val String dslSnippet = '''
-			ContextMap {
-				 contains testContext
-				 contains anotherTestContext
-
-				 [P]testContext <-> anotherTestContext[P]
-			}
-
-			BoundedContext testContext
-			BoundedContext anotherTestContext
-		''';
-		// when
-		val ContextMappingModel result = parseHelper.parse(dslSnippet);
-		// then
-		assertThatNoParsingErrorsOccurred(result);
-		assertThatNoValidationErrorsOccurred(result);
-		assertEquals(1, result.map.relationships.size);
-
-		val Relationship relationship = result.map.relationships.get(0)
-		assertTrue(relationship.class.interfaces.contains(Partnership))
-
-		val Partnership partnership = relationship as Partnership;
-		assertEquals("testContext", partnership.participant1.name);
-		assertEquals("anotherTestContext", partnership.participant2.name);
-	}
-
-	@Test
-	def void canDefineSharedKernel() {
+	def void canDefineSharedKernelWithName() {
 		// given
 		val String dslSnippet = '''
 			ContextMap {
@@ -212,119 +134,41 @@ class SymmetricRelationshipDSLParsingTest {
 	}
 
 	@Test
-	def void canDefineSharedKernelInShortSyntaxVariantOne() {
+	def void canDefineSharedKernel() {
 		// given
-		val String dslSnippet = '''
+		val String dslSnippetTemplate = '''
 			ContextMap {
 				 contains testContext
 				 contains anotherTestContext
 
-				 testContext [SK]<->[SK] anotherTestContext
+				 <<relationship>>
 			}
 
 			BoundedContext testContext
 			BoundedContext anotherTestContext
 		''';
-		// when
-		val ContextMappingModel result = parseHelper.parse(dslSnippet);
-		// then
-		assertThatNoParsingErrorsOccurred(result);
-		assertThatNoValidationErrorsOccurred(result);
-		assertEquals(1, result.map.relationships.size);
-
-		val Relationship relationship = result.map.relationships.get(0)
-		assertTrue(relationship.class.interfaces.contains(SharedKernel))
-
-		val SharedKernel sharedKernel = relationship as SharedKernel;
-		assertEquals("testContext", sharedKernel.participant1.name);
-		assertEquals("anotherTestContext", sharedKernel.participant2.name);
-	}
+		val dslSnippets = new ArrayList<String>;
+		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "testContext [SK]<->[SK] anotherTestContext"));
+		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "[SK]testContext <-> [SK]anotherTestContext"));
+		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "testContext[SK] <-> anotherTestContext[SK]"));
+		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "[SK]testContext <-> anotherTestContext[SK]"));
+		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "testContext <-> anotherTestContext"));
+		
+		for(String dslSnippet : dslSnippets) {
+			// when
+			val ContextMappingModel result = parseHelper.parse(dslSnippet);
+			// then
+			assertThatNoParsingErrorsOccurred(result);
+			assertThatNoValidationErrorsOccurred(result);
+			assertEquals(1, result.map.relationships.size);
 	
-	@Test
-	def void canDefineSharedKernelInShortSyntaxVariantTwo() {
-		// given
-		val String dslSnippet = '''
-			ContextMap {
-				 contains testContext
-				 contains anotherTestContext
-
-				 [SK]testContext <-> [SK]anotherTestContext
-			}
-
-			BoundedContext testContext
-			BoundedContext anotherTestContext
-		''';
-		// when
-		val ContextMappingModel result = parseHelper.parse(dslSnippet);
-		// then
-		assertThatNoParsingErrorsOccurred(result);
-		assertThatNoValidationErrorsOccurred(result);
-		assertEquals(1, result.map.relationships.size);
-
-		val Relationship relationship = result.map.relationships.get(0)
-		assertTrue(relationship.class.interfaces.contains(SharedKernel))
-
-		val SharedKernel sharedKernel = relationship as SharedKernel;
-		assertEquals("testContext", sharedKernel.participant1.name);
-		assertEquals("anotherTestContext", sharedKernel.participant2.name);
-	}
+			val Relationship relationship = result.map.relationships.get(0)
+			assertTrue(relationship.class.interfaces.contains(SharedKernel))
 	
-	@Test
-	def void canDefineSharedKernelInShortSyntaxVariantThree() {
-		// given
-		val String dslSnippet = '''
-			ContextMap {
-				 contains testContext
-				 contains anotherTestContext
-
-				 testContext[SK] <-> anotherTestContext[SK]
-			}
-
-			BoundedContext testContext
-			BoundedContext anotherTestContext
-		''';
-		// when
-		val ContextMappingModel result = parseHelper.parse(dslSnippet);
-		// then
-		assertThatNoParsingErrorsOccurred(result);
-		assertThatNoValidationErrorsOccurred(result);
-		assertEquals(1, result.map.relationships.size);
-
-		val Relationship relationship = result.map.relationships.get(0)
-		assertTrue(relationship.class.interfaces.contains(SharedKernel))
-
-		val SharedKernel sharedKernel = relationship as SharedKernel;
-		assertEquals("testContext", sharedKernel.participant1.name);
-		assertEquals("anotherTestContext", sharedKernel.participant2.name);
-	}
-	
-	@Test
-	def void canDefineSharedKernelInShortSyntaxVariantFour() {
-		// given
-		val String dslSnippet = '''
-			ContextMap {
-				 contains testContext
-				 contains anotherTestContext
-
-				 [SK]testContext <-> anotherTestContext[SK]
-			}
-
-			BoundedContext testContext
-			BoundedContext anotherTestContext
-		''';
-		// when
-		val ContextMappingModel result = parseHelper.parse(dslSnippet);
-		// then
-		assertThatNoParsingErrorsOccurred(result);
-		assertThatNoValidationErrorsOccurred(result);
-		assertEquals(1, result.map.relationships.size);
-
-		val Relationship relationship = result.map.relationships.get(0)
-		assertTrue(relationship.class.interfaces.contains(SharedKernel))
-
-		val SharedKernel sharedKernel = relationship as SharedKernel;
-		assertEquals("testContext", sharedKernel.participant1.name);
-		assertEquals("anotherTestContext", sharedKernel.participant2.name);
+			val SharedKernel sharedKernel = relationship as SharedKernel;
+			assertEquals("testContext", sharedKernel.participant1.name);
+			assertEquals("anotherTestContext", sharedKernel.participant2.name);
+		}
 	}
 	
 	@Test

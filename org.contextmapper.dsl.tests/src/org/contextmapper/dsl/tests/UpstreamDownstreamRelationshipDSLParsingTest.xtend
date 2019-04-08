@@ -614,4 +614,40 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 		assertThatNoValidationErrorsOccurred(result);
 	}
 
+	@Test
+	def void canDefineUpstreamDownstreamRelationshipWithoutBrackets() {
+		// given
+		val String dslSnippetTemplate = '''
+			ContextMap {
+				contains testContext
+				contains anotherTestContext
+			
+				<<relationship>>
+			}
+			
+			BoundedContext testContext
+			BoundedContext anotherTestContext
+		''';
+		
+		val dslSnippets = new ArrayList<String>;
+		// all variants only with S and C
+		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "testContext -> anotherTestContext"));
+		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "anotherTestContext <- testContext"));
+		
+		for(String dslSnippet : dslSnippets) {
+			// when
+			val ContextMappingModel result = parseHelper.parse(dslSnippet);
+			// then
+			assertThatNoParsingErrorsOccurred(result);
+			assertThatNoValidationErrorsOccurred(result);
+	
+			val Relationship relationship = result.map.relationships.get(0)
+			assertTrue(relationship.class.interfaces.contains(UpstreamDownstreamRelationship))
+	
+			val UpstreamDownstreamRelationship upstreamDownstreamRelationship = relationship as UpstreamDownstreamRelationship
+			assertEquals("testContext", upstreamDownstreamRelationship.upstream.name)
+			assertEquals("anotherTestContext", upstreamDownstreamRelationship.downstream.name)	
+		}
+	}
+
 }

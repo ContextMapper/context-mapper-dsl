@@ -53,6 +53,22 @@ class ContextMapDSLParsingTest {
 		assertThatNoValidationErrorsOccurred(result);
 		assertNotNull(result.map);
 	}
+	
+	@Test
+	def void canDefineContextMapWithName() {
+		// given
+		val String dslSnippet = '''
+			ContextMap myContextMap {}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		assertNotNull(result.map);
+		
+		assertEquals("myContextMap", result.map.name)
+	}
 
 	@Test
 	def void canAddBoundedContextToMap() {
@@ -61,6 +77,30 @@ class ContextMapDSLParsingTest {
 			ContextMap {
 				 contains testContext
 				 contains anotherTestContext
+			}
+			
+			BoundedContext testContext
+			BoundedContext anotherTestContext
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		assertNotNull(result.map);
+		assertEquals(2, result.map.boundedContexts.size);
+
+		val contextNames = result.map.boundedContexts.stream.map[name].collect(Collectors.toList);
+		assertTrue(contextNames.contains("testContext"));
+		assertTrue(contextNames.contains("anotherTestContext"));
+	}
+	
+	@Test
+	def void canAddBoundedContextToMapInOneLine() {
+		// given
+		val String dslSnippet = '''
+			ContextMap {
+				 contains testContext, anotherTestContext
 			}
 			
 			BoundedContext testContext
@@ -177,31 +217,6 @@ class ContextMapDSLParsingTest {
 		val contextNames = result.map.boundedContexts.stream.map[name].collect(Collectors.toList);
 		assertTrue(contextNames.contains("testContext"));
 		assertTrue(contextNames.contains("anotherTestContext"));
-	}
-
-	@Test
-	def void throwErrorIfRelationshipIsNotUnique() {
-		// given
-		val String dslSnippet = '''
-			BoundedContext testContext
-			BoundedContext anotherTestContext
-			
-			ContextMap {
-				 contains testContext
-				 contains anotherTestContext
-				 
-				 testContext [P]<->[P] anotherTestContext
-				 
-				 testContext [U]->[D] anotherTestContext
-			}
-		''';
-		// when
-		val ContextMappingModel result = parseHelper.parse(dslSnippet);
-
-		// then
-		assertThatNoParsingErrorsOccurred(result);
-		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.CONTEXT_MAP, "",
-			String.format(DUPLICATE_RELATIONSHIP_DECLARATION, "testContext", "anotherTestContext"));
 	}
 
 	@Test

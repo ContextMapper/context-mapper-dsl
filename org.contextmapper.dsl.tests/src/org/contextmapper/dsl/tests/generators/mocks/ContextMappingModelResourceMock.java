@@ -100,6 +100,8 @@ public class ContextMappingModelResourceMock implements Resource {
 
 	@Override
 	public TreeIterator<EObject> getAllContents() {
+		if (contextMappingModel == null)
+			return emptyTreeIterator();
 		return EcoreUtil2.eAll(contextMappingModel);
 	}
 
@@ -170,6 +172,25 @@ public class ContextMappingModelResourceMock implements Resource {
 	@Override
 	public EList<Diagnostic> getWarnings() {
 		return null;
+	}
+
+	private TreeIterator<EObject> emptyTreeIterator() {
+		return new TreeIterator<EObject>() {
+
+			@Override
+			public boolean hasNext() {
+				return false;
+			}
+
+			@Override
+			public EObject next() {
+				return null;
+			}
+
+			@Override
+			public void prune() {
+			}
+		};
 	}
 
 }

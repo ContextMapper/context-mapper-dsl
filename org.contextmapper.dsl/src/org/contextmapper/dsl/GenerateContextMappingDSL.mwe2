@@ -130,6 +130,7 @@ Workflow {
 				composedCheck = "org.contextmapper.dsl.validation.BoundedContextRelationshipSemanticsValidator"
 				composedCheck = "org.contextmapper.dsl.validation.ContextMapSemanticsValidator"
 				composedCheck = "org.contextmapper.dsl.validation.TeamSemanticsValidator"
+				composedCheck = "org.contextmapper.dsl.validation.UniquenessValidator"
 
 				// Generates checks for @Deprecated grammar annotations, an IssueProvider and a corresponding PropertyPage
 				generateDeprecationValidation = true
