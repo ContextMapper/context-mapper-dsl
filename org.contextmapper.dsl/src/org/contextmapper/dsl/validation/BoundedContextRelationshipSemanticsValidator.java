@@ -18,11 +18,7 @@ package org.contextmapper.dsl.validation;
 import static org.contextmapper.dsl.validation.ValidationMessages.CUSTOMER_SUPPLIER_WITH_ACL_WARNING_MESSAGE;
 import static org.contextmapper.dsl.validation.ValidationMessages.CUSTOMER_SUPPLIER_WITH_CONFORMIST_ERROR_MESSAGE;
 import static org.contextmapper.dsl.validation.ValidationMessages.CUSTOMER_SUPPLIER_WITH_OHS_ERROR_MESSAGE;
-import static org.contextmapper.dsl.validation.ValidationMessages.DUPLICATE_RELATIONSHIP_DECLARATION;
 import static org.contextmapper.dsl.validation.ValidationMessages.SELF_RELATIONSHIP_NOT_ALLOWED;
-
-import java.util.HashSet;
-import java.util.Set;
 
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
@@ -59,27 +55,6 @@ public class BoundedContextRelationshipSemanticsValidator extends AbstractDeclar
 		// Downstream in Customer-Supplier relationship should not implement CONFORMIST
 		if (relationship.getDownstreamRoles().contains(DownstreamRole.CONFORMIST))
 			error(CUSTOMER_SUPPLIER_WITH_CONFORMIST_ERROR_MESSAGE, relationship, ContextMappingDSLPackage.Literals.UPSTREAM_DOWNSTREAM_RELATIONSHIP__DOWNSTREAM_ROLES);
-	}
-
-	@Check
-	public void ensureRelationshipUniqueness(final ContextMap contextMap) {
-		Set<BoundedContextPair> pairs = new HashSet<>();
-		int relationshipIndex = 0;
-		for (Relationship relationship : contextMap.getRelationships()) {
-			BoundedContextPair pair;
-			if (relationship instanceof SymmetricRelationship) {
-				pair = new BoundedContextPair(((SymmetricRelationship) relationship).getParticipant1(), ((SymmetricRelationship) relationship).getParticipant2());
-			} else {
-				pair = new BoundedContextPair(((UpstreamDownstreamRelationship) relationship).getUpstream(), ((UpstreamDownstreamRelationship) relationship).getDownstream());
-			}
-			if (pairs.contains(pair)) {
-				error(String.format(DUPLICATE_RELATIONSHIP_DECLARATION, pair.context1.getName(), pair.context2.getName()), contextMap,
-						ContextMappingDSLPackage.Literals.CONTEXT_MAP__RELATIONSHIPS, relationshipIndex);
-			} else {
-				pairs.add(pair);
-			}
-			relationshipIndex++;
-		}
 	}
 
 	@Check
