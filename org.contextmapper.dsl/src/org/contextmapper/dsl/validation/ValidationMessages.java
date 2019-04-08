@@ -28,6 +28,9 @@ public class ValidationMessages {
 	public static final String DUPLICATE_RELATIONSHIP_DECLARATION = "The relationship between the bounded contexts '%s' and '%s' has been declared multiple times. Bounded context relationships must be unique.";
 	public static final String SELF_RELATIONSHIP_NOT_ALLOWED = "Bounded context relationships must be declared between two different bounded contexts.";
 	
+	/* Uniqueness problems */
+	public static final String BOUNDED_CONTEXT_NAME_NOT_UNIQUE = "Multiple bounded contexts with the name '%s' have been declared.";
+	
 	/* Generator problems */
 	public static final String EMPTY_UML_COMPONENT_DIAGRAM_MESSAGE = "Sorry, we cannot generate anything. Your Context Map seems to be empty...";
 	public static final String EMPTY_UML_CLASS_DIAGRAM_MESSAGE = "Sorry, we cannot generate anything. Your bounded context seems to be empty...";
