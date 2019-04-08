@@ -20,6 +20,7 @@ import java.util.Set;
 
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
+import org.contextmapper.dsl.refactoring.henshin.HenshinTransformationFileProvider;
 import org.contextmapper.tactic.dsl.tacticdsl.Entity;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
@@ -43,11 +44,11 @@ public class HenshinSplitBoundedContextRefactoring {
 
 	private final String transformationsFile;
 
-	public HenshinSplitBoundedContextRefactoring(String henshinTransformationFile) {
-		this.transformationsFile = henshinTransformationFile;
+	public HenshinSplitBoundedContextRefactoring() {
+		this.transformationsFile = new HenshinTransformationFileProvider().getTransformationFilePath(HenshinTransformationFileProvider.FILE_CONTEXTMAP_REFACTORINGS);
 	}
 
-	public void doRefactor(final Resource resource, final IFileSystemAccess2 fsa) {
+	public void doRefactor(final Resource resource) {
 		List<ContextMappingModel> contextMappingModels = IteratorExtensions
 				.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(resource.getAllContents(), ContextMappingModel.class));
 

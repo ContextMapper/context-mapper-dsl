@@ -617,4 +617,7 @@
 			</menu>
 		</menuContribution>
 	</extension>
+	<extension point="org.eclipse.ui.startup">
+		<startup class="org.contextmapper.dsl.ui.startup.ContextMapperPluginStartup"/>
+	</extension>
 </plugin>

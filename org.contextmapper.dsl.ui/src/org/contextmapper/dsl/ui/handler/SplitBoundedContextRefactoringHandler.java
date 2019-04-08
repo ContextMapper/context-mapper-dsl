@@ -72,20 +72,13 @@ public class SplitBoundedContextRefactoringHandler extends AbstractHandler imple
 			XtextEditor xEditor = EditorUtils.getActiveXtextEditor();
 			IResource xResource = xEditor.getResource();
 
-			final EclipseResourceFileSystemAccess2 fsa = fileAccessProvider.get();
-			fsa.setProject(xResource.getProject());
-			fsa.setMonitor(new NullProgressMonitor());
 			URI uri = URI.createPlatformResourceURI(xResource.getFullPath().toString(), true);
 
 			ResourceSet rs = resourceSetProvider.get(xResource.getProject());
 			Resource resource = rs.getResource(uri, true);
 
-			Bundle bundle = DslActivator.getInstance().getBundle();
-			URL henshinFileURL = FileLocator.find(bundle, new Path("henshin-transformations/ContextMapRefactorings.henshin"), null);
-			henshinFileURL = FileLocator.toFileURL(henshinFileURL);
-
-			HenshinSplitBoundedContextRefactoring refactoring = new HenshinSplitBoundedContextRefactoring(URIUtil.toFile(URIUtil.toURI(henshinFileURL)).getAbsolutePath());
-			refactoring.doRefactor(resource, fsa);
+			HenshinSplitBoundedContextRefactoring refactoring = new HenshinSplitBoundedContextRefactoring();
+			refactoring.doRefactor(resource);
 		} catch (Exception e) {
 			String message = e.getMessage() != null && !"".equals(e.getMessage()) ? e.getMessage() : e.getClass().getName() + " occurred in " + this.getClass().getName();
 			Status status = new Status(IStatus.ERROR, DslActivator.PLUGIN_ID, message, e);
@@ -116,7 +109,7 @@ public class SplitBoundedContextRefactoringHandler extends AbstractHandler imple
 		}
 		return null;
 	}
-	
+
 	private boolean editorHasChanges() {
 		final XtextEditor editor = EditorUtils.getActiveXtextEditor();
 		if (editor != null) {
