@@ -33,8 +33,6 @@ import org.eclipse.xtext.validation.AbstractDeclarativeValidator;
 import org.eclipse.xtext.validation.Check;
 import org.eclipse.xtext.validation.EValidatorRegistrar;
 
-import com.google.common.base.Objects;
-
 public class BoundedContextRelationshipSemanticsValidator extends AbstractDeclarativeValidator {
 
 	@Override
@@ -74,29 +72,6 @@ public class BoundedContextRelationshipSemanticsValidator extends AbstractDeclar
 				error(String.format(SELF_RELATIONSHIP_NOT_ALLOWED), contextMap, ContextMappingDSLPackage.Literals.CONTEXT_MAP__RELATIONSHIPS, relationshipIndex);
 			}
 			relationshipIndex++;
-		}
-	}
-
-	private class BoundedContextPair {
-		private BoundedContext context1;
-		private BoundedContext context2;
-
-		public BoundedContextPair(BoundedContext context1, BoundedContext context2) {
-			this.context1 = context1;
-			this.context2 = context2;
-		}
-
-		@Override
-		public boolean equals(Object obj) {
-			if (!(obj instanceof BoundedContextPair))
-				return false;
-			BoundedContextPair otherPair = (BoundedContextPair) obj;
-			return (this.context1 == otherPair.context1 && this.context2 == otherPair.context2) || (this.context1 == otherPair.context2 && this.context2 == otherPair.context1);
-		}
-
-		@Override
-		public int hashCode() {
-			return Objects.hashCode(this.context1, this.context2);
 		}
 	}
 
