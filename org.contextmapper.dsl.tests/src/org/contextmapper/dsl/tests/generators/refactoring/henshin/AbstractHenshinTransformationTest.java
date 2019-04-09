@@ -38,6 +38,11 @@ public class AbstractHenshinTransformationTest {
 		return rs.getResource(URI.createFileURI(testFile.getAbsolutePath()), true);
 	}
 
+	protected Resource reloadResource(Resource resource) {
+		ResourceSet rs = new ResourceSetImpl();
+		return rs.getResource(URI.createFileURI(resource.getURI().devicePath()), true);
+	}
+
 	protected File getTestFile(String testCMLName) {
 		return new File(Paths.get("").toAbsolutePath().toString(), "/integ-test-files/refactorings/" + testCMLName);
 	}

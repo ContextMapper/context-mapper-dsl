@@ -7,8 +7,8 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
-import org.contextmapper.dsl.refactoring.HenshinSplitBoundedContextRefactoring;
-import org.contextmapper.dsl.refactoring.HenshinSplitBoundedContextRefactoring.NoDuplicateEntityFoundException;
+import org.contextmapper.dsl.refactoring.henshin.SplitBoundedContextByDuplicateEntityInAggregatesRefactoring;
+import org.contextmapper.dsl.refactoring.henshin.SplitBoundedContextByDuplicateEntityInAggregatesRefactoring.NoDuplicateEntityFoundException;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.junit.jupiter.api.Test;
 
@@ -22,7 +22,7 @@ public class SplitByDuplicateEntityNameTest extends AbstractHenshinTransformatio
 
 		// when
 		Resource input = getResourceCopyOfTestCML(inputModelName);
-		HenshinSplitBoundedContextRefactoring refactoring = new HenshinSplitBoundedContextRefactoring();
+		SplitBoundedContextByDuplicateEntityInAggregatesRefactoring refactoring = new SplitBoundedContextByDuplicateEntityInAggregatesRefactoring();
 		refactoring.doRefactor(input);
 
 		// then
@@ -36,7 +36,7 @@ public class SplitByDuplicateEntityNameTest extends AbstractHenshinTransformatio
 
 		// when
 		Resource input = getResourceCopyOfTestCML(inputModelName);
-		HenshinSplitBoundedContextRefactoring refactoring = new HenshinSplitBoundedContextRefactoring();
+		SplitBoundedContextByDuplicateEntityInAggregatesRefactoring refactoring = new SplitBoundedContextByDuplicateEntityInAggregatesRefactoring();
 		
 		// then
 		assertThrows(NoDuplicateEntityFoundException.class, () -> refactoring.doRefactor(input));
