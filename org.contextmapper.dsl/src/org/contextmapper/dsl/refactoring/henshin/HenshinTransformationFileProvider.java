@@ -8,7 +8,8 @@ import org.apache.commons.io.FileUtils;
 
 public class HenshinTransformationFileProvider {
 
-	public static final String FILE_CONTEXTMAP_REFACTORINGS = "ContextMapRefactorings.henshin";
+	public static final String SPLIT_BY_DUPLICATE_ENTITY_NAME = "SplitByDuplicateEntityName.henshin";
+	public static final String SPLIT_BY_AGGREGATE_BY_ENTITIES = "SplitAggregateByEntities.henshin";
 
 	private File henshinDirectory;
 
@@ -27,7 +28,7 @@ public class HenshinTransformationFileProvider {
 		try {
 			if (henshinDirectory.exists())
 				FileUtils.cleanDirectory(henshinDirectory);
-			copyFileToTempDirectory(FILE_CONTEXTMAP_REFACTORINGS);
+			copyFileToTempDirectory(SPLIT_BY_DUPLICATE_ENTITY_NAME);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
