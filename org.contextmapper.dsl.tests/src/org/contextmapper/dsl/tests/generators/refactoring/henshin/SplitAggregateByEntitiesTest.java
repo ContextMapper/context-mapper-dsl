@@ -41,7 +41,7 @@ public class SplitAggregateByEntitiesTest extends AbstractHenshinTransformationT
 		
 		List<String> aggregateNames = bc.getAggregates().stream().map(a -> a.getName()).collect(Collectors.toList());
 		assertTrue(aggregateNames.contains("Customers"));
-		assertTrue(aggregateNames.contains("NewAggregate"));
+		assertTrue(aggregateNames.contains("NewAggregate1"));
 	}
 
 }

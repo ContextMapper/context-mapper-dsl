@@ -15,9 +15,24 @@
  */
 package org.contextmapper.dsl.refactoring.henshin;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
+import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
+import org.contextmapper.tactic.dsl.tacticdsl.Aggregate;
+import org.contextmapper.tactic.dsl.tacticdsl.Module;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.henshin.interpreter.UnitApplication;
+import org.eclipse.xtext.EcoreUtil2;
+import org.eclipse.xtext.xbase.lib.IteratorExtensions;
+
+import com.google.common.collect.Iterators;
 
 public class SplitAggregateByEntitiesRefactoring extends AbstractHenshinRefactoring {
+
+	private final static String TEMP_AGGREGATE_NAMES = "TEMP_AR_New_Aggregate";
+	private final static String NEW_AGGREGATE_NAME_PREFIX = "NewAggregate";
 
 	private String aggregateName;
 
@@ -38,12 +53,43 @@ public class SplitAggregateByEntitiesRefactoring extends AbstractHenshinRefactor
 	@Override
 	protected void setUnitParameters(UnitApplication refactoringUnit) {
 		refactoringUnit.setParameterValue("aggregateName", aggregateName);
-		refactoringUnit.setParameterValue("newAggregateName", "NewAggregate");
+		refactoringUnit.setParameterValue("newAggregateName", TEMP_AGGREGATE_NAMES);
 	}
 
 	@Override
 	protected void throwTransformationError() {
 		throw new RuntimeException("Error splitting by aggregate '" + aggregateName + "' ... (Problem with Henshin transformation)");
+	}
+
+	@Override
+	protected void postProcessing(Resource resource) {
+		List<ContextMappingModel> contextMappingModels = IteratorExtensions
+				.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(resource.getAllContents(), ContextMappingModel.class));
+
+		if (contextMappingModels.size() > 0) {
+			List<Aggregate> allAggregates = EcoreUtil2.<Aggregate>getAllContentsOfType(contextMappingModels.get(0), Aggregate.class);
+			List<Aggregate> aggregatesWithInputName = allAggregates.stream().filter(agg -> agg.getName().equals(aggregateName)).collect(Collectors.toList());
+			if (aggregatesWithInputName.isEmpty())
+				return;
+
+			Aggregate inputAggregate = aggregatesWithInputName.get(0);
+			if (inputAggregate.eContainer() instanceof BoundedContext) {
+				BoundedContext bc = (BoundedContext) inputAggregate.eContainer();
+				fixNewAggregateNames(bc.getAggregates());
+			} else if (inputAggregate.eContainer() instanceof Module) {
+				Module m = (Module) inputAggregate.eContainer();
+				fixNewAggregateNames(m.getAggregates());
+			}
+		}
+	}
+
+	private void fixNewAggregateNames(List<Aggregate> aggregates) {
+		List<Aggregate> newAggregates = aggregates.stream().filter(agg -> agg.getName().equals(TEMP_AGGREGATE_NAMES)).collect(Collectors.toList());
+		int i = 1;
+		for (Aggregate newAggregate : newAggregates) {
+			newAggregate.setName(NEW_AGGREGATE_NAME_PREFIX + i);
+			i++;
+		}
 	}
 
 }

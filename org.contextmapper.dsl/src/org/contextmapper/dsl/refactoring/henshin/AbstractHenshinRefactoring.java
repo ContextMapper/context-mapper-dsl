@@ -73,10 +73,13 @@ public abstract class AbstractHenshinRefactoring implements HenshinRefactoring {
 		// Saving the result
 		resourceSet.saveEObject(graph.getRoots().get(0), resource.getURI());
 
+		// post-processing
+		Resource newResource = resourceSet.getResource(resource.getURI(), false);
+		postProcessing(newResource);
+
 		// unfortunately the changed DSL elements are not formatted automatically
 		// we just format the whole document after executing a refactoring for now
 		try {
-			Resource newResource = resourceSet.getResource(resource.getURI(), false);
 			newResource.save(SaveOptions.newBuilder().format().getOptions().toOptionsMap());
 		} catch (IOException e) {
 			throw new RuntimeException("Document cannot be formatted.");
@@ -107,6 +110,16 @@ public abstract class AbstractHenshinRefactoring implements HenshinRefactoring {
 	 */
 	protected void setUnitParameters(UnitApplication refactoringUnit) {
 		// no parameters set
+	}
+
+	/**
+	 * Override this method in case you want execute some post-processing after the
+	 * Henshin transformation
+	 * 
+	 * @param resource The resource already transformed by Henshin.
+	 */
+	protected void postProcessing(Resource resource) {
+		// nothing to do
 	}
 
 	/**
