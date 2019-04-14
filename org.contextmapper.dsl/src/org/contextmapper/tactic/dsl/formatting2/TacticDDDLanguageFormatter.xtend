@@ -20,6 +20,7 @@ import org.contextmapper.tactic.dsl.services.TacticDDDLanguageGrammarAccess
 import org.contextmapper.tactic.dsl.tacticdsl.Aggregate
 import org.contextmapper.tactic.dsl.tacticdsl.Application
 import org.contextmapper.tactic.dsl.tacticdsl.Entity
+import org.contextmapper.tactic.dsl.tacticdsl.Module
 import org.contextmapper.tactic.dsl.tacticdsl.TacticDDDModel
 import org.eclipse.xtext.formatting2.AbstractFormatter2
 import org.eclipse.xtext.formatting2.IFormattableDocument
@@ -56,6 +57,16 @@ class TacticDDDLanguageFormatter extends AbstractFormatter2 {
 
 		for (service : aggregate.services) {
 			service.format
+		}
+	}
+	
+	def dispatch void format(Module module, extension IFormattableDocument document) {
+		interior(
+			module.regionFor.keyword('{').append[newLine],
+			module.regionFor.keyword('}').prepend[newLine].append[newLine]
+		)[indent]
+		for(aggregate : module.aggregates) {
+			aggregate.format
 		}
 	}
 

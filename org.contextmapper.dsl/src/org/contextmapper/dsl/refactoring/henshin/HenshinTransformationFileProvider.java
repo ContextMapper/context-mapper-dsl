@@ -10,6 +10,7 @@ public class HenshinTransformationFileProvider {
 
 	public static final String SPLIT_BY_DUPLICATE_ENTITY_NAME = "SplitByDuplicateEntityName.henshin";
 	public static final String SPLIT_BY_AGGREGATE_BY_ENTITIES = "SplitAggregateByEntities.henshin";
+	public static final String SPLIT_BY_AGGREGATE_BY_ENTITIES_IN_MODULE = "SplitAggregateByEntities_WithModule.henshin";
 
 	private File henshinDirectory;
 

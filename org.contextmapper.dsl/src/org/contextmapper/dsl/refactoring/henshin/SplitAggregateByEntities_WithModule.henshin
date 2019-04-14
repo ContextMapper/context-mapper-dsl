@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<henshin:Module xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:henshin="http://www.eclipse.org/emf/2011/Henshin" xmi:id="_vc10oOTMEeiIWbYp2Hltow">
+  <imports href="http://www.contextmapper.org/dsl/ContextMappingDSL#/"/>
+  <imports href="http://contextmapper.org/tactic/dsl/tacticdsl#/"/>
+  <units xsi:type="henshin:LoopUnit" xmi:id="_12GIkFqzEem8VdfNmAnpAA" name="splitAggregateByEntities" subUnit="_0Z6yoOTMEeiIWbYp2Hltow">
+    <parameters xmi:id="_Q1l6QFrHEem8VdfNmAnpAA" name="aggregateName" kind="IN">
+      <type xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </parameters>
+    <parameters xmi:id="_UQOOEFrHEem8VdfNmAnpAA" name="newAggregateName" kind="IN">
+      <type xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </parameters>
+    <parameterMappings xmi:id="_XUP_wFrHEem8VdfNmAnpAA" source="_Q1l6QFrHEem8VdfNmAnpAA" target="_kKaUgFq0Eem8VdfNmAnpAA"/>
+    <parameterMappings xmi:id="_ZmAnAFrHEem8VdfNmAnpAA" source="_UQOOEFrHEem8VdfNmAnpAA" target="_h41PQFq7Eem8VdfNmAnpAA"/>
+  </units>
+  <units xsi:type="henshin:Rule" xmi:id="_0Z6yoOTMEeiIWbYp2Hltow" name="extractOneEntityOutOfAggregate" description="Splits an Aggregate and creates one Aggregate per Entity.">
+    <parameters xmi:id="_kKaUgFq0Eem8VdfNmAnpAA" name="aggregateName" description="The Aggregate to be split." kind="IN">
+      <type xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </parameters>
+    <parameters xmi:id="_h41PQFq7Eem8VdfNmAnpAA" name="newAggregateName" description="Name for newly created Aggregate" kind="IN">
+      <type xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </parameters>
+    <lhs xmi:id="_0aeMQOTMEeiIWbYp2Hltow" name="Lhs">
+      <nodes xmi:id="_2tIggOTOEeiIWbYp2Hltow" incoming="_77LSUF6WEemPGsmX1edTug" outgoing="_KQoqcOTREeiIWbYp2Hltow _1PhuQFqnEem8VdfNmAnpAA">
+        <type href="http://contextmapper.org/tactic/dsl/tacticdsl#//Aggregate"/>
+        <attributes xmi:id="_iQWHcFqnEem8VdfNmAnpAA" value="aggregateName">
+          <type href="http://contextmapper.org/tactic/dsl/tacticdsl#//Aggregate/name"/>
+        </attributes>
+      </nodes>
+      <nodes xmi:id="_vpZGEOTQEeiIWbYp2Hltow" incoming="_KQoqcOTREeiIWbYp2Hltow">
+        <type href="http://contextmapper.org/tactic/dsl/tacticdsl#//Entity"/>
+      </nodes>
+      <nodes xmi:id="_x-RSwOTQEeiIWbYp2Hltow" incoming="_1PhuQFqnEem8VdfNmAnpAA">
+        <type href="http://contextmapper.org/tactic/dsl/tacticdsl#//Entity"/>
+      </nodes>
+      <nodes xmi:id="_liEaEFqrEem8VdfNmAnpAA" outgoing="_JLG3UF6XEemPGsmX1edTug">
+        <type href="http://www.contextmapper.org/dsl/ContextMappingDSL#//BoundedContext"/>
+      </nodes>
+      <nodes xmi:id="_SQu0gF6WEemPGsmX1edTug" description="" incoming="_JLG3UF6XEemPGsmX1edTug" outgoing="_77LSUF6WEemPGsmX1edTug">
+        <type href="http://contextmapper.org/tactic/dsl/tacticdsl#//Module"/>
+      </nodes>
+      <edges xmi:id="_KQoqcOTREeiIWbYp2Hltow" source="_2tIggOTOEeiIWbYp2Hltow" target="_vpZGEOTQEeiIWbYp2Hltow">
+        <type href="http://contextmapper.org/tactic/dsl/tacticdsl#//Aggregate/domainObjects"/>
+      </edges>
+      <edges xmi:id="_1PhuQFqnEem8VdfNmAnpAA" source="_2tIggOTOEeiIWbYp2Hltow" target="_x-RSwOTQEeiIWbYp2Hltow">
+        <type href="http://contextmapper.org/tactic/dsl/tacticdsl#//Aggregate/domainObjects"/>
+      </edges>
+      <edges xmi:id="_77LSUF6WEemPGsmX1edTug" source="_SQu0gF6WEemPGsmX1edTug" target="_2tIggOTOEeiIWbYp2Hltow">
+        <type href="http://contextmapper.org/tactic/dsl/tacticdsl#//Module/aggregates"/>
+      </edges>
+      <edges xmi:id="_JLG3UF6XEemPGsmX1edTug" source="_liEaEFqrEem8VdfNmAnpAA" target="_SQu0gF6WEemPGsmX1edTug">
+        <type href="http://www.contextmapper.org/dsl/ContextMappingDSL#//BoundedContext/modules"/>
+      </edges>
+    </lhs>
+    <rhs xmi:id="_0aeMQeTMEeiIWbYp2Hltow" name="Rhs">
+      <nodes xmi:id="_4qF8cOTOEeiIWbYp2Hltow" incoming="_AdMsAF6XEemPGsmX1edTug" outgoing="_OvATMOTREeiIWbYp2Hltow">
+        <type href="http://contextmapper.org/tactic/dsl/tacticdsl#//Aggregate"/>
+        <attributes xmi:id="_mlGhMFqnEem8VdfNmAnpAA" value="aggregateName">
+          <type href="http://contextmapper.org/tactic/dsl/tacticdsl#//Aggregate/name"/>
+        </attributes>
+      </nodes>
+      <nodes xmi:id="_OfoP4OTQEeiIWbYp2Hltow" incoming="_nXImgF6WEemPGsmX1edTug" outgoing="_FIJMwFqoEem8VdfNmAnpAA">
+        <type href="http://contextmapper.org/tactic/dsl/tacticdsl#//Aggregate"/>
+        <attributes xmi:id="_ra6x4FqtEem8VdfNmAnpAA" value="newAggregateName">
+          <type href="http://contextmapper.org/tactic/dsl/tacticdsl#//Aggregate/name"/>
+        </attributes>
+      </nodes>
+      <nodes xmi:id="_6lBtMOTQEeiIWbYp2Hltow" incoming="_OvATMOTREeiIWbYp2Hltow">
+        <type href="http://contextmapper.org/tactic/dsl/tacticdsl#//Entity"/>
+      </nodes>
+      <nodes xmi:id="_75aGMOTQEeiIWbYp2Hltow" incoming="_FIJMwFqoEem8VdfNmAnpAA">
+        <type href="http://contextmapper.org/tactic/dsl/tacticdsl#//Entity"/>
+      </nodes>
+      <nodes xmi:id="_ptiU8FqrEem8VdfNmAnpAA" outgoing="_LRGTcF6XEemPGsmX1edTug">
+        <type href="http://www.contextmapper.org/dsl/ContextMappingDSL#//BoundedContext"/>
+      </nodes>
+      <nodes xmi:id="_VPQbIF6WEemPGsmX1edTug" description="" incoming="_LRGTcF6XEemPGsmX1edTug" outgoing="_nXImgF6WEemPGsmX1edTug _AdMsAF6XEemPGsmX1edTug">
+        <type href="http://contextmapper.org/tactic/dsl/tacticdsl#//Module"/>
+      </nodes>
+      <edges xmi:id="_OvATMOTREeiIWbYp2Hltow" source="_4qF8cOTOEeiIWbYp2Hltow" target="_6lBtMOTQEeiIWbYp2Hltow">
+        <type href="http://contextmapper.org/tactic/dsl/tacticdsl#//Aggregate/domainObjects"/>
+      </edges>
+      <edges xmi:id="_FIJMwFqoEem8VdfNmAnpAA" source="_OfoP4OTQEeiIWbYp2Hltow" target="_75aGMOTQEeiIWbYp2Hltow">
+        <type href="http://contextmapper.org/tactic/dsl/tacticdsl#//Aggregate/domainObjects"/>
+      </edges>
+      <edges xmi:id="_nXImgF6WEemPGsmX1edTug" source="_VPQbIF6WEemPGsmX1edTug" target="_OfoP4OTQEeiIWbYp2Hltow">
+        <type href="http://contextmapper.org/tactic/dsl/tacticdsl#//Module/aggregates"/>
+      </edges>
+      <edges xmi:id="_AdMsAF6XEemPGsmX1edTug" source="_VPQbIF6WEemPGsmX1edTug" target="_4qF8cOTOEeiIWbYp2Hltow">
+        <type href="http://contextmapper.org/tactic/dsl/tacticdsl#//Module/aggregates"/>
+      </edges>
+      <edges xmi:id="_LRGTcF6XEemPGsmX1edTug" source="_ptiU8FqrEem8VdfNmAnpAA" target="_VPQbIF6WEemPGsmX1edTug">
+        <type href="http://www.contextmapper.org/dsl/ContextMappingDSL#//BoundedContext/modules"/>
+      </edges>
+    </rhs>
+    <mappings xmi:id="_4qGjgOTOEeiIWbYp2Hltow" origin="_2tIggOTOEeiIWbYp2Hltow" image="_4qF8cOTOEeiIWbYp2Hltow"/>
+    <mappings xmi:id="_6lBtMeTQEeiIWbYp2Hltow" origin="_vpZGEOTQEeiIWbYp2Hltow" image="_6lBtMOTQEeiIWbYp2Hltow"/>
+    <mappings xmi:id="_75atQOTQEeiIWbYp2Hltow" origin="_x-RSwOTQEeiIWbYp2Hltow" image="_75aGMOTQEeiIWbYp2Hltow"/>
+    <mappings xmi:id="_ptiU8VqrEem8VdfNmAnpAA" origin="_liEaEFqrEem8VdfNmAnpAA" image="_ptiU8FqrEem8VdfNmAnpAA"/>
+    <mappings xmi:id="_VPQbIV6WEemPGsmX1edTug" origin="_SQu0gF6WEemPGsmX1edTug" image="_VPQbIF6WEemPGsmX1edTug"/>
+  </units>
+</henshin:Module>

@@ -2,13 +2,13 @@
 ContextMap {
 	contains CustomerManagement
 	contains PolicyManagement
-	
+
 	PolicyManagement [D,ACL]<-[U,OHS,PL] CustomerManagement
+
 }
 
 /* Bounded Context Definitions */
 BoundedContext CustomerManagement {
-	
 	Aggregate CustomerSelfService {
 		Entity Account {
 			String username
@@ -16,14 +16,15 @@ BoundedContext CustomerManagement {
 			Customer owner
 		}
 	}
-	
 }
 
 BoundedContext PolicyManagement {
 	Aggregate Contracts {
-		Entity Contract {}
+		Entity Contract {
+		}
 	}
 }
+
 BoundedContext SplitBoundedContext {
 	Aggregate Customers {
 		Entity Customer{
@@ -37,3 +38,4 @@ BoundedContext SplitBoundedContext {
 		}
 	}
 }
+

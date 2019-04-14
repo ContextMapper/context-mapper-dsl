@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
+import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.tactic.dsl.tacticdsl.Entity;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.henshin.interpreter.UnitApplication;
@@ -43,7 +44,7 @@ public class SplitBoundedContextByDuplicateEntityInAggregatesRefactoring extends
 
 	@Override
 	protected void setUnitParameters(UnitApplication refactoringUnit) {
-		List<String> duplicateEntities = findDuplicateEntities(model.getMap());
+		List<String> duplicateEntities = findDuplicateEntities();
 		if (duplicateEntities.isEmpty())
 			throw new NoDuplicateEntityFoundException();
 		// this is a proof of concept! just take the first duplicate found...
@@ -56,10 +57,10 @@ public class SplitBoundedContextByDuplicateEntityInAggregatesRefactoring extends
 		throw new RuntimeException("Error splitting by entity '" + splitEntityName + "' ...");
 	}
 
-	private List<String> findDuplicateEntities(ContextMap contextMap) {
+	private List<String> findDuplicateEntities() {
 		List<String> duplicates = Lists.newArrayList();
 		Set<String> uniqueNameCheckSet = Sets.newHashSet();
-		List<Entity> entities = EcoreUtil2.<Entity>getAllContentsOfType(EcoreUtil.getRootContainer(contextMap), Entity.class);
+		List<Entity> entities = EcoreUtil2.<Entity>getAllContentsOfType(EcoreUtil.getRootContainer(model), Entity.class);
 		for (Entity entity : entities) {
 			if (!uniqueNameCheckSet.contains(entity.getName())) {
 				uniqueNameCheckSet.add(entity.getName());

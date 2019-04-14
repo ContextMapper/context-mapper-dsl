@@ -15,11 +15,11 @@
  */
 package org.contextmapper.dsl.refactoring.henshin;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.henshin.interpreter.Assignment;
 import org.eclipse.emf.henshin.interpreter.EGraph;
 import org.eclipse.emf.henshin.interpreter.Engine;
 import org.eclipse.emf.henshin.interpreter.UnitApplication;
@@ -28,6 +28,7 @@ import org.eclipse.emf.henshin.interpreter.impl.EngineImpl;
 import org.eclipse.emf.henshin.interpreter.impl.UnitApplicationImpl;
 import org.eclipse.emf.henshin.model.Module;
 import org.eclipse.emf.henshin.model.resource.HenshinResourceSet;
+import org.eclipse.xtext.resource.SaveOptions;
 import org.eclipse.xtext.xbase.lib.IteratorExtensions;
 
 import com.google.common.collect.Iterators;
@@ -71,6 +72,18 @@ public abstract class AbstractHenshinRefactoring implements HenshinRefactoring {
 
 		// Saving the result
 		resourceSet.saveEObject(graph.getRoots().get(0), resource.getURI());
+
+		// post-processing
+		Resource newResource = resourceSet.getResource(resource.getURI(), false);
+		postProcessing(newResource);
+
+		// unfortunately the changed DSL elements are not formatted automatically
+		// we just format the whole document after executing a refactoring for now
+		try {
+			newResource.save(SaveOptions.newBuilder().format().getOptions().toOptionsMap());
+		} catch (IOException e) {
+			throw new RuntimeException("Document cannot be formatted.");
+		}
 	}
 
 	/**
@@ -97,6 +110,16 @@ public abstract class AbstractHenshinRefactoring implements HenshinRefactoring {
 	 */
 	protected void setUnitParameters(UnitApplication refactoringUnit) {
 		// no parameters set
+	}
+
+	/**
+	 * Override this method in case you want execute some post-processing after the
+	 * Henshin transformation
+	 * 
+	 * @param resource The resource already transformed by Henshin.
+	 */
+	protected void postProcessing(Resource resource) {
+		// nothing to do
 	}
 
 	/**

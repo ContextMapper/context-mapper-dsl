@@ -57,6 +57,12 @@
     <element xmi:type="henshin:Rule" href="SplitAggregateByEntities.henshin#_0Z6yoOTMEeiIWbYp2Hltow"/>
     <layoutConstraint xmi:type="notation:Bounds" xmi:id="_ULvHwFqoEem8VdfNmAnpAA"/>
   </children>
+  <children xmi:type="notation:Shape" xmi:id="_5IIfAF3-Eem3IuMnP9fLIg" type="2002" fontName="Cantarell" italic="true" lineColor="0">
+    <children xmi:type="notation:DecorationNode" xmi:id="_5IIfAl3-Eem3IuMnP9fLIg" type="5004"/>
+    <children xmi:type="notation:DecorationNode" xmi:id="_5IIfA13-Eem3IuMnP9fLIg" type="7003"/>
+    <element xmi:type="henshin:LoopUnit" href="SplitAggregateByEntities.henshin#_12GIkFqzEem8VdfNmAnpAA"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_5IIfAV3-Eem3IuMnP9fLIg" x="202" y="257"/>
+  </children>
   <styles xmi:type="notation:DiagramStyle" xmi:id="_T8GwUVqoEem8VdfNmAnpAA"/>
   <element xmi:type="henshin:Module" href="SplitAggregateByEntities.henshin#_vc10oOTMEeiIWbYp2Hltow"/>
 </notation:Diagram>

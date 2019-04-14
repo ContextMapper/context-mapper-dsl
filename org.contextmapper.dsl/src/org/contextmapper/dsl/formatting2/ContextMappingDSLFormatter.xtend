@@ -1,12 +1,12 @@
 /*
  * Copyright 2018 The Context Mapper Project Team
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *    http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,8 +22,6 @@ import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel
 import org.contextmapper.dsl.contextMappingDSL.Relationship
 import org.contextmapper.dsl.services.ContextMappingDSLGrammarAccess
 import org.contextmapper.tactic.dsl.formatting2.TacticDDDLanguageFormatter
-import org.contextmapper.tactic.dsl.tacticdsl.Aggregate
-import org.contextmapper.tactic.dsl.tacticdsl.Entity
 import org.eclipse.xtext.formatting2.IFormattableDocument
 
 class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
@@ -36,7 +34,7 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 		for (boundedContext : contextMappingModel.boundedContexts) {
 			boundedContext.format
 		}
-		for(domain : contextMappingModel.domains) {
+		for (domain : contextMappingModel.domains) {
 			domain.format
 			for (subdomain : domain.subdomains) {
 				subdomain.format
@@ -47,47 +45,39 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 	def dispatch void format(ContextMap contextMap, extension IFormattableDocument document) {
 		interior(
 			contextMap.regionFor.ruleCallTo(OPENRule).append[newLine],
-			contextMap.regionFor.ruleCallTo(CLOSERule).prepend[newLine].append[newLine]
+			contextMap.regionFor.ruleCallTo(CLOSERule).prepend[newLines = 2].append[newLines = 2]
 		)[indent]
 
-		// new line for each bounded context reference
-		var semanticRegion = contextMap.allRegionsFor.assignment(contextMapAccess.boundedContextsAssignment_5_1)
-		for (var i = 0; i <= (contextMap.boundedContexts.size - 1); i++) {
-			if (i == (contextMap.boundedContexts.size - 1)) {
-				semanticRegion.append[newLine]
-			} else {
-				semanticRegion.append[newLine]
-				semanticRegion = semanticRegion.nextSemanticRegion.nextSemanticRegion
-			}
-		}
+		contextMap.regionFor.keyword('contains').prepend[newLine]
 
 		for (relationship : contextMap.relationships) {
 			relationship.format
-			relationship.prepend[newLine]
-			relationship.append[newLine]
-		}
-		for (boundedContext : contextMap.boundedContexts) {
-			boundedContext.format
-			boundedContext.append[newLine]
 		}
 	}
 
 	def dispatch void format(BoundedContext boundedContext, extension IFormattableDocument document) {
 		interior(
 			boundedContext.regionFor.ruleCallTo(OPENRule).append[newLine],
-			boundedContext.regionFor.ruleCallTo(CLOSERule).prepend[newLine].append[newLine]
+			boundedContext.regionFor.ruleCallTo(CLOSERule).prepend[newLine].append[newLines = 2]
 		)[indent]
+
+		boundedContext.prepend[newLines = 2]
 
 		for (aggregate : boundedContext.aggregates) {
 			aggregate.format
+		}
+		for(module : boundedContext.modules) {
+			module.format
 		}
 	}
 
 	def dispatch void format(Relationship relationship, extension IFormattableDocument document) {
 		interior(
 			relationship.regionFor.ruleCallTo(OPENRule).append[newLine],
-			relationship.regionFor.ruleCallTo(CLOSERule).prepend[newLine].append[newLine]
+			relationship.regionFor.ruleCallTo(CLOSERule).prepend[newLine].append[newLines = 2]
 		)[indent]
+
+		relationship.prepend[newLines = 2]
 	}
 
 }
