@@ -3,6 +3,7 @@ jdk:
 - oraclejdk8
 if: NOT commit_message =~ ^\[Tycho\].*$
 
+install: /bin/true
 script: xvfb-run ./mvnw --settings ./.travis/settings.xml clean verify $(if [[ $TRAVIS_TAG =~ ^v.* ]]; then echo "-Prelease-composite"; fi) -B
 
 after_success:
