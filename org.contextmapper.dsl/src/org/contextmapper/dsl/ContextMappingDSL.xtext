@@ -24,7 +24,8 @@ ContextMappingModel:
 	(
 		(map = ContextMap)? &
 		(boundedContexts += BoundedContext)* &
-		(domains += Domain)*
+		(domains += Domain)* &
+		(useCases += UseCase)* 
 	)
 ;
 
