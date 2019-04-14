@@ -66,6 +66,9 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 		for (aggregate : boundedContext.aggregates) {
 			aggregate.format
 		}
+		for(module : boundedContext.modules) {
+			module.format
+		}
 	}
 
 	def dispatch void format(Relationship relationship, extension IFormattableDocument document) {

@@ -42,6 +42,9 @@ public class SplitAggregateByEntitiesRefactoring extends AbstractHenshinRefactor
 
 	@Override
 	protected String getHenshinTransformationFilename() {
+		Aggregate selectedAggregate = getSelectedAggregate(model);
+		if (selectedAggregate != null && selectedAggregate.eContainer() instanceof Module)
+			return HenshinTransformationFileProvider.SPLIT_BY_AGGREGATE_BY_ENTITIES_IN_MODULE;
 		return HenshinTransformationFileProvider.SPLIT_BY_AGGREGATE_BY_ENTITIES;
 	}
 
@@ -65,14 +68,10 @@ public class SplitAggregateByEntitiesRefactoring extends AbstractHenshinRefactor
 	protected void postProcessing(Resource resource) {
 		List<ContextMappingModel> contextMappingModels = IteratorExtensions
 				.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(resource.getAllContents(), ContextMappingModel.class));
-
 		if (contextMappingModels.size() > 0) {
-			List<Aggregate> allAggregates = EcoreUtil2.<Aggregate>getAllContentsOfType(contextMappingModels.get(0), Aggregate.class);
-			List<Aggregate> aggregatesWithInputName = allAggregates.stream().filter(agg -> agg.getName().equals(aggregateName)).collect(Collectors.toList());
-			if (aggregatesWithInputName.isEmpty())
+			Aggregate inputAggregate = getSelectedAggregate(contextMappingModels.get(0));
+			if (inputAggregate == null)
 				return;
-
-			Aggregate inputAggregate = aggregatesWithInputName.get(0);
 			if (inputAggregate.eContainer() instanceof BoundedContext) {
 				BoundedContext bc = (BoundedContext) inputAggregate.eContainer();
 				fixNewAggregateNames(bc.getAggregates());
@@ -81,6 +80,7 @@ public class SplitAggregateByEntitiesRefactoring extends AbstractHenshinRefactor
 				fixNewAggregateNames(m.getAggregates());
 			}
 		}
+
 	}
 
 	private void fixNewAggregateNames(List<Aggregate> aggregates) {
@@ -90,6 +90,15 @@ public class SplitAggregateByEntitiesRefactoring extends AbstractHenshinRefactor
 			newAggregate.setName(NEW_AGGREGATE_NAME_PREFIX + i);
 			i++;
 		}
+	}
+
+	private Aggregate getSelectedAggregate(ContextMappingModel model) {
+		List<Aggregate> allAggregates = EcoreUtil2.<Aggregate>getAllContentsOfType(model, Aggregate.class);
+		List<Aggregate> aggregatesWithInputName = allAggregates.stream().filter(agg -> agg.getName().equals(aggregateName)).collect(Collectors.toList());
+		if (aggregatesWithInputName.isEmpty())
+			return null;
+
+		return aggregatesWithInputName.get(0);
 	}
 
 }
