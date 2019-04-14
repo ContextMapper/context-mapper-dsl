@@ -53,8 +53,11 @@ Application :
 Aggregate :
   (doc=STRING)?
   "Aggregate" name=ID "{"
-    ((('responsibilities' '=' responsibilities+=Responsibility) ("," responsibilities+=Responsibility)*)? &
-    ('knowledgeLevel' '=' knowledgeLevel=KnowledgeLevel)?)
+    (
+    	(('responsibilities' '=' responsibilities+=Responsibility) ("," responsibilities+=Responsibility)*)? &
+    	(('useCases' '=' useCases += [UseCase]) ("," useCases += [UseCase])*)? &
+    	('knowledgeLevel' '=' knowledgeLevel=KnowledgeLevel)?
+    )
     ((services+=Service) |
      (resources+=Resource) |
      (consumers+=Consumer) |
@@ -63,6 +66,15 @@ Aggregate :
 
 Responsibility:
 	name=ID ('{' description=STRING '}')?
+;
+
+UseCase:
+	'UseCase' name=ID 
+	("{"
+		(('isLatencyCritical' '=' isLatencyCritical?='true')? &
+		(('reads' nanoentitiesRead+=STRING*) ("," nanoentitiesRead+=STRING)*)? &
+        (('writes' nanoentitiesWritten+=STRING*) ("," nanoentitiesWritten+=STRING)*)?)  
+	"}")?
 ;
 
 Module :

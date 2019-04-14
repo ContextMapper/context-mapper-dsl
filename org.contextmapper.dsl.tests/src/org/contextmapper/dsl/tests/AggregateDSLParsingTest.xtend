@@ -89,4 +89,28 @@ class AggregateDSLParsingTest {
 		assertThatNoValidationErrorsOccurred(result);
 		assertEquals(KnowledgeLevel.CONCRETE, result.boundedContexts.get(0).aggregates.get(0).knowledgeLevel);
 	}
+	
+	@Test
+	def void canAssignUsesCases() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext testContext {
+				Aggregate myAggregate {
+					useCases = testUseCase1, testUseCase2
+				}
+			}
+			
+			UseCase testUseCase1
+			UseCase testUseCase2
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		assertEquals(2, result.boundedContexts.get(0).aggregates.get(0).useCases.size);
+		val useCases = result.boundedContexts.get(0).aggregates.get(0).useCases.stream.map[name].collect(Collectors.toList);
+		assertTrue(useCases.contains("testUseCase1"));
+		assertTrue(useCases.contains("testUseCase2"));
+	}
 }
