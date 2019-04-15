@@ -15,18 +15,22 @@
  */
 package org.contextmapper.dsl.refactoring;
 
-import java.util.stream.Collectors;
-
 import org.contextmapper.dsl.refactoring.henshin.Refactoring;
 import org.eclipse.emf.ecore.resource.Resource;
 
-public class SplitBoundedContextByUseCases implements Refactoring {
+import com.google.common.collect.Sets;
+
+public class SplitBoundedContextByOwner implements Refactoring {
 
 	private SplitBoundedContextByAggregateAttribute coreAR;
 
-	public SplitBoundedContextByUseCases(String boundedContextName) {
-		this.coreAR = new SplitBoundedContextByAggregateAttribute(
-				aggregate -> new CompoundKey(aggregate.getUseCases().stream().map(uc -> uc.getName()).collect(Collectors.toSet())), boundedContextName);
+	public SplitBoundedContextByOwner(String boundedContextName) {
+		this.coreAR = new SplitBoundedContextByAggregateAttribute(aggregate -> {
+			if (aggregate.getOwner() != null)
+				return new CompoundKey(Sets.newHashSet(aggregate.getOwner().getName()));
+			else
+				return new CompoundKey(Sets.newHashSet());
+		}, boundedContextName);
 	}
 
 	@Override

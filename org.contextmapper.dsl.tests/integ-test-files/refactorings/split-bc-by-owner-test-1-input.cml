@@ -1,0 +1,28 @@
+BoundedContext CustomerManagement {
+	Aggregate Customers {
+		owner = Team1
+		Entity Customer{
+			String firstName
+			String familyName
+		}
+		Entity Account {
+			String iban
+			String bankName
+		}
+	}
+	Aggregate Addresses {
+		owner = Team2
+		Entity Address {
+			String street
+		}
+	}
+}
+
+BoundedContext Team1 {
+	type = TEAM
+}
+
+BoundedContext Team2 {
+	type = TEAM
+}
+
