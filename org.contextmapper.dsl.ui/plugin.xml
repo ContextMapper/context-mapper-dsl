@@ -426,7 +426,16 @@
 		</handler>
 		<handler 
 			class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.contextmapper.dsl.ui.handler.SplitBoundedContextByUseCasesRefactoringHandler"
-			commandId="org.contextmapper.dsl.ui.handler.SplitBoundedContextByUseCaseRefactoringCommand">
+			commandId="org.contextmapper.dsl.ui.handler.SplitBoundedContextByUseCasesRefactoringCommand">
+			<activeWhen>
+				<reference
+					definitionId="org.contextmapper.dsl.ContextMappingDSL.Editor.opened">
+				</reference>
+			</activeWhen>
+		</handler>
+		<handler 
+			class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.contextmapper.dsl.ui.handler.SplitBoundedContextByOwnerRefactoringHandler"
+			commandId="org.contextmapper.dsl.ui.handler.SplitBoundedContextByOwnerRefactoringCommand">
 			<activeWhen>
 				<reference
 					definitionId="org.contextmapper.dsl.ContextMappingDSL.Editor.opened">
@@ -458,7 +467,13 @@
 	<extension
 	      point="org.eclipse.ui.commands">
 	      <command name="Split Bounded Context by Use Cases" categoryId="org.eclipse.xtext.ui.category.refactoring"
-             id="org.contextmapper.dsl.ui.handler.SplitBoundedContextByUseCaseRefactoringCommand">
+             id="org.contextmapper.dsl.ui.handler.SplitBoundedContextByUseCasesRefactoringCommand">
+	      </command>
+	</extension>
+	<extension
+	      point="org.eclipse.ui.commands">
+	      <command name="Split Bounded Context by Owner (Team)" categoryId="org.eclipse.xtext.ui.category.refactoring"
+             id="org.contextmapper.dsl.ui.handler.SplitBoundedContextByOwnerRefactoringCommand">
 	      </command>
 	</extension>
 	<extension point="org.eclipse.ui.menus">
@@ -486,7 +501,12 @@
 					<visibleWhen checkEnabled="true">
 					</visibleWhen>
 				</command>
-				<command defaultHandler="org.contextmapper.dsl.ui.handler.SplitBoundedContextByUseCaseRefactoringHandler" commandId="org.contextmapper.dsl.ui.handler.SplitBoundedContextByUseCaseRefactoringCommand"
+				<command defaultHandler="org.contextmapper.dsl.ui.handler.SplitBoundedContextByUseCasesRefactoringHandler" commandId="org.contextmapper.dsl.ui.handler.SplitBoundedContextByUseCasesRefactoringCommand"
+					style="push">
+					<visibleWhen checkEnabled="true">
+					</visibleWhen>
+				</command>
+				<command defaultHandler="org.contextmapper.dsl.ui.handler.SplitBoundedContextByOwnerRefactoringHandler" commandId="org.contextmapper.dsl.ui.handler.SplitBoundedContextByOwnerRefactoringCommand"
 					style="push">
 					<visibleWhen checkEnabled="true">
 					</visibleWhen>

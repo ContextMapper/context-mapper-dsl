@@ -15,23 +15,32 @@
  */
 package org.contextmapper.dsl.refactoring;
 
-import java.util.stream.Collectors;
+import java.util.Objects;
+import java.util.Set;
 
-import org.contextmapper.dsl.refactoring.henshin.Refactoring;
-import org.eclipse.emf.ecore.resource.Resource;
+/**
+ * 
+ * Used in refactorings to map model elements to unique sets of keys. For
+ * example: Map aggregates to unique set of use cases.
+ *
+ */
+public class CompoundKey {
+	Set<String> keyElements;
 
-public class SplitBoundedContextByUseCases implements Refactoring {
-
-	private SplitBoundedContextByAggregateAttribute coreAR;
-
-	public SplitBoundedContextByUseCases(String boundedContextName) {
-		this.coreAR = new SplitBoundedContextByAggregateAttribute(
-				aggregate -> new CompoundKey(aggregate.getUseCases().stream().map(uc -> uc.getName()).collect(Collectors.toSet())), boundedContextName);
+	CompoundKey(Set<String> keyElements) {
+		this.keyElements = keyElements;
 	}
 
 	@Override
-	public void doRefactor(Resource resource) {
-		this.coreAR.doRefactor(resource);
+	public boolean equals(Object obj) {
+		if (!(obj instanceof CompoundKey))
+			return false;
+		CompoundKey otherKey = (CompoundKey) obj;
+		return (this.keyElements.size() == otherKey.keyElements.size()) && this.keyElements.containsAll(otherKey.keyElements);
 	}
 
+	@Override
+	public int hashCode() {
+		return Objects.hash(this.keyElements.toArray());
+	}
 }
