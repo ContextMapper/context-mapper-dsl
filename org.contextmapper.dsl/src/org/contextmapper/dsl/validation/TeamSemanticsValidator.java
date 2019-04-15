@@ -16,7 +16,9 @@
 package org.contextmapper.dsl.validation;
 
 import static org.contextmapper.dsl.validation.ValidationMessages.ONLY_TEAMS_CAN_REALIZE_OTHER_BOUNDED_CONTEXT;
+import static org.contextmapper.dsl.validation.ValidationMessages.OWNER_BC_IS_NOT_TEAM;
 
+import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContextType;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLPackage;
@@ -36,6 +38,16 @@ public class TeamSemanticsValidator extends AbstractDeclarativeValidator {
 		if (!boundedContext.getRealizedBoundedContexts().isEmpty() && !BoundedContextType.TEAM.equals(boundedContext.getType()))
 			error(String.format(ONLY_TEAMS_CAN_REALIZE_OTHER_BOUNDED_CONTEXT, boundedContext.getName()), boundedContext,
 					ContextMappingDSLPackage.Literals.BOUNDED_CONTEXT__REALIZED_BOUNDED_CONTEXTS);
+	}
+
+	@Check
+	public void checkThatAggregateOwnersAreTeams(final Aggregate aggregate) {
+		if (aggregate.getOwner() == null)
+			return;
+
+		BoundedContext owner = aggregate.getOwner();
+		if (owner.getType() == null || !BoundedContextType.TEAM.equals(owner.getType()))
+			error(String.format(OWNER_BC_IS_NOT_TEAM, owner.getName()), aggregate, ContextMappingDSLPackage.Literals.AGGREGATE__OWNER);
 	}
 
 }

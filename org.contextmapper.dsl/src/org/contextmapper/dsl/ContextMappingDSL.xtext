@@ -177,6 +177,7 @@ Aggregate :
     (
     	(('responsibilities' '=' responsibilities+=Responsibility) ("," responsibilities+=Responsibility)*)? &
     	(('useCases' '=' useCases += [UseCase]) ("," useCases += [UseCase])*)? &
+    	('owner' '=' owner=[BoundedContext])? & 
     	('knowledgeLevel' '=' knowledgeLevel=KnowledgeLevel)?
     )
     ((services+=Service) |
