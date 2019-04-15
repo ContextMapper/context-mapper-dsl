@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
@@ -29,7 +30,6 @@ import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
 import org.contextmapper.dsl.generator.servicecutter.output.model.Service;
 import org.contextmapper.dsl.generator.servicecutter.output.model.ServiceCutterOutputModel;
 import org.contextmapper.dsl.generator.servicecutter.output.model.ServiceRelation;
-import org.contextmapper.tactic.dsl.tacticdsl.Aggregate;
 import org.contextmapper.tactic.dsl.tacticdsl.Attribute;
 import org.contextmapper.tactic.dsl.tacticdsl.Entity;
 import org.contextmapper.tactic.dsl.tacticdsl.TacticdslFactory;
@@ -63,7 +63,7 @@ public class ServiceCutterOutputToContextMappingModelConverter {
 			contextMappingModel.getBoundedContexts().add(bc);
 			contextMap.getBoundedContexts().add(bc);
 
-			Aggregate aggregate = tacticDDDFactory.createAggregate();
+			Aggregate aggregate = contextMappingFactory.createAggregate();
 			aggregate.setName("Aggregate_" + service.getId());
 			aggregate.getDomainObjects().addAll(convertEntities(service.getId(), service.getNanoentities()));
 			bc.getAggregates().add(aggregate);

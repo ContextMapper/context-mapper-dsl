@@ -13,7 +13,7 @@ BoundedContext CustomerManagement {
 		Entity Account {
 			String username
 			String password
-			Customer owner
+			Customer accountOwner
 		}
 	}
 }

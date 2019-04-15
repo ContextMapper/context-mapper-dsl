@@ -18,10 +18,10 @@ package org.contextmapper.dsl.refactoring.henshin;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
-import org.contextmapper.tactic.dsl.tacticdsl.Aggregate;
-import org.contextmapper.tactic.dsl.tacticdsl.Module;
+import org.contextmapper.dsl.contextMappingDSL.Module;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.henshin.interpreter.UnitApplication;
 import org.eclipse.xtext.EcoreUtil2;

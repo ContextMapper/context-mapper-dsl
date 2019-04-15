@@ -16,24 +16,28 @@
  package org.contextmapper.dsl.tests
 
 import com.google.inject.Inject
+import java.util.stream.Collectors
+import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLPackage
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel
+import org.contextmapper.dsl.contextMappingDSL.KnowledgeLevel
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.extensions.InjectionExtension
 import org.eclipse.xtext.testing.util.ParseHelper
+import org.eclipse.xtext.testing.validation.ValidationTestHelper
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.^extension.ExtendWith
 
 import static org.contextmapper.dsl.tests.util.ParsingErrorAssertions.*
+import static org.contextmapper.dsl.validation.ValidationMessages.*
 import static org.junit.jupiter.api.Assertions.*
-import org.contextmapper.dsl.contextMappingDSL.BoundedContextType
-import java.util.stream.Collectors
-import org.contextmapper.tactic.dsl.tacticdsl.KnowledgeLevel
 
 @ExtendWith(InjectionExtension)
 @InjectWith(ContextMappingDSLInjectorProvider)
 class AggregateDSLParsingTest {
 	@Inject
 	ParseHelper<ContextMappingModel> parseHelper
+
+	ValidationTestHelper validationTestHelper = new ValidationTestHelper();
 
 	@Test
 	def void canAddAggregateToBoundedContext() {
@@ -112,5 +116,48 @@ class AggregateDSLParsingTest {
 		val useCases = result.boundedContexts.get(0).aggregates.get(0).useCases.stream.map[name].collect(Collectors.toList);
 		assertTrue(useCases.contains("testUseCase1"));
 		assertTrue(useCases.contains("testUseCase2"));
+	}
+	
+	@Test
+	def void canAssignOwner() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext testContext {
+				Aggregate myAggregate {
+					owner = teamA
+				}
+			}
+			
+			BoundedContext teamA {
+				type = TEAM
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		assertEquals("teamA", result.boundedContexts.get(0).aggregates.get(0).owner.name);
+	}
+	
+	@Test
+	def void throwErrorIfOwnerContextIsNotTeam() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext testContext {
+				Aggregate myAggregate {
+					owner = teamA
+				}
+			}
+			
+			BoundedContext teamA {
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.AGGREGATE, "",
+			String.format(OWNER_BC_IS_NOT_TEAM, "teamA"));
 	}
 }

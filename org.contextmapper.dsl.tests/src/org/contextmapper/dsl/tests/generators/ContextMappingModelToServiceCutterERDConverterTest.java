@@ -15,12 +15,13 @@
  */
 package org.contextmapper.dsl.tests.generators;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
@@ -28,7 +29,6 @@ import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.generator.servicecutter.input.converter.ContextMappingModelToServiceCutterERDConverter;
 import org.contextmapper.dsl.generator.servicecutter.input.model.EntityRelationshipDiagram;
 import org.contextmapper.dsl.generator.servicecutter.input.model.Relationtype;
-import org.contextmapper.tactic.dsl.tacticdsl.Aggregate;
 import org.contextmapper.tactic.dsl.tacticdsl.Attribute;
 import org.contextmapper.tactic.dsl.tacticdsl.DomainEvent;
 import org.contextmapper.tactic.dsl.tacticdsl.Entity;
@@ -73,7 +73,7 @@ class ContextMappingModelToServiceCutterERDConverterTest {
 		BoundedContext boundedContext = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
 		boundedContext.setName("testBC");
 		contextMap.getBoundedContexts().add(boundedContext);
-		Aggregate aggregate = TacticdslFactory.eINSTANCE.createAggregate();
+		Aggregate aggregate = ContextMappingDSLFactory.eINSTANCE.createAggregate();
 		aggregate.setName("testAggregate");
 		boundedContext.getAggregates().add(aggregate);
 
@@ -96,7 +96,7 @@ class ContextMappingModelToServiceCutterERDConverterTest {
 		BoundedContext boundedContext = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
 		boundedContext.setName("testBC");
 		contextMap.getBoundedContexts().add(boundedContext);
-		Aggregate aggregate = TacticdslFactory.eINSTANCE.createAggregate();
+		Aggregate aggregate = ContextMappingDSLFactory.eINSTANCE.createAggregate();
 		aggregate.setName("testAggregate");
 		boundedContext.getAggregates().add(aggregate);
 		Entity entity = TacticdslFactory.eINSTANCE.createEntity();
@@ -124,7 +124,7 @@ class ContextMappingModelToServiceCutterERDConverterTest {
 		BoundedContext boundedContext = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
 		boundedContext.setName("testBC");
 		contextMap.getBoundedContexts().add(boundedContext);
-		Aggregate aggregate = TacticdslFactory.eINSTANCE.createAggregate();
+		Aggregate aggregate = ContextMappingDSLFactory.eINSTANCE.createAggregate();
 		aggregate.setName("testAggregate");
 		boundedContext.getAggregates().add(aggregate);
 		DomainEvent domainEvent = TacticdslFactory.eINSTANCE.createDomainEvent();
@@ -152,7 +152,7 @@ class ContextMappingModelToServiceCutterERDConverterTest {
 		BoundedContext boundedContext = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
 		boundedContext.setName("testBC");
 		contextMap.getBoundedContexts().add(boundedContext);
-		Aggregate aggregate = TacticdslFactory.eINSTANCE.createAggregate();
+		Aggregate aggregate = ContextMappingDSLFactory.eINSTANCE.createAggregate();
 		aggregate.setName("testAggregate");
 		boundedContext.getAggregates().add(aggregate);
 		ValueObject valueObject = TacticdslFactory.eINSTANCE.createValueObject();
@@ -181,7 +181,7 @@ class ContextMappingModelToServiceCutterERDConverterTest {
 		BoundedContext boundedContext = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
 		boundedContext.setName("testBC");
 		contextMap.getBoundedContexts().add(boundedContext);
-		Aggregate aggregate = TacticdslFactory.eINSTANCE.createAggregate();
+		Aggregate aggregate = ContextMappingDSLFactory.eINSTANCE.createAggregate();
 		aggregate.setName("testAggregate");
 		boundedContext.getAggregates().add(aggregate);
 		Entity entity1 = TacticdslFactory.eINSTANCE.createEntity();

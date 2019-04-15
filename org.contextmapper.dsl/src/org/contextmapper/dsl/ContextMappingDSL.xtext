@@ -136,7 +136,7 @@ UpstreamDownstreamRelationship:
 		(':' name=ID)?
 		(OPEN (
 			('implementationTechnology' '=' implementationTechnology=STRING)? &
-			(('exposedAggregates' '=' upstreamExposedAggregates += [tacticdsl::Aggregate]) ("," upstreamExposedAggregates += [tacticdsl::Aggregate])*)? &
+			(('exposedAggregates' '=' upstreamExposedAggregates += [Aggregate]) ("," upstreamExposedAggregates += [Aggregate])*)? &
 			('downstreamRights' '=' downstreamGovernanceRights=DownstreamGovernanceRights)?
 		)
 		CLOSE)?
@@ -164,12 +164,53 @@ CustomerSupplierRelationship:
 		(':' name=ID)?
 		(OPEN (
 			('implementationTechnology' '=' implementationTechnology=STRING)? &
-			(('exposedAggregates' '=' upstreamExposedAggregates += [tacticdsl::Aggregate]) ("," upstreamExposedAggregates += [tacticdsl::Aggregate])*)? &
+			(('exposedAggregates' '=' upstreamExposedAggregates += [Aggregate]) ("," upstreamExposedAggregates += [Aggregate])*)? &
 			('downstreamRights' '=' downstreamGovernanceRights=DownstreamGovernanceRights)?
 		)
 		CLOSE)?
 	)
 ;
+
+Aggregate :
+  (doc=STRING)?
+  "Aggregate" name=ID (OPEN
+    (
+    	(('responsibilities' '=' responsibilities+=Responsibility) ("," responsibilities+=Responsibility)*)? &
+    	(('useCases' '=' useCases += [UseCase]) ("," useCases += [UseCase])*)? &
+    	('owner' '=' owner=[BoundedContext])? & 
+    	('knowledgeLevel' '=' knowledgeLevel=KnowledgeLevel)?
+    )
+    ((services+=Service) |
+     (resources+=Resource) |
+     (consumers+=Consumer) |
+     (domainObjects+=SimpleDomainObject))*
+  CLOSE)?;
+
+Responsibility:
+	name=ID (OPEN description=STRING CLOSE)?
+;
+
+UseCase:
+	'UseCase' name=ID 
+	(OPEN
+		(('isLatencyCritical' '=' isLatencyCritical?='true')? &
+		(('reads' nanoentitiesRead+=STRING*) ("," nanoentitiesRead+=STRING)*)? &
+        (('writes' nanoentitiesWritten+=STRING*) ("," nanoentitiesWritten+=STRING)*)?)  
+	CLOSE)?
+;
+
+Module :
+  (doc=STRING)?
+  "Module" name=ID (OPEN
+    (external?="external")?
+    ("basePackage" "=" basePackage=JavaIdentifier )?
+    ("hint" "=" hint=STRING)?
+    ((services+=Service) |
+     (resources+=Resource) |
+     (consumers+=Consumer) |
+     (domainObjects+=SimpleDomainObject) |
+     (aggregates+=Aggregate))*
+  CLOSE)?;
 
 enum UpstreamRole:
 	PUBLISHED_LANGUAGE = 'PL' | OPEN_HOST_SERVICE = 'OHS'
@@ -197,6 +238,10 @@ enum SubDomainType:
 
 enum DownstreamGovernanceRights:
 	INFLUENCER | OPINION_LEADER | VETO_RIGHT | DECISION_MAKER | MONOPOLIST
+;
+
+enum KnowledgeLevel :
+  META="META" | CONCRETE="CONCRETE"
 ;
 
 // define terminals

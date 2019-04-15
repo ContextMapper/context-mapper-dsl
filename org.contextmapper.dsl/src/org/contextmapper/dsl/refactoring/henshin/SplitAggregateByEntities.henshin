@@ -21,9 +21,9 @@
     </parameters>
     <lhs xmi:id="_0aeMQOTMEeiIWbYp2Hltow" name="Lhs">
       <nodes xmi:id="_2tIggOTOEeiIWbYp2Hltow" incoming="_s3UJUFqrEem8VdfNmAnpAA" outgoing="_KQoqcOTREeiIWbYp2Hltow _1PhuQFqnEem8VdfNmAnpAA">
-        <type href="http://contextmapper.org/tactic/dsl/tacticdsl#//Aggregate"/>
+        <type href="http://www.contextmapper.org/dsl/ContextMappingDSL#//Aggregate"/>
         <attributes xmi:id="_iQWHcFqnEem8VdfNmAnpAA" value="aggregateName">
-          <type href="http://contextmapper.org/tactic/dsl/tacticdsl#//Aggregate/name"/>
+          <type href="http://www.contextmapper.org/dsl/ContextMappingDSL#//Aggregate/name"/>
         </attributes>
       </nodes>
       <nodes xmi:id="_vpZGEOTQEeiIWbYp2Hltow" incoming="_KQoqcOTREeiIWbYp2Hltow">
@@ -36,10 +36,10 @@
         <type href="http://www.contextmapper.org/dsl/ContextMappingDSL#//BoundedContext"/>
       </nodes>
       <edges xmi:id="_KQoqcOTREeiIWbYp2Hltow" source="_2tIggOTOEeiIWbYp2Hltow" target="_vpZGEOTQEeiIWbYp2Hltow">
-        <type href="http://contextmapper.org/tactic/dsl/tacticdsl#//Aggregate/domainObjects"/>
+        <type href="http://www.contextmapper.org/dsl/ContextMappingDSL#//Aggregate/domainObjects"/>
       </edges>
       <edges xmi:id="_1PhuQFqnEem8VdfNmAnpAA" source="_2tIggOTOEeiIWbYp2Hltow" target="_x-RSwOTQEeiIWbYp2Hltow">
-        <type href="http://contextmapper.org/tactic/dsl/tacticdsl#//Aggregate/domainObjects"/>
+        <type href="http://www.contextmapper.org/dsl/ContextMappingDSL#//Aggregate/domainObjects"/>
       </edges>
       <edges xmi:id="_s3UJUFqrEem8VdfNmAnpAA" source="_liEaEFqrEem8VdfNmAnpAA" target="_2tIggOTOEeiIWbYp2Hltow">
         <type href="http://www.contextmapper.org/dsl/ContextMappingDSL#//BoundedContext/aggregates"/>
@@ -47,15 +47,15 @@
     </lhs>
     <rhs xmi:id="_0aeMQeTMEeiIWbYp2Hltow" name="Rhs">
       <nodes xmi:id="_4qF8cOTOEeiIWbYp2Hltow" incoming="_wbpLsFqrEem8VdfNmAnpAA" outgoing="_OvATMOTREeiIWbYp2Hltow">
-        <type href="http://contextmapper.org/tactic/dsl/tacticdsl#//Aggregate"/>
+        <type href="http://www.contextmapper.org/dsl/ContextMappingDSL#//Aggregate"/>
         <attributes xmi:id="_mlGhMFqnEem8VdfNmAnpAA" value="aggregateName">
-          <type href="http://contextmapper.org/tactic/dsl/tacticdsl#//Aggregate/name"/>
+          <type href="http://www.contextmapper.org/dsl/ContextMappingDSL#//Aggregate/name"/>
         </attributes>
       </nodes>
       <nodes xmi:id="_OfoP4OTQEeiIWbYp2Hltow" incoming="_yFxLMFqrEem8VdfNmAnpAA" outgoing="_FIJMwFqoEem8VdfNmAnpAA">
-        <type href="http://contextmapper.org/tactic/dsl/tacticdsl#//Aggregate"/>
+        <type href="http://www.contextmapper.org/dsl/ContextMappingDSL#//Aggregate"/>
         <attributes xmi:id="_ra6x4FqtEem8VdfNmAnpAA" value="newAggregateName">
-          <type href="http://contextmapper.org/tactic/dsl/tacticdsl#//Aggregate/name"/>
+          <type href="http://www.contextmapper.org/dsl/ContextMappingDSL#//Aggregate/name"/>
         </attributes>
       </nodes>
       <nodes xmi:id="_6lBtMOTQEeiIWbYp2Hltow" incoming="_OvATMOTREeiIWbYp2Hltow">
@@ -68,10 +68,10 @@
         <type href="http://www.contextmapper.org/dsl/ContextMappingDSL#//BoundedContext"/>
       </nodes>
       <edges xmi:id="_OvATMOTREeiIWbYp2Hltow" source="_4qF8cOTOEeiIWbYp2Hltow" target="_6lBtMOTQEeiIWbYp2Hltow">
-        <type href="http://contextmapper.org/tactic/dsl/tacticdsl#//Aggregate/domainObjects"/>
+        <type href="http://www.contextmapper.org/dsl/ContextMappingDSL#//Aggregate/domainObjects"/>
       </edges>
       <edges xmi:id="_FIJMwFqoEem8VdfNmAnpAA" source="_OfoP4OTQEeiIWbYp2Hltow" target="_75aGMOTQEeiIWbYp2Hltow">
-        <type href="http://contextmapper.org/tactic/dsl/tacticdsl#//Aggregate/domainObjects"/>
+        <type href="http://www.contextmapper.org/dsl/ContextMappingDSL#//Aggregate/domainObjects"/>
       </edges>
       <edges xmi:id="_wbpLsFqrEem8VdfNmAnpAA" source="_ptiU8FqrEem8VdfNmAnpAA" target="_4qF8cOTOEeiIWbYp2Hltow">
         <type href="http://www.contextmapper.org/dsl/ContextMappingDSL#//BoundedContext/aggregates"/>

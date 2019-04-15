@@ -16,27 +16,22 @@
  */
 package org.contextmapper.tactic.dsl.validation
 
-import com.google.common.collect.Sets
 import java.util.HashSet
-import java.util.Set
 import java.util.regex.Pattern
 import org.contextmapper.tactic.dsl.tacticdsl.AnyProperty
-import org.contextmapper.tactic.dsl.tacticdsl.Entity
-import org.contextmapper.tactic.dsl.tacticdsl.Application
 import org.contextmapper.tactic.dsl.tacticdsl.Attribute
 import org.contextmapper.tactic.dsl.tacticdsl.BasicType
 import org.contextmapper.tactic.dsl.tacticdsl.CollectionType
-import org.contextmapper.tactic.dsl.tacticdsl.DataTransferObject
 import org.contextmapper.tactic.dsl.tacticdsl.DomainObject
 import org.contextmapper.tactic.dsl.tacticdsl.DtoAttribute
 import org.contextmapper.tactic.dsl.tacticdsl.DtoReference
+import org.contextmapper.tactic.dsl.tacticdsl.Entity
+import org.contextmapper.tactic.dsl.tacticdsl.Enum
 import org.contextmapper.tactic.dsl.tacticdsl.EnumAttribute
 import org.contextmapper.tactic.dsl.tacticdsl.EnumValue
 import org.contextmapper.tactic.dsl.tacticdsl.Event
-import org.contextmapper.tactic.dsl.tacticdsl.Module
-import org.contextmapper.tactic.dsl.tacticdsl.Enum
-import org.contextmapper.tactic.dsl.tacticdsl.Property
 import org.contextmapper.tactic.dsl.tacticdsl.Parameter
+import org.contextmapper.tactic.dsl.tacticdsl.Property
 import org.contextmapper.tactic.dsl.tacticdsl.Reference
 import org.contextmapper.tactic.dsl.tacticdsl.Repository
 import org.contextmapper.tactic.dsl.tacticdsl.RepositoryOperation
@@ -44,18 +39,15 @@ import org.contextmapper.tactic.dsl.tacticdsl.Service
 import org.contextmapper.tactic.dsl.tacticdsl.ServiceOperation
 import org.contextmapper.tactic.dsl.tacticdsl.SimpleDomainObject
 import org.contextmapper.tactic.dsl.tacticdsl.ValueObject
-import org.eclipse.emf.ecore.EAttribute
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.validation.Check
 
 import static java.util.Arrays.*
 import static org.contextmapper.tactic.dsl.tacticdsl.TacticdslPackage.Literals.*
 
+import static extension org.contextmapper.tactic.dsl.TacticDslExtensions.*
 import static extension org.eclipse.emf.ecore.util.EcoreUtil.*
 import static extension org.eclipse.xtext.EcoreUtil2.*
-
-import static extension org.contextmapper.tactic.dsl.TacticDslExtensions.*
-import static extension org.contextmapper.tactic.dsl.TacticDslHelper.*
 
 /**
  * Custom validation rules. 
@@ -70,17 +62,6 @@ private val DIGITS_PATTERN = Pattern.compile("[0-9]+[0-9]*")
 	private val SUPPORTED_NUMERIC_TYPES = new HashSet<String>(
 		asList("int", "long", "float", "double", "Integer", "Long", "Float", "Double", "BigInteger", "BigDecimal"))
 	private val SUPPORTED_BOOLEAN_TYPES = new HashSet<String>(asList("Boolean", "boolean"))
-
-	@Check
-	def checkModuleNameStartsWithLowerCase(Module module) {
-		if (module.name === null) {
-			return
-		}
-		if (!Character.isLowerCase(module.name.charAt(0))) {
-			warning("The module name should begin with a lower case letter", MODULE__NAME, UNCAPITALIZED_NAME,
-					module.name)
-		}
-	}
 
 	@Check
 	def checkServiceNameStartsWithUpperCase(Service service) {
@@ -113,83 +94,6 @@ private val DIGITS_PATTERN = Pattern.compile("[0-9]+[0-9]*")
 			warning("The domain object name should begin with an upper case letter", SIMPLE_DOMAIN_OBJECT__NAME,
 					CAPITALIZED_NAME, domainObject.name)
 		}
-	}
-
-	@Check
-	def checkExtendsName(DataTransferObject domainObject) {
-		checkExtendsName(domainObject, domainObject.getExtendsName(), DATA_TRANSFER_OBJECT__EXTENDS_NAME)
-	}
-
-	@Check
-	def checkExtendsName(DomainObject domainObject) {
-		checkExtendsName(domainObject, domainObject.getExtendsName(), DOMAIN_OBJECT__EXTENDS_NAME)
-	}
-
-	def private checkExtendsName(SimpleDomainObject domainObject, String extendsName, EAttribute attributeFeature) {
-		if (extendsName === null) {
-			return
-		}
-		if (extendsName.indexOf('.') != -1) {
-			return
-		}
-		if (domainObject.superclass === null) {
-			error("Couldn't resolve reference to '" + extendsName + "'", attributeFeature)
-		}
-	}
-
-	/**
-	 * Validation: SimpleDomainObject must not have circular inheritances.
-	 */
-	@Check
-	def checkInheritanceHierarchy(SimpleDomainObject domainObject) {
-		if (isInheritanceCycle(domainObject)) {
-			error("Circular inheritance detected", SIMPLE_DOMAIN_OBJECT__NAME)
-		}
-	}
-
-	def private boolean isInheritanceCycle(SimpleDomainObject domainObject) {
-		val visited = Sets.newHashSet
-		var current = domainObject
-		while (current !== null) {
-			if (visited.contains(current)) {
-				return true
-			}
-			visited.add(current)
-			current = current.superclass
-		}
-		return false
-	}
-
-	@Check
-	def checkAbstract(DomainObject domainObject) {
-		if (domainObject.^abstract) {
-			return
-		}
-
-		val result = new HashSet<String>()
-		abstractOperations(domainObject, result)
-
-		if (!result.isEmpty()) {
-			error("The domain object should be declared abstract, since it defines abstract operations: " + result,
-					DOMAIN_OBJECT__ABSTRACT)
-		}
-	}
-
-	def private void abstractOperations(DomainObject domainObject, Set<String> result) {
-		if (!isInheritanceCycle(domainObject)) {
-			val domainObjectExtends = domainObject.superclass as DomainObject
-			if (domainObjectExtends !== null) {
-				abstractOperations(domainObjectExtends, result)
-			}
-		}
-		domainObject.operations.forEach[
-			// we don't consider overloaded operations, only by name
-			if (it.^abstract) {
-				result.add(it.name)
-			} else {
-				result.remove(it.name)
-			}
-		]
 	}
 
 	@Check
@@ -837,24 +741,6 @@ private val DIGITS_PATTERN = Pattern.compile("[0-9]+[0-9]*")
 		}
 	}
 
-	@Check
-	def checkModuleDuplicateName(Module module) {
-		if (module.name !== null && module.rootContainer.eAllOfClass(typeof(Module)).filter [it.name == module.name].size > 1) {
-			error("Duplicate name.  There is already an existing Module named '"
-				+ module.name + "'.", MODULE__NAME, module.name
-			);  
-		}
-	}
-
-	@Check
-	def checkApplicationDuplicateName(Application app) {
-		if (app.name !== null && app.rootContainer.eAllOfClass(typeof(Application)).filter [it.name == app.name].size > 1) {
-			error("Duplicate name.  There is already an existing Application named '"
-				+ app.name + "'.", APPLICATION__NAME, app.name
-			);  
-		}
-	}
-
 	/**
 	 * Type matches a domain object, but due to missing '-', comes in as a Attribute rather than a Reference
 	 */
@@ -901,30 +787,4 @@ private val DIGITS_PATTERN = Pattern.compile("[0-9]+[0-9]*")
 		}
 	}
 
-	@Check
-	def checkApplicationBasepackageNameIsAllLowerCase(Application application) {
-		if (application.basePackage === null) {
-			return
-		}
-		if (!application.basePackage.isAllLowerCase) {
-			warning("The basepackage name should be in lower case", APPLICATION__BASE_PACKAGE,
-				ALL_LOWERCASE_NAME, application.basePackage)
-		}
-	}
-
-	@Check
-	def checkModuleBasepackageNameIsAllLowerCase(Module module) {
-		if (module.basePackage === null) {
-			return
-		}
-		if (!module.basePackage.isAllLowerCase) {
-			warning("The basepackage name should be in lower case", MODULE__BASE_PACKAGE, ALL_LOWERCASE_NAME,
-				module.basePackage)
-		}
-	}
-
-	def private boolean isAllLowerCase(String name) {
-		!name.toCharArray.exists[char|Character.isUpperCase(char)]
-	}
-	
 }

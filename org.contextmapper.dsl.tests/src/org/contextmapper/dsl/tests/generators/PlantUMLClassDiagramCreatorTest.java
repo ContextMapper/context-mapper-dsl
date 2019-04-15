@@ -17,19 +17,19 @@ package org.contextmapper.dsl.tests.generators;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
+import org.contextmapper.dsl.contextMappingDSL.Module;
 import org.contextmapper.dsl.contextMappingDSL.Subdomain;
 import org.contextmapper.dsl.generator.plantuml.PlantUMLClassDiagramCreator;
 import org.contextmapper.dsl.validation.ValidationMessages;
-import org.contextmapper.tactic.dsl.tacticdsl.Aggregate;
 import org.contextmapper.tactic.dsl.tacticdsl.Attribute;
 import org.contextmapper.tactic.dsl.tacticdsl.CommandEvent;
 import org.contextmapper.tactic.dsl.tacticdsl.DomainEvent;
 import org.contextmapper.tactic.dsl.tacticdsl.Entity;
 import org.contextmapper.tactic.dsl.tacticdsl.Enum;
 import org.contextmapper.tactic.dsl.tacticdsl.EnumValue;
-import org.contextmapper.tactic.dsl.tacticdsl.Module;
 import org.contextmapper.tactic.dsl.tacticdsl.Reference;
 import org.contextmapper.tactic.dsl.tacticdsl.TacticdslFactory;
 import org.contextmapper.tactic.dsl.tacticdsl.ValueObject;
@@ -49,7 +49,7 @@ class PlantUMLClassDiagramCreatorTest {
 	public void canCreatePackageFromModule() {
 		// given
 		BoundedContext boundedContext = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
-		Module testModule = TacticdslFactory.eINSTANCE.createModule();
+		Module testModule = ContextMappingDSLFactory.eINSTANCE.createModule();
 		testModule.setName("mySuperModule");
 		boundedContext.getModules().add(testModule);
 		testModule.getDomainObjects().add(TacticdslFactory.eINSTANCE.createSimpleDomainObject());
@@ -65,7 +65,7 @@ class PlantUMLClassDiagramCreatorTest {
 	public void canCreatePackageFromModuleWithBasePackage() {
 		// given
 		BoundedContext boundedContext = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
-		Module testModule = TacticdslFactory.eINSTANCE.createModule();
+		Module testModule = ContextMappingDSLFactory.eINSTANCE.createModule();
 		testModule.setName("mySuperModule");
 		testModule.setBasePackage("org.contextmapper");
 		boundedContext.getModules().add(testModule);
@@ -84,10 +84,10 @@ class PlantUMLClassDiagramCreatorTest {
 	public void canCreateAggregatePackageInModule() {
 		// given
 		BoundedContext boundedContext = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
-		Module testModule = TacticdslFactory.eINSTANCE.createModule();
+		Module testModule = ContextMappingDSLFactory.eINSTANCE.createModule();
 		testModule.setName("mySuperModule");
 		boundedContext.getModules().add(testModule);
-		Aggregate aggregate = TacticdslFactory.eINSTANCE.createAggregate();
+		Aggregate aggregate = ContextMappingDSLFactory.eINSTANCE.createAggregate();
 		aggregate.setName("testAggregate");
 		testModule.getAggregates().add(aggregate);
 		aggregate.getDomainObjects().add(TacticdslFactory.eINSTANCE.createSimpleDomainObject());
@@ -105,7 +105,7 @@ class PlantUMLClassDiagramCreatorTest {
 	public void canCreateAggregatePackage() {
 		// given
 		BoundedContext boundedContext = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
-		Aggregate aggregate = TacticdslFactory.eINSTANCE.createAggregate();
+		Aggregate aggregate = ContextMappingDSLFactory.eINSTANCE.createAggregate();
 		aggregate.setName("testAggregate");
 		boundedContext.getAggregates().add(aggregate);
 		aggregate.getDomainObjects().add(TacticdslFactory.eINSTANCE.createSimpleDomainObject());
@@ -121,7 +121,7 @@ class PlantUMLClassDiagramCreatorTest {
 	public void canCreateClassFromEntity() {
 		// given
 		BoundedContext boundedContext = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
-		Aggregate aggregate = TacticdslFactory.eINSTANCE.createAggregate();
+		Aggregate aggregate = ContextMappingDSLFactory.eINSTANCE.createAggregate();
 		aggregate.setName("testAggregate");
 		boundedContext.getAggregates().add(aggregate);
 		Entity entity = TacticdslFactory.eINSTANCE.createEntity();
@@ -143,7 +143,7 @@ class PlantUMLClassDiagramCreatorTest {
 	public void canCreateClassFromAggregateRoot() {
 		// given
 		BoundedContext boundedContext = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
-		Aggregate aggregate = TacticdslFactory.eINSTANCE.createAggregate();
+		Aggregate aggregate = ContextMappingDSLFactory.eINSTANCE.createAggregate();
 		aggregate.setName("testAggregate");
 		boundedContext.getAggregates().add(aggregate);
 		Entity entity = TacticdslFactory.eINSTANCE.createEntity();
@@ -162,7 +162,7 @@ class PlantUMLClassDiagramCreatorTest {
 	public void canCreateClassFromValueObject() {
 		// given
 		BoundedContext boundedContext = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
-		Aggregate aggregate = TacticdslFactory.eINSTANCE.createAggregate();
+		Aggregate aggregate = ContextMappingDSLFactory.eINSTANCE.createAggregate();
 		aggregate.setName("testAggregate");
 		boundedContext.getAggregates().add(aggregate);
 		ValueObject valueObject = TacticdslFactory.eINSTANCE.createValueObject();
@@ -180,7 +180,7 @@ class PlantUMLClassDiagramCreatorTest {
 	public void canCreateClassFromDomainEvent() {
 		// given
 		BoundedContext boundedContext = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
-		Aggregate aggregate = TacticdslFactory.eINSTANCE.createAggregate();
+		Aggregate aggregate = ContextMappingDSLFactory.eINSTANCE.createAggregate();
 		aggregate.setName("testAggregate");
 		boundedContext.getAggregates().add(aggregate);
 		DomainEvent domainEvent = TacticdslFactory.eINSTANCE.createDomainEvent();
@@ -198,7 +198,7 @@ class PlantUMLClassDiagramCreatorTest {
 	public void canCreateClassFromCommandEvent() {
 		// given
 		BoundedContext boundedContext = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
-		Aggregate aggregate = TacticdslFactory.eINSTANCE.createAggregate();
+		Aggregate aggregate = ContextMappingDSLFactory.eINSTANCE.createAggregate();
 		aggregate.setName("testAggregate");
 		boundedContext.getAggregates().add(aggregate);
 		CommandEvent commandEvent = TacticdslFactory.eINSTANCE.createCommandEvent();
@@ -216,7 +216,7 @@ class PlantUMLClassDiagramCreatorTest {
 	public void canCreateEnum() {
 		// given
 		BoundedContext boundedContext = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
-		Aggregate aggregate = TacticdslFactory.eINSTANCE.createAggregate();
+		Aggregate aggregate = ContextMappingDSLFactory.eINSTANCE.createAggregate();
 		aggregate.setName("testAggregate");
 		boundedContext.getAggregates().add(aggregate);
 		Enum enumm = TacticdslFactory.eINSTANCE.createEnum();
@@ -241,7 +241,7 @@ class PlantUMLClassDiagramCreatorTest {
 	public void canCreateReferences() {
 		// given
 		BoundedContext boundedContext = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
-		Aggregate aggregate = TacticdslFactory.eINSTANCE.createAggregate();
+		Aggregate aggregate = ContextMappingDSLFactory.eINSTANCE.createAggregate();
 		aggregate.setName("testAggregate");
 		boundedContext.getAggregates().add(aggregate);
 		Entity entity1 = TacticdslFactory.eINSTANCE.createEntity();
@@ -285,7 +285,7 @@ class PlantUMLClassDiagramCreatorTest {
 		subdomain.setName("mySubdomain");
 		boundedContext.setName("myBoundedContext");
 		boundedContext.getImplementedSubdomains().add(subdomain);
-		Aggregate aggregate = TacticdslFactory.eINSTANCE.createAggregate();
+		Aggregate aggregate = ContextMappingDSLFactory.eINSTANCE.createAggregate();
 		aggregate.setName("testAggregate");
 		boundedContext.getAggregates().add(aggregate);
 		aggregate.getDomainObjects().add(TacticdslFactory.eINSTANCE.createSimpleDomainObject());
@@ -307,7 +307,7 @@ class PlantUMLClassDiagramCreatorTest {
 		subdomain.setName("mySubdomain");
 		boundedContext.setName("myBoundedContext");
 		boundedContext.getImplementedSubdomains().add(subdomain);
-		Aggregate aggregate = TacticdslFactory.eINSTANCE.createAggregate();
+		Aggregate aggregate = ContextMappingDSLFactory.eINSTANCE.createAggregate();
 		aggregate.setName("testAggregate");
 		boundedContext.getAggregates().add(aggregate);
 		aggregate.getDomainObjects().add(TacticdslFactory.eINSTANCE.createSimpleDomainObject());
