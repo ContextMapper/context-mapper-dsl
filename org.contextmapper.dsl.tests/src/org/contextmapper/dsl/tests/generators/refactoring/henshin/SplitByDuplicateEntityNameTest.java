@@ -9,10 +9,11 @@ import java.io.IOException;
 import org.apache.commons.io.FileUtils;
 import org.contextmapper.dsl.refactoring.henshin.SplitBoundedContextByDuplicateEntityInAggregatesRefactoring;
 import org.contextmapper.dsl.refactoring.henshin.SplitBoundedContextByDuplicateEntityInAggregatesRefactoring.NoDuplicateEntityFoundException;
+import org.contextmapper.dsl.tests.generators.refactoring.AbstractRefactoringTest;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.junit.jupiter.api.Test;
 
-public class SplitByDuplicateEntityNameTest extends AbstractHenshinTransformationTest {
+public class SplitByDuplicateEntityNameTest extends AbstractRefactoringTest {
 
 	@Test
 	void refactorTest() throws IOException {

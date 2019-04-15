@@ -425,6 +425,15 @@
 			</activeWhen>
 		</handler>
 		<handler 
+			class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.contextmapper.dsl.ui.handler.SplitBoundedContextByUseCasesRefactoringHandler"
+			commandId="org.contextmapper.dsl.ui.handler.SplitBoundedContextByUseCaseRefactoringCommand">
+			<activeWhen>
+				<reference
+					definitionId="org.contextmapper.dsl.ContextMappingDSL.Editor.opened">
+				</reference>
+			</activeWhen>
+		</handler>
+		<handler 
 			class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.eclipse.xtext.ui.refactoring.ui.DefaultRenameElementHandler"
 			commandId="org.eclipse.xtext.ui.refactoring.RenameElement">
 			<activeWhen>
@@ -444,6 +453,12 @@
 	      point="org.eclipse.ui.commands">
 	      <command name="Split Aggregate by Entities" categoryId="org.eclipse.xtext.ui.category.refactoring"
              id="org.contextmapper.dsl.ui.handler.SplitAggregateByEntitiesRefactoringCommand">
+	      </command>
+	</extension>
+	<extension
+	      point="org.eclipse.ui.commands">
+	      <command name="Split Bounded Context by Use Cases" categoryId="org.eclipse.xtext.ui.category.refactoring"
+             id="org.contextmapper.dsl.ui.handler.SplitBoundedContextByUseCaseRefactoringCommand">
 	      </command>
 	</extension>
 	<extension point="org.eclipse.ui.menus">
@@ -467,6 +482,11 @@
 					</visibleWhen>
 				</command>
 				<command defaultHandler="org.contextmapper.dsl.ui.handler.SplitAggregateByEntitiesRefactoringHandler" commandId="org.contextmapper.dsl.ui.handler.SplitAggregateByEntitiesRefactoringCommand"
+					style="push">
+					<visibleWhen checkEnabled="true">
+					</visibleWhen>
+				</command>
+				<command defaultHandler="org.contextmapper.dsl.ui.handler.SplitBoundedContextByUseCaseRefactoringHandler" commandId="org.contextmapper.dsl.ui.handler.SplitBoundedContextByUseCaseRefactoringCommand"
 					style="push">
 					<visibleWhen checkEnabled="true">
 					</visibleWhen>

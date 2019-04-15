@@ -1,0 +1,21 @@
+BoundedContext CustomerManagement {
+	Aggregate Customers {
+		Entity Customer{
+			String firstName
+			String familyName
+		}
+		Entity Account {
+			String iban
+			String bankName
+		}
+	} 
+	
+	Aggregate Addresses {
+		Entity Address {
+			String street
+		}
+	}
+}
+
+UseCase testUseCase1
+UseCase testUseCase2

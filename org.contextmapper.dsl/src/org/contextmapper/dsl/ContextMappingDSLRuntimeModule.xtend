@@ -15,9 +15,15 @@
  */
 package org.contextmapper.dsl
 
+import org.eclipse.xtext.util.formallang.PdaUtil
 
 /**
  * Use this class to register components to be used at runtime / without the Equinox extension registry.
  */
 class ContextMappingDSLRuntimeModule extends AbstractContextMappingDSLRuntimeModule {
+	
+	def Class<? extends PdaUtil> bindPdaUtil() {
+		return ContextMapperPDAUtil
+	}
+	
 }

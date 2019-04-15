@@ -16,21 +16,30 @@
 package org.contextmapper.dsl.ui.handler;
 
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
+import org.contextmapper.dsl.refactoring.SplitBoundedContextByUseCases;
 import org.contextmapper.dsl.refactoring.henshin.Refactoring;
-import org.contextmapper.dsl.refactoring.henshin.SplitBoundedContextByDuplicateEntityInAggregatesRefactoring;
 import org.eclipse.emf.ecore.EObject;
 
-public class SplitBoundedContextRefactoringHandler extends AbstractRefactoringHandler {
+public class SplitBoundedContextByUseCasesRefactoringHandler extends AbstractRefactoringHandler {
 
 	@Override
 	protected Refactoring getRefactoring() {
-		return new SplitBoundedContextByDuplicateEntityInAggregatesRefactoring();
+		BoundedContext bc = (BoundedContext) getSelectedElement();
+		return new SplitBoundedContextByUseCases(bc.getName());
 	}
 
 	@Override
 	public boolean isEnabled() {
 		EObject obj = getSelectedElement();
-		return obj != null && obj instanceof BoundedContext && super.isEnabled();
+
+		if (obj == null || !super.isEnabled())
+			return false;
+
+		// only allowed on aggregates
+		if (!(obj instanceof BoundedContext))
+			return false;
+
+		return true;
 	}
 
 }

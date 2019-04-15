@@ -17,7 +17,7 @@ package org.contextmapper.dsl.refactoring.henshin;
 
 import org.eclipse.emf.ecore.resource.Resource;
 
-public interface HenshinRefactoring {
+public interface Refactoring {
 
 	void doRefactor(Resource resource);
 
