@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.refactoring.henshin.SplitAggregateByEntitiesRefactoring;
+import org.contextmapper.dsl.tests.generators.refactoring.AbstractRefactoringTest;
 import org.contextmapper.tactic.dsl.tacticdsl.Aggregate;
 import org.contextmapper.tactic.dsl.tacticdsl.Module;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -18,7 +19,7 @@ import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.Iterators;
 
-public class SplitAggregateByEntitiesTest extends AbstractHenshinTransformationTest {
+public class SplitAggregateByEntitiesTest extends AbstractRefactoringTest {
 
 	@Test
 	void canSplitWithTwoAggregates() throws IOException {
