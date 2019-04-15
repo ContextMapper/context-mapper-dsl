@@ -14,10 +14,10 @@
         <type href="http://www.contextmapper.org/dsl/ContextMappingDSL#//BoundedContext"/>
       </nodes>
       <nodes xmi:id="_2tIggOTOEeiIWbYp2Hltow" incoming="_VkhEYOTPEeiIWbYp2Hltow" outgoing="_KQoqcOTREeiIWbYp2Hltow">
-        <type href="http://contextmapper.org/tactic/dsl/tacticdsl#//Aggregate"/>
+        <type href="http://www.contextmapper.org/dsl/ContextMappingDSL#//Aggregate"/>
       </nodes>
       <nodes xmi:id="_LX6RAOTQEeiIWbYp2Hltow" incoming="_XutOkOTQEeiIWbYp2Hltow" outgoing="_RjZtcOTREeiIWbYp2Hltow">
-        <type href="http://contextmapper.org/tactic/dsl/tacticdsl#//Aggregate"/>
+        <type href="http://www.contextmapper.org/dsl/ContextMappingDSL#//Aggregate"/>
       </nodes>
       <nodes xmi:id="_vpZGEOTQEeiIWbYp2Hltow" incoming="_KQoqcOTREeiIWbYp2Hltow">
         <type href="http://contextmapper.org/tactic/dsl/tacticdsl#//Entity"/>
@@ -41,10 +41,10 @@
         <type href="http://www.contextmapper.org/dsl/ContextMappingDSL#//BoundedContext/aggregates"/>
       </edges>
       <edges xmi:id="_KQoqcOTREeiIWbYp2Hltow" source="_2tIggOTOEeiIWbYp2Hltow" target="_vpZGEOTQEeiIWbYp2Hltow">
-        <type href="http://contextmapper.org/tactic/dsl/tacticdsl#//Aggregate/domainObjects"/>
+        <type href="http://www.contextmapper.org/dsl/ContextMappingDSL#//Aggregate/domainObjects"/>
       </edges>
       <edges xmi:id="_RjZtcOTREeiIWbYp2Hltow" source="_LX6RAOTQEeiIWbYp2Hltow" target="_x-RSwOTQEeiIWbYp2Hltow">
-        <type href="http://contextmapper.org/tactic/dsl/tacticdsl#//Aggregate/domainObjects"/>
+        <type href="http://www.contextmapper.org/dsl/ContextMappingDSL#//Aggregate/domainObjects"/>
       </edges>
     </lhs>
     <rhs xmi:id="_0aeMQeTMEeiIWbYp2Hltow" name="Rhs">
@@ -55,10 +55,10 @@
         <type href="http://www.contextmapper.org/dsl/ContextMappingDSL#//BoundedContext"/>
       </nodes>
       <nodes xmi:id="_4qF8cOTOEeiIWbYp2Hltow" incoming="_bvSkkOTPEeiIWbYp2Hltow" outgoing="_OvATMOTREeiIWbYp2Hltow">
-        <type href="http://contextmapper.org/tactic/dsl/tacticdsl#//Aggregate"/>
+        <type href="http://www.contextmapper.org/dsl/ContextMappingDSL#//Aggregate"/>
       </nodes>
       <nodes xmi:id="_OfoP4OTQEeiIWbYp2Hltow" incoming="_pKi94OTREeiIWbYp2Hltow" outgoing="_TfauMOTREeiIWbYp2Hltow">
-        <type href="http://contextmapper.org/tactic/dsl/tacticdsl#//Aggregate"/>
+        <type href="http://www.contextmapper.org/dsl/ContextMappingDSL#//Aggregate"/>
       </nodes>
       <nodes xmi:id="_6lBtMOTQEeiIWbYp2Hltow" incoming="_OvATMOTREeiIWbYp2Hltow">
         <type href="http://contextmapper.org/tactic/dsl/tacticdsl#//Entity"/>
@@ -85,10 +85,10 @@
         <type href="http://www.contextmapper.org/dsl/ContextMappingDSL#//BoundedContext/aggregates"/>
       </edges>
       <edges xmi:id="_OvATMOTREeiIWbYp2Hltow" source="_4qF8cOTOEeiIWbYp2Hltow" target="_6lBtMOTQEeiIWbYp2Hltow">
-        <type href="http://contextmapper.org/tactic/dsl/tacticdsl#//Aggregate/domainObjects"/>
+        <type href="http://www.contextmapper.org/dsl/ContextMappingDSL#//Aggregate/domainObjects"/>
       </edges>
       <edges xmi:id="_TfauMOTREeiIWbYp2Hltow" source="_OfoP4OTQEeiIWbYp2Hltow" target="_75aGMOTQEeiIWbYp2Hltow">
-        <type href="http://contextmapper.org/tactic/dsl/tacticdsl#//Aggregate/domainObjects"/>
+        <type href="http://www.contextmapper.org/dsl/ContextMappingDSL#//Aggregate/domainObjects"/>
       </edges>
       <edges xmi:id="_pKi94OTREeiIWbYp2Hltow" source="_WL8l4OTREeiIWbYp2Hltow" target="_OfoP4OTQEeiIWbYp2Hltow">
         <type href="http://www.contextmapper.org/dsl/ContextMappingDSL#//BoundedContext/aggregates"/>

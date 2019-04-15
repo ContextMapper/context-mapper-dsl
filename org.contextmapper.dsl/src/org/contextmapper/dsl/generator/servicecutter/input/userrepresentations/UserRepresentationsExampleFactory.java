@@ -203,10 +203,10 @@ public class UserRepresentationsExampleFactory {
 	}
 
 	private List<Aggregate> createSampleAggregates() {
-		List<org.contextmapper.tactic.dsl.tacticdsl.Aggregate> existingAggregates = collectAggregates();
+		List<org.contextmapper.dsl.contextMappingDSL.Aggregate> existingAggregates = collectAggregates();
 		List<Aggregate> aggregates = Lists.newArrayList();
 		if (existingAggregates.size() > 0) {
-			for (org.contextmapper.tactic.dsl.tacticdsl.Aggregate aggregate : existingAggregates) {
+			for (org.contextmapper.dsl.contextMappingDSL.Aggregate aggregate : existingAggregates) {
 				List<Attribute> aggregateAttributes = collectAttributes(aggregate);
 				Aggregate scAggregate = factory.createAggregate();
 				scAggregate.setName(aggregate.getName());
@@ -289,9 +289,9 @@ public class UserRepresentationsExampleFactory {
 		return sharedOwnerGroups;
 	}
 
-	private List<org.contextmapper.tactic.dsl.tacticdsl.Aggregate> collectAggregates() {
+	private List<org.contextmapper.dsl.contextMappingDSL.Aggregate> collectAggregates() {
 		return EcoreUtil2.getAllContentsOfType(contextMappingModel,
-				org.contextmapper.tactic.dsl.tacticdsl.Aggregate.class);
+				org.contextmapper.dsl.contextMappingDSL.Aggregate.class);
 	}
 
 	private List<DomainObject> collectDomainObjects() {

@@ -18,9 +18,9 @@ package org.contextmapper.dsl.ui.handler;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.refactoring.henshin.Refactoring;
 import org.contextmapper.dsl.refactoring.henshin.SplitAggregateByEntitiesRefactoring;
-import org.contextmapper.tactic.dsl.tacticdsl.Aggregate;
 import org.contextmapper.tactic.dsl.tacticdsl.Entity;
 import org.contextmapper.tactic.dsl.tacticdsl.SimpleDomainObject;
 import org.eclipse.emf.ecore.EObject;

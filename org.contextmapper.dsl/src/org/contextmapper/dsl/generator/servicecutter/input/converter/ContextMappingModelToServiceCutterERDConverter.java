@@ -19,20 +19,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.generator.servicecutter.input.model.Entity;
 import org.contextmapper.dsl.generator.servicecutter.input.model.EntityRelation;
 import org.contextmapper.dsl.generator.servicecutter.input.model.EntityRelationshipDiagram;
 import org.contextmapper.dsl.generator.servicecutter.input.model.Relationtype;
-import org.contextmapper.tactic.dsl.tacticdsl.Aggregate;
 import org.contextmapper.tactic.dsl.tacticdsl.Attribute;
 import org.contextmapper.tactic.dsl.tacticdsl.DomainEvent;
 import org.contextmapper.tactic.dsl.tacticdsl.DomainObject;
 import org.contextmapper.tactic.dsl.tacticdsl.Reference;
 import org.contextmapper.tactic.dsl.tacticdsl.SimpleDomainObject;
 import org.contextmapper.tactic.dsl.tacticdsl.ValueObject;
-import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.xtext.EcoreUtil2;
 
 /**

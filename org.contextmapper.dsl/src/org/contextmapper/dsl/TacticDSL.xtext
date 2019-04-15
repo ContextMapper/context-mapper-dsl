@@ -24,8 +24,6 @@
  * A few changes were made to the original:
  * 	- changed the name in order to have it within our package name space
  * 	- removed the 'Dsl' prefix from the grammar rules to increase consistency with our own DSL
- * 	- added the aggregate pattern and responsibility layers (responsibilities on aggregates)
- * 	- knowledge level pattern
  */
 
 grammar org.contextmapper.tactic.dsl.TacticDDDLanguage with org.eclipse.xtext.common.Terminals
@@ -46,48 +44,6 @@ Application :
     "basePackage" "=" basePackage=JavaIdentifier) |
   ("ApplicationPart"  name=ID "{"))
 
-    (modules+=Module)*
-    (aggregates+=Aggregate)*
-  "}";
-
-Aggregate :
-  (doc=STRING)?
-  "Aggregate" name=ID "{"
-    (
-    	(('responsibilities' '=' responsibilities+=Responsibility) ("," responsibilities+=Responsibility)*)? &
-    	(('useCases' '=' useCases += [UseCase]) ("," useCases += [UseCase])*)? &
-    	('knowledgeLevel' '=' knowledgeLevel=KnowledgeLevel)?
-    )
-    ((services+=Service) |
-     (resources+=Resource) |
-     (consumers+=Consumer) |
-     (domainObjects+=SimpleDomainObject))*
-  "}";
-
-Responsibility:
-	name=ID ('{' description=STRING '}')?
-;
-
-UseCase:
-	'UseCase' name=ID 
-	("{"
-		(('isLatencyCritical' '=' isLatencyCritical?='true')? &
-		(('reads' nanoentitiesRead+=STRING*) ("," nanoentitiesRead+=STRING)*)? &
-        (('writes' nanoentitiesWritten+=STRING*) ("," nanoentitiesWritten+=STRING)*)?)  
-	"}")?
-;
-
-Module :
-  (doc=STRING)?
-  "Module" name=ID "{"
-    (external?="external")?
-    ("basePackage" "=" basePackage=JavaIdentifier )?
-    ("hint" "=" hint=STRING)?
-    ((services+=Service) |
-     (resources+=Resource) |
-     (consumers+=Consumer) |
-     (domainObjects+=SimpleDomainObject) |
-     (aggregates+=Aggregate))*
   "}";
 
 Service :
@@ -555,9 +511,6 @@ terminal MAP_COLLECTION_TYPE :
 
 enum Visibility :
   public="public" | protected="protected" | private="private" | package="package";
-
-enum KnowledgeLevel :
-  META="META" | CONCRETE="CONCRETE";
 
 JavaIdentifier :
   (ID ("." ID)*);

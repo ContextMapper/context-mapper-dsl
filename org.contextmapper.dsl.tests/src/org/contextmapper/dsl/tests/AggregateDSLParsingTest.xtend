@@ -16,7 +16,9 @@
  package org.contextmapper.dsl.tests
 
 import com.google.inject.Inject
+import java.util.stream.Collectors
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel
+import org.contextmapper.dsl.contextMappingDSL.KnowledgeLevel
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.extensions.InjectionExtension
 import org.eclipse.xtext.testing.util.ParseHelper
@@ -25,9 +27,6 @@ import org.junit.jupiter.api.^extension.ExtendWith
 
 import static org.contextmapper.dsl.tests.util.ParsingErrorAssertions.*
 import static org.junit.jupiter.api.Assertions.*
-import org.contextmapper.dsl.contextMappingDSL.BoundedContextType
-import java.util.stream.Collectors
-import org.contextmapper.tactic.dsl.tacticdsl.KnowledgeLevel
 
 @ExtendWith(InjectionExtension)
 @InjectWith(ContextMappingDSLInjectorProvider)

@@ -21,7 +21,7 @@ import org.contextmapper.dsl.contextMappingDSL.BoundedContext
 import org.contextmapper.dsl.contextMappingDSL.BoundedContextType
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLPackage
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel
-import org.contextmapper.tactic.dsl.tacticdsl.KnowledgeLevel
+import org.contextmapper.dsl.contextMappingDSL.KnowledgeLevel
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.extensions.InjectionExtension
 import org.eclipse.xtext.testing.util.ParseHelper

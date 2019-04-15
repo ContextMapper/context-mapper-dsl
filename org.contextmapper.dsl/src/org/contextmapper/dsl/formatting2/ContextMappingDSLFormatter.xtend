@@ -16,12 +16,15 @@
 package org.contextmapper.dsl.formatting2
 
 import com.google.inject.Inject
+import org.contextmapper.dsl.contextMappingDSL.Aggregate
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext
 import org.contextmapper.dsl.contextMappingDSL.ContextMap
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel
+import org.contextmapper.dsl.contextMappingDSL.Module
 import org.contextmapper.dsl.contextMappingDSL.Relationship
 import org.contextmapper.dsl.services.ContextMappingDSLGrammarAccess
 import org.contextmapper.tactic.dsl.formatting2.TacticDDDLanguageFormatter
+import org.contextmapper.tactic.dsl.tacticdsl.Entity
 import org.eclipse.xtext.formatting2.IFormattableDocument
 
 class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
@@ -78,6 +81,31 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 		)[indent]
 
 		relationship.prepend[newLines = 2]
+	}
+	
+	def dispatch void format(Aggregate aggregate, extension IFormattableDocument document) {
+		interior(
+			aggregate.regionFor.ruleCallTo(OPENRule).append[newLine],
+			aggregate.regionFor.ruleCallTo(CLOSERule).prepend[newLine].append[newLine]
+		)[indent]
+
+		for (domainObject : aggregate.domainObjects) {
+			domainObject.format
+		}
+
+		for (service : aggregate.services) {
+			service.format
+		}
+	}
+	
+	def dispatch void format(Module module, extension IFormattableDocument document) {
+		interior(
+			module.regionFor.ruleCallTo(OPENRule).append[newLine],
+			module.regionFor.ruleCallTo(CLOSERule).prepend[newLine].append[newLine]
+		)[indent]
+		for(aggregate : module.aggregates) {
+			aggregate.format
+		}
 	}
 
 }

@@ -17,10 +17,11 @@ package org.contextmapper.dsl.generator.plantuml;
 
 import java.util.List;
 
+import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
+import org.contextmapper.dsl.contextMappingDSL.Module;
 import org.contextmapper.dsl.contextMappingDSL.Subdomain;
 import org.contextmapper.dsl.validation.ValidationMessages;
-import org.contextmapper.tactic.dsl.tacticdsl.Aggregate;
 import org.contextmapper.tactic.dsl.tacticdsl.Attribute;
 import org.contextmapper.tactic.dsl.tacticdsl.CollectionType;
 import org.contextmapper.tactic.dsl.tacticdsl.CommandEvent;
@@ -30,7 +31,6 @@ import org.contextmapper.tactic.dsl.tacticdsl.Entity;
 import org.contextmapper.tactic.dsl.tacticdsl.Enum;
 import org.contextmapper.tactic.dsl.tacticdsl.EnumValue;
 import org.contextmapper.tactic.dsl.tacticdsl.Event;
-import org.contextmapper.tactic.dsl.tacticdsl.Module;
 import org.contextmapper.tactic.dsl.tacticdsl.Reference;
 import org.contextmapper.tactic.dsl.tacticdsl.SimpleDomainObject;
 import org.contextmapper.tactic.dsl.tacticdsl.ValueObject;

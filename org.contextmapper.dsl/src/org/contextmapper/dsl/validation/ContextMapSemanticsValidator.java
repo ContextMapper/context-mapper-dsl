@@ -32,12 +32,12 @@ import static org.contextmapper.dsl.validation.ValidationMessages.SYSTEM_LANDSCA
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.Relationship;
 import org.contextmapper.dsl.contextMappingDSL.SymmetricRelationship;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
-import org.contextmapper.tactic.dsl.tacticdsl.Aggregate;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.xtext.validation.AbstractDeclarativeValidator;
 import org.eclipse.xtext.validation.Check;

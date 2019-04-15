@@ -21,6 +21,7 @@ import java.util.Iterator;
 
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLPackage;
+import org.contextmapper.dsl.contextMappingDSL.Module;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.xtext.EcoreUtil2;
 import org.eclipse.xtext.validation.AbstractDeclarativeValidator;
@@ -46,6 +47,19 @@ public class UniquenessValidator extends AbstractDeclarativeValidator {
 					}));
 			if (IteratorExtensions.size(duplicateBoundedContexts) > 1)
 				error(String.format(BOUNDED_CONTEXT_NAME_NOT_UNIQUE, bc.getName()), bc, ContextMappingDSLPackage.Literals.BOUNDED_CONTEXT__NAME);
+		}
+	}
+	
+	@Check
+	public void validateThatModuleNameIsUnique(final Module module) {
+		if (module != null) {
+			Iterator<Module> allModules = IteratorExtensions.filter(EcoreUtil2.eAll(EcoreUtil.getRootContainer(module)), Module.class);
+			Iterator<Module> duplicateModules = IteratorExtensions.filter(allModules,
+					((Function1<Module, Boolean>) (Module m) -> {
+						return m.getName().equals(module.getName());
+					}));
+			if (IteratorExtensions.size(duplicateModules) > 1)
+				error(String.format("Duplicate name. There is already an existing Module named '%s'.", module.getName()), module, ContextMappingDSLPackage.Literals.MODULE__NAME);
 		}
 	}
 
