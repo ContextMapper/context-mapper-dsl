@@ -15,13 +15,18 @@
  */
 package org.contextmapper.dsl.validation;
 
+import static org.contextmapper.dsl.validation.ValidationMessages.AGGREGATE_NAME_NOT_UNIQUE;
 import static org.contextmapper.dsl.validation.ValidationMessages.BOUNDED_CONTEXT_NAME_NOT_UNIQUE;
+import static org.contextmapper.dsl.validation.ValidationMessages.MODULE_NAME_NOT_UNIQUE;
+import static org.contextmapper.dsl.validation.ValidationMessages.USE_CASE_NAME_NOT_UNIQUE;
 
 import java.util.Iterator;
 
+import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLPackage;
 import org.contextmapper.dsl.contextMappingDSL.Module;
+import org.contextmapper.dsl.contextMappingDSL.UseCase;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.xtext.EcoreUtil2;
 import org.eclipse.xtext.validation.AbstractDeclarativeValidator;
@@ -59,7 +64,33 @@ public class UniquenessValidator extends AbstractDeclarativeValidator {
 						return m.getName().equals(module.getName());
 					}));
 			if (IteratorExtensions.size(duplicateModules) > 1)
-				error(String.format("Duplicate name. There is already an existing Module named '%s'.", module.getName()), module, ContextMappingDSLPackage.Literals.MODULE__NAME);
+				error(String.format(MODULE_NAME_NOT_UNIQUE, module.getName()), module, ContextMappingDSLPackage.Literals.MODULE__NAME);
+		}
+	}
+	
+	@Check
+	public void validateThatModuleNameIsUnique(final Aggregate aggregate) {
+		if (aggregate != null) {
+			Iterator<Aggregate> allAggregates = IteratorExtensions.filter(EcoreUtil2.eAll(EcoreUtil.getRootContainer(aggregate)), Aggregate.class);
+			Iterator<Aggregate> duplicateAggregates = IteratorExtensions.filter(allAggregates,
+					((Function1<Aggregate, Boolean>) (Aggregate a) -> {
+						return a.getName().equals(aggregate.getName());
+					}));
+			if (IteratorExtensions.size(duplicateAggregates) > 1)
+				error(String.format(AGGREGATE_NAME_NOT_UNIQUE, aggregate.getName()), aggregate, ContextMappingDSLPackage.Literals.AGGREGATE__NAME);
+		}
+	}
+	
+	@Check
+	public void validateThatModuleNameIsUnique(final UseCase uc) {
+		if (uc != null) {
+			Iterator<UseCase> allUseCases = IteratorExtensions.filter(EcoreUtil2.eAll(EcoreUtil.getRootContainer(uc)), UseCase.class);
+			Iterator<UseCase> duplicateUseCases = IteratorExtensions.filter(allUseCases,
+					((Function1<UseCase, Boolean>) (UseCase u) -> {
+						return u.getName().equals(uc.getName());
+					}));
+			if (IteratorExtensions.size(duplicateUseCases) > 1)
+				error(String.format(USE_CASE_NAME_NOT_UNIQUE, uc.getName()), uc, ContextMappingDSLPackage.Literals.USE_CASE__NAME);
 		}
 	}
 
