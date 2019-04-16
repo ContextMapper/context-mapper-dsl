@@ -27,6 +27,7 @@ import org.junit.jupiter.api.^extension.ExtendWith
 
 import static org.contextmapper.dsl.tests.util.ParsingErrorAssertions.*
 import static org.contextmapper.dsl.validation.ValidationMessages.*
+import org.contextmapper.tactic.dsl.tacticdsl.TacticdslPackage
 
 @ExtendWith(InjectionExtension)
 @InjectWith(ContextMappingDSLInjectorProvider)
@@ -100,6 +101,83 @@ class UniquenessValidatorTest {
 		assertThatNoParsingErrorsOccurred(result);
 		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.USE_CASE, "",
 			String.format(USE_CASE_NAME_NOT_UNIQUE, "uc"));
+	}
+	
+	@Test
+	def void canDefineDuplicateEntityInDifferentAggregates() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext ContextA {
+				Aggregate agg1 {
+					Entity Account
+				}
+				Aggregate agg2 {
+					Entity Account
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+	}
+	
+	@Test
+	def void cannotDefineDuplicateDomainObjectWithinAggregate() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext ContextA {
+				Aggregate agg1 {
+					Entity Account
+					Entity Account
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		validationTestHelper.assertError(result, TacticdslPackage.Literals.SIMPLE_DOMAIN_OBJECT, "",
+			String.format(DOMAIN_OBJECT_NOT_UNIQUE, "Account"));
+	}
+	
+	@Test
+	def void cannotDefineDuplicateDomainObjectWithinModule() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext ContextA {
+				Module Mod {
+					Entity Account
+					Entity Account
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		validationTestHelper.assertError(result, TacticdslPackage.Literals.SIMPLE_DOMAIN_OBJECT, "",
+			String.format(DOMAIN_OBJECT_NOT_UNIQUE, "Account"));
+	}
+	
+	@Test
+	def void cannotDefineDuplicateDomainObjectWithinSubdomain() {
+		// given
+		val String dslSnippet = '''
+			Domain TestDomain {
+				Subdomain TestSubDomain {
+					Entity Account
+					Entity Account
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		validationTestHelper.assertError(result, TacticdslPackage.Literals.SIMPLE_DOMAIN_OBJECT, "",
+			String.format(DOMAIN_OBJECT_NOT_UNIQUE, "Account"));
 	}
 
 }
