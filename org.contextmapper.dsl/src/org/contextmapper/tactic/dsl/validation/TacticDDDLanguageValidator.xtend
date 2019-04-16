@@ -715,15 +715,6 @@ private val DIGITS_PATTERN = Pattern.compile("[0-9]+[0-9]*")
 	}
 
 	@Check
-	def checkDomainObjectDuplicateName(SimpleDomainObject obj) {
-		if (obj.name !== null && obj.rootContainer.eAllOfClass(typeof(SimpleDomainObject)).filter [it.name == obj.name].size > 1) {
-			error("Duplicate name.  There is already an existing Domain Object named '"
-				+ obj.name + "'.", SIMPLE_DOMAIN_OBJECT__NAME, obj.name
-			);  
-		}
-	}
-
-	@Check
 	def checkServiceDuplicateName(Service service) {
 		if (service.name !== null && service.rootContainer.eAllOfType(typeof(Service)).filter [it.name == service.name].size > 1) {
 			error("Duplicate name.  There is already an existing Service named '"

@@ -184,7 +184,7 @@ DomainObject :
 Entity :
   (doc=STRING)?
   (abstract?="abstract")? "Entity" name=ID ("extends" (("@"extends=[Entity]) | (extendsName=JavaIdentifier)))?
-  ("with" ("@")?traits+=[Trait])* "{"
+  ("with" ("@")?traits+=[Trait])* ("{"
     ("package" "=" package=JavaIdentifier )?
     (((notOptimisticLocking?=NOT "optimisticLocking") | ("optimisticLocking"))? &
      ((notAuditable?=NOT "auditable") | ("auditable"))? &
@@ -205,7 +205,7 @@ Entity :
      (references+=Reference) |
      (operations+=DomainObjectOperation))*
     (repository=Repository)?
-  "}";
+  "}")?;
 
 ValueObject :
   (doc=STRING)?
