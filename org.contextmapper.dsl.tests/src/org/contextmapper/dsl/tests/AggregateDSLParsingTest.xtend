@@ -62,7 +62,7 @@ class AggregateDSLParsingTest {
 		val String dslSnippet = '''
 			BoundedContext testContext {
 				Aggregate myAggregate {
-					responsibilities = CalcCustomerRisk{"can calculate customer risks..."}
+					responsibilities = "can calculate customer risks..."
 				}
 			}
 		''';
@@ -72,8 +72,7 @@ class AggregateDSLParsingTest {
 		assertThatNoParsingErrorsOccurred(result);
 		assertThatNoValidationErrorsOccurred(result);
 		assertEquals(1, result.boundedContexts.get(0).aggregates.get(0).responsibilities.size);
-		assertEquals("CalcCustomerRisk", result.boundedContexts.get(0).aggregates.get(0).responsibilities.get(0).name);
-		assertEquals("can calculate customer risks...", result.boundedContexts.get(0).aggregates.get(0).responsibilities.get(0).description);
+		assertEquals("can calculate customer risks...", result.boundedContexts.get(0).aggregates.get(0).responsibilities.get(0));
 	}
 
 	@Test
