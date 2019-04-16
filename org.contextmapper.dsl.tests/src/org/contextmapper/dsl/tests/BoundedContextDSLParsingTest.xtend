@@ -77,7 +77,7 @@ class BoundedContextDSLParsingTest {
 		// given
 		val String dslSnippet = '''
 			BoundedContext testContext {
-				responsibilities = resp1
+				responsibilities = "resp1"
 			}
 		''';
 		// when
@@ -86,7 +86,7 @@ class BoundedContextDSLParsingTest {
 		assertThatNoParsingErrorsOccurred(result);
 		assertThatNoValidationErrorsOccurred(result);
 		assertEquals(1, result.boundedContexts.get(0).responsibilities.size)
-		assertEquals("resp1", result.boundedContexts.get(0).responsibilities.get(0).name)
+		assertEquals("resp1", result.boundedContexts.get(0).responsibilities.get(0))
 	}
 
 	@Test
@@ -94,7 +94,7 @@ class BoundedContextDSLParsingTest {
 		// given
 		val String dslSnippet = '''
 			BoundedContext testContext {
-				responsibilities = resp1{"a responsibility description..."}, resp2
+				responsibilities = "a responsibility description...", "another responsibility"
 			}
 		''';
 		// when
@@ -104,9 +104,9 @@ class BoundedContextDSLParsingTest {
 		assertThatNoValidationErrorsOccurred(result);
 		assertEquals(2, result.boundedContexts.get(0).responsibilities.size)
 
-		val responsibilities = result.boundedContexts.get(0).responsibilities.stream.map[name].collect(Collectors.toList);
-		assertTrue(responsibilities.contains("resp1"));
-		assertTrue(responsibilities.contains("resp2"));
+		val responsibilities = result.boundedContexts.get(0).responsibilities;
+		assertTrue(responsibilities.contains("a responsibility description..."));
+		assertTrue(responsibilities.contains("another responsibility"));
 	}
 
 	@Test

@@ -46,7 +46,7 @@ BoundedContext:
 		OPEN
 			(('domainVisionStatement' '=' domainVisionStatement=STRING)? &
 			('type' '=' type=BoundedContextType)? &
-			(('responsibilities' '=' responsibilities+=Responsibility) ("," responsibilities+=Responsibility)*)? &
+			(('responsibilities' '=' responsibilities+=STRING) ("," responsibilities+=STRING)*)? &
 			('implementationTechnology' '=' implementationTechnology=STRING)? &
 			('knowledgeLevel' '=' knowledgeLevel=KnowledgeLevel)?)
 			modules += Module*
@@ -175,7 +175,7 @@ Aggregate :
   (doc=STRING)?
   "Aggregate" name=ID (OPEN
     (
-    	(('responsibilities' '=' responsibilities+=Responsibility) ("," responsibilities+=Responsibility)*)? &
+    	(('responsibilities' '=' responsibilities+=STRING) ("," responsibilities+=STRING)*)? &
     	(('useCases' '=' useCases += [UseCase]) ("," useCases += [UseCase])*)? &
     	('owner' '=' owner=[BoundedContext])? & 
     	('knowledgeLevel' '=' knowledgeLevel=KnowledgeLevel)?
@@ -185,10 +185,6 @@ Aggregate :
      (consumers+=Consumer) |
      (domainObjects+=SimpleDomainObject))*
   CLOSE)?;
-
-Responsibility:
-	name=ID (OPEN description=STRING CLOSE)?
-;
 
 UseCase:
 	'UseCase' name=ID 
