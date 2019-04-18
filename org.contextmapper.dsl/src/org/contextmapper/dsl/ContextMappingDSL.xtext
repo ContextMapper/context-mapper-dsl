@@ -178,7 +178,8 @@ Aggregate :
     	(('responsibilities' '=' responsibilities+=STRING) ("," responsibilities+=STRING)*)? &
     	(('useCases' '=' useCases += [UseCase]) ("," useCases += [UseCase])*)? &
     	('owner' '=' owner=[BoundedContext])? & 
-    	('knowledgeLevel' '=' knowledgeLevel=KnowledgeLevel)?
+    	('knowledgeLevel' '=' knowledgeLevel=KnowledgeLevel)? &
+    	('likelihoodForChange' '=' likelihoodForChange=LikelihoodForChange)?
     )
     ((services+=Service) |
      (resources+=Resource) |
@@ -238,6 +239,10 @@ enum DownstreamGovernanceRights:
 
 enum KnowledgeLevel :
   META="META" | CONCRETE="CONCRETE"
+;
+
+enum LikelihoodForChange : 
+	OFTEN | NORMAL | RARELY
 ;
 
 // define terminals

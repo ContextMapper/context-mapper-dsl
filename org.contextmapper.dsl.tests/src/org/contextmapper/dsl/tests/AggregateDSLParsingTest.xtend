@@ -30,6 +30,7 @@ import org.junit.jupiter.api.^extension.ExtendWith
 import static org.contextmapper.dsl.tests.util.ParsingErrorAssertions.*
 import static org.contextmapper.dsl.validation.ValidationMessages.*
 import static org.junit.jupiter.api.Assertions.*
+import org.contextmapper.dsl.contextMappingDSL.LikelihoodForChange
 
 @ExtendWith(InjectionExtension)
 @InjectWith(ContextMappingDSLInjectorProvider)
@@ -158,5 +159,22 @@ class AggregateDSLParsingTest {
 		assertThatNoParsingErrorsOccurred(result);
 		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.AGGREGATE, "",
 			String.format(OWNER_BC_IS_NOT_TEAM, "teamA"));
+	}
+	
+	@Test
+	def void canDefineLikelihoodForChange() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext testContext {
+				Aggregate myAggregate {
+					likelihoodForChange = OFTEN
+				}
+			}
+		''';
+			// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertEquals(LikelihoodForChange.OFTEN, result.boundedContexts.get(0).aggregates.get(0).likelihoodForChange);
 	}
 }
