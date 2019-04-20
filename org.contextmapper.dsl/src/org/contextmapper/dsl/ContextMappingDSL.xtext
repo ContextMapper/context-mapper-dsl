@@ -242,7 +242,7 @@ enum KnowledgeLevel :
 ;
 
 enum LikelihoodForChange : 
-	OFTEN | NORMAL | RARELY
+	NORMAL | RARELY | OFTEN
 ;
 
 // define terminals
