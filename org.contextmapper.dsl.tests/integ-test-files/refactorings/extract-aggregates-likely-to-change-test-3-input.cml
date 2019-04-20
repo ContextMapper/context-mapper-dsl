@@ -1,0 +1,15 @@
+BoundedContext CustomerManagement {
+	Aggregate Customers {
+		likelihoodForChange = OFTEN
+		
+		Entity Customer{
+			String firstName
+			String familyName
+		}
+		Entity Account {
+			String iban
+			String bankName
+		}
+	} 
+}
+
