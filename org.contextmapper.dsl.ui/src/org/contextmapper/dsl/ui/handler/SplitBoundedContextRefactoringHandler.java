@@ -16,15 +16,16 @@
 package org.contextmapper.dsl.ui.handler;
 
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
-import org.contextmapper.dsl.refactoring.henshin.Refactoring;
 import org.contextmapper.dsl.refactoring.henshin.SplitBoundedContextByDuplicateEntityInAggregatesRefactoring;
+import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.Resource;
 
 public class SplitBoundedContextRefactoringHandler extends AbstractRefactoringHandler {
 
 	@Override
-	protected Refactoring getRefactoring() {
-		return new SplitBoundedContextByDuplicateEntityInAggregatesRefactoring();
+	protected void executeRefactoring(Resource resource, ExecutionEvent event) {
+		new SplitBoundedContextByDuplicateEntityInAggregatesRefactoring().doRefactor(resource);
 	}
 
 	@Override

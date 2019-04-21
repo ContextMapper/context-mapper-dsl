@@ -17,15 +17,16 @@ package org.contextmapper.dsl.ui.handler;
 
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.refactoring.SplitBoundedContextByOwner;
-import org.contextmapper.dsl.refactoring.henshin.Refactoring;
+import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.Resource;
 
 public class SplitBoundedContextByOwnerRefactoringHandler extends AbstractRefactoringHandler {
 
 	@Override
-	protected Refactoring getRefactoring() {
+	protected void executeRefactoring(Resource resource, ExecutionEvent event) {
 		BoundedContext bc = (BoundedContext) getSelectedElement();
-		return new SplitBoundedContextByOwner(bc.getName());
+		new SplitBoundedContextByOwner(bc.getName()).doRefactor(resource);
 	}
 
 	@Override

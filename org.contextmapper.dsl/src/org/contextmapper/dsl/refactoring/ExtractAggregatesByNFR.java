@@ -16,54 +16,56 @@
 package org.contextmapper.dsl.refactoring;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
-import org.contextmapper.dsl.contextMappingDSL.LikelihoodForChange;
 import org.contextmapper.dsl.refactoring.henshin.Refactoring;
 import org.eclipse.xtext.EcoreUtil2;
 
-public class ExtractAggregatesLikelyToChange extends AbstractRefactoring implements Refactoring {
+public class ExtractAggregatesByNFR extends AbstractRefactoring implements Refactoring {
 
 	private String boundedContextName;
 	private BoundedContext originalBC;
+	private String newBoundedContextName;
+	private List<String> aggregatesToExtract;
 
-	public ExtractAggregatesLikelyToChange(String boundedContextName) {
+	public ExtractAggregatesByNFR(String boundedContextName, String newBoundedContextName, List<String> aggregatesToExtract) {
 		this.boundedContextName = boundedContextName;
+		this.newBoundedContextName = newBoundedContextName;
+		this.aggregatesToExtract = aggregatesToExtract;
 	}
 
 	@Override
 	protected void doRefactor() {
 		initOriginalBC();
 
-		// do nothing if there is only one aggregate
-		if (originalBC.getAggregates().size() < 2)
-			return;
-
-		List<Aggregate> aggregates = collectAggregatesWhichAreLikelyToChange();
-		if (aggregates.size() < 1)
+		// nothing to do if no aggregates given
+		if (this.aggregatesToExtract.size() < 1)
 			return;
 
 		BoundedContext newBC = createNewBoundedContext();
-		for (Aggregate aggregate : aggregates) {
-			// move the matching aggregates to the new Bounded Context
-			newBC.getAggregates().add(aggregate);
-			this.originalBC.getAggregates().remove(aggregate);
+		for (String aggregateName : aggregatesToExtract) {
+			Optional<Aggregate> aggregate = originalBC.getAggregates().stream().filter(agg -> agg.getName().equals(aggregateName)).findFirst();
+
+			// we ignore aggregates given which do not exist
+			if (!aggregate.isPresent())
+				continue;
+
+			originalBC.getAggregates().remove(aggregate.get());
+			newBC.getAggregates().add(aggregate.get());
 		}
+
 		this.model.getBoundedContexts().add(newBC);
 		saveResource();
 	}
 
 	private BoundedContext createNewBoundedContext() {
-		BoundedContext newBC = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
-		newBC.setName(boundedContextName + "_Volatile");
-		return newBC;
-	}
-
-	private List<Aggregate> collectAggregatesWhichAreLikelyToChange() {
-		return this.originalBC.getAggregates().stream().filter(agg -> agg.getLikelihoodForChange().equals(LikelihoodForChange.OFTEN)).collect(Collectors.toList());
+		BoundedContext bc = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
+		bc.setName(newBoundedContextName);
+		return bc;
 	}
 
 	private void initOriginalBC() {
