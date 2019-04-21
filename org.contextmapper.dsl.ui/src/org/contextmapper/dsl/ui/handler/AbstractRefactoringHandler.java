@@ -1,6 +1,5 @@
 package org.contextmapper.dsl.ui.handler;
 
-import org.contextmapper.dsl.refactoring.henshin.Refactoring;
 import org.contextmapper.dsl.ui.internal.DslActivator;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -45,8 +44,7 @@ public abstract class AbstractRefactoringHandler extends AbstractHandler impleme
 			ResourceSet rs = resourceSetProvider.get(xResource.getProject());
 			Resource resource = rs.getResource(uri, true);
 
-			Refactoring refactoring = getRefactoring();
-			refactoring.doRefactor(resource);
+			executeRefactoring(resource, event);
 		} catch (Exception e) {
 			String message = e.getMessage() != null && !"".equals(e.getMessage()) ? e.getMessage() : e.getClass().getName() + " occurred in " + this.getClass().getName();
 			Status status = new Status(IStatus.ERROR, DslActivator.PLUGIN_ID, message, e);
@@ -57,11 +55,9 @@ public abstract class AbstractRefactoringHandler extends AbstractHandler impleme
 	}
 
 	/**
-	 * Implement this method to initialize the requested refactoring.
-	 * 
-	 * @return The HenshinRefactoring instance.
+	 * Implement this method to initialize and execute the requested refactoring.
 	 */
-	protected abstract Refactoring getRefactoring();
+	protected abstract void executeRefactoring(Resource resource, ExecutionEvent event);
 
 	/**
 	 * Finds the selected element in the editor (where the user open the
