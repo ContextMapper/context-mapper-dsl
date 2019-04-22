@@ -23,7 +23,7 @@ public class SplitByDuplicateEntityNameTest extends AbstractRefactoringTest {
 
 		// when
 		Resource input = getResourceCopyOfTestCML(inputModelName);
-		SplitBoundedContextByDuplicateEntityInAggregatesRefactoring refactoring = new SplitBoundedContextByDuplicateEntityInAggregatesRefactoring();
+		SplitBoundedContextByDuplicateEntityInAggregatesRefactoring refactoring = new SplitBoundedContextByDuplicateEntityInAggregatesRefactoring("CustomerManagement");
 		refactoring.doRefactor(input);
 
 		// then
@@ -37,7 +37,7 @@ public class SplitByDuplicateEntityNameTest extends AbstractRefactoringTest {
 
 		// when
 		Resource input = getResourceCopyOfTestCML(inputModelName);
-		SplitBoundedContextByDuplicateEntityInAggregatesRefactoring refactoring = new SplitBoundedContextByDuplicateEntityInAggregatesRefactoring();
+		SplitBoundedContextByDuplicateEntityInAggregatesRefactoring refactoring = new SplitBoundedContextByDuplicateEntityInAggregatesRefactoring("CustomerManagement");
 		
 		// then
 		assertThrows(NoDuplicateEntityFoundException.class, () -> refactoring.doRefactor(input));

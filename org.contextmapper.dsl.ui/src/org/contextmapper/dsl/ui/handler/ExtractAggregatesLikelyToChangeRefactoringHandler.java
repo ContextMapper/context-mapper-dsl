@@ -15,7 +15,12 @@
  */
 package org.contextmapper.dsl.ui.handler;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
+import org.contextmapper.dsl.contextMappingDSL.LikelihoodForChange;
 import org.contextmapper.dsl.refactoring.ExtractAggregatesLikelyToChange;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.emf.ecore.EObject;
@@ -40,7 +45,10 @@ public class ExtractAggregatesLikelyToChangeRefactoringHandler extends AbstractR
 		if (!(obj instanceof BoundedContext))
 			return false;
 
-		return true;
+		BoundedContext bc = (BoundedContext) obj;
+		List<Aggregate> aggregatesLikelyToChange = bc.getAggregates().stream().filter(agg -> agg.getLikelihoodForChange().equals(LikelihoodForChange.OFTEN))
+				.collect(Collectors.toList());
+		return aggregatesLikelyToChange.size() > 0 && aggregatesLikelyToChange.size() < bc.getAggregates().size();
 	}
 
 }

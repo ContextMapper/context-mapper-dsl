@@ -40,7 +40,8 @@ public class ExtractAggregatesByNFRRefactoringHandler extends AbstractRefactorin
 		if (!(obj instanceof BoundedContext))
 			return false;
 
-		return true;
+		BoundedContext bc = (BoundedContext) obj;
+		return bc.getAggregates().size() > 1;
 	}
 
 	@Override

@@ -15,6 +15,9 @@
  */
 package org.contextmapper.dsl.ui.handler;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.refactoring.SplitBoundedContextByUseCases;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -36,11 +39,15 @@ public class SplitBoundedContextByUseCasesRefactoringHandler extends AbstractRef
 		if (obj == null || !super.isEnabled())
 			return false;
 
-		// only allowed on aggregates
+		// only allowed on bounded contexts
 		if (!(obj instanceof BoundedContext))
 			return false;
 
-		return true;
+		BoundedContext bc = (BoundedContext) obj;
+		Set<String> useCaseSets = bc.getAggregates().stream().map(agg -> agg.getUseCases().stream().map(uc -> uc.getName()).collect(Collectors.joining(", ")))
+				.collect(Collectors.toSet());
+
+		return useCaseSets.size() > 1;
 	}
 
 }

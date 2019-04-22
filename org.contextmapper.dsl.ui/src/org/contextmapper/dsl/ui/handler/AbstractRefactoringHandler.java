@@ -37,7 +37,7 @@ public abstract class AbstractRefactoringHandler extends AbstractHandler impleme
 
 	@Inject
 	XtextLiveScopeResourceSetProvider resourceSetProvider;
-	
+
 	protected Resource currentResource;
 
 	@Override
@@ -65,8 +65,9 @@ public abstract class AbstractRefactoringHandler extends AbstractHandler impleme
 	}
 
 	protected ContextMappingModel getCurrentContextMappingModel() {
+		Resource resource = currentResource == null ? getCurrentResource() : currentResource;
 		List<ContextMappingModel> contextMappingModels = IteratorExtensions
-				.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(currentResource.getAllContents(), ContextMappingModel.class));
+				.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(resource.getAllContents(), ContextMappingModel.class));
 
 		if (contextMappingModels.size() > 0) {
 			return contextMappingModels.get(0);

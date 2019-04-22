@@ -16,22 +16,25 @@
 package org.contextmapper.dsl.refactoring;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
-import org.contextmapper.dsl.contextMappingDSL.ContextMap;
+import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.Relationship;
 import org.contextmapper.dsl.contextMappingDSL.SymmetricRelationship;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
+import org.contextmapper.tactic.dsl.tacticdsl.Entity;
+import org.eclipse.xtext.EcoreUtil2;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
-public class ContextMapHelper {
+public class ContextMappingModelHelper {
 
-	private ContextMap map;
+	private ContextMappingModel model;
 
-	public ContextMapHelper(ContextMap map) {
-		this.map = map;
+	public ContextMappingModelHelper(ContextMappingModel model) {
+		this.model = model;
 	}
 
 	/**
@@ -39,7 +42,7 @@ public class ContextMapHelper {
 	 */
 	public List<Relationship> findAnyRelationshipsBetweenTwoContexts(BoundedContext bc1, BoundedContext bc2) {
 		List<Relationship> relationships = Lists.newArrayList();
-		for (Relationship relationship : map.getRelationships()) {
+		for (Relationship relationship : model.getMap().getRelationships()) {
 			if (relationship instanceof SymmetricRelationship) {
 				SymmetricRelationship symRelationship = (SymmetricRelationship) relationship;
 				if ((symRelationship.getParticipant1().equals(bc1) && symRelationship.getParticipant2().equals(bc2))
@@ -62,7 +65,7 @@ public class ContextMapHelper {
 	 */
 	public boolean replaceBCInAllRelationships(BoundedContext originalBC, BoundedContext replacementBC) {
 		boolean replacedAtLeastInOneRelationship = false;
-		for (Relationship relationship : map.getRelationships()) {
+		for (Relationship relationship : model.getMap().getRelationships()) {
 			if (relationship instanceof SymmetricRelationship) {
 				SymmetricRelationship symRelationship = (SymmetricRelationship) relationship;
 				if (symRelationship.getParticipant1().equals(originalBC)) {
@@ -85,9 +88,27 @@ public class ContextMapHelper {
 				}
 			}
 		}
-		if (replacedAtLeastInOneRelationship && !map.getBoundedContexts().contains(replacementBC))
-			map.getBoundedContexts().add(replacementBC);
+		if (replacedAtLeastInOneRelationship && !model.getMap().getBoundedContexts().contains(replacementBC))
+			model.getMap().getBoundedContexts().add(replacementBC);
 		return replacedAtLeastInOneRelationship;
+	}
+
+	/**
+	 * Finds duplicate entities within a bounded context.
+	 */
+	public List<String> findDuplicateEntities(String boundedContextName) {
+		List<String> duplicates = Lists.newArrayList();
+		Set<String> uniqueNameCheckSet = Sets.newHashSet();
+		List<Entity> entities = EcoreUtil2.<Entity>eAllOfType(model.getBoundedContexts().stream().filter(b -> b.getName().equals(boundedContextName)).findFirst().get(),
+				Entity.class);
+		for (Entity entity : entities) {
+			if (!uniqueNameCheckSet.contains(entity.getName())) {
+				uniqueNameCheckSet.add(entity.getName());
+			} else {
+				duplicates.add(entity.getName());
+			}
+		}
+		return duplicates;
 	}
 
 }
