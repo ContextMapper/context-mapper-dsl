@@ -16,21 +16,18 @@
 package org.contextmapper.dsl.refactoring.henshin;
 
 import java.util.List;
-import java.util.Set;
 
-import org.contextmapper.dsl.contextMappingDSL.ContextMap;
-import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
-import org.contextmapper.tactic.dsl.tacticdsl.Entity;
-import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.contextmapper.dsl.refactoring.ContextMappingModelHelper;
 import org.eclipse.emf.henshin.interpreter.UnitApplication;
-import org.eclipse.xtext.EcoreUtil2;
-
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 
 public class SplitBoundedContextByDuplicateEntityInAggregatesRefactoring extends AbstractHenshinRefactoring {
 
 	private String splitEntityName;
+	private String boundedContextName;
+
+	public SplitBoundedContextByDuplicateEntityInAggregatesRefactoring(String boundedContextName) {
+		this.boundedContextName = boundedContextName;
+	}
 
 	@Override
 	protected String getHenshinTransformationFilename() {
@@ -44,7 +41,7 @@ public class SplitBoundedContextByDuplicateEntityInAggregatesRefactoring extends
 
 	@Override
 	protected void setUnitParameters(UnitApplication refactoringUnit) {
-		List<String> duplicateEntities = findDuplicateEntities();
+		List<String> duplicateEntities = new ContextMappingModelHelper(model).findDuplicateEntities(boundedContextName);
 		if (duplicateEntities.isEmpty())
 			throw new NoDuplicateEntityFoundException();
 		// this is a proof of concept! just take the first duplicate found...
@@ -55,20 +52,6 @@ public class SplitBoundedContextByDuplicateEntityInAggregatesRefactoring extends
 	@Override
 	protected void throwTransformationError() {
 		throw new RuntimeException("Error splitting by entity '" + splitEntityName + "' ...");
-	}
-
-	private List<String> findDuplicateEntities() {
-		List<String> duplicates = Lists.newArrayList();
-		Set<String> uniqueNameCheckSet = Sets.newHashSet();
-		List<Entity> entities = EcoreUtil2.<Entity>getAllContentsOfType(EcoreUtil.getRootContainer(model), Entity.class);
-		for (Entity entity : entities) {
-			if (!uniqueNameCheckSet.contains(entity.getName())) {
-				uniqueNameCheckSet.add(entity.getName());
-			} else {
-				duplicates.add(entity.getName());
-			}
-		}
-		return duplicates;
 	}
 
 	public class NoDuplicateEntityFoundException extends RuntimeException {

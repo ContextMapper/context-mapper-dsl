@@ -75,7 +75,7 @@ public class MergeBoundedContextsRefactoring extends AbstractRefactoring impleme
 		if (map == null)
 			return;
 
-		ContextMapHelper helper = new ContextMapHelper(map);
+		ContextMappingModelHelper helper = new ContextMappingModelHelper(model);
 		List<Relationship> relationshipsToRemove = helper.findAnyRelationshipsBetweenTwoContexts(bc1, bc2);
 		map.getRelationships().removeAll(relationshipsToRemove);
 		helper.replaceBCInAllRelationships(bc2, bc1);

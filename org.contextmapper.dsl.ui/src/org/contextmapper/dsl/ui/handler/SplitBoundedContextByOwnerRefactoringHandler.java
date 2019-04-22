@@ -15,6 +15,9 @@
  */
 package org.contextmapper.dsl.ui.handler;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.refactoring.SplitBoundedContextByOwner;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -40,7 +43,9 @@ public class SplitBoundedContextByOwnerRefactoringHandler extends AbstractRefact
 		if (!(obj instanceof BoundedContext))
 			return false;
 
-		return true;
+		BoundedContext bc = (BoundedContext) obj;
+		Set<String> owners = bc.getAggregates().stream().map(agg -> agg.getOwner() == null ? "" : agg.getOwner().getName()).collect(Collectors.toSet());
+		return owners.size() > 1;
 	}
 
 }
