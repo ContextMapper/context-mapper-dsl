@@ -44,8 +44,8 @@ public class SplitAggregateByEntitiesRefactoring extends AbstractHenshinRefactor
 	protected String getHenshinTransformationFilename() {
 		Aggregate selectedAggregate = getSelectedAggregate(model);
 		if (selectedAggregate != null && selectedAggregate.eContainer() instanceof Module)
-			return HenshinTransformationFileProvider.SPLIT_BY_AGGREGATE_BY_ENTITIES_IN_MODULE;
-		return HenshinTransformationFileProvider.SPLIT_BY_AGGREGATE_BY_ENTITIES;
+			return HenshinTransformationFileProvider.SPLIT_AGGREGATE_BY_ENTITIES_IN_MODULE;
+		return HenshinTransformationFileProvider.SPLIT_AGGREGATE_BY_ENTITIES;
 	}
 
 	@Override

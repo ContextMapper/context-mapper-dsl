@@ -1,0 +1,39 @@
+ContextMap {
+	contains AnotherContext
+	contains DeptColletion
+	
+	DeptColletion <-> AnotherContext
+	AnotherContext <-> DeptColletion
+}
+
+BoundedContext CustomerManagement {
+	Aggregate Customers {
+		Entity Customer{
+			String firstName
+			String familyName
+		}
+		Entity Account {
+			String iban
+			String bankName
+		}
+	} 
+	
+	Aggregate Addresses {
+		Entity Address {
+			String street
+		}
+	}		
+}
+
+BoundedContext DeptColletion {
+	Aggregate Depts {
+		Entity Dept
+	}
+}
+
+BoundedContext AnotherContext {
+	Aggregate AnotherAggregate {
+		Entity JustAnEntity
+	}	
+}
+

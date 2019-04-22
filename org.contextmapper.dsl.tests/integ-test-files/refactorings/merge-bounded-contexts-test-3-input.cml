@@ -1,0 +1,34 @@
+ContextMap {
+	contains CustomerManagement
+	contains AnotherContext
+}
+
+BoundedContext CustomerManagement {
+	Module mod1 {
+		Aggregate Customers {
+			Entity Customer{
+				String firstName
+				String familyName
+			}
+			Entity Account {
+				String iban
+				String bankName
+			}
+		} 
+		
+		Aggregate Addresses {
+			Entity Address {
+				String street
+			}
+		}		
+	}
+}
+
+BoundedContext AnotherContext {
+	Module mod2 {
+		Aggregate AnotherAggregate {
+			Entity JustAnEntity
+		}	
+	}
+}
+

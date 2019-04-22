@@ -1,5 +1,8 @@
 package org.contextmapper.dsl.ui.handler;
 
+import java.util.List;
+
+import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.ui.internal.DslActivator;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -20,9 +23,11 @@ import org.eclipse.xtext.resource.EObjectAtOffsetHelper;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.ui.editor.XtextEditor;
 import org.eclipse.xtext.ui.editor.utils.EditorUtils;
-import org.eclipse.xtext.ui.resource.IResourceSetProvider;
+import org.eclipse.xtext.ui.resource.XtextLiveScopeResourceSetProvider;
 import org.eclipse.xtext.util.concurrent.IUnitOfWork;
+import org.eclipse.xtext.xbase.lib.IteratorExtensions;
 
+import com.google.common.collect.Iterators;
 import com.google.inject.Inject;
 
 public abstract class AbstractRefactoringHandler extends AbstractHandler implements IHandler {
@@ -31,25 +36,40 @@ public abstract class AbstractRefactoringHandler extends AbstractHandler impleme
 	private EObjectAtOffsetHelper eObjectAtOffsetHelper;
 
 	@Inject
-	IResourceSetProvider resourceSetProvider;
+	XtextLiveScopeResourceSetProvider resourceSetProvider;
+	
+	protected Resource currentResource;
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		try {
-			XtextEditor xEditor = EditorUtils.getActiveXtextEditor();
-			IResource xResource = xEditor.getResource();
-
-			URI uri = URI.createPlatformResourceURI(xResource.getFullPath().toString(), true);
-
-			ResourceSet rs = resourceSetProvider.get(xResource.getProject());
-			Resource resource = rs.getResource(uri, true);
-
-			executeRefactoring(resource, event);
+			currentResource = getCurrentResource();
+			executeRefactoring(currentResource, event);
 		} catch (Exception e) {
 			String message = e.getMessage() != null && !"".equals(e.getMessage()) ? e.getMessage() : e.getClass().getName() + " occurred in " + this.getClass().getName();
 			Status status = new Status(IStatus.ERROR, DslActivator.PLUGIN_ID, message, e);
 			StatusManager.getManager().handle(status);
 			ErrorDialog.openError(HandlerUtil.getActiveShell(event), "Error", "Exception occured during execution of command!", status);
+		}
+		return null;
+	}
+
+	private Resource getCurrentResource() {
+		XtextEditor xEditor = EditorUtils.getActiveXtextEditor();
+		IResource xResource = xEditor.getResource();
+
+		URI uri = URI.createPlatformResourceURI(xResource.getFullPath().toString(), true);
+
+		ResourceSet rs = resourceSetProvider.get(xResource.getProject());
+		return rs.getResource(uri, true);
+	}
+
+	protected ContextMappingModel getCurrentContextMappingModel() {
+		List<ContextMappingModel> contextMappingModels = IteratorExtensions
+				.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(currentResource.getAllContents(), ContextMappingModel.class));
+
+		if (contextMappingModels.size() > 0) {
+			return contextMappingModels.get(0);
 		}
 		return null;
 	}

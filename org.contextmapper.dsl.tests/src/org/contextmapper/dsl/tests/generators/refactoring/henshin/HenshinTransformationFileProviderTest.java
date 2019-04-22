@@ -26,7 +26,7 @@ public class HenshinTransformationFileProviderTest {
 
 		// when
 		fileProvider.getHenshinDirectory().delete();
-		String tempFilePath = fileProvider.getTransformationFilePath(HenshinTransformationFileProvider.SPLIT_BY_DUPLICATE_ENTITY_NAME);
+		String tempFilePath = fileProvider.getTransformationFilePath(HenshinTransformationFileProvider.SPLIT_BC_BY_DUPLICATE_ENTITY_NAME);
 
 		// then
 		assertTrue(tempFilePath.startsWith(System.getProperty("java.io.tmpdir")));
@@ -37,7 +37,7 @@ public class HenshinTransformationFileProviderTest {
 	void canExportAllFiles() {
 		// given
 		HenshinTransformationFileProvider fileProvider = new HenshinTransformationFileProvider();
-		String expectedPath = new File(fileProvider.getHenshinDirectory(), HenshinTransformationFileProvider.SPLIT_BY_DUPLICATE_ENTITY_NAME).getAbsolutePath();
+		String expectedPath = new File(fileProvider.getHenshinDirectory(), HenshinTransformationFileProvider.SPLIT_BC_BY_DUPLICATE_ENTITY_NAME).getAbsolutePath();
 
 		// when
 		fileProvider.prepareAllHenshinFiles();
