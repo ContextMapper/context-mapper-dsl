@@ -34,7 +34,7 @@ public class SplitBoundedContextByDuplicateEntityInAggregatesRefactoring extends
 
 	@Override
 	protected String getHenshinTransformationFilename() {
-		return HenshinTransformationFileProvider.SPLIT_BY_DUPLICATE_ENTITY_NAME;
+		return HenshinTransformationFileProvider.SPLIT_BC_BY_DUPLICATE_ENTITY_NAME;
 	}
 
 	@Override

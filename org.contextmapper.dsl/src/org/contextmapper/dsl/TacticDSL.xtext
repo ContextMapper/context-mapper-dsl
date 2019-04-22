@@ -43,7 +43,10 @@ Application :
   (("Application" name=ID "{"
     "basePackage" "=" basePackage=JavaIdentifier) |
   ("ApplicationPart"  name=ID "{"))
-
+	((services+=Service) |
+     (resources+=Resource) |
+     (consumers+=Consumer) |
+     (domainObjects+=SimpleDomainObject))*
   "}";
 
 Service :

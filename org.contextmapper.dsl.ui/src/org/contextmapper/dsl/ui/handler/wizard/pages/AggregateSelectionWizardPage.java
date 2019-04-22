@@ -19,15 +19,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.contextmapper.dsl.ui.internal.DslActivator;
-import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
@@ -36,7 +32,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
-public class AggregateSelectionWizardPage extends WizardPage {
+public class AggregateSelectionWizardPage extends ContextMapperWizardPage {
 
 	private String initialBoundedContextName;
 	private List<String> allAggregates;
@@ -59,11 +55,6 @@ public class AggregateSelectionWizardPage extends WizardPage {
 	@Override
 	public String getDescription() {
 		return "Select Aggregates to Extract";
-	}
-
-	@Override
-	public Image getImage() {
-		return DslActivator.imageDescriptorFromPlugin(DslActivator.PLUGIN_ID, "icons/cml-dialog-image.png").createImage();
 	}
 
 	@Override
@@ -136,10 +127,4 @@ public class AggregateSelectionWizardPage extends WizardPage {
 	public boolean isPageComplete() {
 		return boundedContextName.getText() != null && !"".equals(boundedContextName.getText()) && getSelectedAggregates().size() >= 1;
 	}
-
-	@Override
-	public void performHelp() {
-		Program.launch("https://contextmapper.github.io/docs");
-	}
-
 }
