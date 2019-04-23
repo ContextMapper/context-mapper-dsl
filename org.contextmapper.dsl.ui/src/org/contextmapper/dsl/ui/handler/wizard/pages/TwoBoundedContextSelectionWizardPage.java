@@ -26,6 +26,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
@@ -110,7 +111,7 @@ public class TwoBoundedContextSelectionWizardPage extends ContextMapperWizardPag
 		setControl(container);
 		setPageComplete(false);
 	}
-	
+
 	@Override
 	public void setVisible(boolean visible) {
 		super.setVisible(visible);
@@ -128,5 +129,10 @@ public class TwoBoundedContextSelectionWizardPage extends ContextMapperWizardPag
 	@Override
 	public boolean isPageComplete() {
 		return this.allBoundedContexts.contains(comboBC1.getText()) && this.allBoundedContexts.contains(comboBC2.getText()) && !comboBC1.getText().equals(comboBC2.getText());
+	}
+
+	@Override
+	public void performHelp() {
+		Program.launch("https://contextmapper.github.io/docs/ar-merge-bounded-contexts/");
 	}
 }

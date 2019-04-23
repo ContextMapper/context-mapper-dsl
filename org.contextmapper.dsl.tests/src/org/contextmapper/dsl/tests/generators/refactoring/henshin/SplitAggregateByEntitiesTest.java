@@ -13,6 +13,8 @@ import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.Module;
 import org.contextmapper.dsl.refactoring.henshin.SplitAggregateByEntitiesRefactoring;
 import org.contextmapper.dsl.tests.generators.refactoring.AbstractRefactoringTest;
+import org.contextmapper.tactic.dsl.tacticdsl.DomainObject;
+import org.contextmapper.tactic.dsl.tacticdsl.SimpleDomainObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtext.xbase.lib.IteratorExtensions;
 import org.junit.jupiter.api.Test;
@@ -44,6 +46,12 @@ public class SplitAggregateByEntitiesTest extends AbstractRefactoringTest {
 		List<String> aggregateNames = bc.getAggregates().stream().map(a -> a.getName()).collect(Collectors.toList());
 		assertTrue(aggregateNames.contains("Customers"));
 		assertTrue(aggregateNames.contains("NewAggregate1"));
+
+		for (Aggregate aggregate : bc.getAggregates()) {
+			SimpleDomainObject obj = aggregate.getDomainObjects().get(0);
+			if (obj instanceof DomainObject)
+				assertTrue(((DomainObject) obj).isAggregateRoot());
+		}
 	}
 
 	@Test
@@ -79,9 +87,9 @@ public class SplitAggregateByEntitiesTest extends AbstractRefactoringTest {
 		List<ContextMappingModel> contextMappingModels = IteratorExtensions
 				.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(reloadResource(input).getAllContents(), ContextMappingModel.class));
 		BoundedContext bc = contextMappingModels.get(0).getBoundedContexts().get(0);
-		
+
 		Module testModule = bc.getModules().get(0);
-		
+
 		assertEquals(2, testModule.getAggregates().size());
 
 		for (Aggregate aggregate : testModule.getAggregates()) {

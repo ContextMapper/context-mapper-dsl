@@ -24,6 +24,7 @@ import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
@@ -126,5 +127,10 @@ public class AggregateSelectionWizardPage extends ContextMapperWizardPage {
 	@Override
 	public boolean isPageComplete() {
 		return boundedContextName.getText() != null && !"".equals(boundedContextName.getText()) && getSelectedAggregates().size() >= 1;
+	}
+	
+	@Override
+	public void performHelp() {
+		Program.launch("https://contextmapper.github.io/docs/ar-extract-aggregates-by-nfr/");
 	}
 }
