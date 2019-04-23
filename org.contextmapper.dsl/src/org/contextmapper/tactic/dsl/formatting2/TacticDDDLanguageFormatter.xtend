@@ -17,6 +17,7 @@ package org.contextmapper.tactic.dsl.formatting2
 
 import com.google.inject.Inject
 import org.contextmapper.tactic.dsl.services.TacticDDDLanguageGrammarAccess
+import org.contextmapper.tactic.dsl.tacticdsl.DomainEvent
 import org.contextmapper.tactic.dsl.tacticdsl.Entity
 import org.contextmapper.tactic.dsl.tacticdsl.TacticDDDModel
 import org.eclipse.xtext.formatting2.AbstractFormatter2
@@ -39,11 +40,30 @@ class TacticDDDLanguageFormatter extends AbstractFormatter2 {
 			entity.regionFor.keyword('}').prepend[newLine].append[newLine]
 		)[indent]
 
+		entity.regionFor.keyword('aggregateRoot').append[newLine]
+
 		for (attribute : entity.attributes) {
 			attribute.format
 			attribute.append[newLine]
 		}
 		for (reference : entity.references) {
+			reference.format
+		}
+	}
+	
+	def dispatch void format(DomainEvent domainEvent, extension IFormattableDocument document) {
+		interior(
+			domainEvent.regionFor.keyword('{').append[newLine],
+			domainEvent.regionFor.keyword('}').prepend[newLine].append[newLine]
+		)[indent]
+
+		domainEvent.regionFor.keyword('aggregateRoot').append[newLine]
+
+		for (attribute : domainEvent.attributes) {
+			attribute.format
+			attribute.append[newLine]
+		}
+		for (reference : domainEvent.references) {
 			reference.format
 		}
 	}

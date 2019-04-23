@@ -22,6 +22,8 @@ import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.Module;
+import org.contextmapper.tactic.dsl.tacticdsl.DomainObject;
+import org.contextmapper.tactic.dsl.tacticdsl.SimpleDomainObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.henshin.interpreter.UnitApplication;
 import org.eclipse.xtext.EcoreUtil2;
@@ -72,23 +74,34 @@ public class SplitAggregateByEntitiesRefactoring extends AbstractHenshinRefactor
 			Aggregate inputAggregate = getSelectedAggregate(contextMappingModels.get(0));
 			if (inputAggregate == null)
 				return;
+			setAggregateRoot(inputAggregate);
 			if (inputAggregate.eContainer() instanceof BoundedContext) {
 				BoundedContext bc = (BoundedContext) inputAggregate.eContainer();
-				fixNewAggregateNames(bc.getAggregates());
+				fixNewAggregateNamesAndSetRoot(bc.getAggregates());
 			} else if (inputAggregate.eContainer() instanceof Module) {
 				Module m = (Module) inputAggregate.eContainer();
-				fixNewAggregateNames(m.getAggregates());
+				fixNewAggregateNamesAndSetRoot(m.getAggregates());
 			}
 		}
 
 	}
 
-	private void fixNewAggregateNames(List<Aggregate> aggregates) {
+	private void fixNewAggregateNamesAndSetRoot(List<Aggregate> aggregates) {
 		List<Aggregate> newAggregates = aggregates.stream().filter(agg -> agg.getName().equals(TEMP_AGGREGATE_NAMES)).collect(Collectors.toList());
 		int i = 1;
 		for (Aggregate newAggregate : newAggregates) {
 			newAggregate.setName(NEW_AGGREGATE_NAME_PREFIX + i);
+			setAggregateRoot(newAggregate);
 			i++;
+		}
+	}
+
+	private void setAggregateRoot(Aggregate aggregate) {
+		// after this refactoring, there should only be one entity per aggregate
+		if (aggregate.getDomainObjects().size() == 1) {
+			SimpleDomainObject object = aggregate.getDomainObjects().get(0);
+			if (object instanceof DomainObject)
+				((DomainObject) object).setAggregateRoot(true);
 		}
 	}
 
