@@ -15,17 +15,13 @@
  */
 package org.contextmapper.dsl.refactoring;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
-import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
-import org.contextmapper.dsl.contextMappingDSL.Relationship;
-import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
 import org.contextmapper.dsl.refactoring.henshin.Refactoring;
 import org.eclipse.xtext.EcoreUtil2;
 
@@ -63,7 +59,7 @@ public class ExtractAggregatesByNFR extends AbstractRefactoring implements Refac
 		}
 
 		this.model.getBoundedContexts().add(newBC);
-		moveExposedAggregatesInContextMap(aggregatesToExtract, newBC);
+		new ContextMappingModelHelper(model).moveExposedAggregatesToNewRelationshipsIfNeeded(aggregatesToExtract, newBC);
 		saveResource();
 	}
 
@@ -77,44 +73,6 @@ public class ExtractAggregatesByNFR extends AbstractRefactoring implements Refac
 		List<BoundedContext> allBCs = EcoreUtil2.<BoundedContext>getAllContentsOfType(model, BoundedContext.class);
 		List<BoundedContext> bcsWithGivenInputName = allBCs.stream().filter(bc -> bc.getName().equals(boundedContextName)).collect(Collectors.toList());
 		this.originalBC = bcsWithGivenInputName.get(0);
-	}
-
-	private void moveExposedAggregatesInContextMap(List<String> movedAggregates, BoundedContext newBoundedContext) {
-		ContextMap map = model.getMap();
-		if (map == null)
-			return;
-
-		for (Relationship relationship : new LinkedList<>(map.getRelationships())) {
-			if (!(relationship instanceof UpstreamDownstreamRelationship))
-				continue;
-			moveExposedAggregatesIfNeeded((UpstreamDownstreamRelationship) relationship, movedAggregates, newBoundedContext);
-		}
-	}
-
-	private void moveExposedAggregatesIfNeeded(UpstreamDownstreamRelationship relationship, List<String> movedAggregates, BoundedContext newBoundedContext) {
-		List<String> exposedAggregates = relationship.getUpstreamExposedAggregates().stream().map(a -> a.getName()).collect(Collectors.toList());
-		List<String> aggregatesToMove = exposedAggregates.stream().distinct().filter(movedAggregates::contains).collect(Collectors.toList());
-
-		if (aggregatesToMove.isEmpty())
-			return;
-
-		UpstreamDownstreamRelationship newRelationship = ContextMappingDSLFactory.eINSTANCE.createUpstreamDownstreamRelationship();
-		newRelationship.setUpstream(newBoundedContext);
-		newRelationship.setDownstream(relationship.getDownstream());
-		newRelationship.setImplementationTechnology(relationship.getImplementationTechnology());
-		newRelationship.getUpstreamRoles().addAll(relationship.getUpstreamRoles());
-		newRelationship.getDownstreamRoles().addAll(relationship.getDownstreamRoles());
-
-		for (Aggregate aggregate : new LinkedList<>(relationship.getUpstreamExposedAggregates())) {
-			if (!aggregatesToMove.contains(aggregate.getName()))
-				continue;
-
-			relationship.getUpstreamExposedAggregates().remove(aggregate);
-			newRelationship.getUpstreamExposedAggregates().add(aggregate);
-		}
-		if (!model.getMap().getBoundedContexts().contains(newBoundedContext))
-			model.getMap().getBoundedContexts().add(newBoundedContext);
-		model.getMap().getRelationships().add(newRelationship);
 	}
 
 }

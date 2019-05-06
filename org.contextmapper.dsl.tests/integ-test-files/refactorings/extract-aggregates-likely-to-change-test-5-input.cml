@@ -1,0 +1,35 @@
+ContextMap {
+	contains CustomerManagement, AnotherContext
+	
+	CustomerManagement -> AnotherContext {
+		exposedAggregates = Customers
+	}
+}
+
+BoundedContext CustomerManagement {
+	Aggregate Customers {
+		likelihoodForChange = OFTEN
+		
+		Entity Customer{
+			String firstName
+			String familyName
+		}
+		Entity Account {
+			String iban
+			String bankName
+		}
+	} 
+	
+	Aggregate Addresses {
+		likelihoodForChange = OFTEN
+		Entity Address {
+			String street
+		}
+	}
+	
+	Aggregate AnotherAggregate {
+		Entity JustAnEntity
+	}
+}
+
+BoundedContext AnotherContext

@@ -53,6 +53,7 @@ public class ExtractAggregatesLikelyToChange extends AbstractRefactoring impleme
 			this.originalBC.getAggregates().remove(aggregate);
 		}
 		this.model.getBoundedContexts().add(newBC);
+		new ContextMappingModelHelper(model).moveExposedAggregatesToNewRelationshipsIfNeeded(aggregates.stream().map(a -> a.getName()).collect(Collectors.toList()), newBC);
 		saveResource();
 	}
 
