@@ -511,7 +511,7 @@
 	</extension>
 	<extension
 	      point="org.eclipse.ui.commands">
-	      <command name="Extract Aggregates by Cohesion (Manual Selection)" categoryId="org.eclipse.xtext.ui.category.refactoring"
+	      <command name="Extract Aggregates by Cohesion" categoryId="org.eclipse.xtext.ui.category.refactoring"
              id="org.contextmapper.dsl.ui.handler.ExtractAggregatesByCohesionRefactoringCommand">
 	      </command>
 	</extension>
