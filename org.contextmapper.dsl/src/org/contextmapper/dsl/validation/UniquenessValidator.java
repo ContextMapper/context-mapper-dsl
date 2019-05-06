@@ -76,7 +76,7 @@ public class UniquenessValidator extends AbstractDeclarativeValidator {
 	}
 
 	@Check
-	public void validateThatModuleNameIsUnique(final Aggregate aggregate) {
+	public void validateThatAggregateNameIsUnique(final Aggregate aggregate) {
 		if (aggregate != null) {
 			Iterator<Aggregate> allAggregates = IteratorExtensions.filter(EcoreUtil2.eAll(EcoreUtil.getRootContainer(aggregate)), Aggregate.class);
 			Iterator<Aggregate> duplicateAggregates = IteratorExtensions.filter(allAggregates, ((Function1<Aggregate, Boolean>) (Aggregate a) -> {
@@ -88,7 +88,7 @@ public class UniquenessValidator extends AbstractDeclarativeValidator {
 	}
 
 	@Check
-	public void validateThatModuleNameIsUnique(final UseCase uc) {
+	public void validateThatUseCaseNameIsUnique(final UseCase uc) {
 		if (uc != null) {
 			Iterator<UseCase> allUseCases = IteratorExtensions.filter(EcoreUtil2.eAll(EcoreUtil.getRootContainer(uc)), UseCase.class);
 			Iterator<UseCase> duplicateUseCases = IteratorExtensions.filter(allUseCases, ((Function1<UseCase, Boolean>) (UseCase u) -> {

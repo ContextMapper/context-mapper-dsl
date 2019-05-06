@@ -20,8 +20,11 @@ import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
+import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.Module;
+import org.contextmapper.dsl.contextMappingDSL.Relationship;
+import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
 import org.contextmapper.tactic.dsl.tacticdsl.DomainObject;
 import org.contextmapper.tactic.dsl.tacticdsl.SimpleDomainObject;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -37,6 +40,7 @@ public class SplitAggregateByEntitiesRefactoring extends AbstractHenshinRefactor
 	private final static String NEW_AGGREGATE_NAME_PREFIX = "NewAggregate";
 
 	private String aggregateName;
+	private List<Aggregate> newAggregates;
 
 	public SplitAggregateByEntitiesRefactoring(String aggregateName) {
 		this.aggregateName = aggregateName;
@@ -82,12 +86,14 @@ public class SplitAggregateByEntitiesRefactoring extends AbstractHenshinRefactor
 				Module m = (Module) inputAggregate.eContainer();
 				fixNewAggregateNamesAndSetRoot(m.getAggregates());
 			}
+
+			addNewAggregatesToExposedAggregatesIfOriginalIsExposed(contextMappingModels.get(0).getMap());
 		}
 
 	}
 
 	private void fixNewAggregateNamesAndSetRoot(List<Aggregate> aggregates) {
-		List<Aggregate> newAggregates = aggregates.stream().filter(agg -> agg.getName().equals(TEMP_AGGREGATE_NAMES)).collect(Collectors.toList());
+		newAggregates = aggregates.stream().filter(agg -> agg.getName().equals(TEMP_AGGREGATE_NAMES)).collect(Collectors.toList());
 		int i = 1;
 		for (Aggregate newAggregate : newAggregates) {
 			newAggregate.setName(NEW_AGGREGATE_NAME_PREFIX + i);
@@ -112,6 +118,21 @@ public class SplitAggregateByEntitiesRefactoring extends AbstractHenshinRefactor
 			return null;
 
 		return aggregatesWithInputName.get(0);
+	}
+
+	private void addNewAggregatesToExposedAggregatesIfOriginalIsExposed(ContextMap contextMap) {
+		if (contextMap == null)
+			return;
+
+		for (Relationship relationship : contextMap.getRelationships()) {
+			if (!(relationship instanceof UpstreamDownstreamRelationship))
+				continue;
+
+			UpstreamDownstreamRelationship upDownRelationship = (UpstreamDownstreamRelationship) relationship;
+			if (upDownRelationship.getUpstreamExposedAggregates().stream().map(a -> a.getName()).collect(Collectors.toList()).contains(aggregateName)) {
+				upDownRelationship.getUpstreamExposedAggregates().addAll(newAggregates);
+			}
+		}
 	}
 
 }
