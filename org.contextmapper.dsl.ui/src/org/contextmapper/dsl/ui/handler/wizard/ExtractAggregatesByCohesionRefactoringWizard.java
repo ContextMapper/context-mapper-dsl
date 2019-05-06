@@ -20,13 +20,13 @@ import java.util.function.Function;
 import org.contextmapper.dsl.ui.handler.wizard.pages.AggregateSelectionWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 
-public class ExtractAggregatesByNFRRefactoringWizard extends Wizard {
+public class ExtractAggregatesByCohesionRefactoringWizard extends Wizard {
 
 	private AggregateSelectionWizardPage page;
-	private Function<ExtractAggregatesByNFRContext, Boolean> finishFunction;
-	private ExtractAggregatesByNFRContext context;
+	private Function<ExtractAggregatesByCohesionContext, Boolean> finishFunction;
+	private ExtractAggregatesByCohesionContext context;
 
-	public ExtractAggregatesByNFRRefactoringWizard(ExtractAggregatesByNFRContext context, Function<ExtractAggregatesByNFRContext, Boolean> finishFunction) {
+	public ExtractAggregatesByCohesionRefactoringWizard(ExtractAggregatesByCohesionContext context, Function<ExtractAggregatesByCohesionContext, Boolean> finishFunction) {
 		super();
 		setNeedsProgressMonitor(true);
 		this.context = context;
@@ -35,7 +35,7 @@ public class ExtractAggregatesByNFRRefactoringWizard extends Wizard {
 
 	@Override
 	public String getWindowTitle() {
-		return "Extract Aggregates by NFR (Manual Selection)";
+		return "Extract Aggregates by Cohesion (Manual Selection)";
 	}
 
 	@Override

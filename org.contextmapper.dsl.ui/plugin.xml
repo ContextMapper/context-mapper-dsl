@@ -452,8 +452,8 @@
 			</activeWhen>
 		</handler>
 		<handler 
-			class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.contextmapper.dsl.ui.handler.ExtractAggregatesByNFRRefactoringHandler"
-			commandId="org.contextmapper.dsl.ui.handler.ExtractAggregatesByNFRRefactoringCommand">
+			class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.contextmapper.dsl.ui.handler.ExtractAggregatesByCohesionRefactoringHandler"
+			commandId="org.contextmapper.dsl.ui.handler.ExtractAggregatesByCohesionRefactoringCommand">
 			<activeWhen>
 				<reference
 					definitionId="org.contextmapper.dsl.ContextMappingDSL.Editor.opened">
@@ -511,8 +511,8 @@
 	</extension>
 	<extension
 	      point="org.eclipse.ui.commands">
-	      <command name="Extract Aggregates by NFR (Manual Selection)" categoryId="org.eclipse.xtext.ui.category.refactoring"
-             id="org.contextmapper.dsl.ui.handler.ExtractAggregatesByNFRRefactoringCommand">
+	      <command name="Extract Aggregates by Cohesion (Manual Selection)" categoryId="org.eclipse.xtext.ui.category.refactoring"
+             id="org.contextmapper.dsl.ui.handler.ExtractAggregatesByCohesionRefactoringCommand">
 	      </command>
 	</extension>
 	<extension
@@ -561,7 +561,7 @@
 					<visibleWhen checkEnabled="true">
 					</visibleWhen>
 				</command>
-				<command defaultHandler="org.contextmapper.dsl.ui.handler.ExtractAggregatesByNFRRefactoringHandler" commandId="org.contextmapper.dsl.ui.handler.ExtractAggregatesByNFRRefactoringCommand"
+				<command defaultHandler="org.contextmapper.dsl.ui.handler.ExtractAggregatesByCohesionRefactoringHandler" commandId="org.contextmapper.dsl.ui.handler.ExtractAggregatesByCohesionRefactoringCommand"
 					style="push">
 					<visibleWhen checkEnabled="true">
 					</visibleWhen>

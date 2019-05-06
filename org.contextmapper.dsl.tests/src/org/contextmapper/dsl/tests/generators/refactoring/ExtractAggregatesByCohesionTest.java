@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
-import org.contextmapper.dsl.refactoring.ExtractAggregatesByNFR;
+import org.contextmapper.dsl.refactoring.ExtractAggregatesByCohesion;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtext.xbase.lib.IteratorExtensions;
 import org.junit.jupiter.api.Test;
@@ -35,7 +35,7 @@ import org.junit.jupiter.api.Test;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 
-public class ExtractAggregatesByNFRTest extends AbstractRefactoringTest {
+public class ExtractAggregatesByCohesionTest extends AbstractRefactoringTest {
 
 	@Test
 	void canExtractAggregatesByGivenInputList() throws IOException {
@@ -45,7 +45,7 @@ public class ExtractAggregatesByNFRTest extends AbstractRefactoringTest {
 
 		// when
 		List<String> aggregatesToExtract = Arrays.asList(new String[] { "Customers", "Addresses" });
-		ExtractAggregatesByNFR ar = new ExtractAggregatesByNFR("CustomerManagement", "CustomerManagement_Extracted", aggregatesToExtract);
+		ExtractAggregatesByCohesion ar = new ExtractAggregatesByCohesion("CustomerManagement", "CustomerManagement_Extracted", aggregatesToExtract);
 		ar.doRefactor(input);
 
 		// then
@@ -69,7 +69,7 @@ public class ExtractAggregatesByNFRTest extends AbstractRefactoringTest {
 
 		// when
 		List<String> aggregatesToExtract = Arrays.asList(new String[] { "Addresses" });
-		ExtractAggregatesByNFR ar = new ExtractAggregatesByNFR("CustomerManagement", "CustomerManagement_Extracted", aggregatesToExtract);
+		ExtractAggregatesByCohesion ar = new ExtractAggregatesByCohesion("CustomerManagement", "CustomerManagement_Extracted", aggregatesToExtract);
 		ar.doRefactor(input);
 
 		// then
@@ -108,7 +108,7 @@ public class ExtractAggregatesByNFRTest extends AbstractRefactoringTest {
 
 		// when
 		List<String> aggregatesToExtract = Lists.newArrayList();
-		ExtractAggregatesByNFR ar = new ExtractAggregatesByNFR("CustomerManagement", "CustomerManagement_Extracted", aggregatesToExtract);
+		ExtractAggregatesByCohesion ar = new ExtractAggregatesByCohesion("CustomerManagement", "CustomerManagement_Extracted", aggregatesToExtract);
 		ar.doRefactor(input);
 
 		// then
@@ -129,7 +129,7 @@ public class ExtractAggregatesByNFRTest extends AbstractRefactoringTest {
 
 		// when
 		List<String> aggregatesToExtract = Arrays.asList(new String[] { "Customers", "Addresses" });
-		ExtractAggregatesByNFR ar = new ExtractAggregatesByNFR("CustomerManagement", "CustomerManagement_Extracted", aggregatesToExtract);
+		ExtractAggregatesByCohesion ar = new ExtractAggregatesByCohesion("CustomerManagement", "CustomerManagement_Extracted", aggregatesToExtract);
 		ar.doRefactor(input);
 
 		// then
@@ -153,7 +153,7 @@ public class ExtractAggregatesByNFRTest extends AbstractRefactoringTest {
 
 		// when
 		List<String> aggregatesToExtract = Arrays.asList(new String[] { "Customers", "Addresses", "ThisAggregateDoesNotExist" });
-		ExtractAggregatesByNFR ar = new ExtractAggregatesByNFR("CustomerManagement", "CustomerManagement_Extracted", aggregatesToExtract);
+		ExtractAggregatesByCohesion ar = new ExtractAggregatesByCohesion("CustomerManagement", "CustomerManagement_Extracted", aggregatesToExtract);
 		ar.doRefactor(input);
 
 		// then
