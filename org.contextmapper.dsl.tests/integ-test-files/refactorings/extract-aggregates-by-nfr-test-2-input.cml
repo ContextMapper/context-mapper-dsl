@@ -1,7 +1,11 @@
 ContextMap {
 	contains CustomerManagement, AnotherContext
 	
-	CustomerManagement -> AnotherContext	
+	CustomerManagement -> AnotherContext {
+		exposedAggregates = Customers, Addresses
+	}
+	
+	CustomerManagement [P]<->[P] AnotherContext
 }
 
 BoundedContext CustomerManagement {
