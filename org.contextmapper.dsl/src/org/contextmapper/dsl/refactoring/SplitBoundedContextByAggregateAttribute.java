@@ -84,6 +84,7 @@ public class SplitBoundedContextByAggregateAttribute extends AbstractRefactoring
 			newBC.setName("NewBoundedContext" + i++);
 			newBC.getAggregates().addAll(aggregates);
 			this.model.getBoundedContexts().add(newBC);
+			new ContextMappingModelHelper(model).moveExposedAggregatesToNewRelationshipsIfNeeded(aggregates.stream().map(agg -> agg.getName()).collect(Collectors.toList()), newBC);
 		}
 	}
 
@@ -94,10 +95,5 @@ public class SplitBoundedContextByAggregateAttribute extends AbstractRefactoring
 		// xtext validators must ensure that we get only one BC here:
 		this.originalBC = bcsWithGivenInputName.get(0);
 	}
-
-//	private AggregateSetKey createAggregateSetKeyForUCs(Aggregate aggregate) {
-//		return new AggregateSetKey(aggregate.getUseCases().stream().map(uc -> uc.getName()).collect(Collectors.toSet()));
-//	}
-
 
 }
