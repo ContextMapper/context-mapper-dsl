@@ -71,11 +71,9 @@ public class ContextMapSemanticsValidator extends AbstractDeclarativeValidator {
 			}
 
 			if (context1 != null && !isContextPartOfMap(map, context1))
-				error(String.format(RELATIONSHIP_CONTEXT_NOT_ON_MAP_ERROR_MESSAGE, context1.getName()), relationship,
-						attributeRelContext1);
+				error(String.format(RELATIONSHIP_CONTEXT_NOT_ON_MAP_ERROR_MESSAGE, context1.getName()), relationship, attributeRelContext1);
 			if (context2 != null && !isContextPartOfMap(map, context2))
-				error(String.format(RELATIONSHIP_CONTEXT_NOT_ON_MAP_ERROR_MESSAGE, context2.getName()), relationship,
-						attributeRelContext2);
+				error(String.format(RELATIONSHIP_CONTEXT_NOT_ON_MAP_ERROR_MESSAGE, context2.getName()), relationship, attributeRelContext2);
 		}
 	}
 
@@ -87,15 +85,12 @@ public class ContextMapSemanticsValidator extends AbstractDeclarativeValidator {
 				BoundedContext upstreamContext = ((UpstreamDownstreamRelationship) relationship).getUpstream();
 				int aggregateRefIndex = 0;
 				for (Aggregate aggregate : relationship.getUpstreamExposedAggregates()) {
-					List<String> aggregates = upstreamContext.getAggregates().stream().map(a -> a.getName())
-							.collect(Collectors.toList());
+					List<String> aggregates = upstreamContext.getAggregates().stream().map(a -> a.getName()).collect(Collectors.toList());
 					for (Module module : upstreamContext.getModules()) {
-						aggregates.addAll(
-								module.getAggregates().stream().map(b -> b.getName()).collect(Collectors.toList()));
+						aggregates.addAll(module.getAggregates().stream().map(b -> b.getName()).collect(Collectors.toList()));
 					}
 					if (!aggregates.contains(aggregate.getName()))
-						error(String.format(EXPOSED_AGGREGATE_NOT_PART_OF_UPSTREAM_CONTEXT, aggregate.getName(),
-								upstreamContext.getName()), relationship,
+						error(String.format(EXPOSED_AGGREGATE_NOT_PART_OF_UPSTREAM_CONTEXT, aggregate.getName(), upstreamContext.getName()), relationship,
 								UPSTREAM_DOWNSTREAM_RELATIONSHIP__UPSTREAM_EXPOSED_AGGREGATES, aggregateRefIndex);
 					aggregateRefIndex++;
 				}
@@ -108,8 +103,7 @@ public class ContextMapSemanticsValidator extends AbstractDeclarativeValidator {
 		if (ORGANIZATIONAL.equals(map.getType())) {
 			for (BoundedContext bc : map.getBoundedContexts()) {
 				if (!TEAM.equals(bc.getType()))
-					error(String.format(ORGANIZATIONAL_MAP_CONTEXT_IS_NOT_TYPE_TEAM, bc.getType()), map,
-							CONTEXT_MAP__BOUNDED_CONTEXTS);
+					error(String.format(ORGANIZATIONAL_MAP_CONTEXT_IS_NOT_TYPE_TEAM, bc.getType()), map, CONTEXT_MAP__BOUNDED_CONTEXTS);
 			}
 		} else if (SYSTEM_LANDSCAPE.equals(map.getType())) {
 			for (BoundedContext bc : map.getBoundedContexts()) {

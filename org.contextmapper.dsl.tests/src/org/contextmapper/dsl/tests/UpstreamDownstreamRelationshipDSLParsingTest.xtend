@@ -480,22 +480,28 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 	@Test
 	def void expectRelationshipContextsBePartOfMap() {
 		// given
-		val String dslSnippet = '''
+		val String dslSnippetTemplate = '''
 			ContextMap {
 				 contains anotherTestContext
 			
-				 anotherTestContext Customer-Supplier testContext
+				 <<relationship>>
 			}
 			
 			BoundedContext testContext
 			BoundedContext anotherTestContext
 		''';
-		// when
-		val ContextMappingModel result = parseHelper.parse(dslSnippet);
-		// then
-		assertThatNoParsingErrorsOccurred(result);
-		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.CUSTOMER_SUPPLIER_RELATIONSHIP, "",
-			String.format(RELATIONSHIP_CONTEXT_NOT_ON_MAP_ERROR_MESSAGE, "testContext"));
+		val dslSnippets = new ArrayList<String>;
+		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "anotherTestContext Customer-Supplier testContext"));
+		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "testContext Customer-Supplier anotherTestContext"));
+		
+		for(dslSnippet : dslSnippets) {
+			// when
+			val ContextMappingModel result = parseHelper.parse(dslSnippet);
+			// then
+			assertThatNoParsingErrorsOccurred(result);
+			validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.CUSTOMER_SUPPLIER_RELATIONSHIP, "",
+				String.format(RELATIONSHIP_CONTEXT_NOT_ON_MAP_ERROR_MESSAGE, "testContext"));			
+		}
 	}
 
 	@Test
