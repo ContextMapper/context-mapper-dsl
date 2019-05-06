@@ -1,11 +1,14 @@
 ContextMap {
-	contains CustomerManagement, AnotherContext
+	contains CustomerManagement, ContractManagement
 	
-	CustomerManagement -> AnotherContext	
+	CustomerManagement -> ContractManagement {
+		exposedAggregates = Customers, Addresses
+	}
 }
 
 BoundedContext CustomerManagement {
 	Aggregate Customers {
+		useCases = testUseCase1
 		Entity Customer{
 			String firstName
 			String familyName
@@ -17,14 +20,14 @@ BoundedContext CustomerManagement {
 	} 
 	
 	Aggregate Addresses {
+		useCases = testUseCase2
 		Entity Address {
 			String street
 		}
 	}
-	
-	Aggregate AnotherAggregate {
-		Entity JustAnEntity
-	}
 }
 
-BoundedContext AnotherContext
+BoundedContext ContractManagement
+
+UseCase testUseCase1
+UseCase testUseCase2

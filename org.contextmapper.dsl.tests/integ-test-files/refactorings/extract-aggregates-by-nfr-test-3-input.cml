@@ -1,9 +1,3 @@
-ContextMap {
-	contains CustomerManagement, AnotherContext
-	
-	CustomerManagement -> AnotherContext	
-}
-
 BoundedContext CustomerManagement {
 	Aggregate Customers {
 		Entity Customer{
@@ -26,5 +20,3 @@ BoundedContext CustomerManagement {
 		Entity JustAnEntity
 	}
 }
-
-BoundedContext AnotherContext

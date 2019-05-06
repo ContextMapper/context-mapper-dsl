@@ -5,12 +5,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.Module;
+import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
 import org.contextmapper.dsl.refactoring.henshin.SplitAggregateByEntitiesRefactoring;
 import org.contextmapper.dsl.tests.generators.refactoring.AbstractRefactoringTest;
 import org.contextmapper.tactic.dsl.tacticdsl.DomainObject;
@@ -99,6 +101,35 @@ public class SplitAggregateByEntitiesTest extends AbstractRefactoringTest {
 		List<String> aggregateNames = testModule.getAggregates().stream().map(a -> a.getName()).collect(Collectors.toList());
 		assertTrue(aggregateNames.contains("Customers"));
 		assertTrue(aggregateNames.contains("NewAggregate1"));
+	}
+
+	@Test
+	void canFixExposedAggregatesInContextMap() throws IOException {
+		// given
+		String inputModelName = "split-agg-by-entities-test-3-input.cml";
+		Resource input = getResourceCopyOfTestCML(inputModelName);
+		SplitAggregateByEntitiesRefactoring refactoring = new SplitAggregateByEntitiesRefactoring("Customers");
+
+		// when
+		refactoring.doRefactor(input);
+
+		// then
+		List<ContextMappingModel> contextMappingModels = IteratorExtensions
+				.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(reloadResource(input).getAllContents(), ContextMappingModel.class));
+		Optional<BoundedContext> optionalCustomerBC = contextMappingModels.get(0).getBoundedContexts().stream().filter(bc -> bc.getName().equals("CustomerManagement")).findFirst();
+
+		assertTrue(optionalCustomerBC.isPresent());
+		BoundedContext customerBC = optionalCustomerBC.get();
+
+		assertEquals(2, customerBC.getAggregates().size());
+		List<String> aggregateNames = customerBC.getAggregates().stream().map(a -> a.getName()).collect(Collectors.toList());
+		assertTrue(aggregateNames.contains("Customers"));
+		assertTrue(aggregateNames.contains("NewAggregate1"));
+
+		UpstreamDownstreamRelationship relationship = (UpstreamDownstreamRelationship) contextMappingModels.get(0).getMap().getRelationships().get(0);
+		List<String> upstreamExposedAggregates = relationship.getUpstreamExposedAggregates().stream().map(a -> a.getName()).collect(Collectors.toList());
+		assertTrue(upstreamExposedAggregates.contains("Customers"));
+		assertTrue(upstreamExposedAggregates.contains("NewAggregate1"));
 	}
 
 }

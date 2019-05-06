@@ -149,4 +149,38 @@ class UpstreamDownstreamExposedAggregatesTest {
 			String.format(EXPOSED_AGGREGATE_NOT_PART_OF_UPSTREAM_CONTEXT, "anotherAggregate", "testContext"));
 	}
 	
+	@Test
+	def void throwErrorIfAggregateIsNotPartOfUpstreamContextWithModules() {
+		// given
+		val String dslSnippet = '''
+			ContextMap {
+				contains testContext
+				contains anotherTestContext
+			
+				testContext [U,OHS,PL]->[D,CF] anotherTestContext {
+					exposedAggregates = anotherAggregate
+				}
+			}
+			
+			BoundedContext testContext {
+				Module mod1 {
+					Aggregate myAggregate {}
+				}
+			}
+			BoundedContext anotherTestContext {
+				Module mod2 {
+					Aggregate anotherAggregate {}
+				}
+			}
+		''';
+		
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.UPSTREAM_DOWNSTREAM_RELATIONSHIP, "",
+			String.format(EXPOSED_AGGREGATE_NOT_PART_OF_UPSTREAM_CONTEXT, "anotherAggregate", "testContext"));
+	}
+	
 }

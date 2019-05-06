@@ -51,8 +51,10 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 			contextMap.regionFor.ruleCallTo(CLOSERule).prepend[newLines = 2].append[newLines = 2]
 		)[indent]
 
-		contextMap.regionFor.keyword('contains').prepend[newLine]
-
+		contextMap.regionFor.keywords('contains').forEach[
+			prepend[newLines = 1]
+		]
+		
 		for (relationship : contextMap.relationships) {
 			relationship.format
 		}

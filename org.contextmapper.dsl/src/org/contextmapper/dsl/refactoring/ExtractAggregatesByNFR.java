@@ -59,6 +59,7 @@ public class ExtractAggregatesByNFR extends AbstractRefactoring implements Refac
 		}
 
 		this.model.getBoundedContexts().add(newBC);
+		new ContextMappingModelHelper(model).moveExposedAggregatesToNewRelationshipsIfNeeded(aggregatesToExtract, newBC);
 		saveResource();
 	}
 

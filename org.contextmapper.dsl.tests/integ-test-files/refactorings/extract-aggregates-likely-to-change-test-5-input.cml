@@ -1,11 +1,15 @@
 ContextMap {
 	contains CustomerManagement, AnotherContext
 	
-	CustomerManagement -> AnotherContext	
+	CustomerManagement -> AnotherContext {
+		exposedAggregates = Customers
+	}
 }
 
 BoundedContext CustomerManagement {
 	Aggregate Customers {
+		likelihoodForChange = OFTEN
+		
 		Entity Customer{
 			String firstName
 			String familyName
@@ -17,6 +21,7 @@ BoundedContext CustomerManagement {
 	} 
 	
 	Aggregate Addresses {
+		likelihoodForChange = OFTEN
 		Entity Address {
 			String street
 		}
