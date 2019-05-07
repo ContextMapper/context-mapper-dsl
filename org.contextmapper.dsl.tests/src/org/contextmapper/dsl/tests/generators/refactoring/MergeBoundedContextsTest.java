@@ -1,4 +1,4 @@
-package org.contextmapper.dsl.tests.generators.refactoring.henshin;
+package org.contextmapper.dsl.tests.generators.refactoring;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -11,7 +11,6 @@ import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.SymmetricRelationship;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
 import org.contextmapper.dsl.refactoring.MergeBoundedContextsRefactoring;
-import org.contextmapper.dsl.tests.generators.refactoring.AbstractRefactoringTest;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtext.xbase.lib.IteratorExtensions;
 import org.junit.jupiter.api.Test;
