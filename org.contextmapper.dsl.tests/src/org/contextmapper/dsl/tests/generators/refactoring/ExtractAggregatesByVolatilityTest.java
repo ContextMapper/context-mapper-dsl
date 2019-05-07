@@ -25,15 +25,16 @@ import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
+import org.contextmapper.dsl.contextMappingDSL.LikelihoodForChange;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
-import org.contextmapper.dsl.refactoring.ExtractAggregatesLikelyToChange;
+import org.contextmapper.dsl.refactoring.ExtractAggregatesByVolatility;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtext.xbase.lib.IteratorExtensions;
 import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.Iterators;
 
-public class ExtractAggregatesLikelyToChangeTest extends AbstractRefactoringTest {
+public class ExtractAggregatesByVolatilityTest extends AbstractRefactoringTest {
 
 	@Test
 	void canExtractAggregatesWhichAreLikelyToChange() throws IOException {
@@ -42,7 +43,7 @@ public class ExtractAggregatesLikelyToChangeTest extends AbstractRefactoringTest
 		Resource input = getResourceCopyOfTestCML(inputModelName);
 
 		// when
-		ExtractAggregatesLikelyToChange ar = new ExtractAggregatesLikelyToChange("CustomerManagement");
+		ExtractAggregatesByVolatility ar = new ExtractAggregatesByVolatility("CustomerManagement", LikelihoodForChange.OFTEN);
 		ar.doRefactor(input);
 
 		// then
@@ -50,7 +51,7 @@ public class ExtractAggregatesLikelyToChangeTest extends AbstractRefactoringTest
 				.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(reloadResource(input).getAllContents(), ContextMappingModel.class));
 		assertEquals(2, contextMappingModels.get(0).getBoundedContexts().size());
 		Optional<BoundedContext> bc = contextMappingModels.get(0).getBoundedContexts().stream().filter(b -> b.getName().equals("CustomerManagement")).findFirst();
-		Optional<BoundedContext> newBC = contextMappingModels.get(0).getBoundedContexts().stream().filter(b -> b.getName().equals("CustomerManagement_Volatile")).findFirst();
+		Optional<BoundedContext> newBC = contextMappingModels.get(0).getBoundedContexts().stream().filter(b -> b.getName().equals("CustomerManagement_Volatility_OFTEN")).findFirst();
 
 		assertTrue(bc.isPresent());
 		assertTrue(newBC.isPresent());
@@ -65,7 +66,7 @@ public class ExtractAggregatesLikelyToChangeTest extends AbstractRefactoringTest
 		Resource input = getResourceCopyOfTestCML(inputModelName);
 
 		// when
-		ExtractAggregatesLikelyToChange ar = new ExtractAggregatesLikelyToChange("CustomerManagement");
+		ExtractAggregatesByVolatility ar = new ExtractAggregatesByVolatility("CustomerManagement", LikelihoodForChange.OFTEN);
 		ar.doRefactor(input);
 
 		// then
@@ -73,7 +74,7 @@ public class ExtractAggregatesLikelyToChangeTest extends AbstractRefactoringTest
 				.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(reloadResource(input).getAllContents(), ContextMappingModel.class));
 		assertEquals(3, contextMappingModels.get(0).getBoundedContexts().size());
 		Optional<BoundedContext> bc = contextMappingModels.get(0).getBoundedContexts().stream().filter(b -> b.getName().equals("CustomerManagement")).findFirst();
-		Optional<BoundedContext> newBC = contextMappingModels.get(0).getBoundedContexts().stream().filter(b -> b.getName().equals("CustomerManagement_Volatile")).findFirst();
+		Optional<BoundedContext> newBC = contextMappingModels.get(0).getBoundedContexts().stream().filter(b -> b.getName().equals("CustomerManagement_Volatility_OFTEN")).findFirst();
 
 		assertTrue(bc.isPresent());
 		assertTrue(newBC.isPresent());
@@ -94,7 +95,7 @@ public class ExtractAggregatesLikelyToChangeTest extends AbstractRefactoringTest
 		Resource input = getResourceCopyOfTestCML(inputModelName);
 
 		// when
-		ExtractAggregatesLikelyToChange ar = new ExtractAggregatesLikelyToChange("CustomerManagement");
+		ExtractAggregatesByVolatility ar = new ExtractAggregatesByVolatility("CustomerManagement", LikelihoodForChange.OFTEN);
 		ar.doRefactor(input);
 
 		// then
@@ -110,7 +111,7 @@ public class ExtractAggregatesLikelyToChangeTest extends AbstractRefactoringTest
 		Resource input = getResourceCopyOfTestCML(inputModelName);
 
 		// when
-		ExtractAggregatesLikelyToChange ar = new ExtractAggregatesLikelyToChange("CustomerManagement");
+		ExtractAggregatesByVolatility ar = new ExtractAggregatesByVolatility("CustomerManagement", LikelihoodForChange.OFTEN);
 		ar.doRefactor(input);
 
 		// then
@@ -126,7 +127,7 @@ public class ExtractAggregatesLikelyToChangeTest extends AbstractRefactoringTest
 		Resource input = getResourceCopyOfTestCML(inputModelName);
 
 		// when
-		ExtractAggregatesLikelyToChange ar = new ExtractAggregatesLikelyToChange("CustomerManagement");
+		ExtractAggregatesByVolatility ar = new ExtractAggregatesByVolatility("CustomerManagement", LikelihoodForChange.OFTEN);
 		ar.doRefactor(input);
 
 		// then
