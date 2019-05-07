@@ -16,10 +16,8 @@
 package org.contextmapper.dsl.ui.handler;
 
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
-import org.contextmapper.dsl.refactoring.ContextMappingModelHelper;
 import org.contextmapper.dsl.refactoring.henshin.SplitBoundedContextByDuplicateEntityInAggregatesRefactoring;
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 
 public class SplitBoundedContextRefactoringHandler extends AbstractRefactoringHandler {
@@ -30,15 +28,19 @@ public class SplitBoundedContextRefactoringHandler extends AbstractRefactoringHa
 		new SplitBoundedContextByDuplicateEntityInAggregatesRefactoring(bc.getName()).doRefactor(resource);
 	}
 
+	/**
+	 * 07.05.2019: Disable this AR for now.
+	 */
 	@Override
 	public boolean isEnabled() {
-		EObject obj = getSelectedElement();
-
-		if (obj == null || !(obj instanceof BoundedContext))
-			return false;
-
-		BoundedContext bc = (BoundedContext) obj;
-		return new ContextMappingModelHelper(getCurrentContextMappingModel()).findDuplicateEntities(bc.getName()).size() > 0 && super.isEnabled();
+//		EObject obj = getSelectedElement();
+//
+//		if (obj == null || !(obj instanceof BoundedContext))
+//			return false;
+//
+//		BoundedContext bc = (BoundedContext) obj;
+//		return new ContextMappingModelHelper(getCurrentContextMappingModel()).findDuplicateEntities(bc.getName()).size() > 0 && super.isEnabled();
+		return false;
 	}
 
 }
