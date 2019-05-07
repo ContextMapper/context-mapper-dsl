@@ -1,0 +1,30 @@
+ContextMap {
+	contains CustomerManagement, AnotherContext
+
+	CustomerManagement -> AnotherContext {
+		exposedAggregates = Customers, Addresses
+	}
+	
+	CustomerManagement [P]<->[P] AnotherContext
+
+}
+
+BoundedContext CustomerManagement {
+	Aggregate Customers {
+		Entity Customer{
+			String firstName
+			String familyName
+		}
+		Entity Account {
+			String iban
+			String bankName
+		}
+	}
+	Aggregate Addresses {
+		Entity Address {
+			String street
+		}
+	}
+}
+
+BoundedContext AnotherContext

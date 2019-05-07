@@ -470,6 +470,15 @@
 			</activeWhen>
 		</handler>
 		<handler 
+			class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.contextmapper.dsl.ui.handler.MergeAggregatesRefactoringHandler"
+			commandId="org.contextmapper.dsl.ui.handler.MergeAggregatesRefactoringCommand">
+			<activeWhen>
+				<reference
+					definitionId="org.contextmapper.dsl.ContextMappingDSL.Editor.opened">
+				</reference>
+			</activeWhen>
+		</handler>
+		<handler 
 			class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.eclipse.xtext.ui.refactoring.ui.DefaultRenameElementHandler"
 			commandId="org.eclipse.xtext.ui.refactoring.RenameElement">
 			<activeWhen>
@@ -521,6 +530,12 @@
              id="org.contextmapper.dsl.ui.handler.MergeBoundedContextsRefactoringCommand">
 	      </command>
 	</extension>
+	<extension
+	      point="org.eclipse.ui.commands">
+	      <command name="Merge Aggregates" categoryId="org.eclipse.xtext.ui.category.refactoring"
+             id="org.contextmapper.dsl.ui.handler.MergeAggregatesRefactoringCommand">
+	      </command>
+	</extension>
 	<extension point="org.eclipse.ui.menus">
 		<menuContribution
 			locationURI="popup:#TextEditorContext?after=group.edit">
@@ -567,6 +582,11 @@
 					</visibleWhen>
 				</command>
 				<command defaultHandler="org.contextmapper.dsl.ui.handler.MergeBoundedContextsRefactoringHandler" commandId="org.contextmapper.dsl.ui.handler.MergeBoundedContextsRefactoringCommand"
+					style="push">
+					<visibleWhen checkEnabled="true">
+					</visibleWhen>
+				</command>
+				<command defaultHandler="org.contextmapper.dsl.ui.handler.MergeAggregatesRefactoringHandler" commandId="org.contextmapper.dsl.ui.handler.MergeAggregatesRefactoringCommand"
 					style="push">
 					<visibleWhen checkEnabled="true">
 					</visibleWhen>
