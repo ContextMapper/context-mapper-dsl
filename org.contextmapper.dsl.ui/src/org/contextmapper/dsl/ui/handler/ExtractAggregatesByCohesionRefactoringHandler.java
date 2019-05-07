@@ -18,16 +18,16 @@ package org.contextmapper.dsl.ui.handler;
 import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
-import org.contextmapper.dsl.refactoring.ExtractAggregatesByNFR;
-import org.contextmapper.dsl.ui.handler.wizard.ExtractAggregatesByNFRContext;
-import org.contextmapper.dsl.ui.handler.wizard.ExtractAggregatesByNFRRefactoringWizard;
+import org.contextmapper.dsl.refactoring.ExtractAggregatesByCohesion;
+import org.contextmapper.dsl.ui.handler.wizard.ExtractAggregatesByCohesionContext;
+import org.contextmapper.dsl.ui.handler.wizard.ExtractAggregatesByCohesionRefactoringWizard;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.handlers.HandlerUtil;
 
-public class ExtractAggregatesByNFRRefactoringHandler extends AbstractRefactoringHandler {
+public class ExtractAggregatesByCohesionRefactoringHandler extends AbstractRefactoringHandler {
 
 	@Override
 	public boolean isEnabled() {
@@ -48,11 +48,11 @@ public class ExtractAggregatesByNFRRefactoringHandler extends AbstractRefactorin
 	protected void executeRefactoring(Resource resource, ExecutionEvent event) {
 		BoundedContext bc = (BoundedContext) getSelectedElement();
 
-		ExtractAggregatesByNFRContext refactoringContext = new ExtractAggregatesByNFRContext("NewBoundedContext",
+		ExtractAggregatesByCohesionContext refactoringContext = new ExtractAggregatesByCohesionContext("NewBoundedContext",
 				bc.getAggregates().stream().map(agg -> agg.getName()).collect(Collectors.toList()));
 
-		new WizardDialog(HandlerUtil.getActiveShell(event), new ExtractAggregatesByNFRRefactoringWizard(refactoringContext, executionContext -> {
-			ExtractAggregatesByNFR ar = new ExtractAggregatesByNFR(bc.getName(), executionContext.getNewBoundedContextName(), executionContext.getSelectedAggregates());
+		new WizardDialog(HandlerUtil.getActiveShell(event), new ExtractAggregatesByCohesionRefactoringWizard(refactoringContext, executionContext -> {
+			ExtractAggregatesByCohesion ar = new ExtractAggregatesByCohesion(bc.getName(), executionContext.getNewBoundedContextName(), executionContext.getSelectedAggregates());
 			ar.doRefactor(resource);
 			return true;
 		})).open();

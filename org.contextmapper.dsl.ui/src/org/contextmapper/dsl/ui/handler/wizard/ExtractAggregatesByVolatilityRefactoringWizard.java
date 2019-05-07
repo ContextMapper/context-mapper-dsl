@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 The Context Mapper Project Team
+ * Copyright 2019 The Context Mapper Project Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,16 +17,16 @@ package org.contextmapper.dsl.ui.handler.wizard;
 
 import java.util.function.Function;
 
-import org.contextmapper.dsl.ui.handler.wizard.pages.AggregateSelectionWizardPage;
+import org.contextmapper.dsl.ui.handler.wizard.pages.LikelihoodForChangeSelectionWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 
-public class ExtractAggregatesByNFRRefactoringWizard extends Wizard {
+public class ExtractAggregatesByVolatilityRefactoringWizard extends Wizard {
 
-	private AggregateSelectionWizardPage page;
-	private Function<ExtractAggregatesByNFRContext, Boolean> finishFunction;
-	private ExtractAggregatesByNFRContext context;
+	private LikelihoodForChangeSelectionWizardPage page;
+	private Function<ExtractAggregatesByVolatilityContext, Boolean> finishFunction;
+	private ExtractAggregatesByVolatilityContext context;
 
-	public ExtractAggregatesByNFRRefactoringWizard(ExtractAggregatesByNFRContext context, Function<ExtractAggregatesByNFRContext, Boolean> finishFunction) {
+	public ExtractAggregatesByVolatilityRefactoringWizard(ExtractAggregatesByVolatilityContext context, Function<ExtractAggregatesByVolatilityContext, Boolean> finishFunction) {
 		super();
 		setNeedsProgressMonitor(true);
 		this.context = context;
@@ -35,19 +35,18 @@ public class ExtractAggregatesByNFRRefactoringWizard extends Wizard {
 
 	@Override
 	public String getWindowTitle() {
-		return "Extract Aggregates by NFR (Manual Selection)";
+		return "Extract Aggregates by Volatility";
 	}
 
 	@Override
 	public void addPages() {
-		page = new AggregateSelectionWizardPage(context.getNewBoundedContextName(), context.getAllAggregates());
+		page = new LikelihoodForChangeSelectionWizardPage();
 		addPage(page);
 	}
 
 	@Override
 	public boolean performFinish() {
-		context.setNewBoundedContextName(page.getBoundedContextName());
-		context.setSelectedAggregates(page.getSelectedAggregates());
+		context.setVolatilityToExtract(page.getVolatility());
 		return finishFunction.apply(context);
 	}
 

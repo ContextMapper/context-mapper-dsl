@@ -17,13 +17,13 @@ package org.contextmapper.dsl.ui.handler.wizard;
 
 import java.util.List;
 
-public class ExtractAggregatesByNFRContext {
+public class ExtractAggregatesByCohesionContext {
 
 	private String newBoundedContextName;
 	private List<String> allAggregates;
 	private List<String> selectedAggregates;
 
-	public ExtractAggregatesByNFRContext(String newBoundedContextName, List<String> allAggregates) {
+	public ExtractAggregatesByCohesionContext(String newBoundedContextName, List<String> allAggregates) {
 		this.newBoundedContextName = newBoundedContextName;
 		this.allAggregates = allAggregates;
 	}

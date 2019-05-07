@@ -25,13 +25,15 @@ import org.contextmapper.dsl.contextMappingDSL.LikelihoodForChange;
 import org.contextmapper.dsl.refactoring.henshin.Refactoring;
 import org.eclipse.xtext.EcoreUtil2;
 
-public class ExtractAggregatesLikelyToChange extends AbstractRefactoring implements Refactoring {
+public class ExtractAggregatesByVolatility extends AbstractRefactoring implements Refactoring {
 
 	private String boundedContextName;
 	private BoundedContext originalBC;
+	private LikelihoodForChange likelihoodForChange;
 
-	public ExtractAggregatesLikelyToChange(String boundedContextName) {
+	public ExtractAggregatesByVolatility(String boundedContextName, LikelihoodForChange likelihoodForChange) {
 		this.boundedContextName = boundedContextName;
+		this.likelihoodForChange = likelihoodForChange;
 	}
 
 	@Override
@@ -42,7 +44,7 @@ public class ExtractAggregatesLikelyToChange extends AbstractRefactoring impleme
 		if (originalBC.getAggregates().size() < 2)
 			return;
 
-		List<Aggregate> aggregates = collectAggregatesWhichAreLikelyToChange();
+		List<Aggregate> aggregates = collectAggregatesByVolatility();
 		if (aggregates.size() < 1)
 			return;
 
@@ -59,12 +61,12 @@ public class ExtractAggregatesLikelyToChange extends AbstractRefactoring impleme
 
 	private BoundedContext createNewBoundedContext() {
 		BoundedContext newBC = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
-		newBC.setName(boundedContextName + "_Volatile");
+		newBC.setName(boundedContextName + "_Volatility_" + this.likelihoodForChange.getName());
 		return newBC;
 	}
 
-	private List<Aggregate> collectAggregatesWhichAreLikelyToChange() {
-		return this.originalBC.getAggregates().stream().filter(agg -> agg.getLikelihoodForChange().equals(LikelihoodForChange.OFTEN)).collect(Collectors.toList());
+	private List<Aggregate> collectAggregatesByVolatility() {
+		return this.originalBC.getAggregates().stream().filter(agg -> agg.getLikelihoodForChange().equals(likelihoodForChange)).collect(Collectors.toList());
 	}
 
 	private void initOriginalBC() {

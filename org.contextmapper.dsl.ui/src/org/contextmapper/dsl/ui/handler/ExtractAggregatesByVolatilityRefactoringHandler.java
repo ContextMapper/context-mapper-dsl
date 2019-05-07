@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 The Context Mapper Project Team
+ * Copyright 2019 The Context Mapper Project Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,20 +18,30 @@ package org.contextmapper.dsl.ui.handler;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.LikelihoodForChange;
-import org.contextmapper.dsl.refactoring.ExtractAggregatesLikelyToChange;
+import org.contextmapper.dsl.refactoring.ExtractAggregatesByVolatility;
+import org.contextmapper.dsl.ui.handler.wizard.ExtractAggregatesByVolatilityContext;
+import org.contextmapper.dsl.ui.handler.wizard.ExtractAggregatesByVolatilityRefactoringWizard;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.ui.handlers.HandlerUtil;
 
-public class ExtractAggregatesLikelyToChangeRefactoringHandler extends AbstractRefactoringHandler {
+public class ExtractAggregatesByVolatilityRefactoringHandler extends AbstractRefactoringHandler {
 
 	@Override
 	protected void executeRefactoring(Resource resource, ExecutionEvent event) {
 		BoundedContext bc = (BoundedContext) getSelectedElement();
-		new ExtractAggregatesLikelyToChange(bc.getName()).doRefactor(resource);
+
+		ExtractAggregatesByVolatilityContext refactoringContext = new ExtractAggregatesByVolatilityContext();
+
+		new WizardDialog(HandlerUtil.getActiveShell(event), new ExtractAggregatesByVolatilityRefactoringWizard(refactoringContext, executionContext -> {
+			ExtractAggregatesByVolatility ar = new ExtractAggregatesByVolatility(bc.getName(), executionContext.getVolatilityToExtract());
+			ar.doRefactor(resource);
+			return true;
+		})).open();
 	}
 
 	@Override
@@ -46,9 +56,8 @@ public class ExtractAggregatesLikelyToChangeRefactoringHandler extends AbstractR
 			return false;
 
 		BoundedContext bc = (BoundedContext) obj;
-		List<Aggregate> aggregatesLikelyToChange = bc.getAggregates().stream().filter(agg -> agg.getLikelihoodForChange().equals(LikelihoodForChange.OFTEN))
-				.collect(Collectors.toList());
-		return aggregatesLikelyToChange.size() > 0 && aggregatesLikelyToChange.size() < bc.getAggregates().size();
+		List<LikelihoodForChange> likelihoods = bc.getAggregates().stream().map(agg -> agg.getLikelihoodForChange()).collect(Collectors.toList());
+		return likelihoods.size() > 1;
 	}
 
 }

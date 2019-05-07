@@ -25,14 +25,14 @@ import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
 import org.contextmapper.dsl.refactoring.henshin.Refactoring;
 import org.eclipse.xtext.EcoreUtil2;
 
-public class ExtractAggregatesByNFR extends AbstractRefactoring implements Refactoring {
+public class ExtractAggregatesByCohesion extends AbstractRefactoring implements Refactoring {
 
 	private String boundedContextName;
 	private BoundedContext originalBC;
 	private String newBoundedContextName;
 	private List<String> aggregatesToExtract;
 
-	public ExtractAggregatesByNFR(String boundedContextName, String newBoundedContextName, List<String> aggregatesToExtract) {
+	public ExtractAggregatesByCohesion(String boundedContextName, String newBoundedContextName, List<String> aggregatesToExtract) {
 		this.boundedContextName = boundedContextName;
 		this.newBoundedContextName = newBoundedContextName;
 		this.aggregatesToExtract = aggregatesToExtract;
