@@ -15,6 +15,7 @@
  */
 package org.contextmapper.dsl.ui.handler;
 
+import org.contextmapper.dsl.generator.exception.GeneratorInputException;
 import org.contextmapper.dsl.ui.internal.DslActivator;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -31,6 +32,7 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.handlers.HandlerUtil;
@@ -84,6 +86,8 @@ public abstract class AbstractGenerationHandler extends AbstractHandler implemen
 					ResourceSet rs = resourceSetProvider.get(project);
 					Resource r = rs.getResource(uri, true);
 					getGenerator().doGenerate(r, fsa, new GeneratorContext());
+				} catch (GeneratorInputException e) {
+					MessageDialog.openInformation(HandlerUtil.getActiveShell(event), "Model Input", e.getMessage());
 				} catch (Exception e) {
 					String message = e.getMessage() != null && !"".equals(e.getMessage()) ? e.getMessage() : e.getClass().getName() + " occurred in " + this.getClass().getName();
 					Status status = new Status(IStatus.ERROR, DslActivator.PLUGIN_ID, message, e);

@@ -682,6 +682,9 @@
 		<handler class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.contextmapper.dsl.ui.handler.ServiceCutterUserRepresentationsExampleGenerationHandler"
 			commandId="org.contextmapper.dsl.ui.handler.ServiceCutterUserRepresentationsExampleGenerationCommand">
 		</handler>
+		<handler class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.contextmapper.dsl.ui.handler.MDSLGenerationHandler"
+			commandId="org.contextmapper.dsl.ui.handler.MDSLGenerationCommand">
+		</handler>
 	</extension>
 	<extension point="org.eclipse.ui.commands">
 		<command name="ServiceCutter: Generate Input File (JSON)" id="org.contextmapper.dsl.ui.handler.ServiceCutterGenerationCommand"></command>
@@ -690,6 +693,7 @@
 		<command name="ServiceCutter: Generate User Representations File (JSON)" id="org.contextmapper.servicecutter.dsl.ui.handler.ServiceCutterUserRepresentationsJSONGenerationCommand"></command>
 		<command name="Generate ContextMap by ServiceCutter Output" id="org.contextmapper.dsl.ui.handler.CMLByServiceCutterOutputGenerationCommand"></command>
 		<command name="ServiceCutter: Initialize User Representations File (Exemplary)" id="org.contextmapper.dsl.ui.handler.ServiceCutterUserRepresentationsExampleGenerationCommand"></command>
+		<command name="MDSL: Generate Service Contracts" id="org.contextmapper.dsl.ui.handler.MDSLGenerationCommand"></command>
 	</extension>
 	<extension point="org.eclipse.ui.menus">
 		<menuContribution locationURI="popup:org.eclipse.ui.popup.any?after=additions">
@@ -754,6 +758,18 @@
 						</iterate>
 					</visibleWhen>
 				</command>	
+				<separator
+	         		name="org.contextmapper.dsl.ui.separator3" visible="true">
+				</separator>
+				<command defaultHandler="org.contextmapper.dsl.ui.handler.MDSLGenerationHandler" commandId="org.contextmapper.dsl.ui.handler.MDSLGenerationCommand" style="push">
+					<visibleWhen checkEnabled="false">
+						<iterate>
+							<adapt type="org.eclipse.core.resources.IResource">
+								<test property="org.eclipse.core.resources.name" value="*.cml"/>
+							</adapt>
+						</iterate>
+					</visibleWhen>
+				</command>
 			</menu>
 		</menuContribution>
 	</extension>

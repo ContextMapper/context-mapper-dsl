@@ -1,0 +1,28 @@
+API description CustomerManagementContextAPI
+
+data type Address P
+data type Parameter1Type P
+data type Parameter2Type P
+data type ReturnType P
+data type anotherMethodParameter ( Parameter1Type, Parameter2Type )
+
+endpoint contract type Customers
+	exposes
+		operation updateAddress
+			expecting
+				payload Address
+			delivering
+				payload ReturnType
+		operation anotherMethod
+			expecting
+				payload anotherMethodParameter
+
+API provider CustomerManagementContext
+	offers Customers
+	at endpoint instance location "http://localhost:8080"
+		via protocol "RESTful HTTP"
+
+API client ContractManagementContext
+	consumes Customers
+
+IPA

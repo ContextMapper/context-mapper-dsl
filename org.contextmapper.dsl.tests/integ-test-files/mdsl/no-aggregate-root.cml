@@ -1,0 +1,19 @@
+ContextMap {
+	contains CustomerManagementContext, ContractManagementContext
+	
+	CustomerManagementContext -> ContractManagementContext {
+		exposedAggregates = Customers
+	}
+	
+}
+
+BoundedContext ContractManagementContext
+
+BoundedContext CustomerManagementContext {
+	
+	Aggregate Customers {
+		Entity Customer {
+			def void updateAddress(Address address);
+		}
+	}
+}
