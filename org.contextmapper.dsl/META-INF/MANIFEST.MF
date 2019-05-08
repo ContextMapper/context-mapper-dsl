@@ -19,7 +19,8 @@ Require-Bundle: org.eclipse.xtext,
  com.fasterxml.jackson.core.jackson-core;bundle-version="2.9.2",
  com.fasterxml.jackson.core.jackson-annotations;bundle-version="2.9.2",
  org.eclipse.emf.henshin.interpreter;bundle-version="1.4.0",
- org.apache.commons.io;bundle-version="2.2.0"
+ org.apache.commons.io;bundle-version="2.2.0",
+ org.freemarker;bundle-version="2.3.22"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.contextmapper.dsl,
  org.contextmapper.dsl.contextMappingDSL,
@@ -28,6 +29,8 @@ Export-Package: org.contextmapper.dsl,
  org.contextmapper.dsl.formatting2,
  org.contextmapper.dsl.generator,
  org.contextmapper.dsl.generator.exception,
+ org.contextmapper.dsl.generator.mdsl,
+ org.contextmapper.dsl.generator.mdsl.model,
  org.contextmapper.dsl.generator.plantuml,
  org.contextmapper.dsl.generator.servicecutter.input.converter,
  org.contextmapper.dsl.generator.servicecutter.input.model,
