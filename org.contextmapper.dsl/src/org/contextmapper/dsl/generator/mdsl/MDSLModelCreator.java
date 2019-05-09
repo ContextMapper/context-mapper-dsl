@@ -181,8 +181,12 @@ public class MDSLModelCreator {
 				context.setUpstreamContext(relationship.getUpstream());
 				upstreamContextMap.put(upstreamAPIName, context);
 			}
-			context.getExposedAggregates().addAll(relationship.getUpstreamExposedAggregates());
-			context.getDownstreamContexts().add(relationship.getDownstream());
+			for (Aggregate exposedAggregate : relationship.getUpstreamExposedAggregates()) {
+				if (!context.getExposedAggregates().stream().map(agg -> agg.getName()).collect(Collectors.toList()).contains(exposedAggregate.getName()))
+					context.getExposedAggregates().add(exposedAggregate);
+			}
+			if (!context.getDownstreamContexts().stream().map(bc -> bc.getName()).collect(Collectors.toList()).contains(relationship.getDownstream().getName()))
+				context.getDownstreamContexts().add(relationship.getDownstream());
 			context.addDownstreamConsumations(relationship.getDownstream().getName(), relationship.getUpstreamExposedAggregates());
 			if (relationship.getImplementationTechnology() != null && !"".equals(relationship.getImplementationTechnology()))
 				context.getImplementationTechnologies().add(relationship.getImplementationTechnology());
@@ -267,7 +271,10 @@ public class MDSLModelCreator {
 			if (!this.consumedAggregatesByDownstreamContext.containsKey(downstreamName)) {
 				this.consumedAggregatesByDownstreamContext.put(downstreamName, Lists.newArrayList());
 			}
-			this.consumedAggregatesByDownstreamContext.get(downstreamName).addAll(consumedAggregates);
+			for (Aggregate aggregate : consumedAggregates) {
+				if (!this.consumedAggregatesByDownstreamContext.get(downstreamName).stream().map(agg -> agg.getName()).collect(Collectors.toList()).contains(aggregate.getName()))
+					this.consumedAggregatesByDownstreamContext.get(downstreamName).add(aggregate);
+			}
 		}
 
 		public Map<String, List<Aggregate>> getConsumedAggregatesByDownstreamContext() {
