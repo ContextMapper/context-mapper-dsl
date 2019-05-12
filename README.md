@@ -9,9 +9,13 @@ Checkout our website [https://contextmapper.github.io/](https://contextmapper.gi
 The Context Mapper project has been developed in a term project at [HSR](https://www.hsr.ch) and you can find the project report with further background information and the projects foundations [here](https://eprints.hsr.ch/722/).
 
 ## Features
-* ContextMapper DSL language support (CML files; find examples [here](https://github.com/ContextMapper/context-mapper-examples))
+* ContextMapper DSL language support (CML files)
     * Write context maps with bounded contexts and their relationships (Strategic DDD)
     * Specify bounded contexts (Tactic DDD): Tactic DSL based on [Sculptor](https://github.com/sculptor/sculptor)
+    * Find examples in our [examples repository](https://github.com/ContextMapper/context-mapper-examples)
+    * Consult our [online documentation](https://contextmapper.github.io/docs/) to get detailed language documentation, manuals and how to get started.
+* Use our [Architectural Refactorings (ARs)](https://contextmapper.github.io/docs/architectural-refactorings/) to evolve and improve your DDD context maps iteratively.
+* Generate [MDSL](https://socadk.github.io/MDSL/) (micro-) service contracts out of DDD context maps
 * Generate [PlantUML](http://plantuml.com/) component diagram from context map
 * Generate [PlantUML](http://plantuml.com/) class diagram from bounded context (tactic DDD)
 * Generate [ServiceCutter](https://github.com/ServiceCutter/ServiceCutter) input files for service decomposition proposals
@@ -30,11 +34,10 @@ To use the ContextMapper DSL you need the following tools:
     * Alternatively you can use the [plantUML online server](http://www.plantuml.com/plantuml/uml).
 
 ## Getting Started
-Install the Eclipe plugin for creating context maps with ContextMapper DSL by using the following update site: [https://dl.bintray.com/contextmapper/context-mapping-dsl/updates/](https://dl.bintray.com/contextmapper/context-mapping-dsl/updates/)
-
-Examples which introduce the language (CML) capabilities can be found here: [https://github.com/ContextMapper/context-mapper-examples](https://github.com/ContextMapper/context-mapper-examples)
-
-Further instructions, user guides and documentation can be found on our website [https://contextmapper.github.io/](https://contextmapper.github.io/).
+ 1. Install the Eclipse plugin for creating context maps with ContextMapper DSL by using the following update site: [https://dl.bintray.com/contextmapper/context-mapping-dsl/updates/](https://dl.bintray.com/contextmapper/context-mapping-dsl/updates/)
+ 2. Find a detailed manual how to create your first CML project [here](https://contextmapper.github.io/docs/getting-started-create-project/).
+ 3. Examples which introduce the language (CML) capabilities can be found here: [https://github.com/ContextMapper/context-mapper-examples](https://github.com/ContextMapper/context-mapper-examples)
+ 4. Further instructions, user guides and documentation can be found on our website [https://contextmapper.github.io/](https://contextmapper.github.io/).
 
 ## Development
 If you want to contribute and setup the IDE on your local system follow the following instructions. [Here](./wiki/Development) you get the instructions in more details.
