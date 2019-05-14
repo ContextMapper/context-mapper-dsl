@@ -25,12 +25,15 @@ import org.contextmapper.dsl.validation.ValidationMessages;
 import org.contextmapper.tactic.dsl.tacticdsl.Attribute;
 import org.contextmapper.tactic.dsl.tacticdsl.CollectionType;
 import org.contextmapper.tactic.dsl.tacticdsl.CommandEvent;
+import org.contextmapper.tactic.dsl.tacticdsl.ComplexType;
 import org.contextmapper.tactic.dsl.tacticdsl.DomainEvent;
 import org.contextmapper.tactic.dsl.tacticdsl.DomainObject;
+import org.contextmapper.tactic.dsl.tacticdsl.DomainObjectOperation;
 import org.contextmapper.tactic.dsl.tacticdsl.Entity;
 import org.contextmapper.tactic.dsl.tacticdsl.Enum;
 import org.contextmapper.tactic.dsl.tacticdsl.EnumValue;
 import org.contextmapper.tactic.dsl.tacticdsl.Event;
+import org.contextmapper.tactic.dsl.tacticdsl.Parameter;
 import org.contextmapper.tactic.dsl.tacticdsl.Reference;
 import org.contextmapper.tactic.dsl.tacticdsl.SimpleDomainObject;
 import org.contextmapper.tactic.dsl.tacticdsl.ValueObject;
@@ -168,6 +171,7 @@ public class PlantUMLClassDiagramCreator extends AbstractPlantUMLDiagramCreator<
 		linebreak();
 		printAttributes(object.getAttributes(), indentation + 1);
 		printReferenceAttributes(object.getReferences(), indentation + 1);
+		printOperations(object.getOperations(), indentation + 1);
 		printIndentation(indentation);
 		sb.append("}");
 		linebreak();
@@ -184,22 +188,59 @@ public class PlantUMLClassDiagramCreator extends AbstractPlantUMLDiagramCreator<
 	private void printAttributes(List<Attribute> attributes, int indentation) {
 		for (Attribute attribute : attributes) {
 			printIndentation(indentation);
-			if (attribute.getCollectionType() != CollectionType.NONE)
-				sb.append(attribute.getCollectionType()).append("<").append(attribute.getType()).append(">");
-			else
-				sb.append(attribute.getType());
+			sb.append(getAttributeTypeAsString(attribute));
 			sb.append(" ").append(attribute.getName());
 			linebreak();
 		}
 	}
 
+	private void printOperations(List<DomainObjectOperation> operations, int indentation) {
+		for (DomainObjectOperation operation : operations) {
+			printIndentation(indentation);
+			ComplexType returnType = operation.getReturnType();
+			String returnTypeAsString = getComplexTypeAsString(returnType);
+			sb.append(returnTypeAsString).append(" ").append(operation.getName()).append("(");
+			List<String> parameters = Lists.newArrayList();
+			for (Parameter parameter : operation.getParameters()) {
+				String parameterType = getComplexTypeAsString(parameter.getParameterType());
+				parameters.add(parameterType + " " + parameter.getName());
+			}
+			if (!parameters.isEmpty())
+				sb.append(String.join(", ", parameters));
+			sb.append(")");
+			linebreak();
+		}
+	}
+
+	private String getComplexTypeAsString(ComplexType type) {
+		String genericType = "Object";
+		if (type.getDomainObjectType() != null) {
+			genericType = type.getDomainObjectType().getName();
+		} else {
+			genericType = type.getType();
+		}
+		if (type.getCollectionType() != CollectionType.NONE) {
+			return type.getCollectionType().getName() + "<" + genericType + ">";
+		}
+		return genericType;
+	}
+
+	private String getReferenceTypeAsString(Reference reference) {
+		if (reference.getCollectionType() != CollectionType.NONE)
+			return reference.getCollectionType().getName() + "<" + reference.getDomainObjectType().getName() + ">";
+		return reference.getDomainObjectType().getName();
+	}
+
+	private String getAttributeTypeAsString(Attribute attribute) {
+		if (attribute.getCollectionType() != CollectionType.NONE)
+			return attribute.getCollectionType() + "<" + attribute.getType() + ">";
+		return attribute.getType();
+	}
+
 	private void printReferenceAttributes(List<Reference> references, int indentation) {
 		for (Reference reference : references) {
 			printIndentation(indentation);
-			if (reference.getCollectionType() != CollectionType.NONE)
-				sb.append(reference.getCollectionType()).append("<").append(reference.getDomainObjectType().getName()).append(">");
-			else
-				sb.append(reference.getDomainObjectType().getName());
+			sb.append(getReferenceTypeAsString(reference));
 			sb.append(" ").append(reference.getName());
 			linebreak();
 		}
