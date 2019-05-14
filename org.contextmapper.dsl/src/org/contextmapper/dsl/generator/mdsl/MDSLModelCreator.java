@@ -45,7 +45,7 @@ public class MDSLModelCreator {
 
 	private ContextMap contextMap;
 	private Map<String, DataType> dataTypeMapping;
-	private int initialPort = 80;
+	private int initialPort = 8000;
 
 	public MDSLModelCreator(ContextMap contextMap) {
 		this.contextMap = contextMap;
@@ -147,7 +147,7 @@ public class MDSLModelCreator {
 		for (EndpointContract contract : endpointContracts) {
 			EndpointOffer offer = new EndpointOffer();
 			offer.setOfferedEndpoint(contract);
-			offer.setLocation("http://localhost:" + (initialPort++) + "80");
+			offer.setLocation("http://localhost:" + (initialPort++));
 			offer.setProtocol(implementationTechnology);
 			provider.addEndpointOffer(offer);
 		}

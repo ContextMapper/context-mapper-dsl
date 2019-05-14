@@ -9,7 +9,7 @@ data type ${dataType.name} P
 </#list>
 
 <#list serviceSpecification.endpoints as endpoint>
-endpoint contract type ${endpoint.name}
+endpoint type ${endpoint.name}
 	<#if endpoint.operations?has_content>
 	exposes
 	</#if>
@@ -30,7 +30,7 @@ endpoint contract type ${endpoint.name}
 API provider ${provider.name}
 	<#list provider.endpointOffers as offer>
 	offers ${offer.offeredEndpoint.name}
-	at endpoint instance location "${offer.location}"
+	at endpoint location "${offer.location}"
 		via protocol "${offer.protocol}"
 	</#list>
 </#list>
