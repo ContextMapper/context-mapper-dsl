@@ -424,6 +424,24 @@ class PlantUMLClassDiagramCreatorTest extends AbstractCMLInputFileTest {
 				+ System.lineSeparator() + "		void anotherMethod(Set<Address> addresses)" + System.lineSeparator() + "	}" + System.lineSeparator()));
 	}
 
+	@Test
+	public void canCreateService() throws IOException {
+		// given
+		String inputModelName = "services-test.cml";
+		Resource input = getResourceCopyOfTestCML(inputModelName);
+		List<ContextMappingModel> models = IteratorExtensions.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(input.getAllContents(), ContextMappingModel.class));
+		BoundedContext bc = models.get(0).getBoundedContexts().get(0);
+
+		// when
+		String plantUML = this.creator.createDiagram(bc);
+
+		// then
+		assertTrue(plantUML.contains("	class MyService <<Service>> {" + System.lineSeparator() + "		ReturnType serviceMethod(Address address)" + System.lineSeparator()
+				+ "	}" + System.lineSeparator()));
+		assertTrue(plantUML.contains("	class MyModuleService <<Service>> {" + System.lineSeparator() + "		void myModuleServiceMethod()" + System.lineSeparator()
+		+ "	}" + System.lineSeparator()));
+	}
+
 	@Override
 	protected String getTestFileDirectory() {
 		return "/integ-test-files/plantuml/";

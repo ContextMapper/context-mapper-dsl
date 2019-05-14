@@ -1,0 +1,22 @@
+BoundedContext CustomerManagementContext {
+	
+	Module MyMod {
+		Service MyModuleService {
+			void myModuleServiceMethod();
+		}	
+	}
+	
+	Aggregate Customers {
+		Entity Customer {
+			aggregateRoot
+			
+			def ReturnType updateAddress(Address address);
+		}
+		
+		Service MyService {
+			ReturnType serviceMethod(Address address);
+		}
+	}
+	
+}
+
