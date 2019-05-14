@@ -25,13 +25,18 @@ import org.contextmapper.dsl.validation.ValidationMessages;
 import org.contextmapper.tactic.dsl.tacticdsl.Attribute;
 import org.contextmapper.tactic.dsl.tacticdsl.CollectionType;
 import org.contextmapper.tactic.dsl.tacticdsl.CommandEvent;
+import org.contextmapper.tactic.dsl.tacticdsl.ComplexType;
 import org.contextmapper.tactic.dsl.tacticdsl.DomainEvent;
 import org.contextmapper.tactic.dsl.tacticdsl.DomainObject;
+import org.contextmapper.tactic.dsl.tacticdsl.DomainObjectOperation;
 import org.contextmapper.tactic.dsl.tacticdsl.Entity;
 import org.contextmapper.tactic.dsl.tacticdsl.Enum;
 import org.contextmapper.tactic.dsl.tacticdsl.EnumValue;
 import org.contextmapper.tactic.dsl.tacticdsl.Event;
+import org.contextmapper.tactic.dsl.tacticdsl.Parameter;
 import org.contextmapper.tactic.dsl.tacticdsl.Reference;
+import org.contextmapper.tactic.dsl.tacticdsl.Service;
+import org.contextmapper.tactic.dsl.tacticdsl.ServiceOperation;
 import org.contextmapper.tactic.dsl.tacticdsl.SimpleDomainObject;
 import org.contextmapper.tactic.dsl.tacticdsl.ValueObject;
 import org.eclipse.xtext.EcoreUtil2;
@@ -101,6 +106,9 @@ public class PlantUMLClassDiagramCreator extends AbstractPlantUMLDiagramCreator<
 		for (SimpleDomainObject simpleDomainObject : module.getDomainObjects()) {
 			printDomainObject(simpleDomainObject, 1);
 		}
+		for (Service service : module.getServices()) {
+			printService(service, 1);
+		}
 		sb.append("}");
 		linebreak();
 	}
@@ -111,6 +119,9 @@ public class PlantUMLClassDiagramCreator extends AbstractPlantUMLDiagramCreator<
 		linebreak();
 		for (SimpleDomainObject domainObject : aggregate.getDomainObjects()) {
 			printDomainObject(domainObject, indentation + 1);
+		}
+		for (Service service : aggregate.getServices()) {
+			printService(service, indentation + 1);
 		}
 		printIndentation(indentation);
 		sb.append("}");
@@ -168,38 +179,102 @@ public class PlantUMLClassDiagramCreator extends AbstractPlantUMLDiagramCreator<
 		linebreak();
 		printAttributes(object.getAttributes(), indentation + 1);
 		printReferenceAttributes(object.getReferences(), indentation + 1);
+		printDomainObjectOperations(object.getName(), object.getOperations(), indentation + 1);
 		printIndentation(indentation);
 		sb.append("}");
 		linebreak();
 		addReferences2List(object, object.getReferences());
 	}
 
+	private void printService(Service service, int indentation) {
+		printIndentation(indentation);
+		sb.append("class").append(" ").append(service.getName());
+		sb.append(" <<Service>> ");
+		sb.append("{");
+		linebreak();
+		printServiceOperations(service.getName(), service.getOperations(), indentation + 1);
+		printIndentation(indentation);
+		sb.append("}");
+		linebreak();
+	}
+
 	private void addReferences2List(SimpleDomainObject sourceDomainObject, List<Reference> references) {
 		for (Reference reference : references) {
-			if (this.boundedContextsDomainObjects.contains(reference.getDomainObjectType()))
-				this.relationships.add(new UMLRelationship(sourceDomainObject.getName(), reference.getDomainObjectType().getName()));
+			addDomainObjectReference2List(sourceDomainObject.getName(), reference.getDomainObjectType());
 		}
+	}
+
+	private void addDomainObjectReference2List(String sourceDomainObject, SimpleDomainObject targetDomainObject) {
+		if (this.boundedContextsDomainObjects.contains(targetDomainObject))
+			this.relationships.add(new UMLRelationship(sourceDomainObject, targetDomainObject.getName()));
 	}
 
 	private void printAttributes(List<Attribute> attributes, int indentation) {
 		for (Attribute attribute : attributes) {
 			printIndentation(indentation);
-			if (attribute.getCollectionType() != CollectionType.NONE)
-				sb.append(attribute.getCollectionType()).append("<").append(attribute.getType()).append(">");
-			else
-				sb.append(attribute.getType());
+			sb.append(getAttributeTypeAsString(attribute));
 			sb.append(" ").append(attribute.getName());
 			linebreak();
 		}
 	}
 
+	private void printDomainObjectOperations(String objectName, List<DomainObjectOperation> operations, int indentation) {
+		for (DomainObjectOperation operation : operations) {
+			printOperation(objectName, operation.getName(), operation.getReturnType(), operation.getParameters(), indentation);
+		}
+	}
+
+	private void printServiceOperations(String objectName, List<ServiceOperation> operations, int indentation) {
+		for (ServiceOperation operation : operations) {
+			printOperation(objectName, operation.getName(), operation.getReturnType(), operation.getParameters(), indentation);
+		}
+	}
+
+	private void printOperation(String objectName, String operationName, ComplexType returnType, List<Parameter> parameters, int indentation) {
+		printIndentation(indentation);
+		String returnTypeAsString = getComplexTypeAsString(returnType, objectName);
+		sb.append(returnTypeAsString).append(" ").append(operationName).append("(");
+		List<String> parameterStrings = Lists.newArrayList();
+		for (Parameter parameter : parameters) {
+			String parameterType = getComplexTypeAsString(parameter.getParameterType(), objectName);
+			parameterStrings.add(parameterType + " " + parameter.getName());
+		}
+		if (!parameterStrings.isEmpty())
+			sb.append(String.join(", ", parameterStrings));
+		sb.append(")");
+		linebreak();
+	}
+
+	private String getComplexTypeAsString(ComplexType type, String containingObjectName4References) {
+		String genericType = "Object";
+		if (type.getDomainObjectType() != null) {
+			genericType = type.getDomainObjectType().getName();
+			addDomainObjectReference2List(containingObjectName4References, type.getDomainObjectType());
+		} else {
+			genericType = type.getType();
+		}
+		if (type.getCollectionType() != CollectionType.NONE) {
+			return type.getCollectionType().getName() + "<" + genericType + ">";
+		}
+		return genericType;
+	}
+
+	private String getReferenceTypeAsString(Reference reference) {
+		if (reference.getCollectionType() != CollectionType.NONE)
+			return reference.getCollectionType().getName() + "<" + reference.getDomainObjectType().getName() + ">";
+		return reference.getDomainObjectType().getName();
+	}
+
+	private String getAttributeTypeAsString(Attribute attribute) {
+		if (attribute.getCollectionType() != CollectionType.NONE)
+			return attribute.getCollectionType() + "<" + attribute.getType() + ">";
+		return attribute.getType();
+	}
+
 	private void printReferenceAttributes(List<Reference> references, int indentation) {
 		for (Reference reference : references) {
 			printIndentation(indentation);
-			if (reference.getCollectionType() != CollectionType.NONE)
-				sb.append(reference.getCollectionType()).append("<").append(reference.getDomainObjectType().getName()).append(">");
-			else
-				sb.append(reference.getDomainObjectType().getName());
+			sb.append(getReferenceTypeAsString(reference));
 			sb.append(" ").append(reference.getName());
 			linebreak();
 		}

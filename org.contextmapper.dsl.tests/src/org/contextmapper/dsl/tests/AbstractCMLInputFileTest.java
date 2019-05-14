@@ -38,7 +38,7 @@ public abstract class AbstractCMLInputFileTest {
 	protected File testDir;
 
 	@BeforeEach
-	void prepare() {
+	public void prepare() {
 		String dirName = UUID.randomUUID().toString();
 		this.testDir = new File(new File(System.getProperty("java.io.tmpdir")), dirName);
 		this.testDir.mkdir();

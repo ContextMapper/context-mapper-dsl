@@ -1,0 +1,15 @@
+BoundedContext CustomerManagementContext {
+	
+	Aggregate Customers {
+		Entity Customer {
+			aggregateRoot
+			
+			def List<ReturnType> updateAddress(@Address address);
+			def void anotherMethod(Set<@Address> addresses);
+		}
+		
+		Entity Address {
+			String name
+		}
+	}
+}

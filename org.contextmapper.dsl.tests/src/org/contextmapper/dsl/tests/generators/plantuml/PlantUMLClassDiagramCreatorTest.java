@@ -17,31 +17,45 @@ package org.contextmapper.dsl.tests.generators.plantuml;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.IOException;
+import java.util.List;
+
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
+import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.Module;
 import org.contextmapper.dsl.contextMappingDSL.Subdomain;
 import org.contextmapper.dsl.generator.plantuml.PlantUMLClassDiagramCreator;
+import org.contextmapper.dsl.tests.AbstractCMLInputFileTest;
 import org.contextmapper.dsl.validation.ValidationMessages;
 import org.contextmapper.tactic.dsl.tacticdsl.Attribute;
+import org.contextmapper.tactic.dsl.tacticdsl.CollectionType;
 import org.contextmapper.tactic.dsl.tacticdsl.CommandEvent;
+import org.contextmapper.tactic.dsl.tacticdsl.ComplexType;
 import org.contextmapper.tactic.dsl.tacticdsl.DomainEvent;
+import org.contextmapper.tactic.dsl.tacticdsl.DomainObjectOperation;
 import org.contextmapper.tactic.dsl.tacticdsl.Entity;
 import org.contextmapper.tactic.dsl.tacticdsl.Enum;
 import org.contextmapper.tactic.dsl.tacticdsl.EnumValue;
+import org.contextmapper.tactic.dsl.tacticdsl.Parameter;
 import org.contextmapper.tactic.dsl.tacticdsl.Reference;
 import org.contextmapper.tactic.dsl.tacticdsl.TacticdslFactory;
 import org.contextmapper.tactic.dsl.tacticdsl.ValueObject;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.xtext.xbase.lib.IteratorExtensions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class PlantUMLClassDiagramCreatorTest {
+import com.google.common.collect.Iterators;
+
+class PlantUMLClassDiagramCreatorTest extends AbstractCMLInputFileTest {
 
 	private PlantUMLClassDiagramCreator creator;
 
 	@BeforeEach
 	public void prepare() {
+		super.prepare();
 		this.creator = new PlantUMLClassDiagramCreator();
 	}
 
@@ -130,13 +144,19 @@ class PlantUMLClassDiagramCreatorTest {
 		attribute.setType("int");
 		attribute.setName("amount");
 		entity.getAttributes().add(attribute);
+		Attribute listAttribute = TacticdslFactory.eINSTANCE.createAttribute();
+		listAttribute.setCollectionType(CollectionType.LIST);
+		listAttribute.setName("myList");
+		listAttribute.setType("String");
+		entity.getAttributes().add(listAttribute);
 		aggregate.getDomainObjects().add(entity);
 
 		// when
 		String plantUML = this.creator.createDiagram(boundedContext);
 
 		// then
-		assertTrue(plantUML.contains("	class Test <<Entity>> {" + System.lineSeparator() + "		int amount" + System.lineSeparator() + "	}" + System.lineSeparator()));
+		assertTrue(plantUML.contains("	class Test <<Entity>> {" + System.lineSeparator() + "		int amount" + System.lineSeparator() + "		List<String> myList"
+				+ System.lineSeparator() + "	}" + System.lineSeparator()));
 	}
 
 	@Test
@@ -248,21 +268,30 @@ class PlantUMLClassDiagramCreatorTest {
 		entity1.setName("Customer");
 		Entity entity2 = TacticdslFactory.eINSTANCE.createEntity();
 		entity2.setName("Address");
+		Entity entity3 = TacticdslFactory.eINSTANCE.createEntity();
+		entity3.setName("AnotherObject");
 		Reference reference = TacticdslFactory.eINSTANCE.createReference();
 		reference.setDomainObjectType(entity2);
 		reference.setName("entity2Ref");
+		Reference listReference = TacticdslFactory.eINSTANCE.createReference();
+		listReference.setCollectionType(CollectionType.LIST);
+		listReference.setName("myListReference");
+		listReference.setDomainObjectType(entity3);
 		entity1.getReferences().add(reference);
+		entity1.getReferences().add(listReference);
 		aggregate.getDomainObjects().add(entity1);
 		aggregate.getDomainObjects().add(entity2);
+		aggregate.getDomainObjects().add(entity3);
 
 		// when
 		String plantUML = this.creator.createDiagram(boundedContext);
 
 		// then
 		assertTrue(plantUML.contains("	class Address <<Entity>> {" + System.lineSeparator() + "	}" + System.lineSeparator()));
-		assertTrue(plantUML
-				.contains("	class Customer <<Entity>> {" + System.lineSeparator() + "		Address entity2Ref" + System.lineSeparator() + "	}" + System.lineSeparator()));
+		assertTrue(plantUML.contains("	class Customer <<Entity>> {" + System.lineSeparator() + "		Address entity2Ref" + System.lineSeparator()
+				+ "		List<AnotherObject> myListReference" + System.lineSeparator() + "	}" + System.lineSeparator()));
 		assertTrue(plantUML.contains("Customer --> Address" + System.lineSeparator()));
+		assertTrue(plantUML.contains("Customer --> AnotherObject" + System.lineSeparator()));
 	}
 
 	@Test
@@ -325,10 +354,97 @@ class PlantUMLClassDiagramCreatorTest {
 
 		// then
 		assertTrue(plantUML.contains("legend left"));
-		assertTrue(plantUML.contains("  This bounded context implements the subdomain '" + subdomain.getName() + "', which contains the following entities:" + System.lineSeparator()));
+		assertTrue(plantUML
+				.contains("  This bounded context implements the subdomain '" + subdomain.getName() + "', which contains the following entities:" + System.lineSeparator()));
 		assertTrue(plantUML.contains("   - TestEntity1"));
 		assertTrue(plantUML.contains("   - TestEntity2"));
 		assertTrue(plantUML.contains("endlegend"));
+	}
+
+	@Test
+	public void canCreateMethodForDomainObjectOperations() {
+		// given
+		BoundedContext boundedContext = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
+		Aggregate aggregate = ContextMappingDSLFactory.eINSTANCE.createAggregate();
+		aggregate.setName("testAggregate");
+		boundedContext.getAggregates().add(aggregate);
+		Entity entity = TacticdslFactory.eINSTANCE.createEntity();
+		entity.setName("Test");
+		DomainObjectOperation operation = TacticdslFactory.eINSTANCE.createDomainObjectOperation();
+		operation.setName("doSomething");
+		ComplexType returnType = TacticdslFactory.eINSTANCE.createComplexType();
+		returnType.setType("ReturnType");
+		operation.setReturnType(returnType);
+		ComplexType parameterTypeString = TacticdslFactory.eINSTANCE.createComplexType();
+		parameterTypeString.setType("String");
+		Parameter parameter = TacticdslFactory.eINSTANCE.createParameter();
+		parameter.setName("someParameter");
+		parameter.setParameterType(parameterTypeString);
+		operation.getParameters().add(parameter);
+		entity.getOperations().add(operation);
+		aggregate.getDomainObjects().add(entity);
+
+		// when
+		String plantUML = this.creator.createDiagram(boundedContext);
+
+		// then
+		assertTrue(plantUML.contains("	class Test <<Entity>> {" + System.lineSeparator() + "		ReturnType doSomething(String someParameter)" + System.lineSeparator() + "	}"
+				+ System.lineSeparator()));
+	}
+
+	@Test
+	public void canCreateMethodForDomainObjectOperationsWithDomainObjectType() throws IOException {
+		// given
+		String inputModelName = "operations-domain-object-types-test.cml";
+		Resource input = getResourceCopyOfTestCML(inputModelName);
+		List<ContextMappingModel> models = IteratorExtensions.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(input.getAllContents(), ContextMappingModel.class));
+		BoundedContext bc = models.get(0).getBoundedContexts().get(0);
+
+		// when
+		String plantUML = this.creator.createDiagram(bc);
+
+		// then
+		assertTrue(plantUML.contains("	class Customer <<Aggregate Root>> {" + System.lineSeparator() + "		ReturnType updateAddress(Address address)" + System.lineSeparator()
+				+ "	}" + System.lineSeparator()));
+	}
+
+	@Test
+	public void canCreateMethodForOperationsWithCollectionTypes() throws IOException {
+		// given
+		String inputModelName = "operations-with-list-types-test.cml";
+		Resource input = getResourceCopyOfTestCML(inputModelName);
+		List<ContextMappingModel> models = IteratorExtensions.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(input.getAllContents(), ContextMappingModel.class));
+		BoundedContext bc = models.get(0).getBoundedContexts().get(0);
+
+		// when
+		String plantUML = this.creator.createDiagram(bc);
+
+		// then
+		assertTrue(plantUML.contains("	class Customer <<Aggregate Root>> {" + System.lineSeparator() + "		List<ReturnType> updateAddress(Address address)"
+				+ System.lineSeparator() + "		void anotherMethod(Set<Address> addresses)" + System.lineSeparator() + "	}" + System.lineSeparator()));
+	}
+
+	@Test
+	public void canCreateService() throws IOException {
+		// given
+		String inputModelName = "services-test.cml";
+		Resource input = getResourceCopyOfTestCML(inputModelName);
+		List<ContextMappingModel> models = IteratorExtensions.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(input.getAllContents(), ContextMappingModel.class));
+		BoundedContext bc = models.get(0).getBoundedContexts().get(0);
+
+		// when
+		String plantUML = this.creator.createDiagram(bc);
+
+		// then
+		assertTrue(plantUML.contains("	class MyService <<Service>> {" + System.lineSeparator() + "		ReturnType serviceMethod(Address address)" + System.lineSeparator()
+				+ "	}" + System.lineSeparator()));
+		assertTrue(plantUML.contains("	class MyModuleService <<Service>> {" + System.lineSeparator() + "		void myModuleServiceMethod()" + System.lineSeparator()
+		+ "	}" + System.lineSeparator()));
+	}
+
+	@Override
+	protected String getTestFileDirectory() {
+		return "/integ-test-files/plantuml/";
 	}
 
 }

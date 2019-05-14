@@ -1,0 +1,15 @@
+BoundedContext CustomerManagementContext {
+	
+	Aggregate Customers {
+		Entity Customer {
+			aggregateRoot
+			
+			def ReturnType updateAddress(@Address address);
+		}
+		
+		Entity Address {
+			String name
+		}
+	}
+}
+
