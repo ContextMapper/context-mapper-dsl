@@ -1,21 +1,16 @@
 API description CustomerManagementContextAPI
 
-data type Address P
-data type Parameter1Type P
-data type Parameter2Type P
+data type BankAccount P
+data type Customer { "firstName":V<string>, "lastName":V<string>, "account":BankAccount, "address":{ "street":V<string>, "houseNumber":V<int> } }
 data type ReturnType P
-data type anotherMethodParameter { "param1":Parameter1Type, "param2":Parameter2Type }
 
 endpoint type Customers
 	exposes
-		operation updateAddress
+		operation updateCustomer
 			expecting
-				payload Address
+				payload Customer
 			delivering
 				payload ReturnType
-		operation anotherMethod
-			expecting
-				payload anotherMethodParameter
 
 API provider CustomerManagementContext
 	offers Customers

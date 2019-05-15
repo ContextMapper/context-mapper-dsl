@@ -4,7 +4,7 @@ data type Address P
 data type Parameter1Type P
 data type Parameter2Type P
 data type ReturnType P
-data type anotherMethodParameter { "param1":Parameter1Type, "param2":Parameter2Type }
+data type anotherMethodParameter { "param1":Parameter1Type, "param2":Parameter2Type* }
 
 endpoint type Customers
 	exposes

@@ -38,8 +38,47 @@ public class MDSLAPIDescriptionCreatorTest extends AbstractCMLInputFileTest {
 
 	@Test
 	void canGenerateMDSLText() throws IOException {
+		testCMLInputAndMDSLOutputFiles("basic-mdsl-model-test");
+	}
+
+	@Test
+	void canGenerateParameterTree() throws IOException {
+		testCMLInputAndMDSLOutputFiles("mdsl-parameter-tree-test");
+	}
+
+	@Test
+	void canGenerateParameterTreeDeep() throws IOException {
+		testCMLInputAndMDSLOutputFiles("mdsl-parameter-tree-test-deep");
+	}
+
+	@Test
+	void canHandleMixedParameterList() throws IOException {
+		testCMLInputAndMDSLOutputFiles("mdsl-mixed-parameters-test");
+	}
+
+	@Test
+	void canHandleListsInParameters() throws IOException {
+		testCMLInputAndMDSLOutputFiles("mdsl-list-in-parameter");
+	}
+	
+	@Test
+	void canHandleListsInParameterTrees() throws IOException {
+		testCMLInputAndMDSLOutputFiles("mdsl-parameter-tree-with-list-test");
+	}
+	
+	@Test
+	void canHandleListInReturnType() throws IOException {
+		testCMLInputAndMDSLOutputFiles("mdsl-list-in-return-type");
+	}
+	
+	@Test
+	void canHandleListParameter() throws IOException {
+		testCMLInputAndMDSLOutputFiles("mdsl-list-parameter-test");
+	}
+
+	private void testCMLInputAndMDSLOutputFiles(String baseFilename) throws IOException {
 		// given
-		String inputModelName = "basic-mdsl-model-test.cml";
+		String inputModelName = baseFilename + ".cml";
 		Resource input = getResourceCopyOfTestCML(inputModelName);
 		List<ContextMappingModel> models = IteratorExtensions.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(input.getAllContents(), ContextMappingModel.class));
 		MDSLModelCreator mdslCreator = new MDSLModelCreator(models.get(0).getMap());
@@ -50,7 +89,7 @@ public class MDSLAPIDescriptionCreatorTest extends AbstractCMLInputFileTest {
 		String dslText = dslTextCreator.createAPIDescriptionText(serviceSpecifications.get(0));
 
 		// then
-		File expectedResultFile = new File(Paths.get("").toAbsolutePath().toString(), "/integ-test-files/mdsl/basic-mdsl-model-test.mdsl");
+		File expectedResultFile = new File(Paths.get("").toAbsolutePath().toString(), "/integ-test-files/mdsl/" + baseFilename + ".mdsl");
 		String expectedResult = FileUtils.readFileToString(expectedResultFile);
 		assertEquals(expectedResult, dslText);
 	}

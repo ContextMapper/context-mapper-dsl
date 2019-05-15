@@ -90,7 +90,7 @@ public class MDSLModelCreatorTest extends AbstractCMLInputFileTest {
 		assertEquals(1, provider.getEndpointOffers().size());
 		EndpointOffer contractOffered = provider.getEndpointOffers().get(0);
 		assertEquals("Customers", contractOffered.getOfferedEndpoint().getName());
-		assertEquals("http://localhost:8080", contractOffered.getLocation());
+		assertEquals("http://localhost:8000", contractOffered.getLocation());
 		assertEquals("RESTful HTTP", contractOffered.getProtocol());
 
 		assertEquals(1, spec.getClients().size());

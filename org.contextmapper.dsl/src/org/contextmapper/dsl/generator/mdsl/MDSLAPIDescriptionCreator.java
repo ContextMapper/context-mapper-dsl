@@ -50,7 +50,7 @@ public class MDSLAPIDescriptionCreator {
 			freemarkerConfig.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
 			freemarkerTemplate = freemarkerConfig.getTemplate(TEMPLATE_NAME);
 		} catch (Exception e) {
-			throw new RuntimeException("Cannot load freemarker template!");
+			throw new RuntimeException("Cannot load freemarker template!", e);
 		}
 	}
 
