@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.contextmapper.dsl</groupId>
 		<artifactId>org.contextmapper.dsl.parent</artifactId>
-		<version>3.4.0</version>
+		<version>3.4.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>org.contextmapper.dsl.target</artifactId>
 	<packaging>eclipse-target-definition</packaging>
