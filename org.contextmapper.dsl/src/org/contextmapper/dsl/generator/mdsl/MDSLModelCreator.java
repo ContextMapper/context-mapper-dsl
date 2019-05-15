@@ -27,16 +27,21 @@ import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
 import org.contextmapper.dsl.generator.exception.GeneratorInputException;
 import org.contextmapper.dsl.generator.mdsl.model.DataType;
+import org.contextmapper.dsl.generator.mdsl.model.DataTypeAttribute;
 import org.contextmapper.dsl.generator.mdsl.model.EndpointClient;
 import org.contextmapper.dsl.generator.mdsl.model.EndpointContract;
 import org.contextmapper.dsl.generator.mdsl.model.EndpointOffer;
 import org.contextmapper.dsl.generator.mdsl.model.EndpointOperation;
 import org.contextmapper.dsl.generator.mdsl.model.EndpointProvider;
 import org.contextmapper.dsl.generator.mdsl.model.ServiceSpecification;
+import org.contextmapper.tactic.dsl.tacticdsl.Attribute;
+import org.contextmapper.tactic.dsl.tacticdsl.CollectionType;
 import org.contextmapper.tactic.dsl.tacticdsl.ComplexType;
 import org.contextmapper.tactic.dsl.tacticdsl.DomainObject;
 import org.contextmapper.tactic.dsl.tacticdsl.DomainObjectOperation;
 import org.contextmapper.tactic.dsl.tacticdsl.Parameter;
+import org.contextmapper.tactic.dsl.tacticdsl.Reference;
+import org.contextmapper.tactic.dsl.tacticdsl.SimpleDomainObject;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -100,45 +105,120 @@ public class MDSLModelCreator {
 
 		if (domainObjectOperation.getParameters().size() == 1) {
 			Parameter parameter = domainObjectOperation.getParameters().get(0);
-			operation.setExpectingPayload(createOrGetDataType(getSculptorComplexTypeName(parameter.getParameterType())));
+			operation.setExpectingPayload(getDataType4ComplexType(parameter.getParameterType()));
+			operation.setExpectingCollection(parameter.getParameterType().getCollectionType() != CollectionType.NONE);
 		} else if (domainObjectOperation.getParameters().size() > 1) {
-			List<String> allParamTypes = Lists.newArrayList();
-			for (Parameter parameter : domainObjectOperation.getParameters()) {
-				String type = getSculptorComplexTypeName(parameter.getParameterType());
-				allParamTypes.add(type);
-				createOrGetDataType(type);
-			}
-			DataType paramTuple = createOrGetDataType(domainObjectOperation.getName() + "Parameter");
-			paramTuple.setTupleList(allParamTypes);
-			operation.setExpectingPayload(paramTuple);
+			operation.setExpectingPayload(constructDataType4ParameterList(domainObjectOperation.getName(), domainObjectOperation.getParameters()));
 		}
 		if (domainObjectOperation.getReturnType() != null && !"".equals(domainObjectOperation.getReturnType().getType())
 				&& !"void".equals(domainObjectOperation.getReturnType().getType())) {
-			String type = getSculptorComplexTypeName(domainObjectOperation.getReturnType());
-			DataType returnType = createOrGetDataType(type);
-			operation.setDeliveringPayload(returnType);
+			operation.setDeliveringPayload(getDataType4ComplexType(domainObjectOperation.getReturnType()));
+			operation.setDeliveringCollection(domainObjectOperation.getReturnType().getCollectionType() != CollectionType.NONE);
 		}
 		return operation;
 	}
 
-	private DataType createOrGetDataType(String dataTypeName) {
+	private DataType constructDataType4ParameterList(String methodName, List<Parameter> parameters) {
+		String dataTypeName = methodName + "Parameter";
 		if (dataTypeMapping.containsKey(dataTypeName)) {
 			return dataTypeMapping.get(dataTypeName);
 		} else {
 			DataType dataType = new DataType();
 			dataType.setName(dataTypeName);
+			List<DataTypeAttribute> attributes = Lists.newArrayList();
+			for (Parameter parameter : parameters) {
+				ComplexType type = parameter.getParameterType();
+				if (type.getDomainObjectType() != null) {
+					attributes.add(getDataTypeAttribute4DomainObject(parameter.getName(), type.getDomainObjectType(), type.getCollectionType() != CollectionType.NONE));
+				} else {
+					DataTypeAttribute mdslAttribute = new DataTypeAttribute();
+					mdslAttribute.setName(parameter.getName());
+					mdslAttribute.setType(mapAbstractDataType(type.getType()));
+					mdslAttribute.setIsCollection(type.getCollectionType() != CollectionType.NONE);
+					attributes.add(mdslAttribute);
+				}
+			}
+			dataType.addAttributes(attributes);
 			dataTypeMapping.put(dataTypeName, dataType);
 			return dataType;
 		}
 	}
 
-	private String getSculptorComplexTypeName(ComplexType type) {
-		if (type.getType() != null) {
-			return type.getType();
-		} else if (type.getDomainObjectType() != null) {
-			return type.getDomainObjectType().getName();
+	private DataType getDataType4ComplexType(ComplexType type) {
+		String dataTypeName = type.getType();
+		if (type.getDomainObjectType() != null) {
+			dataTypeName = type.getDomainObjectType().getName();
 		}
-		return "Object";
+		if (dataTypeMapping.containsKey(dataTypeName)) {
+			return dataTypeMapping.get(dataTypeName);
+		} else {
+			DataType dataType = new DataType();
+			dataType.setName(dataTypeName);
+			if (type.getDomainObjectType() != null && type.getDomainObjectType() instanceof DomainObject) {
+				DomainObject object = (DomainObject) type.getDomainObjectType();
+				dataType.addAttributes(getMDSLAttributesForAttributeList(object.getAttributes()));
+				List<DataTypeAttribute> refAttributes = Lists.newArrayList();
+				for (Reference reference : object.getReferences()) {
+					refAttributes
+							.add(getDataTypeAttribute4DomainObject(reference.getName(), reference.getDomainObjectType(), reference.getCollectionType() != CollectionType.NONE));
+				}
+				dataType.addAttributes(refAttributes);
+			}
+			dataTypeMapping.put(dataTypeName, dataType);
+			return dataType;
+		}
+	}
+
+	private DataTypeAttribute getDataTypeAttribute4DomainObject(String attributeName, SimpleDomainObject simpleDomainObject, boolean isCollection) {
+		DataTypeAttribute mdslAttribute = new DataTypeAttribute();
+		mdslAttribute.setName(attributeName);
+		mdslAttribute.setIsCollection(isCollection);
+		if (simpleDomainObject instanceof DomainObject) {
+			DomainObject object = (DomainObject) simpleDomainObject;
+			mdslAttribute.addChildren(getMDSLAttributesForAttributeList(object.getAttributes()));
+			List<DataTypeAttribute> refAttributes = Lists.newArrayList();
+			for (Reference reference : object.getReferences()) {
+				refAttributes.add(getDataTypeAttribute4DomainObject(reference.getName(), reference.getDomainObjectType(), reference.getCollectionType() != CollectionType.NONE));
+			}
+			mdslAttribute.addChildren(refAttributes);
+		} else {
+			mdslAttribute.setType(mapAbstractDataType(simpleDomainObject.getName()));
+		}
+		return mdslAttribute;
+	}
+
+	private List<DataTypeAttribute> getMDSLAttributesForAttributeList(List<Attribute> attributes) {
+		List<DataTypeAttribute> mdslAttributes = Lists.newArrayList();
+		for (Attribute attribute : attributes) {
+			DataTypeAttribute mdslAttribute = new DataTypeAttribute();
+			mdslAttribute.setName(attribute.getName());
+			mdslAttribute.setType(mapAbstractDataType(attribute.getType()));
+			mdslAttribute.setIsCollection(attribute.getCollectionType() != CollectionType.NONE);
+			mdslAttributes.add(mdslAttribute);
+		}
+		return mdslAttributes;
+	}
+
+	private String mapAbstractDataType(String dataTypeName) {
+		if ("boolean".equals(dataTypeName.toLowerCase())) {
+			return "V<bool>";
+		} else if ("String".equals(dataTypeName)) {
+			return "V<string>";
+		} else if ("int".equals(dataTypeName) || "Integer".equals(dataTypeName)) {
+			return "V<int>";
+		} else if ("long".equals(dataTypeName.toLowerCase())) {
+			return "V<long>";
+		} else if ("double".equals(dataTypeName.toLowerCase())) {
+			return "V<double>";
+		} else if ("Blob".equals(dataTypeName)) {
+			return "V<blob>";
+		} else if (dataTypeMapping.containsKey(dataTypeName)) {
+			return dataTypeName;
+		}
+		DataType newDataType = new DataType();
+		newDataType.setName(dataTypeName);
+		dataTypeMapping.put(dataTypeName, newDataType);
+		return dataTypeName;
 	}
 
 	private EndpointProvider createProvider(String providerName, String implementationTechnology, List<EndpointContract> endpointContracts) {

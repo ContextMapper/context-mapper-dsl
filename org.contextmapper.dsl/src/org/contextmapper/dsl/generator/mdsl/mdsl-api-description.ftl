@@ -1,10 +1,11 @@
 API description ${serviceSpecification.name}
 
+<#macro renderDataTypeAttributesRecursive attributes>{ <#list attributes as attribute><#if attribute.hasChildren()>"${attribute.getName()}":<@renderDataTypeAttributesRecursive attribute.getChildren() /><#if attribute.isCollection()>*</#if><#else>"${attribute.getName()}":${attribute.getType()}<#if attribute.isCollection()>*</#if></#if><#if attribute_index < attributes?size - 1>, </#if></#list> }</#macro>
 <#list serviceSpecification.dataTypes as dataType>
-<#if dataType.isTuple()>
-data type ${dataType.name} ( ${dataType.getTupleTypesString()} )
-<#else>
+<#if dataType.isAbstractDataType()>
 data type ${dataType.name} P
+<#else>
+data type ${dataType.name} <@renderDataTypeAttributesRecursive dataType.getChildren() />
 </#if>
 </#list>
 
@@ -17,11 +18,11 @@ endpoint type ${endpoint.name}
 		operation ${operation.name}
 			<#if operation.expectingPayload?has_content>
 			expecting
-				payload ${operation.expectingPayload.name}
+				payload ${operation.expectingPayload.name}<#if operation.expectingCollection()>*</#if>
 			</#if>
 			<#if operation.deliveringPayload?has_content>
 			delivering
-				payload ${operation.deliveringPayload.name}
+				payload ${operation.deliveringPayload.name}<#if operation.deliveringCollection()>*</#if>
 			</#if>
 		</#list>
 </#list>

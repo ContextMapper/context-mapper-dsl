@@ -19,31 +19,47 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 
-public class DataType {
+public class DataTypeAttribute {
 
-	private String name;
-	private boolean isAbstractType = true;
+	private String attributeName;
+	private String type;
 	private List<DataTypeAttribute> children = Lists.newArrayList();
+	private boolean isCollection = false;
 
 	public String getName() {
-		return name;
+		return attributeName;
 	}
 
 	public void setName(String name) {
-		this.name = name;
+		this.attributeName = name;
 	}
 
-	public void addAttributes(List<DataTypeAttribute> children) {
-		this.isAbstractType = false;
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void addChildren(List<DataTypeAttribute> children) {
 		this.children.addAll(children);
 	}
-	
+
 	public List<DataTypeAttribute> getChildren() {
 		return children;
 	}
 
-	public boolean isAbstractDataType() {
-		return isAbstractType;
+	public boolean hasChildren() {
+		return !this.children.isEmpty();
+	}
+
+	public void setIsCollection(boolean isCollection) {
+		this.isCollection = isCollection;
+	}
+
+	public boolean isCollection() {
+		return isCollection;
 	}
 
 }

@@ -19,25 +19,48 @@ public class EndpointOperation {
 
 	private String name;
 	private DataType expectingPayload;
+	private boolean expectingCollection = false;
+	private boolean deliveringCollection = false;
 	private DataType deliveringPayload;
-	
+
 	public String getName() {
 		return name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	public DataType getExpectingPayload() {
 		return expectingPayload;
 	}
+
 	public void setExpectingPayload(DataType expectingPayload) {
 		this.expectingPayload = expectingPayload;
 	}
+
 	public DataType getDeliveringPayload() {
 		return deliveringPayload;
 	}
+
 	public void setDeliveringPayload(DataType deliveringPayload) {
 		this.deliveringPayload = deliveringPayload;
 	}
+
+	public boolean deliveringCollection() {
+		return deliveringCollection;
+	}
+
+	public void setDeliveringCollection(boolean deliveringCollection) {
+		this.deliveringCollection = deliveringCollection;
+	}
 	
+	public boolean expectingCollection() {
+		return expectingCollection;
+	}
+	
+	public void setExpectingCollection(boolean expectingCollection) {
+		this.expectingCollection = expectingCollection;
+	}
+
 }
