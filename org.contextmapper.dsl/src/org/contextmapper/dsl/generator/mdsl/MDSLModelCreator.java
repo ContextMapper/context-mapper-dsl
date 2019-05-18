@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Stack;
 import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
@@ -51,9 +52,11 @@ public class MDSLModelCreator {
 	private ContextMap contextMap;
 	private Map<String, DataType> dataTypeMapping;
 	private int initialPort = 8000;
+	private Stack<String> recursiveAttributeResolutionStack;
 
 	public MDSLModelCreator(ContextMap contextMap) {
 		this.contextMap = contextMap;
+		this.recursiveAttributeResolutionStack = new Stack<>();
 	}
 
 	public List<ServiceSpecification> createServiceSpecifications() {
@@ -129,13 +132,10 @@ public class MDSLModelCreator {
 			for (Parameter parameter : parameters) {
 				ComplexType type = parameter.getParameterType();
 				if (type.getDomainObjectType() != null) {
-					attributes.add(getDataTypeAttribute4DomainObject(parameter.getName(), type.getDomainObjectType(), type.getCollectionType() != CollectionType.NONE));
+					attributes.add(getDataTypeAttribute4DomainObject(dataType, parameter.getName(), type.getDomainObjectType(), type.getCollectionType() != CollectionType.NONE));
 				} else {
-					DataTypeAttribute mdslAttribute = new DataTypeAttribute();
-					mdslAttribute.setName(parameter.getName());
-					mdslAttribute.setType(mapAbstractDataType(type.getType()));
-					mdslAttribute.setIsCollection(type.getCollectionType() != CollectionType.NONE);
-					attributes.add(mdslAttribute);
+					attributes.add(createSimpleDataTypeAttributeWithoutChildren(parameter.getName(), mapAbstractDataType(type.getType()),
+							type.getCollectionType() != CollectionType.NONE));
 				}
 			}
 			dataType.addAttributes(attributes);
@@ -150,38 +150,39 @@ public class MDSLModelCreator {
 		if (type.getDomainObjectType() != null) {
 			dataTypeName = type.getDomainObjectType().getName();
 		}
-		
+
 		// check if its a primitive type and return it if its primitive
 		String primitiveType = getMDSLPrimitiveType(dataTypeName);
-		if(!"Object".equals(primitiveType)) {
+		if (!"Object".equals(primitiveType)) {
 			DataType primitiveDataType = new DataType();
 			primitiveDataType.setIsPrimitiveType(true);
 			primitiveDataType.setName(primitiveType);
 			return primitiveDataType;
 		}
-		
+
 		// create complex data type
 		if (dataTypeMapping.containsKey(dataTypeName)) {
 			return dataTypeMapping.get(dataTypeName);
 		} else {
 			DataType dataType = new DataType();
 			dataType.setName(dataTypeName);
+			dataTypeMapping.put(dataTypeName, dataType);
 			if (type.getDomainObjectType() != null && type.getDomainObjectType() instanceof DomainObject) {
 				DomainObject object = (DomainObject) type.getDomainObjectType();
 				dataType.addAttributes(getMDSLAttributesForAttributeList(object.getAttributes()));
 				List<DataTypeAttribute> refAttributes = Lists.newArrayList();
 				for (Reference reference : object.getReferences()) {
-					refAttributes
-							.add(getDataTypeAttribute4DomainObject(reference.getName(), reference.getDomainObjectType(), reference.getCollectionType() != CollectionType.NONE));
+					refAttributes.add(getDataTypeAttribute4DomainObject(dataType, reference.getName(), reference.getDomainObjectType(),
+							reference.getCollectionType() != CollectionType.NONE));
 				}
 				dataType.addAttributes(refAttributes);
 			}
-			dataTypeMapping.put(dataTypeName, dataType);
 			return dataType;
 		}
 	}
 
-	private DataTypeAttribute getDataTypeAttribute4DomainObject(String attributeName, SimpleDomainObject simpleDomainObject, boolean isCollection) {
+	private DataTypeAttribute getDataTypeAttribute4DomainObject(DataType dataType, String attributeName, SimpleDomainObject simpleDomainObject, boolean isCollection) {
+		this.recursiveAttributeResolutionStack.push(simpleDomainObject.getName());
 		DataTypeAttribute mdslAttribute = new DataTypeAttribute();
 		mdslAttribute.setName(attributeName);
 		mdslAttribute.setIsCollection(isCollection);
@@ -190,25 +191,39 @@ public class MDSLModelCreator {
 			mdslAttribute.addChildren(getMDSLAttributesForAttributeList(object.getAttributes()));
 			List<DataTypeAttribute> refAttributes = Lists.newArrayList();
 			for (Reference reference : object.getReferences()) {
-				refAttributes.add(getDataTypeAttribute4DomainObject(reference.getName(), reference.getDomainObjectType(), reference.getCollectionType() != CollectionType.NONE));
+				// recursive attribute resolution, if it is no cyclic reference
+				if (!this.recursiveAttributeResolutionStack.contains(reference.getDomainObjectType().getName())) {
+					refAttributes.add(getDataTypeAttribute4DomainObject(dataType, reference.getName(), reference.getDomainObjectType(),
+							reference.getCollectionType() != CollectionType.NONE));
+				} else {
+					dataType.addComment("You declared a cyclic reference! We had to break the cycle at " + reference.getDomainObjectType().getName());
+					refAttributes.add(createSimpleDataTypeAttributeWithoutChildren(reference.getName(), mapAbstractDataType(reference.getDomainObjectType().getName()),
+							reference.getCollectionType() != CollectionType.NONE));
+				}
 			}
 			mdslAttribute.addChildren(refAttributes);
 		} else {
 			mdslAttribute.setType(mapAbstractDataType(simpleDomainObject.getName()));
 		}
+		this.recursiveAttributeResolutionStack.pop();
 		return mdslAttribute;
 	}
 
 	private List<DataTypeAttribute> getMDSLAttributesForAttributeList(List<Attribute> attributes) {
 		List<DataTypeAttribute> mdslAttributes = Lists.newArrayList();
 		for (Attribute attribute : attributes) {
-			DataTypeAttribute mdslAttribute = new DataTypeAttribute();
-			mdslAttribute.setName(attribute.getName());
-			mdslAttribute.setType(mapAbstractDataType(attribute.getType()));
-			mdslAttribute.setIsCollection(attribute.getCollectionType() != CollectionType.NONE);
-			mdslAttributes.add(mdslAttribute);
+			mdslAttributes.add(createSimpleDataTypeAttributeWithoutChildren(attribute.getName(), mapAbstractDataType(attribute.getType()),
+					attribute.getCollectionType() != CollectionType.NONE));
 		}
 		return mdslAttributes;
+	}
+
+	private DataTypeAttribute createSimpleDataTypeAttributeWithoutChildren(String attributeName, String attributeType, boolean isCollection) {
+		DataTypeAttribute attribute = new DataTypeAttribute();
+		attribute.setName(attributeName);
+		attribute.setType(attributeType);
+		attribute.setIsCollection(isCollection);
+		return attribute;
 	}
 
 	private String mapAbstractDataType(String dataTypeName) {
@@ -217,6 +232,8 @@ public class MDSLModelCreator {
 			return primitiveType;
 
 		// create data type, since it's not a primitive type
+		if (dataTypeMapping.containsKey(dataTypeName))
+			return dataTypeMapping.get(dataTypeName).getName();
 		DataType newDataType = new DataType();
 		newDataType.setName(dataTypeName);
 		dataTypeMapping.put(dataTypeName, newDataType);

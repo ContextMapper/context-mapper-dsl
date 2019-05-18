@@ -86,6 +86,11 @@ public class MDSLAPIDescriptionCreatorTest extends AbstractCMLInputFileTest {
 		testCMLInputAndMDSLOutputFiles("mdsl-date-to-string");
 	}
 	
+	@Test
+	void canAvoidStackOverflowDueToCyclicDataTypeResolution() throws IOException {
+		testCMLInputAndMDSLOutputFiles("mdsl-cyclic-reference");
+	}
+	
 	private void testCMLInputAndMDSLOutputFiles(String baseFilename) throws IOException {
 		// given
 		String inputModelName = baseFilename + ".cml";

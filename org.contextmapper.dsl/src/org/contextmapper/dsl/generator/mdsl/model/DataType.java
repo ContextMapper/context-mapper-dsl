@@ -25,6 +25,7 @@ public class DataType {
 	private boolean isAbstractType = true;
 	private boolean isPrimitiveType = false;
 	private List<DataTypeAttribute> children = Lists.newArrayList();
+	private List<String> comments = Lists.newArrayList();
 
 	public String getName() {
 		return name;
@@ -53,5 +54,17 @@ public class DataType {
 
 	public void setIsPrimitiveType(boolean isPrimitiveType) {
 		this.isPrimitiveType = isPrimitiveType;
+	}
+
+	public boolean hasComments() {
+		return !this.comments.isEmpty();
+	}
+
+	public String getCommentsString() {
+		return String.join("; ", this.comments);
+	}
+
+	public void addComment(String comment) {
+		this.comments.add(comment);
 	}
 }

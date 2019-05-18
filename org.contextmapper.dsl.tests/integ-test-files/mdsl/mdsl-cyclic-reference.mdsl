@@ -1,0 +1,34 @@
+API description CustomerManagementContextAPI
+
+// You declared a cyclic reference! We had to break the cycle at CyclicVO
+data type CyclicVO { "name":V<string>, "refToMyself":{ "name":V<string>, "refToMyself":CyclicVO } }
+// You declared a cyclic reference! We had to break the cycle at CyclicVO2
+data type CyclicVO2 { "name":V<string>, "refToMyself":{ "name":V<string>, "refToMyself":CyclicVO2* }* }
+
+endpoint type Customers
+	exposes
+		operation myMethod
+			expecting
+				payload CyclicVO
+			delivering
+				payload V<string>
+		operation myMethod2
+			expecting
+				payload CyclicVO
+			delivering
+				payload V<string>
+		operation myMethod3
+			expecting
+				payload CyclicVO2
+			delivering
+				payload V<string>
+
+API provider CustomerManagementContext
+	offers Customers
+	at endpoint location "http://localhost:8000"
+		via protocol "RESTful HTTP"
+
+API client ContractManagementContext
+	consumes Customers
+
+IPA
