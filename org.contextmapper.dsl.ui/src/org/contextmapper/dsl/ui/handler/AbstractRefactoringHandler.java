@@ -3,6 +3,7 @@ package org.contextmapper.dsl.ui.handler;
 import java.util.List;
 
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
+import org.contextmapper.dsl.refactoring.exception.RefactoringInputException;
 import org.contextmapper.dsl.ui.internal.DslActivator;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -16,6 +17,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.statushandlers.StatusManager;
@@ -45,6 +47,8 @@ public abstract class AbstractRefactoringHandler extends AbstractHandler impleme
 		try {
 			currentResource = getCurrentResource();
 			executeRefactoring(currentResource, event);
+		} catch (RefactoringInputException e) {
+			MessageDialog.openInformation(HandlerUtil.getActiveShell(event), "Model Input", e.getMessage());
 		} catch (Exception e) {
 			String message = e.getMessage() != null && !"".equals(e.getMessage()) ? e.getMessage() : e.getClass().getName() + " occurred in " + this.getClass().getName();
 			Status status = new Status(IStatus.ERROR, DslActivator.PLUGIN_ID, message, e);

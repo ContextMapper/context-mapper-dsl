@@ -15,8 +15,10 @@ import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.Module;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
 import org.contextmapper.dsl.refactoring.MergeAggregatesRefactoring;
+import org.contextmapper.dsl.refactoring.exception.RefactoringInputException;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtext.xbase.lib.IteratorExtensions;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.Iterators;
@@ -173,6 +175,19 @@ public class MergeAggregatesTest extends AbstractRefactoringTest {
 		List<String> exposedAggregates = relationship.getUpstreamExposedAggregates().stream().map(a -> a.getName()).collect(Collectors.toList());
 		assertEquals(1, exposedAggregates.size());
 		assertTrue(exposedAggregates.contains("Customers"));
+	}
+
+	@Test
+	void expectExceptionIfThereAreDuplicateEntityNames() throws IOException {
+		// given
+		String inputModelName = "merge-aggregates-test-4-input.cml";
+		Resource input = getResourceCopyOfTestCML(inputModelName);
+		MergeAggregatesRefactoring refactoring = new MergeAggregatesRefactoring("Customers", "Addresses");
+
+		// when / then
+		Assertions.assertThrows(RefactoringInputException.class, () -> {
+			refactoring.doRefactor(input);
+		});
 	}
 
 }

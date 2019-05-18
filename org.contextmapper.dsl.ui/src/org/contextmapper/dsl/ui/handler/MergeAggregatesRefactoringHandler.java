@@ -30,7 +30,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.handlers.HandlerUtil;
 
-public class MergeAggregatesRefactoringHandler extends AbstractRefactoringHandler {
+public class MergeAggregatesRefactoringHandler extends AbstractRefactoringWithUserInputHandler {
 
 	@Override
 	public boolean isEnabled() {
@@ -67,9 +67,7 @@ public class MergeAggregatesRefactoringHandler extends AbstractRefactoringHandle
 		MergeAggregatesContext refactoringContext = new MergeAggregatesContext(aggregate.getName(), allAggregates);
 
 		new WizardDialog(HandlerUtil.getActiveShell(event), new MergeAggregatesRefactoringWizard(refactoringContext, executionContext -> {
-			MergeAggregatesRefactoring ar = new MergeAggregatesRefactoring(executionContext.getSelectedAggregate1(), executionContext.getSelectedAggregate2());
-			ar.doRefactor(resource);
-			return true;
+			return finishRefactoring(new MergeAggregatesRefactoring(executionContext.getSelectedAggregate1(), executionContext.getSelectedAggregate2()), resource, event);
 		})).open();
 	}
 

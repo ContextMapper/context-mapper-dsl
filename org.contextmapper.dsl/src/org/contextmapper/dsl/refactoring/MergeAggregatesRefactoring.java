@@ -17,6 +17,8 @@ package org.contextmapper.dsl.refactoring;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
@@ -24,8 +26,11 @@ import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.Module;
 import org.contextmapper.dsl.contextMappingDSL.Relationship;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
+import org.contextmapper.dsl.refactoring.exception.RefactoringInputException;
 import org.contextmapper.dsl.refactoring.henshin.Refactoring;
 import org.eclipse.xtext.EcoreUtil2;
+
+import com.google.common.base.Strings;
 
 public class MergeAggregatesRefactoring extends AbstractRefactoring implements Refactoring {
 
@@ -53,6 +58,8 @@ public class MergeAggregatesRefactoring extends AbstractRefactoring implements R
 		Aggregate agg1 = agg1Opt.get();
 		Aggregate agg2 = agg2Opt.get();
 
+		checkForPossibleDomainObjectNameClashes(agg1, agg2);
+
 		// move content from agg2 to agg1
 		agg1.getConsumers().addAll(agg2.getConsumers());
 		agg1.getDomainObjects().addAll(agg2.getDomainObjects());
@@ -74,6 +81,16 @@ public class MergeAggregatesRefactoring extends AbstractRefactoring implements R
 		}
 		this.model.eAllContents();
 		saveResource();
+	}
+
+	private void checkForPossibleDomainObjectNameClashes(Aggregate aggregate1, Aggregate aggregate2) {
+		List<String> aggregate1DomainObjectNames = aggregate1.getDomainObjects().stream().map(obj -> obj.getName()).collect(Collectors.toList());
+		List<String> aggregate2DomainObjectNames = aggregate2.getDomainObjects().stream().map(obj -> obj.getName()).collect(Collectors.toList());
+
+		Set<String> commonDomainObjectNames = aggregate1DomainObjectNames.stream().distinct().filter(aggregate2DomainObjectNames::contains).collect(Collectors.toSet());
+		if (!commonDomainObjectNames.isEmpty())
+			throw new RefactoringInputException("Sorry, we cannot execute this refactoring. The selected Aggregates contain the following duplicate domain objects: "
+					+ String.join(", ", commonDomainObjectNames));
 	}
 
 	private List<Aggregate> getAllAggregates() {

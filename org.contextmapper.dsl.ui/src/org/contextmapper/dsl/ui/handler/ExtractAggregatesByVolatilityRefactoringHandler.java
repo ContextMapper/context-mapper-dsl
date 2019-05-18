@@ -29,7 +29,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.handlers.HandlerUtil;
 
-public class ExtractAggregatesByVolatilityRefactoringHandler extends AbstractRefactoringHandler {
+public class ExtractAggregatesByVolatilityRefactoringHandler extends AbstractRefactoringWithUserInputHandler {
 
 	@Override
 	protected void executeRefactoring(Resource resource, ExecutionEvent event) {
@@ -40,8 +40,7 @@ public class ExtractAggregatesByVolatilityRefactoringHandler extends AbstractRef
 
 		new WizardDialog(HandlerUtil.getActiveShell(event), new ExtractAggregatesByVolatilityRefactoringWizard(refactoringContext, executionContext -> {
 			ExtractAggregatesByVolatility ar = new ExtractAggregatesByVolatility(bc.getName(), executionContext.getVolatilityToExtract());
-			ar.doRefactor(resource);
-			return true;
+			return finishRefactoring(ar, resource, event);
 		})).open();
 	}
 

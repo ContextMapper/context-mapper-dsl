@@ -27,7 +27,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.handlers.HandlerUtil;
 
-public class MergeBoundedContextsRefactoringHandler extends AbstractRefactoringHandler {
+public class MergeBoundedContextsRefactoringHandler extends AbstractRefactoringWithUserInputHandler {
 
 	@Override
 	public boolean isEnabled() {
@@ -51,9 +51,8 @@ public class MergeBoundedContextsRefactoringHandler extends AbstractRefactoringH
 				getCurrentContextMappingModel().getBoundedContexts().stream().map(b -> b.getName()).collect(Collectors.toList()));
 
 		new WizardDialog(HandlerUtil.getActiveShell(event), new MergeBoundedContextsRefactoringWizard(refactoringContext, executionContext -> {
-			MergeBoundedContextsRefactoring ar = new MergeBoundedContextsRefactoring(executionContext.getSelectedBoundedContext1(), executionContext.getSelectedBoundedContext2());
-			ar.doRefactor(resource);
-			return true;
+			return finishRefactoring(new MergeBoundedContextsRefactoring(executionContext.getSelectedBoundedContext1(), executionContext.getSelectedBoundedContext2()), resource,
+					event);
 		})).open();
 	}
 

@@ -27,7 +27,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.handlers.HandlerUtil;
 
-public class ExtractAggregatesByCohesionRefactoringHandler extends AbstractRefactoringHandler {
+public class ExtractAggregatesByCohesionRefactoringHandler extends AbstractRefactoringWithUserInputHandler {
 
 	@Override
 	public boolean isEnabled() {
@@ -52,9 +52,8 @@ public class ExtractAggregatesByCohesionRefactoringHandler extends AbstractRefac
 				bc.getAggregates().stream().map(agg -> agg.getName()).collect(Collectors.toList()));
 
 		new WizardDialog(HandlerUtil.getActiveShell(event), new ExtractAggregatesByCohesionRefactoringWizard(refactoringContext, executionContext -> {
-			ExtractAggregatesByCohesion ar = new ExtractAggregatesByCohesion(bc.getName(), executionContext.getNewBoundedContextName(), executionContext.getSelectedAggregates());
-			ar.doRefactor(resource);
-			return true;
+			return finishRefactoring(new ExtractAggregatesByCohesion(bc.getName(), executionContext.getNewBoundedContextName(), executionContext.getSelectedAggregates()), resource,
+					event);
 		})).open();
 	}
 
