@@ -337,7 +337,8 @@ public class MDSLModelCreator {
 				.map(rel -> (UpstreamDownstreamRelationship) rel).collect(Collectors.toList());
 
 		if (upstreamDownstreamRelationships.isEmpty())
-			throw new GeneratorInputException("Your model does not contain any upstream-downstream relationships. Therefore we have nothing to generate...");
+			throw new GeneratorInputException(
+					"Your model does not contain any upstream-downstream relationships. Therefore there is nothing to generate. Create an upstream-downstream relationship in your Context Map to get a result.");
 
 		List<Aggregate> exposedAggregates = Lists.newArrayList();
 		for (UpstreamDownstreamRelationship rel : upstreamDownstreamRelationships) {
@@ -345,7 +346,8 @@ public class MDSLModelCreator {
 		}
 
 		if (exposedAggregates.isEmpty())
-			throw new GeneratorInputException("None of your upstream-downstream relationships exposes any aggregates. Therefore we have nothing to generate...");
+			throw new GeneratorInputException(
+					"None of your upstream-downstream relationships exposes any Aggregates. Therefore there is nothing to generate. Use the 'exposedAggregates' attribute on your upstream-downstream relationships to specify which Aggregates are exposed by the upstream.");
 
 		List<DomainObject> aggregateRoots = Lists.newArrayList();
 		for (Aggregate exposedAggregate : exposedAggregates) {
@@ -355,14 +357,16 @@ public class MDSLModelCreator {
 				aggregateRoots.add(aggregateRoot.get());
 		}
 		if (aggregateRoots.isEmpty())
-			throw new GeneratorInputException("None of your exposed aggregates contains an aggregate root. Therefore we have nothing to generate...");
+			throw new GeneratorInputException(
+					"None of your exposed Aggregates contains an 'aggregate root'. Therefore there is nothing to generate. Ensure that your Aggregates which are exposed contain an entity which is the 'aggregate root'.");
 
 		List<DomainObjectOperation> operations = Lists.newArrayList();
 		for (DomainObject obj : aggregateRoots) {
 			operations.addAll(obj.getOperations());
 		}
 		if (operations.isEmpty())
-			throw new GeneratorInputException("None of your aggregate roots contains an operation/method. Therefore we have nothing to generate...");
+			throw new GeneratorInputException(
+					"None of your 'aggregate roots' contains an operation/method. Therefore there is nothing to generate. Add at least one operation/method on your 'aggregate roots' in order to get a result.");
 	}
 
 	private class UpstreamAPIContext {
