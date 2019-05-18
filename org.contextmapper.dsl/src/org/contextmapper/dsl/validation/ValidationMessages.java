@@ -36,6 +36,6 @@ public class ValidationMessages {
 	public static final String DOMAIN_OBJECT_NOT_UNIQUE = "Multiple domain objects with the name '%s' have been declared.";
 	
 	/* Generator problems */
-	public static final String EMPTY_UML_COMPONENT_DIAGRAM_MESSAGE = "Sorry, we cannot generate anything. Your Context Map seems to be empty...";
-	public static final String EMPTY_UML_CLASS_DIAGRAM_MESSAGE = "Sorry, we cannot generate anything. Your bounded context seems to be empty...";
+	public static final String EMPTY_UML_COMPONENT_DIAGRAM_MESSAGE = "Sorry, we cannot generate a component diagram. Your Context Map seems to be empty.";
+	public static final String EMPTY_UML_CLASS_DIAGRAM_MESSAGE = "Sorry, we cannot generate a class diagram for this Bounded Context. There are no Aggregates or none of the Aggregates contain any domain objects (entities, value objects or domain events).";
 }
