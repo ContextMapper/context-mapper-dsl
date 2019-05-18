@@ -30,16 +30,22 @@ import org.contextmapper.dsl.refactoring.exception.RefactoringInputException;
 import org.contextmapper.dsl.refactoring.henshin.Refactoring;
 import org.eclipse.xtext.EcoreUtil2;
 
-import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 
 public class MergeAggregatesRefactoring extends AbstractRefactoring implements Refactoring {
 
 	private String aggregate1;
 	private String aggregate2;
+	private boolean takeAttributesFromSecondAggregate = false;
 
 	public MergeAggregatesRefactoring(String aggregate1, String aggregate2) {
 		this.aggregate1 = aggregate1;
 		this.aggregate2 = aggregate2;
+	}
+
+	public MergeAggregatesRefactoring(String aggregate1, String aggregate2, boolean takeAttributesFromSecondAggregate) {
+		this(aggregate1, aggregate2);
+		this.takeAttributesFromSecondAggregate = takeAttributesFromSecondAggregate;
 	}
 
 	@Override
@@ -57,6 +63,12 @@ public class MergeAggregatesRefactoring extends AbstractRefactoring implements R
 
 		Aggregate agg1 = agg1Opt.get();
 		Aggregate agg2 = agg2Opt.get();
+
+		// inverse merging, if requested
+		if (takeAttributesFromSecondAggregate) {
+			agg1 = agg2Opt.get();
+			agg2 = agg1Opt.get();
+		}
 
 		checkForPossibleDomainObjectNameClashes(agg1, agg2);
 
@@ -110,8 +122,14 @@ public class MergeAggregatesRefactoring extends AbstractRefactoring implements R
 
 			UpstreamDownstreamRelationship upDownRelationship = (UpstreamDownstreamRelationship) relationship;
 			if (upDownRelationship.getUpstreamExposedAggregates().contains(agg2)) {
-				upDownRelationship.getUpstreamExposedAggregates().remove(agg2);
-				upDownRelationship.getUpstreamExposedAggregates().add(agg1);
+				// ugly workaround (clear list and add all again); otherwise list is not
+				// properly updated when saving ecore model :(
+				List<Aggregate> exposedAggregates = Lists.newArrayList();
+				exposedAggregates.addAll(upDownRelationship.getUpstreamExposedAggregates());
+				exposedAggregates.remove(agg2);
+				exposedAggregates.add(agg1);
+				upDownRelationship.getUpstreamExposedAggregates().clear();
+				upDownRelationship.getUpstreamExposedAggregates().addAll(exposedAggregates);
 			}
 		}
 	}

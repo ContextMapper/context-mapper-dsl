@@ -67,7 +67,8 @@ public class MergeAggregatesRefactoringHandler extends AbstractRefactoringWithUs
 		MergeAggregatesContext refactoringContext = new MergeAggregatesContext(aggregate.getName(), allAggregates);
 
 		new WizardDialog(HandlerUtil.getActiveShell(event), new MergeAggregatesRefactoringWizard(refactoringContext, executionContext -> {
-			return finishRefactoring(new MergeAggregatesRefactoring(executionContext.getSelectedAggregate1(), executionContext.getSelectedAggregate2()), resource, event);
+			return finishRefactoring(new MergeAggregatesRefactoring(executionContext.getSelectedAggregate1(), executionContext.getSelectedAggregate2(),
+					executionContext.takeAttributesFromSecondAggregate()), resource, event);
 		})).open();
 	}
 
