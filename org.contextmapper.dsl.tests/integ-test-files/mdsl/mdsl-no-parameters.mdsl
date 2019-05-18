@@ -1,21 +1,13 @@
 API description CustomerManagementContextAPI
 
-data type Address P
-data type Parameter1Type P
-data type Parameter2Type P
-data type ReturnType P
-data type anotherMethodParameter { "param1":Parameter1Type, "param2":Parameter2Type }
 
 endpoint type CustomersAggregate
 	exposes
-		operation updateAddress
+		operation myMethod
 			expecting
-				payload Address
+				payload V<void>
 			delivering
-				payload ReturnType
-		operation anotherMethod
-			expecting
-				payload anotherMethodParameter
+				payload V<string>
 
 API provider CustomerManagementContextProvider
 	offers CustomersAggregate

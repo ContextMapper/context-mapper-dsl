@@ -20,6 +20,7 @@ public class EndpointOffer {
 	private EndpointContract offeredEndpoint;
 	private String protocol;
 	private String location;
+	private String protocolComment;
 
 	public void setOfferedEndpoint(EndpointContract offeredEndpoint) {
 		this.offeredEndpoint = offeredEndpoint;
@@ -43,6 +44,18 @@ public class EndpointOffer {
 
 	public String getLocation() {
 		return location;
+	}
+
+	public void setProtocolComment(String protocolComment) {
+		this.protocolComment = protocolComment;
+	}
+
+	public String getProtocolComment() {
+		return protocolComment;
+	}
+
+	public boolean hasProtocolComment() {
+		return protocolComment != null && !"".equals(protocolComment);
 	}
 
 }

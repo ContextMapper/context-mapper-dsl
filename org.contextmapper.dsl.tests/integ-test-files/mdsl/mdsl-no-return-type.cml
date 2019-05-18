@@ -1,0 +1,37 @@
+ContextMap {
+	contains CustomerManagementContext, ContractManagementContext, JustAnotherContext
+
+	CustomerManagementContext -> ContractManagementContext {
+		exposedAggregates = Customers
+		implementationTechnology = "RESTful HTTP"
+	}
+
+	// this relationship must be ignored, because it has no exposedAggregates
+	CustomerManagementContext -> JustAnotherContext
+
+	// duplicate relationship should not change the result	
+	CustomerManagementContext -> ContractManagementContext {
+		exposedAggregates = Customers
+	}
+
+}
+
+BoundedContext ContractManagementContext
+
+BoundedContext CustomerManagementContext {
+	Aggregate Customers {
+		Entity Customer {
+			aggregateRoot
+			
+			// we support two options for "no return type"
+			
+			// option 1 (sculptor official solution):
+			def myMethod(String param1);
+			
+			// option 2:
+			def void myMethod2(String param1);
+		}
+	}
+}
+
+BoundedContext JustAnotherContext

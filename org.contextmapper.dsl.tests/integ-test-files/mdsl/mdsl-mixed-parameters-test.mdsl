@@ -5,7 +5,7 @@ data type JustSomeParameterType P
 data type ReturnType P
 data type updateCustomerParameter { "customer":{ "firstName":V<string>, "lastName":V<string>, "account":BankAccount, "address":{ "street":V<string>, "houseNumber":V<int> } }, "param2":JustSomeParameterType }
 
-endpoint type Customers
+endpoint type CustomersAggregate
 	exposes
 		operation updateCustomer
 			expecting
@@ -13,12 +13,12 @@ endpoint type Customers
 			delivering
 				payload ReturnType
 
-API provider CustomerManagementContext
-	offers Customers
+API provider CustomerManagementContextProvider
+	offers CustomersAggregate
 	at endpoint location "http://localhost:8000"
 		via protocol "RESTful HTTP"
 
-API client ContractManagementContext
-	consumes Customers
+API client ContractManagementContextClient
+	consumes CustomersAggregate
 
 IPA

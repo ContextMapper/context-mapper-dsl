@@ -2,11 +2,16 @@ API description ${serviceSpecification.name}
 
 <#macro renderDataTypeAttributesRecursive attributes>{ <#list attributes as attribute><#if attribute.hasChildren()>"${attribute.getName()}":<@renderDataTypeAttributesRecursive attribute.getChildren() /><#if attribute.isCollection()>*</#if><#else>"${attribute.getName()}":${attribute.getType()}<#if attribute.isCollection()>*</#if></#if><#if attribute_index < attributes?size - 1>, </#if></#list> }</#macro>
 <#list serviceSpecification.dataTypes as dataType>
-<#if dataType.isAbstractDataType()>
+	<#if !dataType.isPrimitiveType()>
+		<#if dataType.hasComments()>
+// ${dataType.getCommentsString()}
+		</#if>
+		<#if dataType.isAbstractDataType()>
 data type ${dataType.name} P
-<#else>
+		<#else>
 data type ${dataType.name} <@renderDataTypeAttributesRecursive dataType.getChildren() />
-</#if>
+		</#if>
+	</#if>
 </#list>
 
 <#list serviceSpecification.endpoints as endpoint>
@@ -32,7 +37,7 @@ API provider ${provider.name}
 	<#list provider.endpointOffers as offer>
 	offers ${offer.offeredEndpoint.name}
 	at endpoint location "${offer.location}"
-		via protocol "${offer.protocol}"
+		via protocol "${offer.protocol}"<#if offer.hasProtocolComment()> // ${offer.getProtocolComment()}</#if>
 	</#list>
 </#list>
 
