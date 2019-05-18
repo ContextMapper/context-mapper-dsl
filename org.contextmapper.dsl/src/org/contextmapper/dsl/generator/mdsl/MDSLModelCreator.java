@@ -106,7 +106,12 @@ public class MDSLModelCreator {
 		EndpointOperation operation = new EndpointOperation();
 		operation.setName(domainObjectOperation.getName());
 
-		if (domainObjectOperation.getParameters().size() == 1) {
+		if(domainObjectOperation.getParameters().isEmpty()) {
+			DataType voidType = new DataType();
+			voidType.setIsPrimitiveType(true);
+			voidType.setName("V<void>");
+			operation.setExpectingPayload(voidType);
+		} else if (domainObjectOperation.getParameters().size() == 1) {
 			Parameter parameter = domainObjectOperation.getParameters().get(0);
 			operation.setExpectingPayload(getDataType4ComplexType(parameter.getParameterType()));
 			operation.setExpectingCollection(parameter.getParameterType().getCollectionType() != CollectionType.NONE);
