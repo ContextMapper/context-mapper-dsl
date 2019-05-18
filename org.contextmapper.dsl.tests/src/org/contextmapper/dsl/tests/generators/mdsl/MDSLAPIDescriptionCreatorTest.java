@@ -76,6 +76,11 @@ public class MDSLAPIDescriptionCreatorTest extends AbstractCMLInputFileTest {
 		testCMLInputAndMDSLOutputFiles("mdsl-list-parameter-test");
 	}
 
+	@Test
+	void canHandlePrimitiveTypesInParametersAndReturnTypes() throws IOException {
+		testCMLInputAndMDSLOutputFiles("mdsl-basic-data-types-as-parameters");
+	}
+	
 	private void testCMLInputAndMDSLOutputFiles(String baseFilename) throws IOException {
 		// given
 		String inputModelName = baseFilename + ".cml";

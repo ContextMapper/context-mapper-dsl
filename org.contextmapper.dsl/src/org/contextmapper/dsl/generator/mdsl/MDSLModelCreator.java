@@ -145,10 +145,22 @@ public class MDSLModelCreator {
 	}
 
 	private DataType getDataType4ComplexType(ComplexType type) {
+		// get data type name
 		String dataTypeName = type.getType();
 		if (type.getDomainObjectType() != null) {
 			dataTypeName = type.getDomainObjectType().getName();
 		}
+		
+		// check if its a primitive type and return it if its primitive
+		String primitiveType = getMDSLPrimitiveType(dataTypeName);
+		if(!"Object".equals(primitiveType)) {
+			DataType primitiveDataType = new DataType();
+			primitiveDataType.setIsPrimitiveType(true);
+			primitiveDataType.setName(primitiveType);
+			return primitiveDataType;
+		}
+		
+		// create complex data type
 		if (dataTypeMapping.containsKey(dataTypeName)) {
 			return dataTypeMapping.get(dataTypeName);
 		} else {
@@ -200,6 +212,18 @@ public class MDSLModelCreator {
 	}
 
 	private String mapAbstractDataType(String dataTypeName) {
+		String primitiveType = getMDSLPrimitiveType(dataTypeName);
+		if (!"Object".equals(primitiveType))
+			return primitiveType;
+
+		// create data type, since it's not a primitive type
+		DataType newDataType = new DataType();
+		newDataType.setName(dataTypeName);
+		dataTypeMapping.put(dataTypeName, newDataType);
+		return dataTypeName;
+	}
+
+	private String getMDSLPrimitiveType(String dataTypeName) {
 		if ("boolean".equals(dataTypeName.toLowerCase())) {
 			return "V<bool>";
 		} else if ("String".equals(dataTypeName)) {
@@ -212,13 +236,8 @@ public class MDSLModelCreator {
 			return "V<double>";
 		} else if ("Blob".equals(dataTypeName)) {
 			return "V<blob>";
-		} else if (dataTypeMapping.containsKey(dataTypeName)) {
-			return dataTypeName;
 		}
-		DataType newDataType = new DataType();
-		newDataType.setName(dataTypeName);
-		dataTypeMapping.put(dataTypeName, newDataType);
-		return dataTypeName;
+		return "Object"; // default case: we have to define a data type
 	}
 
 	private EndpointProvider createProvider(String providerName, String implementationTechnology, List<EndpointContract> endpointContracts) {

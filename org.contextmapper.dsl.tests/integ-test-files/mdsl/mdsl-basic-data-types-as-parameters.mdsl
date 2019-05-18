@@ -1,0 +1,41 @@
+API description CustomerManagementContextAPI
+
+
+endpoint type Customers
+	exposes
+		operation anotherMethod
+			expecting
+				payload V<int>
+			delivering
+				payload V<string>
+		operation intMethod
+			expecting
+				payload V<int>
+		operation booleanMethod
+			expecting
+				payload V<bool>
+		operation longMethod
+			expecting
+				payload V<long>
+		operation longlongMethod
+			expecting
+				payload V<long>
+		operation doubleMethod
+			expecting
+				payload V<double>
+		operation doubledoubleMethod
+			expecting
+				payload V<double>
+		operation blobMethod
+			expecting
+				payload V<blob>
+
+API provider CustomerManagementContext
+	offers Customers
+	at endpoint location "http://localhost:8000"
+		via protocol "RESTful HTTP"
+
+API client ContractManagementContext
+	consumes Customers
+
+IPA
