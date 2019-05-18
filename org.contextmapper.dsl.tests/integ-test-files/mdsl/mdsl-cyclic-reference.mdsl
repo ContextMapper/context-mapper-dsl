@@ -5,7 +5,7 @@ data type CyclicVO { "name":V<string>, "refToMyself":{ "name":V<string>, "refToM
 // You declared a cyclic reference! We had to break the cycle at CyclicVO2
 data type CyclicVO2 { "name":V<string>, "refToMyself":{ "name":V<string>, "refToMyself":CyclicVO2* }* }
 
-endpoint type Customers
+endpoint type CustomersAggregate
 	exposes
 		operation myMethod
 			expecting
@@ -23,12 +23,12 @@ endpoint type Customers
 			delivering
 				payload V<string>
 
-API provider CustomerManagementContext
-	offers Customers
+API provider CustomerManagementContextProvider
+	offers CustomersAggregate
 	at endpoint location "http://localhost:8000"
 		via protocol "RESTful HTTP"
 
-API client ContractManagementContext
-	consumes Customers
+API client ContractManagementContextClient
+	consumes CustomersAggregate
 
 IPA

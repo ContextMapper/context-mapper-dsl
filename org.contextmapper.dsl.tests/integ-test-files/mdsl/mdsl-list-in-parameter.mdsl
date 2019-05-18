@@ -6,7 +6,7 @@ data type Parameter2Type P
 data type ReturnType P
 data type anotherMethodParameter { "param1":Parameter1Type, "param2":Parameter2Type* }
 
-endpoint type Customers
+endpoint type CustomersAggregate
 	exposes
 		operation updateAddress
 			expecting
@@ -17,12 +17,12 @@ endpoint type Customers
 			expecting
 				payload anotherMethodParameter
 
-API provider CustomerManagementContext
-	offers Customers
+API provider CustomerManagementContextProvider
+	offers CustomersAggregate
 	at endpoint location "http://localhost:8000"
 		via protocol "RESTful HTTP"
 
-API client ContractManagementContext
-	consumes Customers
+API client ContractManagementContextClient
+	consumes CustomersAggregate
 
 IPA

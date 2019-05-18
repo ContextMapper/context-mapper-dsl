@@ -49,6 +49,16 @@ import com.google.common.collect.Maps;
 
 public class MDSLModelCreator {
 
+	private static final String AGGREGATE_NAME_EXTENSION = "Aggregate";
+	private static final String PARAMETER_NAME_EXTENSION = "Parameter";
+	private static final String API_NAME_EXTENSION = "API";
+	private static final String PROVIDER_NAME_EXTENSION = "Provider";
+	private static final String CLIENT_NAME_EXTENSION = "Client";
+	private static final String BASE_TYPE = "Object";
+	private static final String CML_VOID_RETURN_TYPE = "void";
+	private static final String MDSL_VOID_RETURN_TYPE = "V<void>";
+	private static final String ENDPOINT_LOCATION = "http://localhost:";
+
 	private ContextMap contextMap;
 	private Map<String, DataType> dataTypeMapping;
 	private int initialPort = 8000;
@@ -82,17 +92,19 @@ public class MDSLModelCreator {
 		for (DataType dataType : dataTypeMapping.values()) {
 			specification.addDataType(dataType);
 		}
-		specification.addProvider(createProvider(context.getUpstreamContext().getName(), context.getJoinedImplementationTechnologies(), specification.getEndpoints()));
+		specification.addProvider(
+				createProvider(context.getUpstreamContext().getName() + PROVIDER_NAME_EXTENSION, context.getJoinedImplementationTechnologies(), specification.getEndpoints()));
 		for (String downstreamName : context.getConsumedAggregatesByDownstreamContext().keySet()) {
-			specification.addClient(createClient(downstreamName,
-					context.getConsumedAggregatesByDownstreamContext().get(downstreamName).stream().map(agg -> agg.getName()).collect(Collectors.toList())));
+			specification.addClient(createClient(downstreamName + CLIENT_NAME_EXTENSION, context.getConsumedAggregatesByDownstreamContext().get(downstreamName).stream()
+					.map(agg -> agg.getName() + AGGREGATE_NAME_EXTENSION).collect(Collectors.toList())));
 		}
 		return specification;
 	}
 
 	private EndpointContract createEndpoint(Aggregate aggregate, ServiceSpecification specification) {
 		EndpointContract endpoint = new EndpointContract();
-		endpoint.setName(aggregate.getName());
+		String endpointName = aggregate.getName().endsWith(AGGREGATE_NAME_EXTENSION) ? aggregate.getName() : aggregate.getName() + AGGREGATE_NAME_EXTENSION;
+		endpoint.setName(endpointName);
 		Optional<DomainObject> aggregateRoot = aggregate.getDomainObjects().stream().filter(o -> o instanceof DomainObject).map(o -> (DomainObject) o).findFirst();
 		if (aggregateRoot.isPresent()) {
 			for (DomainObjectOperation operation : aggregateRoot.get().getOperations()) {
@@ -106,10 +118,10 @@ public class MDSLModelCreator {
 		EndpointOperation operation = new EndpointOperation();
 		operation.setName(domainObjectOperation.getName());
 
-		if(domainObjectOperation.getParameters().isEmpty()) {
+		if (domainObjectOperation.getParameters().isEmpty()) {
 			DataType voidType = new DataType();
 			voidType.setIsPrimitiveType(true);
-			voidType.setName("V<void>");
+			voidType.setName(MDSL_VOID_RETURN_TYPE);
 			operation.setExpectingPayload(voidType);
 		} else if (domainObjectOperation.getParameters().size() == 1) {
 			Parameter parameter = domainObjectOperation.getParameters().get(0);
@@ -119,7 +131,7 @@ public class MDSLModelCreator {
 			operation.setExpectingPayload(constructDataType4ParameterList(domainObjectOperation.getName(), domainObjectOperation.getParameters()));
 		}
 		if (domainObjectOperation.getReturnType() != null && !"".equals(domainObjectOperation.getReturnType().getType())
-				&& !"void".equals(domainObjectOperation.getReturnType().getType())) {
+				&& !CML_VOID_RETURN_TYPE.equals(domainObjectOperation.getReturnType().getType())) {
 			operation.setDeliveringPayload(getDataType4ComplexType(domainObjectOperation.getReturnType()));
 			operation.setDeliveringCollection(domainObjectOperation.getReturnType().getCollectionType() != CollectionType.NONE);
 		}
@@ -127,7 +139,7 @@ public class MDSLModelCreator {
 	}
 
 	private DataType constructDataType4ParameterList(String methodName, List<Parameter> parameters) {
-		String dataTypeName = methodName + "Parameter";
+		String dataTypeName = methodName + PARAMETER_NAME_EXTENSION;
 		if (dataTypeMapping.containsKey(dataTypeName)) {
 			return dataTypeMapping.get(dataTypeName);
 		} else {
@@ -158,7 +170,7 @@ public class MDSLModelCreator {
 
 		// check if its a primitive type and return it if its primitive
 		String primitiveType = getMDSLPrimitiveType(dataTypeName);
-		if (!"Object".equals(primitiveType)) {
+		if (!BASE_TYPE.equals(primitiveType)) {
 			DataType primitiveDataType = new DataType();
 			primitiveDataType.setIsPrimitiveType(true);
 			primitiveDataType.setName(primitiveType);
@@ -233,7 +245,7 @@ public class MDSLModelCreator {
 
 	private String mapAbstractDataType(String dataTypeName) {
 		String primitiveType = getMDSLPrimitiveType(dataTypeName);
-		if (!"Object".equals(primitiveType))
+		if (!BASE_TYPE.equals(primitiveType))
 			return primitiveType;
 
 		// create data type, since it's not a primitive type
@@ -261,7 +273,7 @@ public class MDSLModelCreator {
 		} else if ("Date".equals(dataTypeName)) {
 			return "V<string>";
 		}
-		return "Object"; // default case: we have to define a data type
+		return BASE_TYPE; // default case: we have to define a data type
 	}
 
 	private EndpointProvider createProvider(String providerName, String implementationTechnology, List<EndpointContract> endpointContracts) {
@@ -270,7 +282,7 @@ public class MDSLModelCreator {
 		for (EndpointContract contract : endpointContracts) {
 			EndpointOffer offer = new EndpointOffer();
 			offer.setOfferedEndpoint(contract);
-			offer.setLocation("http://localhost:" + (initialPort++));
+			offer.setLocation(ENDPOINT_LOCATION + (initialPort++));
 			offer.setProtocol(implementationTechnology);
 			provider.addEndpointOffer(offer);
 		}
@@ -294,7 +306,7 @@ public class MDSLModelCreator {
 			if (relationship.getUpstreamExposedAggregates().isEmpty())
 				continue;
 
-			String upstreamAPIName = relationship.getUpstream().getName() + "API";
+			String upstreamAPIName = relationship.getUpstream().getName() + API_NAME_EXTENSION;
 			UpstreamAPIContext context = null;
 			if (upstreamContextMap.containsKey(upstreamAPIName)) {
 				context = upstreamContextMap.get(upstreamAPIName);

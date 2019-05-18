@@ -1,7 +1,7 @@
 API description CustomerManagementContextAPI
 
 
-endpoint type Customers
+endpoint type CustomersAggregate
 	exposes
 		operation myMethod
 			expecting
@@ -9,12 +9,12 @@ endpoint type Customers
 			delivering
 				payload V<string>
 
-API provider CustomerManagementContext
-	offers Customers
+API provider CustomerManagementContextProvider
+	offers CustomersAggregate
 	at endpoint location "http://localhost:8000"
 		via protocol "RESTful HTTP"
 
-API client ContractManagementContext
-	consumes Customers
+API client ContractManagementContextClient
+	consumes CustomersAggregate
 
 IPA

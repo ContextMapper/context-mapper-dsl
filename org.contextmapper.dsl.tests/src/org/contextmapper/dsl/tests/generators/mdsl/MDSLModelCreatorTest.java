@@ -59,7 +59,7 @@ public class MDSLModelCreatorTest extends AbstractCMLInputFileTest {
 		assertEquals(1, spec.getEndpoints().size());
 
 		EndpointContract endpoint = spec.getEndpoints().get(0);
-		assertEquals("Customers", endpoint.getName());
+		assertEquals("CustomersAggregate", endpoint.getName());
 		assertEquals(2, endpoint.getOperations().size());
 
 		EndpointOperation operation1 = endpoint.getOperations().get(0);
@@ -86,18 +86,18 @@ public class MDSLModelCreatorTest extends AbstractCMLInputFileTest {
 
 		assertEquals(1, spec.getProviders().size());
 		EndpointProvider provider = spec.getProviders().get(0);
-		assertEquals("CustomerManagementContext", provider.getName());
+		assertEquals("CustomerManagementContextProvider", provider.getName());
 		assertEquals(1, provider.getEndpointOffers().size());
 		EndpointOffer contractOffered = provider.getEndpointOffers().get(0);
-		assertEquals("Customers", contractOffered.getOfferedEndpoint().getName());
+		assertEquals("CustomersAggregate", contractOffered.getOfferedEndpoint().getName());
 		assertEquals("http://localhost:8000", contractOffered.getLocation());
 		assertEquals("RESTful HTTP", contractOffered.getProtocol());
 
 		assertEquals(1, spec.getClients().size());
 		EndpointClient client = spec.getClients().get(0);
-		assertEquals("ContractManagementContext", client.getName());
+		assertEquals("ContractManagementContextClient", client.getName());
 		assertEquals(1, client.getConsumedOfferNames().size());
-		assertEquals("Customers", client.getConsumedOfferNames().get(0));
+		assertEquals("CustomersAggregate", client.getConsumedOfferNames().get(0));
 	}
 
 	@Test
