@@ -236,6 +236,8 @@ public class MDSLModelCreator {
 			return "V<double>";
 		} else if ("Blob".equals(dataTypeName)) {
 			return "V<blob>";
+		} else if ("Date".equals(dataTypeName)) {
+			return "V<string>";
 		}
 		return "Object"; // default case: we have to define a data type
 	}
