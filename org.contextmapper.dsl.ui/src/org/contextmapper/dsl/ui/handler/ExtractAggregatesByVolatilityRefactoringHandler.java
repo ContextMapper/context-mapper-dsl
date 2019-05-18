@@ -35,7 +35,8 @@ public class ExtractAggregatesByVolatilityRefactoringHandler extends AbstractRef
 	protected void executeRefactoring(Resource resource, ExecutionEvent event) {
 		BoundedContext bc = (BoundedContext) getSelectedElement();
 
-		ExtractAggregatesByVolatilityContext refactoringContext = new ExtractAggregatesByVolatilityContext();
+		ExtractAggregatesByVolatilityContext refactoringContext = new ExtractAggregatesByVolatilityContext(
+				bc.getAggregates().stream().map(agg -> agg.getLikelihoodForChange()).collect(Collectors.toList()));
 
 		new WizardDialog(HandlerUtil.getActiveShell(event), new ExtractAggregatesByVolatilityRefactoringWizard(refactoringContext, executionContext -> {
 			ExtractAggregatesByVolatility ar = new ExtractAggregatesByVolatility(bc.getName(), executionContext.getVolatilityToExtract());

@@ -40,7 +40,7 @@ public class ExtractAggregatesByVolatilityRefactoringWizard extends Wizard {
 
 	@Override
 	public void addPages() {
-		page = new LikelihoodForChangeSelectionWizardPage();
+		page = new LikelihoodForChangeSelectionWizardPage(this.context.getAvailableLikelihoods());
 		addPage(page);
 	}
 

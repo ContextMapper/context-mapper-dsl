@@ -25,6 +25,8 @@ import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.VerifyEvent;
+import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.program.Program;
@@ -36,9 +38,11 @@ public class LikelihoodForChangeSelectionWizardPage extends ContextMapperWizardP
 
 	private Combo selectionCombo;
 	private Composite container;
+	private List<LikelihoodForChange> availableLikelihoodsForChange;
 
-	public LikelihoodForChangeSelectionWizardPage() {
+	public LikelihoodForChangeSelectionWizardPage(List<LikelihoodForChange> availableLikelihoodsForChange) {
 		super("Volatility Selection Page");
+		this.availableLikelihoodsForChange = availableLikelihoodsForChange;
 	}
 
 	@Override
@@ -68,22 +72,30 @@ public class LikelihoodForChangeSelectionWizardPage extends ContextMapperWizardP
 		List<String> selectionStrings = Arrays.asList(LikelihoodForChange.values()).stream().map(l -> l.getName()).collect(Collectors.toList());
 		selectionCombo.setItems(selectionStrings.toArray(new String[selectionStrings.size()]));
 		selectionCombo.select(selectionStrings.indexOf(LikelihoodForChange.OFTEN.getName()));
-		;
 		selectionCombo.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				setPageComplete(isPageComplete());
+				updateValidationMessage();
 			}
 		});
 		selectionCombo.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				setPageComplete(isPageComplete());
+				updateValidationMessage();
 			}
 		});
 
 		setControl(container);
 		setPageComplete(false);
+	}
+
+	private void updateValidationMessage() {
+		setErrorMessage(null);
+		if (LikelihoodForChange.get(selectionCombo.getText()) != null && !this.availableLikelihoodsForChange.contains(LikelihoodForChange.valueOf(selectionCombo.getText()))) {
+			setErrorMessage("Your Bounded Context does not contain any Aggregates with a 'likelihood for change' of '" + selectionCombo.getText() + "'.");
+		}
 	}
 
 	@Override
@@ -98,7 +110,8 @@ public class LikelihoodForChangeSelectionWizardPage extends ContextMapperWizardP
 
 	@Override
 	public boolean isPageComplete() {
-		return this.selectionCombo.getText() != null && !"".equals(this.selectionCombo.getText());
+		return this.selectionCombo.getText() != null && !"".equals(this.selectionCombo.getText())
+				&& this.availableLikelihoodsForChange.contains(LikelihoodForChange.valueOf(this.selectionCombo.getText()));
 	}
 
 	@Override
