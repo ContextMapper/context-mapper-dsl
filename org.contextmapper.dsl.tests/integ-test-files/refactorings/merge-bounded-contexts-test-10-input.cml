@@ -1,0 +1,33 @@
+BoundedContext CustomerManagement {
+	Aggregate Customers {
+		Entity Customer{
+			String firstName
+			String familyName
+		}
+		Entity Account {
+			String iban
+			String bankName
+		}
+	} 
+	
+	Aggregate Addresses {
+		Entity Address {
+			String street
+		}
+	}		
+}
+
+BoundedContext AnotherContext {
+	Aggregate AnotherAggregate {
+		Entity JustAnEntity
+	}	
+}
+
+BoundedContext TeamA realizes CustomerManagement {
+	type = TEAM
+}
+
+BoundedContext TeamB realizes AnotherContext {
+	type = TEAM
+}
+

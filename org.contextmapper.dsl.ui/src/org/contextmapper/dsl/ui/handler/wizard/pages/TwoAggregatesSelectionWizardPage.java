@@ -27,6 +27,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.program.Program;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
@@ -38,6 +39,7 @@ public class TwoAggregatesSelectionWizardPage extends ContextMapperWizardPage {
 
 	private Combo comboAgg1;
 	private Combo comboAgg2;
+	private Button takeAttributesFromSecondAggregateCheckBox;
 	private Composite container;
 
 	public TwoAggregatesSelectionWizardPage(String initialAggregate1, List<String> allAggregates) {
@@ -108,6 +110,20 @@ public class TwoAggregatesSelectionWizardPage extends ContextMapperWizardPage {
 		});
 		new AutoCompleteField(comboAgg2, new ComboContentAdapter(), this.allAggregates.toArray(new String[allAggregates.size()]));
 
+		// checkbox to inverse merging
+		takeAttributesFromSecondAggregateCheckBox = new Button(container, SWT.CHECK);
+		takeAttributesFromSecondAggregateCheckBox.setText("Take attributes which cannot be merged (incl. Aggregate name) from second Aggregate.");
+		GridData buttonGroupGridData = new GridData(GridData.FILL_HORIZONTAL);
+		buttonGroupGridData.horizontalSpan = 2;
+		takeAttributesFromSecondAggregateCheckBox.setLayoutData(buttonGroupGridData);
+
+		// label to explain checkbox
+		Label checkboxExplanationLabel = new Label(container, SWT.NONE);
+		checkboxExplanationLabel.setText("(By default we take attributes which cannot be merged from the first Aggregate)");
+		GridData checkboxExplanationLabelGridData = new GridData(GridData.FILL_HORIZONTAL);
+		checkboxExplanationLabelGridData.horizontalSpan = 2;
+		checkboxExplanationLabel.setLayoutData(checkboxExplanationLabelGridData);
+
 		setControl(container);
 		setPageComplete(false);
 	}
@@ -124,6 +140,10 @@ public class TwoAggregatesSelectionWizardPage extends ContextMapperWizardPage {
 
 	public String getAggregate2() {
 		return comboAgg2.getText();
+	}
+
+	public boolean takeAttributesFromSecondAggregateCheckBox() {
+		return takeAttributesFromSecondAggregateCheckBox.getSelection();
 	}
 
 	@Override

@@ -22,6 +22,7 @@ public class MergeAggregatesContext {
 	private String initialAggregate1;
 	private String selectedAggregate1;
 	private String selectedAggregate2;
+	private boolean takeAttributesFromSecondAggregate;
 	private List<String> allAggregates;
 
 	public MergeAggregatesContext(String initialAggregate1, List<String> allAggregates) {
@@ -51,6 +52,14 @@ public class MergeAggregatesContext {
 
 	public List<String> getAllAggregates() {
 		return allAggregates;
+	}
+
+	public void setTakeAttributesFromSecondAggregate(boolean takeAttributesFromSecondAggregate) {
+		this.takeAttributesFromSecondAggregate = takeAttributesFromSecondAggregate;
+	}
+
+	public boolean takeAttributesFromSecondAggregate() {
+		return takeAttributesFromSecondAggregate;
 	}
 
 }

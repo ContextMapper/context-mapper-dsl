@@ -22,6 +22,7 @@ public class MergeBoundedContextsContext {
 	private String initialBoundedContext1;
 	private String selectedBoundedContext1;
 	private String selectedBoundedContext2;
+	private boolean takeAttributesFromSecondBoundedContext;
 	private List<String> allBoundedContexts;
 
 	public MergeBoundedContextsContext(String initialBoundedContext1, List<String> allBoundedContexts) {
@@ -49,8 +50,16 @@ public class MergeBoundedContextsContext {
 		this.selectedBoundedContext2 = selectedBoundedContext2;
 	}
 
+	public void setTakeAttributesFromSecondBoundedContext(boolean takeAttributesFromSecondBoundedContext) {
+		this.takeAttributesFromSecondBoundedContext = takeAttributesFromSecondBoundedContext;
+	}
+
 	public List<String> getAllBoundedContexts() {
 		return allBoundedContexts;
+	}
+
+	public boolean takeAttributesFromSecondBoundedContext() {
+		return takeAttributesFromSecondBoundedContext;
 	}
 
 }

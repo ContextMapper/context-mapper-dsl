@@ -48,6 +48,7 @@ public class MergeAggregatesRefactoringWizard extends Wizard {
 	public boolean performFinish() {
 		context.setSelectedAggregate1(page.getAggregate1());
 		context.setSelectedAggregate2(page.getAggregate2());
+		context.setTakeAttributesFromSecondAggregate(page.takeAttributesFromSecondAggregateCheckBox());
 		return finishFunction.apply(context);
 	}
 

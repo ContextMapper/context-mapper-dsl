@@ -17,6 +17,8 @@ package org.contextmapper.dsl.refactoring;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
@@ -24,17 +26,26 @@ import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.Module;
 import org.contextmapper.dsl.contextMappingDSL.Relationship;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
+import org.contextmapper.dsl.refactoring.exception.RefactoringInputException;
 import org.contextmapper.dsl.refactoring.henshin.Refactoring;
 import org.eclipse.xtext.EcoreUtil2;
+
+import com.google.common.collect.Lists;
 
 public class MergeAggregatesRefactoring extends AbstractRefactoring implements Refactoring {
 
 	private String aggregate1;
 	private String aggregate2;
+	private boolean takeAttributesFromSecondAggregate = false;
 
 	public MergeAggregatesRefactoring(String aggregate1, String aggregate2) {
 		this.aggregate1 = aggregate1;
 		this.aggregate2 = aggregate2;
+	}
+
+	public MergeAggregatesRefactoring(String aggregate1, String aggregate2, boolean takeAttributesFromSecondAggregate) {
+		this(aggregate1, aggregate2);
+		this.takeAttributesFromSecondAggregate = takeAttributesFromSecondAggregate;
 	}
 
 	@Override
@@ -52,6 +63,14 @@ public class MergeAggregatesRefactoring extends AbstractRefactoring implements R
 
 		Aggregate agg1 = agg1Opt.get();
 		Aggregate agg2 = agg2Opt.get();
+
+		// inverse merging, if requested
+		if (takeAttributesFromSecondAggregate) {
+			agg1 = agg2Opt.get();
+			agg2 = agg1Opt.get();
+		}
+
+		checkForPossibleDomainObjectNameClashes(agg1, agg2);
 
 		// move content from agg2 to agg1
 		agg1.getConsumers().addAll(agg2.getConsumers());
@@ -76,6 +95,16 @@ public class MergeAggregatesRefactoring extends AbstractRefactoring implements R
 		saveResource();
 	}
 
+	private void checkForPossibleDomainObjectNameClashes(Aggregate aggregate1, Aggregate aggregate2) {
+		List<String> aggregate1DomainObjectNames = aggregate1.getDomainObjects().stream().map(obj -> obj.getName()).collect(Collectors.toList());
+		List<String> aggregate2DomainObjectNames = aggregate2.getDomainObjects().stream().map(obj -> obj.getName()).collect(Collectors.toList());
+
+		Set<String> commonDomainObjectNames = aggregate1DomainObjectNames.stream().distinct().filter(aggregate2DomainObjectNames::contains).collect(Collectors.toSet());
+		if (!commonDomainObjectNames.isEmpty())
+			throw new RefactoringInputException("Sorry, we cannot execute this refactoring. The selected Aggregates contain the following duplicate domain objects: "
+					+ String.join(", ", commonDomainObjectNames));
+	}
+
 	private List<Aggregate> getAllAggregates() {
 		return EcoreUtil2.<Aggregate>getAllContentsOfType(model, Aggregate.class);
 	}
@@ -93,8 +122,14 @@ public class MergeAggregatesRefactoring extends AbstractRefactoring implements R
 
 			UpstreamDownstreamRelationship upDownRelationship = (UpstreamDownstreamRelationship) relationship;
 			if (upDownRelationship.getUpstreamExposedAggregates().contains(agg2)) {
-				upDownRelationship.getUpstreamExposedAggregates().remove(agg2);
-				upDownRelationship.getUpstreamExposedAggregates().add(agg1);
+				// ugly workaround (clear list and add all again); otherwise list is not
+				// properly updated when saving ecore model :(
+				List<Aggregate> exposedAggregates = Lists.newArrayList();
+				exposedAggregates.addAll(upDownRelationship.getUpstreamExposedAggregates());
+				exposedAggregates.remove(agg2);
+				exposedAggregates.add(agg1);
+				upDownRelationship.getUpstreamExposedAggregates().clear();
+				upDownRelationship.getUpstreamExposedAggregates().addAll(exposedAggregates);
 			}
 		}
 	}

@@ -27,6 +27,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.program.Program;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
@@ -38,6 +39,7 @@ public class TwoBoundedContextSelectionWizardPage extends ContextMapperWizardPag
 
 	private Combo comboBC1;
 	private Combo comboBC2;
+	private Button takeAttributesFromSecondBoundedContextCheckBox;
 	private Composite container;
 
 	public TwoBoundedContextSelectionWizardPage(String initialBoundedContext1, List<String> allBoundedContexts) {
@@ -108,6 +110,26 @@ public class TwoBoundedContextSelectionWizardPage extends ContextMapperWizardPag
 		});
 		new AutoCompleteField(comboBC2, new ComboContentAdapter(), this.allBoundedContexts.toArray(new String[allBoundedContexts.size()]));
 
+		// create a horizontal separator
+		Label separator = new Label(container, SWT.HORIZONTAL | SWT.SEPARATOR);
+		GridData separatorGridData = new GridData(GridData.FILL_HORIZONTAL);
+		separatorGridData.horizontalSpan = 2;
+		separator.setLayoutData(separatorGridData);
+
+		// checkbox to inverse merging
+		takeAttributesFromSecondBoundedContextCheckBox = new Button(container, SWT.CHECK);
+		takeAttributesFromSecondBoundedContextCheckBox.setText("Take attributes which cannot be merged (incl. Bounded Context name) from second Bounded Context.");
+		GridData buttonGroupGridData = new GridData(GridData.FILL_HORIZONTAL);
+		buttonGroupGridData.horizontalSpan = 2;
+		takeAttributesFromSecondBoundedContextCheckBox.setLayoutData(buttonGroupGridData);
+
+		// label to explain checkbox
+		Label checkboxExplanationLabel = new Label(container, SWT.NONE);
+		checkboxExplanationLabel.setText("(By default we take attributes which cannot be merged from the first Bounded Context)");
+		GridData checkboxExplanationLabelGridData = new GridData(GridData.FILL_HORIZONTAL);
+		checkboxExplanationLabelGridData.horizontalSpan = 2;
+		checkboxExplanationLabel.setLayoutData(checkboxExplanationLabelGridData);
+
 		setControl(container);
 		setPageComplete(false);
 	}
@@ -124,6 +146,10 @@ public class TwoBoundedContextSelectionWizardPage extends ContextMapperWizardPag
 
 	public String getBoundedContext2() {
 		return comboBC2.getText();
+	}
+	
+	public boolean takeAttributesFromSecondBoundedContext() {
+		return takeAttributesFromSecondBoundedContextCheckBox.getSelection();
 	}
 
 	@Override

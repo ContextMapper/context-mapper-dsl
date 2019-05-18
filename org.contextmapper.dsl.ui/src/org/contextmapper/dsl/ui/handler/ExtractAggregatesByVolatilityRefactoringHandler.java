@@ -29,18 +29,18 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.handlers.HandlerUtil;
 
-public class ExtractAggregatesByVolatilityRefactoringHandler extends AbstractRefactoringHandler {
+public class ExtractAggregatesByVolatilityRefactoringHandler extends AbstractRefactoringWithUserInputHandler {
 
 	@Override
 	protected void executeRefactoring(Resource resource, ExecutionEvent event) {
 		BoundedContext bc = (BoundedContext) getSelectedElement();
 
-		ExtractAggregatesByVolatilityContext refactoringContext = new ExtractAggregatesByVolatilityContext();
+		ExtractAggregatesByVolatilityContext refactoringContext = new ExtractAggregatesByVolatilityContext(
+				bc.getAggregates().stream().map(agg -> agg.getLikelihoodForChange()).collect(Collectors.toList()));
 
 		new WizardDialog(HandlerUtil.getActiveShell(event), new ExtractAggregatesByVolatilityRefactoringWizard(refactoringContext, executionContext -> {
 			ExtractAggregatesByVolatility ar = new ExtractAggregatesByVolatility(bc.getName(), executionContext.getVolatilityToExtract());
-			ar.doRefactor(resource);
-			return true;
+			return finishRefactoring(ar, resource, event);
 		})).open();
 	}
 

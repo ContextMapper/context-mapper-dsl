@@ -1,0 +1,32 @@
+BoundedContext CustomerManagement {
+	domainVisionStatement = "CustomerDomainVisionStatement"
+	knowledgeLevel = META
+	type = SYSTEM
+	
+	Aggregate Customers {
+		Entity Customer{
+			String firstName
+			String familyName
+		}
+		Entity Account {
+			String iban
+			String bankName
+		}
+	} 
+	
+	Aggregate Addresses {
+		Entity Address {
+			String street
+		}
+	}		
+}
+
+BoundedContext AnotherContext {
+	domainVisionStatement = "AnotherDomainVisionStatement"
+	knowledgeLevel = CONCRETE
+	type = FEATURE
+	
+	Aggregate AnotherAggregate {
+		Entity JustAnEntity
+	}	
+}

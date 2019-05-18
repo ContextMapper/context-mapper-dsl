@@ -1,0 +1,22 @@
+BoundedContext AnotherContext {
+	Aggregate agg1 {
+		knowledgeLevel = CONCRETE
+		likelihoodForChange = NORMAL
+		owner = TeamA
+	}
+	
+	Aggregate agg2 {
+		knowledgeLevel = META
+		likelihoodForChange = OFTEN
+		owner = TeamB
+	}
+}
+
+
+BoundedContext TeamA {
+	type = TEAM
+}
+
+BoundedContext TeamB {
+	type = TEAM
+}
