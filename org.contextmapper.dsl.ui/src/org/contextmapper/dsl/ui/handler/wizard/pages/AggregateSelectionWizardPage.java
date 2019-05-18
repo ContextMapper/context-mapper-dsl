@@ -107,12 +107,21 @@ public class AggregateSelectionWizardPage extends ContextMapperWizardPage {
 			public void handleEvent(Event event) {
 				if (event.detail == SWT.CHECK) {
 					setPageComplete(isPageComplete());
+					updateWarningMessage();
 				}
 			}
 		});
 
 		setControl(container);
 		setPageComplete(false);
+	}
+
+	private void updateWarningMessage() {
+		setMessage(null);
+		if (getSelectedAggregates().size() == this.allAggregates.size()) {
+			setMessage("Note that extracting all aggregates leads to the current Bounded Context being empty. Maybe just rename the current Bounded Context instead.",
+					WARNING);
+		}
 	}
 
 	public String getBoundedContextName() {
@@ -128,7 +137,7 @@ public class AggregateSelectionWizardPage extends ContextMapperWizardPage {
 	public boolean isPageComplete() {
 		return boundedContextName.getText() != null && !"".equals(boundedContextName.getText()) && getSelectedAggregates().size() >= 1;
 	}
-	
+
 	@Override
 	public void performHelp() {
 		Program.launch("https://contextmapper.github.io/docs/ar-extract-aggregates-by-nfr/");
