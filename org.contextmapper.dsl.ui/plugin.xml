@@ -593,6 +593,29 @@
 				</command>
         	</menu>
 		</menuContribution>
+		<menuContribution locationURI="popup:#TextEditorContext?after=additions">
+        	<menu id="org.contextmapper.dsl.ui.context.menu" label="Context Mapper" icon="icons/cml.png">
+        		<command defaultHandler="org.contextmapper.dsl.ui.handler.MDSLGenerationHandler" commandId="org.contextmapper.dsl.ui.handler.MDSLGenerationCommand" style="push">
+				</command>
+				<separator
+	         		name="org.contextmapper.dsl.ui.separator1" visible="true">
+				</separator>
+				<command defaultHandler="org.contextmapper.dsl.ui.handler.PlantUMLGenerationHandler" commandId="org.contextmapper.dsl.ui.handler.PlantUMLGenerationCommand" style="push">
+				</command>
+				<separator
+	         		name="org.contextmapper.dsl.ui.separator2" visible="true">
+				</separator>
+				<command defaultHandler="org.contextmapper.dsl.ui.handler.ServiceCutterGenerationHandler" commandId="org.contextmapper.dsl.ui.handler.ServiceCutterGenerationCommand" style="push">
+				</command>
+				<command defaultHandler="org.contextmapper.dsl.ui.handler.ServiceCutterUserRepresentationsExampleGenerationHandler" commandId="org.contextmapper.dsl.ui.handler.ServiceCutterUserRepresentationsExampleGenerationCommand" style="push">
+				</command>
+				<separator
+	         		name="org.contextmapper.dsl.ui.separator3" visible="true">
+				</separator>
+				<command defaultHandler="org.contextmapper.dsl.ui.handler.XMIGenerationHandler" commandId="org.contextmapper.dsl.ui.handler.XMIGenerationCommand" style="push">
+				</command>
+        	</menu>
+        </menuContribution>
 	</extension>
 	<extension point="org.eclipse.ui.preferencePages">
 		<page
@@ -698,7 +721,31 @@
 	<extension point="org.eclipse.ui.menus">
 		<menuContribution locationURI="popup:org.eclipse.ui.popup.any?after=additions">
 			<menu id="org.contextmapper.dsl.ui.menu" label="Context Mapper" icon="icons/cml.png">
-	            <command defaultHandler="org.contextmapper.dsl.ui.handler.ServiceCutterGenerationHandler" commandId="org.contextmapper.dsl.ui.handler.ServiceCutterGenerationCommand" style="push">
+				<command defaultHandler="org.contextmapper.dsl.ui.handler.MDSLGenerationHandler" commandId="org.contextmapper.dsl.ui.handler.MDSLGenerationCommand" style="push">
+					<visibleWhen checkEnabled="false">
+						<iterate>
+							<adapt type="org.eclipse.core.resources.IResource">
+								<test property="org.eclipse.core.resources.name" value="*.cml"/>
+							</adapt>
+						</iterate>
+					</visibleWhen>
+				</command>
+				<separator
+	         		name="org.contextmapper.dsl.ui.separator1" visible="true">
+				</separator>
+				<command defaultHandler="org.contextmapper.dsl.ui.handler.PlantUMLGenerationHandler" commandId="org.contextmapper.dsl.ui.handler.PlantUMLGenerationCommand" style="push">
+					<visibleWhen checkEnabled="false">
+						<iterate>
+							<adapt type="org.eclipse.core.resources.IResource">
+								<test property="org.eclipse.core.resources.name" value="*.cml"/>
+							</adapt>
+						</iterate>
+					</visibleWhen>
+				</command>
+				<separator
+	         		name="org.contextmapper.dsl.ui.separator2" visible="true">
+				</separator>
+				<command defaultHandler="org.contextmapper.dsl.ui.handler.ServiceCutterGenerationHandler" commandId="org.contextmapper.dsl.ui.handler.ServiceCutterGenerationCommand" style="push">
 					<visibleWhen checkEnabled="false">
 						<iterate>
 							<adapt type="org.eclipse.core.resources.IResource">
@@ -735,19 +782,7 @@
 					</visibleWhen>
 				</command>
 				<separator
-	         		name="org.contextmapper.dsl.ui.separator1" visible="true">
-				</separator>
-				<command defaultHandler="org.contextmapper.dsl.ui.handler.PlantUMLGenerationHandler" commandId="org.contextmapper.dsl.ui.handler.PlantUMLGenerationCommand" style="push">
-					<visibleWhen checkEnabled="false">
-						<iterate>
-							<adapt type="org.eclipse.core.resources.IResource">
-								<test property="org.eclipse.core.resources.name" value="*.cml"/>
-							</adapt>
-						</iterate>
-					</visibleWhen>
-				</command>
-				<separator
-	         		name="org.contextmapper.dsl.ui.separator2" visible="true">
+	         		name="org.contextmapper.dsl.ui.separator3" visible="true">
 				</separator>
 				<command defaultHandler="org.contextmapper.dsl.ui.handler.XMIGenerationHandler" commandId="org.contextmapper.dsl.ui.handler.XMIGenerationCommand" style="push">
 					<visibleWhen checkEnabled="false">
@@ -758,18 +793,6 @@
 						</iterate>
 					</visibleWhen>
 				</command>	
-				<separator
-	         		name="org.contextmapper.dsl.ui.separator3" visible="true">
-				</separator>
-				<command defaultHandler="org.contextmapper.dsl.ui.handler.MDSLGenerationHandler" commandId="org.contextmapper.dsl.ui.handler.MDSLGenerationCommand" style="push">
-					<visibleWhen checkEnabled="false">
-						<iterate>
-							<adapt type="org.eclipse.core.resources.IResource">
-								<test property="org.eclipse.core.resources.name" value="*.cml"/>
-							</adapt>
-						</iterate>
-					</visibleWhen>
-				</command>
 			</menu>
 		</menuContribution>
 	</extension>
