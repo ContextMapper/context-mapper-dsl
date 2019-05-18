@@ -58,6 +58,8 @@ public class MDSLModelCreator {
 	private static final String CML_VOID_RETURN_TYPE = "void";
 	private static final String MDSL_VOID_RETURN_TYPE = "V<void>";
 	private static final String ENDPOINT_LOCATION = "http://localhost:";
+	private static final String PROTOCOL_STRING_IF_NOT_DEFINED = "tbd";
+	private static final String PROTOCOL_NOT_DEFINED_COMMENT = "The protocol would be generated if you specify the implementation technology in CML";
 
 	private ContextMap contextMap;
 	private Map<String, DataType> dataTypeMapping;
@@ -283,7 +285,8 @@ public class MDSLModelCreator {
 			EndpointOffer offer = new EndpointOffer();
 			offer.setOfferedEndpoint(contract);
 			offer.setLocation(ENDPOINT_LOCATION + (initialPort++));
-			offer.setProtocol(implementationTechnology);
+			offer.setProtocol(!"".equals(implementationTechnology) ? implementationTechnology : PROTOCOL_STRING_IF_NOT_DEFINED);
+			offer.setProtocolComment(!"".equals(implementationTechnology) ? "" : PROTOCOL_NOT_DEFINED_COMMENT);
 			provider.addEndpointOffer(offer);
 		}
 		return provider;

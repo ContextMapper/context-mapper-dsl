@@ -1,0 +1,20 @@
+API description CustomerManagementContextAPI
+
+
+endpoint type CustomersAggregate
+	exposes
+		operation myMethod
+			expecting
+				payload V<void>
+			delivering
+				payload V<string>
+
+API provider CustomerManagementContextProvider
+	offers CustomersAggregate
+	at endpoint location "http://localhost:8000"
+		via protocol "tbd" // The protocol would be generated if you specify the implementation technology in CML 
+
+API client ContractManagementContextClient
+	consumes CustomersAggregate
+
+IPA

@@ -37,7 +37,7 @@ API provider ${provider.name}
 	<#list provider.endpointOffers as offer>
 	offers ${offer.offeredEndpoint.name}
 	at endpoint location "${offer.location}"
-		via protocol "${offer.protocol}"
+		via protocol "${offer.protocol}"<#if offer.hasProtocolComment()> // ${offer.getProtocolComment()}</#if>
 	</#list>
 </#list>
 
