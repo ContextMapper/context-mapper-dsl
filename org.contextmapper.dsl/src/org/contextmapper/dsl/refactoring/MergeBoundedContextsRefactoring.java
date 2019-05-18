@@ -17,24 +17,32 @@ package org.contextmapper.dsl.refactoring;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
+import org.contextmapper.dsl.contextMappingDSL.BoundedContextType;
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.Relationship;
 import org.contextmapper.dsl.refactoring.henshin.Refactoring;
 import org.eclipse.xtext.EcoreUtil2;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 public class MergeBoundedContextsRefactoring extends AbstractRefactoring implements Refactoring {
 
 	private String boundedContext1;
 	private String boundedContext2;
+	private boolean takeAttributesFromSecondBoundedContext = false;
 
 	public MergeBoundedContextsRefactoring(String boundedContext1, String boundedContext2) {
 		this.boundedContext1 = boundedContext1;
 		this.boundedContext2 = boundedContext2;
+	}
+
+	public MergeBoundedContextsRefactoring(String boundedContext1, String boundedContext2, boolean takeAttributesFromSecondBoundedContext) {
+		this(boundedContext1, boundedContext2);
+		this.takeAttributesFromSecondBoundedContext = takeAttributesFromSecondBoundedContext;
 	}
 
 	@Override
@@ -43,25 +51,48 @@ public class MergeBoundedContextsRefactoring extends AbstractRefactoring impleme
 		if (boundedContext1.equals(boundedContext2))
 			return;
 
-		Optional<BoundedContext> bc1 = getAllBoundedContexts().stream().filter(bc -> bc.getName().equals(boundedContext1)).findFirst();
-		Optional<BoundedContext> bc2 = getAllBoundedContexts().stream().filter(bc -> bc.getName().equals(boundedContext2)).findFirst();
+		Optional<BoundedContext> optionalBC1 = getAllBoundedContexts().stream().filter(bc -> bc.getName().equals(boundedContext1)).findFirst();
+		Optional<BoundedContext> optionalBC2 = getAllBoundedContexts().stream().filter(bc -> bc.getName().equals(boundedContext2)).findFirst();
 
 		// do nothing if one of the BCs does not exist
-		if (!bc1.isPresent() || !bc2.isPresent())
+		if (!optionalBC1.isPresent() || !optionalBC2.isPresent())
 			return;
 
+		BoundedContext bc1 = optionalBC1.get();
+		BoundedContext bc2 = optionalBC2.get();
+
+		// inverse merging, if requested
+		if (takeAttributesFromSecondBoundedContext) {
+			bc1 = optionalBC2.get();
+			bc2 = optionalBC1.get();
+		}
+
 		// move content from BC2 to BC1
-		bc1.get().getAggregates().addAll(bc2.get().getAggregates());
-		bc1.get().getModules().addAll(bc2.get().getModules());
-		bc1.get().getImplementedSubdomains().addAll(bc2.get().getImplementedSubdomains());
-		bc1.get().getRealizedBoundedContexts().addAll(bc2.get().getRealizedBoundedContexts());
-		bc1.get().getResponsibilities().addAll(bc2.get().getResponsibilities());
+		bc1.getAggregates().addAll(bc2.getAggregates());
+		bc1.getModules().addAll(bc2.getModules());
+		bc1.getImplementedSubdomains().addAll(bc2.getImplementedSubdomains());
+		if (bc1.getType().equals(BoundedContextType.TEAM))
+			bc1.getRealizedBoundedContexts().addAll(bc2.getRealizedBoundedContexts());
+		bc1.getResponsibilities().addAll(bc2.getResponsibilities());
+		bc1.setImplementationTechnology(mergeImplementationTechnologies(bc1.getImplementationTechnology(), bc2.getImplementationTechnology()));
 
 		// remove BC2
-		handleContextMapChanges(bc1.get(), bc2.get());
-		this.model.getBoundedContexts().remove(bc2.get());
+		handleContextMapChanges(bc1, bc2);
+		this.model.getBoundedContexts().remove(bc2);
 		this.model.eAllContents();
 		saveResource();
+	}
+
+	private String mergeImplementationTechnologies(String implementationTechnology1, String implementationTechnology2) {
+		if (implementationTechnology1 == null && implementationTechnology2 == null)
+			return null;
+
+		Set<String> implementationTechnologies = Sets.newHashSet();
+		if (implementationTechnology1 != null && !"".equals(implementationTechnology1))
+			implementationTechnologies.add(implementationTechnology1);
+		if (implementationTechnology2 != null && !"".equals(implementationTechnology2))
+			implementationTechnologies.add(implementationTechnology2);
+		return String.join(", ", implementationTechnologies);
 	}
 
 	private List<BoundedContext> getAllBoundedContexts() {

@@ -51,8 +51,8 @@ public class MergeBoundedContextsRefactoringHandler extends AbstractRefactoringW
 				getCurrentContextMappingModel().getBoundedContexts().stream().map(b -> b.getName()).collect(Collectors.toList()));
 
 		new WizardDialog(HandlerUtil.getActiveShell(event), new MergeBoundedContextsRefactoringWizard(refactoringContext, executionContext -> {
-			return finishRefactoring(new MergeBoundedContextsRefactoring(executionContext.getSelectedBoundedContext1(), executionContext.getSelectedBoundedContext2()), resource,
-					event);
+			return finishRefactoring(new MergeBoundedContextsRefactoring(executionContext.getSelectedBoundedContext1(), executionContext.getSelectedBoundedContext2(),
+					executionContext.takeAttributesFromSecondBoundedContext()), resource, event);
 		})).open();
 	}
 

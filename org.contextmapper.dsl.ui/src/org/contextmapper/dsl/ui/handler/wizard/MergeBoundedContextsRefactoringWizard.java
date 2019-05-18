@@ -48,6 +48,7 @@ public class MergeBoundedContextsRefactoringWizard extends Wizard {
 	public boolean performFinish() {
 		context.setSelectedBoundedContext1(page.getBoundedContext1());
 		context.setSelectedBoundedContext2(page.getBoundedContext2());
+		context.setTakeAttributesFromSecondBoundedContext(page.takeAttributesFromSecondBoundedContext());
 		return finishFunction.apply(context);
 	}
 

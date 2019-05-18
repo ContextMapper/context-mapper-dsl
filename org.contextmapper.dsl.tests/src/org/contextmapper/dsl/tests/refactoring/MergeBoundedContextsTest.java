@@ -1,5 +1,6 @@
 package org.contextmapper.dsl.tests.refactoring;
 
+import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -7,7 +8,10 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
+import org.contextmapper.dsl.contextMappingDSL.BoundedContextType;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
+import org.contextmapper.dsl.contextMappingDSL.KnowledgeLevel;
 import org.contextmapper.dsl.contextMappingDSL.SymmetricRelationship;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
 import org.contextmapper.dsl.refactoring.MergeBoundedContextsRefactoring;
@@ -164,7 +168,7 @@ public class MergeBoundedContextsTest extends AbstractRefactoringTest {
 		assertEquals("CustomerManagement", relationship2.getUpstream().getName());
 		assertEquals("DeptColletion", relationship2.getDownstream().getName());
 	}
-	
+
 	@Test
 	void doesFixSymRelationshipsFromBC2ToBC1() throws IOException {
 		// given
@@ -186,6 +190,124 @@ public class MergeBoundedContextsTest extends AbstractRefactoringTest {
 		assertEquals("CustomerManagement", relationship1.getParticipant2().getName());
 		assertEquals("CustomerManagement", relationship2.getParticipant1().getName());
 		assertEquals("DeptColletion", relationship2.getParticipant2().getName());
+	}
+
+	@Test
+	void canMergeImplementationTechnology() throws IOException {
+		// given
+		String inputModelName = "merge-bounded-contexts-test-7-input.cml";
+		Resource input = getResourceCopyOfTestCML(inputModelName);
+		MergeBoundedContextsRefactoring refactoring = new MergeBoundedContextsRefactoring("CustomerManagement", "AnotherContext");
+
+		// when
+		refactoring.doRefactor(input);
+
+		// then
+		List<ContextMappingModel> contextMappingModels = IteratorExtensions
+				.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(reloadResource(input).getAllContents(), ContextMappingModel.class));
+		assertEquals(1, contextMappingModels.get(0).getBoundedContexts().size());
+		BoundedContext bc = contextMappingModels.get(0).getBoundedContexts().get(0);
+		assertEquals("Java, Scala", bc.getImplementationTechnology());
+	}
+
+	@Test
+	void canMergeEmptyImplementationTechnologies() throws IOException {
+		// given
+		String inputModelName = "merge-bounded-contexts-test-8-input.cml";
+		Resource input = getResourceCopyOfTestCML(inputModelName);
+		MergeBoundedContextsRefactoring refactoring = new MergeBoundedContextsRefactoring("CustomerManagement", "AnotherContext");
+
+		// when
+		refactoring.doRefactor(input);
+
+		// then
+		List<ContextMappingModel> contextMappingModels = IteratorExtensions
+				.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(reloadResource(input).getAllContents(), ContextMappingModel.class));
+		assertEquals(1, contextMappingModels.get(0).getBoundedContexts().size());
+		BoundedContext bc = contextMappingModels.get(0).getBoundedContexts().get(0);
+		assertEquals("", bc.getImplementationTechnology());
+	}
+
+	@Test
+	void canMergeNotSetImplementationTechnologies() throws IOException {
+		// given
+		String inputModelName = "merge-bounded-contexts-test-9-input.cml";
+		Resource input = getResourceCopyOfTestCML(inputModelName);
+		MergeBoundedContextsRefactoring refactoring = new MergeBoundedContextsRefactoring("CustomerManagement", "AnotherContext");
+
+		// when
+		refactoring.doRefactor(input);
+
+		// then
+		List<ContextMappingModel> contextMappingModels = IteratorExtensions
+				.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(reloadResource(input).getAllContents(), ContextMappingModel.class));
+		assertEquals(1, contextMappingModels.get(0).getBoundedContexts().size());
+		BoundedContext bc = contextMappingModels.get(0).getBoundedContexts().get(0);
+		assertNull(bc.getImplementationTechnology());
+	}
+
+	@Test
+	void canMergeTeamsRealizedContexts() throws IOException {
+		// given
+		String inputModelName = "merge-bounded-contexts-test-10-input.cml";
+		Resource input = getResourceCopyOfTestCML(inputModelName);
+		MergeBoundedContextsRefactoring refactoring = new MergeBoundedContextsRefactoring("TeamA", "TeamB");
+
+		// when
+		refactoring.doRefactor(input);
+
+		// then
+		List<ContextMappingModel> contextMappingModels = IteratorExtensions
+				.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(reloadResource(input).getAllContents(), ContextMappingModel.class));
+		assertEquals(3, contextMappingModels.get(0).getBoundedContexts().size());
+		BoundedContext teamBC = contextMappingModels.get(0).getBoundedContexts().stream().filter(bc -> bc.getName().equals("TeamA")).findFirst().get();
+		assertEquals(2, teamBC.getRealizedBoundedContexts().size());
+		List<String> realizedBCNames = teamBC.getRealizedBoundedContexts().stream().map(bc -> bc.getName()).collect(Collectors.toList());
+		assertTrue(realizedBCNames.contains("CustomerManagement"));
+		assertTrue(realizedBCNames.contains("AnotherContext"));
+	}
+
+	@Test
+	void canTakeAttributesFromFirstBoundedContextByDefault() throws IOException {
+		// given
+		String inputModelName = "merge-bounded-contexts-test-11-input.cml";
+		Resource input = getResourceCopyOfTestCML(inputModelName);
+		MergeBoundedContextsRefactoring refactoring = new MergeBoundedContextsRefactoring("CustomerManagement", "AnotherContext");
+
+		// when
+		refactoring.doRefactor(input);
+
+		// then
+		List<ContextMappingModel> contextMappingModels = IteratorExtensions
+				.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(reloadResource(input).getAllContents(), ContextMappingModel.class));
+		assertEquals(1, contextMappingModels.get(0).getBoundedContexts().size());
+		BoundedContext bc = contextMappingModels.get(0).getBoundedContexts().get(0);
+		assertEquals("CustomerDomainVisionStatement", bc.getDomainVisionStatement());
+		assertEquals(KnowledgeLevel.META, bc.getKnowledgeLevel());
+		assertEquals("CustomerManagement", bc.getName());
+		assertEquals(BoundedContextType.SYSTEM, bc.getType());
+	}
+
+	
+	@Test
+	void canTakeAttributesFromSecondBoundedContext() throws IOException {
+		// given
+		String inputModelName = "merge-bounded-contexts-test-11-input.cml";
+		Resource input = getResourceCopyOfTestCML(inputModelName);
+		MergeBoundedContextsRefactoring refactoring = new MergeBoundedContextsRefactoring("CustomerManagement", "AnotherContext", true);
+
+		// when
+		refactoring.doRefactor(input);
+
+		// then
+		List<ContextMappingModel> contextMappingModels = IteratorExtensions
+				.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(reloadResource(input).getAllContents(), ContextMappingModel.class));
+		assertEquals(1, contextMappingModels.get(0).getBoundedContexts().size());
+		BoundedContext bc = contextMappingModels.get(0).getBoundedContexts().get(0);
+		assertEquals("AnotherDomainVisionStatement", bc.getDomainVisionStatement());
+		assertEquals(KnowledgeLevel.CONCRETE, bc.getKnowledgeLevel());
+		assertEquals("AnotherContext", bc.getName());
+		assertEquals(BoundedContextType.FEATURE, bc.getType());
 	}
 
 }
