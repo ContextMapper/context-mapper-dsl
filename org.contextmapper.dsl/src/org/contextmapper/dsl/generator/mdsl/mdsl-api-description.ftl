@@ -18,6 +18,8 @@ data type ${dataType.name} <@renderDataTypeAttributesRecursive dataType.getChild
 endpoint type ${endpoint.name}
 	<#if endpoint.operations?has_content>
 	exposes
+	<#else>
+// Your aggregate root does not specify any methods/operations. Therefore we can not generate any endpoint operations.
 	</#if>
 		<#list endpoint.operations as operation>
 		operation ${operation.name}

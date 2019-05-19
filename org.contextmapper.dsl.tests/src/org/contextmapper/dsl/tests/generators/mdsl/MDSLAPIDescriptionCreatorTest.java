@@ -60,17 +60,17 @@ public class MDSLAPIDescriptionCreatorTest extends AbstractCMLInputFileTest {
 	void canHandleListsInParameters() throws IOException {
 		testCMLInputAndMDSLOutputFiles("mdsl-list-in-parameter");
 	}
-	
+
 	@Test
 	void canHandleListsInParameterTrees() throws IOException {
 		testCMLInputAndMDSLOutputFiles("mdsl-parameter-tree-with-list-test");
 	}
-	
+
 	@Test
 	void canHandleListInReturnType() throws IOException {
 		testCMLInputAndMDSLOutputFiles("mdsl-list-in-return-type");
 	}
-	
+
 	@Test
 	void canHandleListParameter() throws IOException {
 		testCMLInputAndMDSLOutputFiles("mdsl-list-parameter-test");
@@ -80,22 +80,43 @@ public class MDSLAPIDescriptionCreatorTest extends AbstractCMLInputFileTest {
 	void canHandlePrimitiveTypesInParametersAndReturnTypes() throws IOException {
 		testCMLInputAndMDSLOutputFiles("mdsl-basic-data-types-as-parameters");
 	}
-	
+
 	@Test
 	void canConvertCMLDateToMDSLString() throws IOException {
 		testCMLInputAndMDSLOutputFiles("mdsl-date-to-string");
 	}
-	
+
 	@Test
 	void canAvoidStackOverflowDueToCyclicDataTypeResolution() throws IOException {
 		testCMLInputAndMDSLOutputFiles("mdsl-cyclic-reference");
 	}
-	
+
 	@Test
 	void canHandleMethodsWithoutParameters() throws IOException {
 		testCMLInputAndMDSLOutputFiles("mdsl-no-parameters");
 	}
-	
+
+	@Test
+	void canCreateCommentInCaseThereIsNoOperationInAnAPI() throws IOException {
+		// given
+		String baseFilename = "mdsl-no-operation-in-one-api";
+		String inputModelName = baseFilename + ".cml";
+		Resource input = getResourceCopyOfTestCML(inputModelName);
+		List<ContextMappingModel> models = IteratorExtensions.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(input.getAllContents(), ContextMappingModel.class));
+		MDSLModelCreator mdslCreator = new MDSLModelCreator(models.get(0).getMap());
+
+		// when
+		List<ServiceSpecification> serviceSpecifications = mdslCreator.createServiceSpecifications();
+		MDSLAPIDescriptionCreator dslTextCreator = new MDSLAPIDescriptionCreator();
+		ServiceSpecification spec = serviceSpecifications.stream().filter(s -> s.getName().equals("MyBoundedContextAPI")).findFirst().get();
+		String dslText = dslTextCreator.createAPIDescriptionText(spec);
+
+		// then
+		File expectedResultFile = new File(Paths.get("").toAbsolutePath().toString(), "/integ-test-files/mdsl/" + baseFilename + ".mdsl");
+		String expectedResult = FileUtils.readFileToString(expectedResultFile);
+		assertEquals(expectedResult, dslText);
+	}
+
 	private void testCMLInputAndMDSLOutputFiles(String baseFilename) throws IOException {
 		// given
 		String inputModelName = baseFilename + ".cml";
