@@ -129,6 +129,7 @@ Workflow {
 			validator = {
 				composedCheck = "org.contextmapper.dsl.validation.BoundedContextRelationshipSemanticsValidator"
 				composedCheck = "org.contextmapper.dsl.validation.ContextMapSemanticsValidator"
+				composedCheck = "org.contextmapper.dsl.validation.AggregateSemanticsValidator"
 				composedCheck = "org.contextmapper.dsl.validation.TeamSemanticsValidator"
 				composedCheck = "org.contextmapper.dsl.validation.UniquenessValidator"
 
