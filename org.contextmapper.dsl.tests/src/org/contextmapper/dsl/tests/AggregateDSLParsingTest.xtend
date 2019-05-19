@@ -31,6 +31,7 @@ import static org.contextmapper.dsl.tests.util.ParsingErrorAssertions.*
 import static org.contextmapper.dsl.validation.ValidationMessages.*
 import static org.junit.jupiter.api.Assertions.*
 import org.contextmapper.dsl.contextMappingDSL.LikelihoodForChange
+import org.contextmapper.tactic.dsl.tacticdsl.TacticdslPackage
 
 @ExtendWith(InjectionExtension)
 @InjectWith(ContextMappingDSLInjectorProvider)
@@ -176,5 +177,28 @@ class AggregateDSLParsingTest {
 		// then
 		assertThatNoParsingErrorsOccurred(result);
 		assertEquals(LikelihoodForChange.OFTEN, result.boundedContexts.get(0).aggregates.get(0).likelihoodForChange);
+	}
+	
+	@Test
+	def void throwErrorIfAggregateContainsMultipleRoots() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext testContext {
+				Aggregate myAggregate {
+					Entity MyFirstEntity {
+						aggregateRoot
+					}
+					Entity MySecondEntity {
+						aggregateRoot
+					}
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		validationTestHelper.assertError(result, TacticdslPackage.Literals.ENTITY, "",
+			String.format(AGGREGATE_CAN_ONLY_HAVE_ONE_AGGREGATE_ROOT, "myAggregate"));
 	}
 }
