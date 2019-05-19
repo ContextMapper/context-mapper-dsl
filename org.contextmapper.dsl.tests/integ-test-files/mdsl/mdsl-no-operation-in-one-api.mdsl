@@ -1,0 +1,15 @@
+API description MyBoundedContextAPI
+
+
+endpoint type myAggregate
+// Your aggregate root does not specify any methods/operations. Therefore we can not generate any endpoint operations.
+
+API provider MyBoundedContextProvider
+	offers myAggregate
+	at endpoint location "http://localhost:8001"
+		via protocol "tbd" // The protocol would be generated if you specify the implementation technology in CML
+
+API client MyDownstreamContextClient
+	consumes myAggregateAggregate
+
+IPA

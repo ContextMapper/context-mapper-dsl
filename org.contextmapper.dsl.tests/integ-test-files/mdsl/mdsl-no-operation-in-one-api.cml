@@ -1,0 +1,31 @@
+ContextMap mymap {
+	contains MyBoundedContext, MyDownstreamContext, YetAnotherContext
+	
+	MyBoundedContext -> MyDownstreamContext {
+		exposedAggregates = myAggregate
+	}
+	
+	MyDownstreamContext -> YetAnotherContext {
+		exposedAggregates = myOtherAggregate
+	}
+}
+
+BoundedContext MyBoundedContext {
+	Aggregate myAggregate {
+		Entity RootEntity {
+			aggregateRoot
+		}
+	}
+}
+
+BoundedContext MyDownstreamContext {
+	Aggregate myOtherAggregate {
+		Entity JustAnEntity {
+			aggregateRoot
+			
+			def doSomething();
+		}
+	}
+}
+
+BoundedContext YetAnotherContext
