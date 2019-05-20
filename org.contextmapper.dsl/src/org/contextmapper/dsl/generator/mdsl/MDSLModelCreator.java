@@ -44,6 +44,7 @@ import org.contextmapper.tactic.dsl.tacticdsl.Parameter;
 import org.contextmapper.tactic.dsl.tacticdsl.Reference;
 import org.contextmapper.tactic.dsl.tacticdsl.ServiceOperation;
 import org.contextmapper.tactic.dsl.tacticdsl.SimpleDomainObject;
+import org.contextmapper.tactic.dsl.tacticdsl.Visibility;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -111,12 +112,14 @@ public class MDSLModelCreator {
 				.filter(o -> o.isAggregateRoot()).findFirst();
 		if (aggregateRoot.isPresent()) {
 			for (DomainObjectOperation operation : aggregateRoot.get().getOperations()) {
-				endpoint.addOperation(createOperation(operation, specification));
+				if (operation.getVisibility().equals(Visibility.PUBLIC))
+					endpoint.addOperation(createOperation(operation, specification));
 			}
 		}
 		List<ServiceOperation> serviceOperations = aggregate.getServices().stream().flatMap(s -> s.getOperations().stream()).collect(Collectors.toList());
 		for (ServiceOperation serviceOperation : serviceOperations) {
-			endpoint.addOperation(createOperation(serviceOperation, specification));
+			if (serviceOperation.getVisibility().equals(Visibility.PUBLIC))
+				endpoint.addOperation(createOperation(serviceOperation, specification));
 		}
 		return endpoint;
 	}
