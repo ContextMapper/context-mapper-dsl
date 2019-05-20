@@ -61,7 +61,7 @@ public class MDSLModelCreator {
 	private static final String MDSL_VOID_RETURN_TYPE = "V<void>";
 	private static final String ENDPOINT_LOCATION = "http://localhost:";
 	private static final String PROTOCOL_STRING_IF_NOT_DEFINED = "tbd";
-	private static final String PROTOCOL_NOT_DEFINED_COMMENT = "The protocol would be generated if you specify the implementation technology in CML";
+	private static final String PROTOCOL_NOT_DEFINED_COMMENT = "The protocol is generated if you specify the implementation technology in CML";
 
 	private ContextMap contextMap;
 	private Map<String, DataType> dataTypeMapping;
