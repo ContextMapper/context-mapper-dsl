@@ -7,7 +7,7 @@ endpoint type myAggregate
 API provider MyBoundedContextProvider
 	offers myAggregate
 	at endpoint location "http://localhost:8001"
-		via protocol "tbd" // The protocol would be generated if you specify the implementation technology in CML
+		via protocol "tbd" // The protocol is generated if you specify the implementation technology in CML
 
 API client MyDownstreamContextClient
 	consumes myAggregateAggregate
