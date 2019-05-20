@@ -183,20 +183,6 @@ public class MDSLModelCreatorTest extends AbstractCMLInputFileTest {
 	}
 
 	@Test
-	void throwExceptionIfThereAreNoAggregateRoots() throws IOException {
-		// given
-		String inputModelName = "no-aggregate-root.cml";
-		Resource input = getResourceCopyOfTestCML(inputModelName);
-		List<ContextMappingModel> models = IteratorExtensions.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(input.getAllContents(), ContextMappingModel.class));
-		MDSLModelCreator mdslCreator = new MDSLModelCreator(models.get(0).getMap());
-
-		// when -> then throw exception
-		assertThrows(GeneratorInputException.class, () -> {
-			mdslCreator.createServiceSpecifications();
-		});
-	}
-
-	@Test
 	void throwExceptionIfThereAreNoOperations() throws IOException {
 		// given
 		String inputModelName = "no-operation.cml";

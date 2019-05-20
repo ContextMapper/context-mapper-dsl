@@ -1,0 +1,40 @@
+ContextMap {
+	contains CustomerManagementContext, ContractManagementContext, JustAnotherContext
+
+	CustomerManagementContext -> ContractManagementContext {
+		exposedAggregates = Customers
+		implementationTechnology = "RESTful HTTP"
+	}
+
+	// this relationship must be ignored, because it has no exposedAggregates
+	CustomerManagementContext -> JustAnotherContext
+
+	// duplicate relationship should not change the result	
+	CustomerManagementContext -> ContractManagementContext {
+		exposedAggregates = Customers
+	}
+
+}
+
+BoundedContext ContractManagementContext
+
+BoundedContext CustomerManagementContext {
+	Aggregate Customers {
+		Service MyService {
+			String anotherMethod(int param);
+			AnyReturnType yetAnotherMethod(int param1, boolean param2);
+		}
+		
+		Service AnotherService {
+			methodWithParameterTree(@Address address);
+		}
+		
+		Entity Address {
+			String street
+			int houseNumber
+			String city
+		}
+	}
+}
+
+BoundedContext JustAnotherContext

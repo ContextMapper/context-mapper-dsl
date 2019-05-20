@@ -116,6 +116,11 @@ public class MDSLAPIDescriptionCreatorTest extends AbstractCMLInputFileTest {
 		String expectedResult = FileUtils.readFileToString(expectedResultFile);
 		assertEquals(expectedResult, dslText);
 	}
+	
+	@Test
+	void canUseServiceOperations() throws IOException {
+		testCMLInputAndMDSLOutputFiles("mdsl-use-service-operations");
+	}
 
 	private void testCMLInputAndMDSLOutputFiles(String baseFilename) throws IOException {
 		// given
