@@ -425,6 +425,22 @@ class PlantUMLClassDiagramCreatorTest extends AbstractCMLInputFileTest {
 	}
 
 	@Test
+	public void canCreateMethodForOperationsWithoutReturnTypes() throws IOException {
+		// given
+		String inputModelName = "operations-with-no-return-value.cml";
+		Resource input = getResourceCopyOfTestCML(inputModelName);
+		List<ContextMappingModel> models = IteratorExtensions.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(input.getAllContents(), ContextMappingModel.class));
+		BoundedContext bc = models.get(0).getBoundedContexts().get(0);
+
+		// when
+		String plantUML = this.creator.createDiagram(bc);
+
+		// then
+		assertTrue(plantUML.contains("	class Customer <<Aggregate Root>> {" + System.lineSeparator() + "		void anotherMethod(String param)" + System.lineSeparator()
+				+ "		void yetAnotherMethod(String param)" + System.lineSeparator() + "	}" + System.lineSeparator()));
+	}
+
+	@Test
 	public void canCreateService() throws IOException {
 		// given
 		String inputModelName = "services-test.cml";
@@ -436,10 +452,10 @@ class PlantUMLClassDiagramCreatorTest extends AbstractCMLInputFileTest {
 		String plantUML = this.creator.createDiagram(bc);
 
 		// then
-		assertTrue(plantUML.contains("	class MyService <<Service>> {" + System.lineSeparator() + "		ReturnType serviceMethod(Address address)" + System.lineSeparator()
-				+ "	}" + System.lineSeparator()));
-		assertTrue(plantUML.contains("	class MyModuleService <<Service>> {" + System.lineSeparator() + "		void myModuleServiceMethod()" + System.lineSeparator()
-		+ "	}" + System.lineSeparator()));
+		assertTrue(plantUML.contains("	class MyService <<Service>> {" + System.lineSeparator() + "		ReturnType serviceMethod(Address address)" + System.lineSeparator() + "	}"
+				+ System.lineSeparator()));
+		assertTrue(plantUML.contains("	class MyModuleService <<Service>> {" + System.lineSeparator() + "		void myModuleServiceMethod()" + System.lineSeparator() + "	}"
+				+ System.lineSeparator()));
 	}
 
 	@Override
