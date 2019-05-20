@@ -33,6 +33,8 @@ BoundedContext CustomerManagementContext {
 			String street
 			int houseNumber
 			String city
+			
+			def updateCity(String city);
 		}
 	}
 }

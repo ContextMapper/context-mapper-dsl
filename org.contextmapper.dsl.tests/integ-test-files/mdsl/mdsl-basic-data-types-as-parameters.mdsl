@@ -29,6 +29,9 @@ endpoint type CustomersAggregate
 		operation blobMethod
 			expecting
 				payload V<blob>
+		operation IntegerMethod
+			expecting
+				payload V<int>
 
 API provider CustomerManagementContextProvider
 	offers CustomersAggregate

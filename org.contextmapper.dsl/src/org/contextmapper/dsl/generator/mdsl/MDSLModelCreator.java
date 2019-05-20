@@ -107,7 +107,8 @@ public class MDSLModelCreator {
 		EndpointContract endpoint = new EndpointContract();
 		String endpointName = aggregate.getName().endsWith(AGGREGATE_NAME_EXTENSION) ? aggregate.getName() : aggregate.getName() + AGGREGATE_NAME_EXTENSION;
 		endpoint.setName(endpointName);
-		Optional<DomainObject> aggregateRoot = aggregate.getDomainObjects().stream().filter(o -> o instanceof DomainObject).map(o -> (DomainObject) o).findFirst();
+		Optional<DomainObject> aggregateRoot = aggregate.getDomainObjects().stream().filter(o -> o instanceof DomainObject).map(o -> (DomainObject) o)
+				.filter(o -> o.isAggregateRoot()).findFirst();
 		if (aggregateRoot.isPresent()) {
 			for (DomainObjectOperation operation : aggregateRoot.get().getOperations()) {
 				endpoint.addOperation(createOperation(operation, specification));
