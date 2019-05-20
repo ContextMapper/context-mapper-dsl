@@ -1,0 +1,15 @@
+BoundedContext CustomerManagementContext {
+	
+	Aggregate Customers {
+		Entity Customer {
+			aggregateRoot
+			
+			def void anotherMethod(String param);
+			def yetAnotherMethod(String param);
+		}
+		
+		Entity Address {
+			String name
+		}
+	}
+}

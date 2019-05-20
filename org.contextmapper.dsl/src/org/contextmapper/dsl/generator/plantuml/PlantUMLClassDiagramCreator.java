@@ -232,7 +232,11 @@ public class PlantUMLClassDiagramCreator extends AbstractPlantUMLDiagramCreator<
 
 	private void printOperation(String objectName, String operationName, ComplexType returnType, List<Parameter> parameters, int indentation) {
 		printIndentation(indentation);
-		String returnTypeAsString = getComplexTypeAsString(returnType, objectName);
+		String returnTypeAsString;
+		if (returnType == null)
+			returnTypeAsString = "void";
+		else
+			returnTypeAsString = getComplexTypeAsString(returnType, objectName);
 		sb.append(returnTypeAsString).append(" ").append(operationName).append("(");
 		List<String> parameterStrings = Lists.newArrayList();
 		for (Parameter parameter : parameters) {
