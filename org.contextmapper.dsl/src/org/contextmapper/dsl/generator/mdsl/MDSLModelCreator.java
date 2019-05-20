@@ -140,7 +140,7 @@ public class MDSLModelCreator {
 			Parameter parameter = parameters.get(0);
 			operation.setExpectingPayload(getDataType4ComplexType(parameter.getParameterType()));
 			operation.setExpectingCollection(parameter.getParameterType().getCollectionType() != CollectionType.NONE);
-		} else if (parameters.size() > 1) {
+		} else {
 			operation.setExpectingPayload(constructDataType4ParameterList(operationName, parameters));
 		}
 		if (returnType != null && !"".equals(returnType.getType()) && !CML_VOID_RETURN_TYPE.equals(returnType.getType())) {
