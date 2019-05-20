@@ -121,6 +121,11 @@ public class MDSLAPIDescriptionCreatorTest extends AbstractCMLInputFileTest {
 	void canUseServiceOperations() throws IOException {
 		testCMLInputAndMDSLOutputFiles("mdsl-use-service-operations");
 	}
+	
+	@Test
+	void onlyUsePublicOperations() throws IOException {
+		testCMLInputAndMDSLOutputFiles("mdsl-only-use-public-operations");
+	}
 
 	private void testCMLInputAndMDSLOutputFiles(String baseFilename) throws IOException {
 		// given

@@ -32,6 +32,7 @@ BoundedContext CustomerManagementContext {
 			def void doubleMethod(double param);
 			def void doubledoubleMethod(Double param);
 			def void blobMethod(Blob param);
+			def void IntegerMethod(Integer param);
 		}
 	}
 }

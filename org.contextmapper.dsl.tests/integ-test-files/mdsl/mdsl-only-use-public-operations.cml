@@ -20,21 +20,22 @@ BoundedContext ContractManagementContext
 
 BoundedContext CustomerManagementContext {
 	Aggregate Customers {
-		Service MyService {
-			String anotherMethod(int param);
-			AnyReturnType yetAnotherMethod(int param1, boolean param2);
+		Entity MyEntity {
+			aggregateRoot
+			
+			def String publicMethod(int param);
+			
+			def protected String protectedMethod(int param);
+			def private String privateMethod(int param);
+			def package String packageMethod(int param);
 		}
 		
 		Service AnotherService {
-			methodWithParameterTree(@Address address);
-		}
-		
-		Entity Address {
-			String street
-			int houseNumber
-			String city
+			anotherPublicMethod(String param);
 			
-			def updateCity(String city);
+			protected String anotherProtectedMethod(int param);
+			private String anotherPrivateMethod(int param);
+			package String anotherPackageMethod(int param);
 		}
 	}
 }

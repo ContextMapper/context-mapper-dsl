@@ -1,0 +1,23 @@
+API description CustomerManagementContextAPI
+
+
+endpoint type CustomersAggregate
+	exposes
+		operation publicMethod
+			expecting
+				payload V<int>
+			delivering
+				payload V<string>
+		operation anotherPublicMethod
+			expecting
+				payload V<string>
+
+API provider CustomerManagementContextProvider
+	offers CustomersAggregate
+	at endpoint location "http://localhost:8000"
+		via protocol "RESTful HTTP"
+
+API client ContractManagementContextClient
+	consumes CustomersAggregate
+
+IPA

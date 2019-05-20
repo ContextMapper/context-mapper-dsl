@@ -104,7 +104,7 @@ DomainObjectTypedElement :
 ServiceOperation :
   (doc=STRING)?
   (visibility=Visibility)?
-  (returnType=ComplexType)?
+  (returnType=ComplexType|"void")?
   name=ID ("(" (parameters+=Parameter)?("," parameters+=Parameter)* ")")?
     (
       ("throws" throws=ThrowsIdentifier)? &
@@ -147,7 +147,7 @@ enum HttpMethod :
 RepositoryOperation :
   (doc=STRING)?
   (visibility=Visibility)?
-  (returnType=ComplexType)?
+  (returnType=ComplexType|"void")?
   name=ID ("(" (parameters+=Parameter)?("," parameters+=Parameter)* ")")?
     (
       ("throws" throws=ThrowsIdentifier)? &
@@ -304,8 +304,8 @@ Trait :
 
 DomainObjectOperation :
   (doc=STRING)?
-  OP (abstract?="abstract")? (visibility=Visibility)?
-  (returnType=ComplexType)?
+  ('*'|"def") (abstract?="abstract")? (visibility=Visibility)?
+  (returnType=ComplexType|"void")?
   name=ID ("(" (parameters+=Parameter)?("," parameters+=Parameter)* ")")?
     (
       ("throws" throws=ThrowsIdentifier)? &
@@ -535,7 +535,3 @@ terminal OPPOSITE :
 
 terminal REF :
   ('-'|'reference');
-
-terminal OP :
-  ('*'|'def');
-
