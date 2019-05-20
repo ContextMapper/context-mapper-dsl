@@ -42,7 +42,6 @@ import org.contextmapper.tactic.dsl.tacticdsl.DomainObject;
 import org.contextmapper.tactic.dsl.tacticdsl.DomainObjectOperation;
 import org.contextmapper.tactic.dsl.tacticdsl.Parameter;
 import org.contextmapper.tactic.dsl.tacticdsl.Reference;
-import org.contextmapper.tactic.dsl.tacticdsl.Service;
 import org.contextmapper.tactic.dsl.tacticdsl.ServiceOperation;
 import org.contextmapper.tactic.dsl.tacticdsl.SimpleDomainObject;
 
@@ -57,7 +56,6 @@ public class MDSLModelCreator {
 	private static final String PROVIDER_NAME_EXTENSION = "Provider";
 	private static final String CLIENT_NAME_EXTENSION = "Client";
 	private static final String BASE_TYPE = "Object";
-	private static final String CML_VOID_RETURN_TYPE = "void";
 	private static final String MDSL_VOID_RETURN_TYPE = "V<void>";
 	private static final String ENDPOINT_LOCATION = "http://localhost:";
 	private static final String PROTOCOL_STRING_IF_NOT_DEFINED = "tbd";
@@ -143,7 +141,7 @@ public class MDSLModelCreator {
 		} else {
 			operation.setExpectingPayload(constructDataType4ParameterList(operationName, parameters));
 		}
-		if (returnType != null && !"".equals(returnType.getType()) && !CML_VOID_RETURN_TYPE.equals(returnType.getType())) {
+		if (returnType != null && !"".equals(returnType.getType())) {
 			operation.setDeliveringPayload(getDataType4ComplexType(returnType));
 			operation.setDeliveringCollection(returnType.getCollectionType() != CollectionType.NONE);
 		}
@@ -366,7 +364,6 @@ public class MDSLModelCreator {
 			throw new GeneratorInputException(
 					"None of your upstream-downstream relationships exposes any Aggregates. Therefore there is nothing to generate. Use the 'exposedAggregates' attribute on your upstream-downstream relationships to specify which Aggregates are exposed by the upstream.");
 
-		List<DomainObject> aggregateRoots = Lists.newArrayList();
 		boolean atLeastOneAggregateWithAnOperation = false;
 		for (Aggregate exposedAggregate : exposedAggregates) {
 			Optional<DomainObject> aggregateRoot = exposedAggregate.getDomainObjects().stream().filter(o -> o instanceof DomainObject).map(o -> (DomainObject) o)
