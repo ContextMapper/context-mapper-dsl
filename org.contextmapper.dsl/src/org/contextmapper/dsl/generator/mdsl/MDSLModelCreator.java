@@ -145,7 +145,7 @@ public class MDSLModelCreator {
 		} else {
 			operation.setExpectingPayload(constructDataType4ParameterList(operationName, parameters));
 		}
-		if (returnType != null && !"".equals(returnType.getType())) {
+		if (returnType != null) {
 			operation.setDeliveringPayload(getDataType4ComplexType(returnType));
 			operation.setDeliveringCollection(returnType.getCollectionType() != CollectionType.NONE);
 		}
