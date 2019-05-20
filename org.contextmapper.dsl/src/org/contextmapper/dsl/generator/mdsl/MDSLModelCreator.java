@@ -42,6 +42,8 @@ import org.contextmapper.tactic.dsl.tacticdsl.DomainObject;
 import org.contextmapper.tactic.dsl.tacticdsl.DomainObjectOperation;
 import org.contextmapper.tactic.dsl.tacticdsl.Parameter;
 import org.contextmapper.tactic.dsl.tacticdsl.Reference;
+import org.contextmapper.tactic.dsl.tacticdsl.Service;
+import org.contextmapper.tactic.dsl.tacticdsl.ServiceOperation;
 import org.contextmapper.tactic.dsl.tacticdsl.SimpleDomainObject;
 
 import com.google.common.collect.Lists;
@@ -113,31 +115,46 @@ public class MDSLModelCreator {
 				endpoint.addOperation(createOperation(operation, specification));
 			}
 		}
+		List<ServiceOperation> serviceOperations = aggregate.getServices().stream().flatMap(s -> s.getOperations().stream()).collect(Collectors.toList());
+		for (ServiceOperation serviceOperation : serviceOperations) {
+			endpoint.addOperation(createOperation(serviceOperation, specification));
+		}
 		return endpoint;
 	}
 
 	private EndpointOperation createOperation(DomainObjectOperation domainObjectOperation, ServiceSpecification specification) {
-		EndpointOperation operation = new EndpointOperation();
-		operation.setName(domainObjectOperation.getName());
+		return createOperation(domainObjectOperation.getName(), domainObjectOperation.getParameters(), domainObjectOperation.getReturnType(), specification);
+	}
 
-		if (domainObjectOperation.getParameters().isEmpty()) {
-			DataType voidType = new DataType();
-			voidType.setIsPrimitiveType(true);
-			voidType.setName(MDSL_VOID_RETURN_TYPE);
-			operation.setExpectingPayload(voidType);
-		} else if (domainObjectOperation.getParameters().size() == 1) {
-			Parameter parameter = domainObjectOperation.getParameters().get(0);
+	private EndpointOperation createOperation(ServiceOperation serviceOperation, ServiceSpecification specification) {
+		return createOperation(serviceOperation.getName(), serviceOperation.getParameters(), serviceOperation.getReturnType(), specification);
+	}
+
+	private EndpointOperation createOperation(String operationName, List<Parameter> parameters, ComplexType returnType, ServiceSpecification specification) {
+		EndpointOperation operation = new EndpointOperation();
+		operation.setName(operationName);
+
+		if (parameters.isEmpty()) {
+			operation.setExpectingPayload(createVoidReturnType());
+		} else if (parameters.size() == 1) {
+			Parameter parameter = parameters.get(0);
 			operation.setExpectingPayload(getDataType4ComplexType(parameter.getParameterType()));
 			operation.setExpectingCollection(parameter.getParameterType().getCollectionType() != CollectionType.NONE);
-		} else if (domainObjectOperation.getParameters().size() > 1) {
-			operation.setExpectingPayload(constructDataType4ParameterList(domainObjectOperation.getName(), domainObjectOperation.getParameters()));
+		} else {
+			operation.setExpectingPayload(constructDataType4ParameterList(operationName, parameters));
 		}
-		if (domainObjectOperation.getReturnType() != null && !"".equals(domainObjectOperation.getReturnType().getType())
-				&& !CML_VOID_RETURN_TYPE.equals(domainObjectOperation.getReturnType().getType())) {
-			operation.setDeliveringPayload(getDataType4ComplexType(domainObjectOperation.getReturnType()));
-			operation.setDeliveringCollection(domainObjectOperation.getReturnType().getCollectionType() != CollectionType.NONE);
+		if (returnType != null && !"".equals(returnType.getType()) && !CML_VOID_RETURN_TYPE.equals(returnType.getType())) {
+			operation.setDeliveringPayload(getDataType4ComplexType(returnType));
+			operation.setDeliveringCollection(returnType.getCollectionType() != CollectionType.NONE);
 		}
 		return operation;
+	}
+
+	private DataType createVoidReturnType() {
+		DataType voidType = new DataType();
+		voidType.setIsPrimitiveType(true);
+		voidType.setName(MDSL_VOID_RETURN_TYPE);
+		return voidType;
 	}
 
 	private DataType constructDataType4ParameterList(String methodName, List<Parameter> parameters) {
@@ -350,23 +367,23 @@ public class MDSLModelCreator {
 					"None of your upstream-downstream relationships exposes any Aggregates. Therefore there is nothing to generate. Use the 'exposedAggregates' attribute on your upstream-downstream relationships to specify which Aggregates are exposed by the upstream.");
 
 		List<DomainObject> aggregateRoots = Lists.newArrayList();
+		boolean atLeastOneAggregateWithAnOperation = false;
 		for (Aggregate exposedAggregate : exposedAggregates) {
 			Optional<DomainObject> aggregateRoot = exposedAggregate.getDomainObjects().stream().filter(o -> o instanceof DomainObject).map(o -> (DomainObject) o)
 					.filter(o -> o.isAggregateRoot()).findFirst();
-			if (aggregateRoot.isPresent())
-				aggregateRoots.add(aggregateRoot.get());
+			if (aggregateRoot.isPresent() && !aggregateRoot.get().getOperations().isEmpty()) {
+				atLeastOneAggregateWithAnOperation = true;
+				break;
+			}
+			List<ServiceOperation> serviceOperations = exposedAggregate.getServices().stream().flatMap(s -> s.getOperations().stream()).collect(Collectors.toList());
+			if (!serviceOperations.isEmpty()) {
+				atLeastOneAggregateWithAnOperation = true;
+				break;
+			}
 		}
-		if (aggregateRoots.isEmpty())
+		if (!atLeastOneAggregateWithAnOperation)
 			throw new GeneratorInputException(
-					"None of your exposed Aggregates contains an 'aggregate root'. Therefore there is nothing to generate. Ensure that your Aggregates which are exposed contain an entity which is the 'aggregate root'.");
-
-		List<DomainObjectOperation> operations = Lists.newArrayList();
-		for (DomainObject obj : aggregateRoots) {
-			operations.addAll(obj.getOperations());
-		}
-		if (operations.isEmpty())
-			throw new GeneratorInputException(
-					"None of your 'aggregate roots' contains an operation/method. Therefore there is nothing to generate. Add at least one operation/method on your 'aggregate roots' in order to get a result.");
+					"None of your exposed Aggregates contains either Service or 'Aggregate Root' operations/methods. Therefore there is nothing to generate. Add at least one operation/method to the 'Aggregate Root' or to a Service in one of your exposed Aggregates to get a result.");
 	}
 
 	private class UpstreamAPIContext {

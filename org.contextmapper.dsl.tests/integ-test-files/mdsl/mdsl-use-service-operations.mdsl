@@ -1,0 +1,31 @@
+API description CustomerManagementContextAPI
+
+data type Address { "street":V<string>, "houseNumber":V<int>, "city":V<string> }
+data type AnyReturnType P
+data type yetAnotherMethodParameter { "param1":V<int>, "param2":V<bool> }
+
+endpoint type CustomersAggregate
+	exposes
+		operation anotherMethod
+			expecting
+				payload V<int>
+			delivering
+				payload V<string>
+		operation yetAnotherMethod
+			expecting
+				payload yetAnotherMethodParameter
+			delivering
+				payload AnyReturnType
+		operation methodWithParameterTree
+			expecting
+				payload Address
+
+API provider CustomerManagementContextProvider
+	offers CustomersAggregate
+	at endpoint location "http://localhost:8000"
+		via protocol "RESTful HTTP"
+
+API client ContractManagementContextClient
+	consumes CustomersAggregate
+
+IPA
