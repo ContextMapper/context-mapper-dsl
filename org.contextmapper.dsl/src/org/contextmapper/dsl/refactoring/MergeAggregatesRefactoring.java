@@ -28,6 +28,7 @@ import org.contextmapper.dsl.contextMappingDSL.Relationship;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
 import org.contextmapper.dsl.refactoring.exception.RefactoringInputException;
 import org.contextmapper.dsl.refactoring.henshin.Refactoring;
+import org.contextmapper.tactic.dsl.tacticdsl.DomainObject;
 import org.eclipse.xtext.EcoreUtil2;
 
 import com.google.common.collect.Lists;
@@ -70,7 +71,12 @@ public class MergeAggregatesRefactoring extends AbstractRefactoring implements R
 			agg2 = agg1Opt.get();
 		}
 
+		// precondition check, may throw exception
 		checkForPossibleDomainObjectNameClashes(agg1, agg2);
+
+		// ensure there is only one aggregate root
+		if (containsAggregateRoot(agg1))
+			changeAggregateRootsToNormalObjects(agg2);
 
 		// move content from agg2 to agg1
 		agg1.getConsumers().addAll(agg2.getConsumers());
@@ -103,6 +109,22 @@ public class MergeAggregatesRefactoring extends AbstractRefactoring implements R
 		if (!commonDomainObjectNames.isEmpty())
 			throw new RefactoringInputException("Sorry, we cannot execute this refactoring. The selected Aggregates contain the following duplicate domain objects: "
 					+ String.join(", ", commonDomainObjectNames));
+	}
+
+	/**
+	 * Sets aggregateRoot flag to false for all objects in given aggregate
+	 */
+	private void changeAggregateRootsToNormalObjects(Aggregate aggregate) {
+		getAggregateRoots(aggregate).forEach(o -> o.setAggregateRoot(false));
+	}
+
+	private boolean containsAggregateRoot(Aggregate aggregate) {
+		return !getAggregateRoots(aggregate).isEmpty();
+	}
+
+	private List<DomainObject> getAggregateRoots(Aggregate aggregate) {
+		return aggregate.getDomainObjects().stream().filter(o -> o instanceof DomainObject).map(o -> (DomainObject) o).filter(o -> o.isAggregateRoot())
+				.collect(Collectors.toList());
 	}
 
 	private List<Aggregate> getAllAggregates() {

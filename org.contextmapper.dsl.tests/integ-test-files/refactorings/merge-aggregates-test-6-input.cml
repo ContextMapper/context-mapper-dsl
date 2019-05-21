@@ -1,0 +1,13 @@
+BoundedContext AnotherContext {
+	Aggregate agg1 {
+		Entity MyEntity {
+			aggregateRoot
+		}
+	}
+	
+	Aggregate agg2 {
+		Entity MyOtherEntity {
+			aggregateRoot
+		}
+	}
+}

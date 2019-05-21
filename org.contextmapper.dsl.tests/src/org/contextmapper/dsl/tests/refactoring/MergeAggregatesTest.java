@@ -18,6 +18,7 @@ import org.contextmapper.dsl.contextMappingDSL.Module;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
 import org.contextmapper.dsl.refactoring.MergeAggregatesRefactoring;
 import org.contextmapper.dsl.refactoring.exception.RefactoringInputException;
+import org.contextmapper.tactic.dsl.tacticdsl.DomainObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtext.xbase.lib.IteratorExtensions;
 import org.junit.jupiter.api.Assertions;
@@ -214,7 +215,7 @@ public class MergeAggregatesTest extends AbstractRefactoringTest {
 		assertEquals("agg1", aggregate.getName());
 		assertEquals("TeamA", aggregate.getOwner().getName());
 	}
-	
+
 	@Test
 	void canTakeAttributesFromSecondAggregate() throws IOException {
 		// given
@@ -236,6 +237,28 @@ public class MergeAggregatesTest extends AbstractRefactoringTest {
 		assertEquals(LikelihoodForChange.OFTEN, aggregate.getLikelihoodForChange());
 		assertEquals("agg2", aggregate.getName());
 		assertEquals("TeamB", aggregate.getOwner().getName());
+	}
+
+	@Test
+	void canHandleAggregateRoots() throws IOException {
+		// given
+		String inputModelName = "merge-aggregates-test-6-input.cml";
+		Resource input = getResourceCopyOfTestCML(inputModelName);
+		MergeAggregatesRefactoring refactoring = new MergeAggregatesRefactoring("agg1", "agg2", true);
+
+		// when
+		refactoring.doRefactor(input);
+
+		// then
+		List<ContextMappingModel> contextMappingModels = IteratorExtensions
+				.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(reloadResource(input).getAllContents(), ContextMappingModel.class));
+		assertEquals(1, contextMappingModels.get(0).getBoundedContexts().size());
+		BoundedContext bc = contextMappingModels.get(0).getBoundedContexts().get(0);
+		assertEquals(1, bc.getAggregates().size());
+		Aggregate aggregate = bc.getAggregates().get(0);
+		List<DomainObject> aggregateRoots = aggregate.getDomainObjects().stream().filter(o -> o instanceof DomainObject).map(o -> (DomainObject) o).filter(o -> o.isAggregateRoot())
+				.collect(Collectors.toList());
+		assertEquals(1, aggregateRoots.size());
 	}
 
 }
