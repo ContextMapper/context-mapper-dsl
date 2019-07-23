@@ -27,7 +27,6 @@ import org.contextmapper.dsl.contextMappingDSL.Module;
 import org.contextmapper.dsl.contextMappingDSL.Relationship;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
 import org.contextmapper.dsl.refactoring.exception.RefactoringInputException;
-import org.contextmapper.dsl.refactoring.henshin.Refactoring;
 import org.contextmapper.tactic.dsl.tacticdsl.DomainObject;
 import org.eclipse.xtext.EcoreUtil2;
 

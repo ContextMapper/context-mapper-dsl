@@ -15,7 +15,6 @@
  */
 package org.contextmapper.dsl.refactoring;
 
-import org.contextmapper.dsl.refactoring.henshin.Refactoring;
 import org.eclipse.emf.ecore.resource.Resource;
 
 import com.google.common.collect.Sets;
