@@ -1,7 +1,7 @@
 package org.contextmapper.dsl.ui.handler;
 
+import org.contextmapper.dsl.refactoring.Refactoring;
 import org.contextmapper.dsl.refactoring.exception.RefactoringInputException;
-import org.contextmapper.dsl.refactoring.henshin.Refactoring;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.jface.dialogs.MessageDialog;

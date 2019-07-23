@@ -18,6 +18,7 @@ package org.contextmapper.dsl.refactoring.henshin;
 import java.io.IOException;
 
 import org.contextmapper.dsl.refactoring.AbstractRefactoring;
+import org.contextmapper.dsl.refactoring.Refactoring;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.henshin.interpreter.EGraph;
 import org.eclipse.emf.henshin.interpreter.Engine;

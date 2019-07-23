@@ -17,7 +17,6 @@ package org.contextmapper.dsl.refactoring;
 
 import java.util.stream.Collectors;
 
-import org.contextmapper.dsl.refactoring.henshin.Refactoring;
 import org.eclipse.emf.ecore.resource.Resource;
 
 public class SplitBoundedContextByUseCases implements Refactoring {
