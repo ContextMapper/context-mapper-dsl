@@ -18,7 +18,8 @@ Require-Bundle: org.contextmapper.dsl,
  org.eclipse.xtext.builder,
  org.eclipse.xtext.xbase.lib;bundle-version="2.14.0",
  org.eclipse.xtend.lib;resolution:=optional
-Import-Package: org.apache.log4j
+Import-Package: org.apache.log4j,
+ org.eclipse.xtext.xbase.ui.hover
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.contextmapper.dsl.ui.contentassist,
  org.contextmapper.dsl.ui.quickfix,
