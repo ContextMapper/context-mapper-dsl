@@ -2,7 +2,7 @@
 <feature
       id="org.contextmapper.dsl.feature"
       label="Context Mapper DSL Editor"
-      version="4.1.2.qualifier"
+      version="4.1.2"
       provider-name="Context Mapper Project Team"
       plugin="org.contextmapper.dsl.ui">
 
