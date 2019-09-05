@@ -18,6 +18,7 @@ package org.contextmapper.dsl.ui.hover;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Region;
+import org.eclipse.xtext.EnumLiteralDeclaration;
 import org.eclipse.xtext.Keyword;
 import org.eclipse.xtext.nodemodel.ILeafNode;
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils;
@@ -37,6 +38,10 @@ public class CMLKeywordAtOffsetHelper {
 			if (leaf != null && leaf.getGrammarElement() instanceof Keyword) {
 				Keyword keyword = (Keyword) leaf.getGrammarElement();
 				return Tuples.create((EObject) keyword, (IRegion) new Region(leaf.getOffset(), leaf.getLength()));
+			}
+			if (leaf != null && leaf.getGrammarElement() instanceof EnumLiteralDeclaration) {
+				EnumLiteralDeclaration enumLiteral = (EnumLiteralDeclaration) leaf.getGrammarElement();
+				return Tuples.create((EObject) enumLiteral, (IRegion) new Region(leaf.getOffset(), leaf.getLength()));
 			}
 		}
 		return null;

@@ -19,6 +19,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
+import org.eclipse.xtext.EnumLiteralDeclaration;
 import org.eclipse.xtext.Keyword;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.ui.editor.hover.IEObjectHoverProvider;
@@ -43,6 +44,10 @@ public class CMLXbaseDispatchingEObjectTextHover extends XbaseDispatchingEObject
 
 	@Override
 	public Object getHoverInfo(EObject first, ITextViewer textViewer, IRegion hoverRegion) {
+		if (first instanceof EnumLiteralDeclaration) {
+			EnumLiteralDeclaration enumLiteral = (EnumLiteralDeclaration) first;
+			first = enumLiteral.getLiteral();
+		}
 		if (first instanceof Keyword && keywordHovers.hasKeywordHoverText(((Keyword) first).getValue())) {
 			lastCreatorProvider = hoverProvider.getHoverInfo(first, textViewer, hoverRegion);
 			return lastCreatorProvider == null ? null : lastCreatorProvider.getInfo();
