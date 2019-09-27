@@ -26,11 +26,13 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.emf.common.CommonPlugin;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.equinox.log.Logger;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
@@ -72,10 +74,12 @@ public class CMLByServiceCutterOutputGenerationHandler extends AbstractHandler i
 				fsa.setProject(project);
 				fsa.setMonitor(new NullProgressMonitor());
 				URI uri = URI.createPlatformResourceURI(file.getFullPath().toString(), true);
+				URI resolvedFile = CommonPlugin.resolve(uri);
+				IFile jsonFile = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(resolvedFile.toFileString()));
 
 				try {
 					ServiceCutterOutputModelFactory modelFactory = new ServiceCutterOutputModelFactory();
-					ServiceCutterOutputModel model = modelFactory.createFromJsonFile(uri);
+					ServiceCutterOutputModel model = modelFactory.createFromJsonFile(jsonFile.getFullPath().toFile());
 					generator.doGenerate(uri, model);
 				} catch (ServiceCutterOutputModelReadingException e) {
 					MessageDialog.openError(HandlerUtil.getActiveShell(event), "Input Error", e.getMessage());
