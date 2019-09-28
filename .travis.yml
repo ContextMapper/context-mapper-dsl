@@ -5,27 +5,30 @@ if: NOT commit_message =~ ^\[Tycho\].*$
 
 install: /bin/true
 
-script: xvfb-run ./mvnw --settings ./.travis/settings.xml clean verify $(if [[ $TRAVIS_TAG =~ ^v.* ]]; then echo "-Prelease-composite"; fi) -B
+jobs:
+  include:
+    - stage: build
+      name: "Build Stage"
+      script: xvfb-run ./mvnw --settings ./.travis/settings.xml clean verify $(if [[ $TRAVIS_TAG =~ ^v.* ]]; then echo "-Prelease-composite"; fi) -B
+      script: xvfb-run ./gradlew clean build
 
-after_success:
-- bash <(curl -s https://codecov.io/bash)
+      after_success:
+      - bash <(curl -s https://codecov.io/bash)
 
-before_deploy:
-- mvn help:evaluate -N -Dexpression=project.version|grep -v '\['
-- export project_version=v$(mvn help:evaluate -N -Dexpression=project.version|grep -v '\[')
+      before_deploy:
+      - mvn help:evaluate -N -Dexpression=project.version|grep -v '\['
+      - export project_version=v$(mvn help:evaluate -N -Dexpression=project.version|grep -v '\[')
 
-deploy:
-   provider: releases
-   api_key:
-      secure: 0WeeIEzopmMh5PZnyP7U/O92GrFTSoIzthPA+qVkqEz0or8cDvbwDCtFpBgPMra9rh/FxLFg5qj/SVG2R420g34lzVlW622dt3R0sdwL6C8VNVdDRqEZuTN/aBnMA79DcBK6rjSQ6uzV9KaI0qgIzsP+G6Mg0VxSGRI0PqLdvRU+myyxDKl47k4EX5Z1lCmDmFV3Phd8oCHeiI/GNbQRADLga8Z4cO3Y8eqP6Gez9w0s2Z6cJL09KkLH+m4aEIf7c1m7CSWbAPkUCeV00XWZxmgArPBA1tlxycP6ks01FItV6ghTTykWfnq2AIZTNT9ebK+DxmtJ7GKol/H1MLET0jLcVbzy+5JHV3RNHuu6WEx11qAguWXCYaMAJkdRl5mdVKUY1kaFioOCoS5O7pan0QCjfKk/l4a9jgW2M4nvVTJTiCjpojc/p2NcjFcrT6t5F1u7+u7mG7QlFAZsU1ytbQODSu2SroF16tx8cCaBEyDGwaeEUBXDn9ofcmt+fiZJ14zLxFsuuwlf2Vjgx0uomDSiNc3gGzY8kzTUwvUO9xcVEJZnuRqVJkUejJn9YCjHXhy/V+0eq+IDQsNgsTYSac+aKWeHfNNRU8a6QSZUBrAVaZS/P0g/P5BOGQMrgW4wOg+GjoaU1RvuW897HOwZgCR7Qgc0qMI8XdNv/ifeQR4=
-   file_glob: true
-   file:
-      - ./**/target/*.jar
-      - org.contextmapper.dsl.repository/target/org.contextmapper.dsl.repository-*.zip
-   skip_cleanup: true
-   on:
-      tags: true
-   name: $project_version
-
-script: xvfb-run ./gradlew clean build
+      deploy:
+         provider: releases
+         api_key:
+            secure: 0WeeIEzopmMh5PZnyP7U/O92GrFTSoIzthPA+qVkqEz0or8cDvbwDCtFpBgPMra9rh/FxLFg5qj/SVG2R420g34lzVlW622dt3R0sdwL6C8VNVdDRqEZuTN/aBnMA79DcBK6rjSQ6uzV9KaI0qgIzsP+G6Mg0VxSGRI0PqLdvRU+myyxDKl47k4EX5Z1lCmDmFV3Phd8oCHeiI/GNbQRADLga8Z4cO3Y8eqP6Gez9w0s2Z6cJL09KkLH+m4aEIf7c1m7CSWbAPkUCeV00XWZxmgArPBA1tlxycP6ks01FItV6ghTTykWfnq2AIZTNT9ebK+DxmtJ7GKol/H1MLET0jLcVbzy+5JHV3RNHuu6WEx11qAguWXCYaMAJkdRl5mdVKUY1kaFioOCoS5O7pan0QCjfKk/l4a9jgW2M4nvVTJTiCjpojc/p2NcjFcrT6t5F1u7+u7mG7QlFAZsU1ytbQODSu2SroF16tx8cCaBEyDGwaeEUBXDn9ofcmt+fiZJ14zLxFsuuwlf2Vjgx0uomDSiNc3gGzY8kzTUwvUO9xcVEJZnuRqVJkUejJn9YCjHXhy/V+0eq+IDQsNgsTYSac+aKWeHfNNRU8a6QSZUBrAVaZS/P0g/P5BOGQMrgW4wOg+GjoaU1RvuW897HOwZgCR7Qgc0qMI8XdNv/ifeQR4=
+         file_glob: true
+         file:
+            - ./**/target/*.jar
+            - org.contextmapper.dsl.repository/target/org.contextmapper.dsl.repository-*.zip
+         skip_cleanup: true
+         on:
+            tags: true
+         name: $project_version
 
