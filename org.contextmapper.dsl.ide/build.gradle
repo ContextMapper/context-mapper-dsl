@@ -1,0 +1,83 @@
+dependencies {
+	compile project(':context-mapper-dsl')
+	compile "org.eclipse.xtext:org.eclipse.xtext.ide:${xtextVersion}"
+	compile "org.eclipse.xtext:org.eclipse.xtext.xbase.ide:${xtextVersion}"
+}
+
+apply plugin: 'application'
+mainClassName = "org.eclipse.xtext.ide.server.ServerLauncher"
+
+//this is an eclipse plugin project
+eclipseClasspath.enabled=false
+cleanEclipseClasspath.enabled=false
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allJava
+    archiveClassifier = 'sources'
+}
+
+task javadocJar(type: Jar) {
+    from javadoc
+    archiveClassifier = 'javadoc'
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+        	customizePom(pom)
+        	
+            artifactId = "${project.name}"
+            groupId "${project.group}"
+            version "${project.version}"
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+            artifact distZip
+        }
+    }
+}
+
+def customizePom(pom) {
+    pom.withXml {
+        def root = asNode()
+
+        // eliminate test-scoped dependencies
+        root.dependencies.removeAll { dep ->
+            dep.scope == "test"
+        }
+
+        root.children().last() + {
+            resolveStrategy = Closure.DELEGATE_FIRST
+
+            description 'Use the ContextMapper language server (LSP) to integrate the ContextMapper DSL within your IDE.'
+            name 'ContextMapper DSL'
+            url 'https://github.com/ContextMapper/context-mapper-dsl'
+            organization {
+                name 'Context Mapper'
+                url 'https://contextmapper.github.io/'
+            }
+            issueManagement {
+                system 'GitHub'
+                url 'https://github.com/ContextMapper/context-mapper-dsl/issues'
+            }
+            licenses {
+                license {
+                    name 'Apache License 2.0'
+                    url 'https://github.com/ContextMapper/context-mapper-dsl/blob/master/LICENSE'
+                    distribution 'repo'
+                }
+            }
+            scm {
+                url 'https://github.com/ContextMapper/context-mapper-dsl'
+                connection 'scm:git:git://github.com/ContextMapper/context-mapper-dsl.git'
+                developerConnection 'scm:git:ssh://git@github.com:ContextMapper/context-mapper-dsl.git'
+            }
+            developers {
+                developer {
+                    name 'Stefan Kapferer'
+                    email 'stefan@contextmapper.org'
+                }
+            }
+        }
+    }
+}
