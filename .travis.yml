@@ -10,7 +10,6 @@ jobs:
     - stage: build
       name: "Build Stage"
       script: xvfb-run ./mvnw --settings ./.travis/settings.xml clean verify $(if [[ $TRAVIS_TAG =~ ^v.* ]]; then echo "-Prelease-composite"; fi) -B
-      script: xvfb-run ./gradlew clean build
 
       after_success:
       - bash <(curl -s https://codecov.io/bash)
@@ -31,4 +30,6 @@ jobs:
          on:
             tags: true
          name: $project_version
+
+      script: ./gradlew clean build
 
