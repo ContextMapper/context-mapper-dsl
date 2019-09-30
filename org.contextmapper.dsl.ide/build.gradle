@@ -1,3 +1,5 @@
+apply plugin: 'signing'
+
 dependencies {
 	compile project(':context-mapper-dsl')
 	compile "org.eclipse.xtext:org.eclipse.xtext.ide:${xtextVersion}"
@@ -21,18 +23,63 @@ task javadocJar(type: Jar) {
     archiveClassifier = 'javadoc'
 }
 
+artifacts {
+    archives javadocJar, sourcesJar
+}
+
+signing {
+    sign configurations.archives
+}
+
+project.ext.'signing.secretKeyRingFile' = "${rootDir}/secret-key.gpg"
+
 publishing {
     publications {
         mavenJava(MavenPublication) {
         	customizePom(pom)
         	
             artifactId = "${project.name}"
-            groupId "${project.group}"
-            version "${project.version}"
+            groupId = "${project.group}"
+            version = "${project.version}"
             from components.java
             artifact sourcesJar
             artifact javadocJar
             artifact distZip
+            artifact distTar
+            
+            pom.withXml {
+                def pomFile = file("${project.buildDir}/generated-pom.xml")
+                writeTo(pomFile)
+                def pomAscFile = signing.sign(pomFile).signatureFiles[0]
+                artifact(pomAscFile) {
+                    classifier = null
+                    extension = 'pom.asc'
+                }
+            }
+            
+            signArchives.signatures.each { signature ->
+                artifact(signature) {
+                    def matcher = signature.file =~ /-(sources|javadoc)\.jar\.asc$/
+                    if (matcher.find()) {
+                        classifier = matcher.group(1)
+                    } else {
+                        classifier = null
+                    }
+                    extension = signature.type
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            def releasesRepoUrl = "${ossReleaseStagingRepository}"
+            def snapshotsRepoUrl = "${ossSnapshotRepository}"
+            url = project.version.text().endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+            
+            credentials {
+                username = System.getenv('OSSRH_USERNAME')
+                password = System.getenv('OSSRH_PASSWORD')
+            }
         }
     }
 }
@@ -79,5 +126,17 @@ def customizePom(pom) {
                 }
             }
         }
+    }
+}
+
+model {
+    tasks.generatePomFileForMavenJavaPublication {
+        destination = file("$buildDir/generated-pom.xml")
+    }
+    tasks.publishMavenJavaPublicationToMavenLocal {
+        dependsOn project.tasks.signArchives
+    }
+    tasks.publishMavenJavaPublicationToMavenRepository {
+        dependsOn project.tasks.signArchives
     }
 }

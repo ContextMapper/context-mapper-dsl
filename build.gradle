@@ -35,4 +35,5 @@ subprojects {
 	configurations.all {
 		exclude group: 'asm'
 	}
+	
 }
