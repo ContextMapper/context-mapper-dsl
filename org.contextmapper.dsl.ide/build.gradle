@@ -1,0 +1,141 @@
+apply plugin: 'signing'
+
+dependencies {
+	compile project(':context-mapper-dsl')
+	compile "org.eclipse.xtext:org.eclipse.xtext.ide:${xtextVersion}"
+	compile "org.eclipse.xtext:org.eclipse.xtext.xbase.ide:${xtextVersion}"
+}
+
+apply plugin: 'application'
+mainClassName = "org.eclipse.xtext.ide.server.ServerLauncher"
+
+//this is an eclipse plugin project
+eclipseClasspath.enabled=false
+cleanEclipseClasspath.enabled=false
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allJava
+    archiveClassifier = 'sources'
+}
+
+task javadocJar(type: Jar) {
+    from javadoc
+    archiveClassifier = 'javadoc'
+}
+
+artifacts {
+    archives javadocJar, sourcesJar
+}
+
+signing {
+    sign configurations.archives
+    required { gradle.taskGraph.hasTask("publishMavenJavaPublicationToMavenLocal") || gradle.taskGraph.hasTask("publishMavenJavaPublicationToMavenRepository") }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+        	customizePom(pom)
+        	
+            artifactId = "${project.name}"
+            groupId = "${project.group}"
+            version = "${project.version}"
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+            artifact distZip
+            artifact distTar
+            
+            pom.withXml {
+                def pomFile = file("${project.buildDir}/generated-pom.xml")
+                writeTo(pomFile)
+                def pomAscFile = signing.sign(pomFile).signatureFiles[0]
+                artifact(pomAscFile) {
+                    classifier = null
+                    extension = 'pom.asc'
+                }
+            }
+            
+            signArchives.signatures.each { signature ->
+                artifact(signature) {
+                    def matcher = signature.file =~ /-(sources|javadoc)\.jar\.asc$/
+                    if (matcher.find()) {
+                        classifier = matcher.group(1)
+                    } else {
+                        classifier = null
+                    }
+                    extension = signature.type
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            def releasesRepoUrl = "${ossReleaseStagingRepository}"
+            def snapshotsRepoUrl = "${ossSnapshotRepository}"
+            url = project.version.text().endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+            
+            credentials {
+                username = System.getenv('OSSRH_USERNAME')
+                password = System.getenv('OSSRH_PASSWORD')
+            }
+        }
+    }
+}
+
+def customizePom(pom) {
+    pom.withXml {
+        def root = asNode()
+
+        // eliminate test-scoped dependencies
+        root.dependencies.removeAll { dep ->
+            dep.scope == "test"
+        }
+
+        root.children().last() + {
+            resolveStrategy = Closure.DELEGATE_FIRST
+
+            description 'Use the ContextMapper language server (LSP) to integrate the ContextMapper DSL within your IDE.'
+            name 'ContextMapper DSL'
+            url 'https://github.com/ContextMapper/context-mapper-dsl'
+            organization {
+                name 'Context Mapper'
+                url 'https://contextmapper.github.io/'
+            }
+            issueManagement {
+                system 'GitHub'
+                url 'https://github.com/ContextMapper/context-mapper-dsl/issues'
+            }
+            licenses {
+                license {
+                    name 'Apache License 2.0'
+                    url 'https://github.com/ContextMapper/context-mapper-dsl/blob/master/LICENSE'
+                    distribution 'repo'
+                }
+            }
+            scm {
+                url 'https://github.com/ContextMapper/context-mapper-dsl'
+                connection 'scm:git:git://github.com/ContextMapper/context-mapper-dsl.git'
+                developerConnection 'scm:git:ssh://git@github.com:ContextMapper/context-mapper-dsl.git'
+            }
+            developers {
+                developer {
+                    name 'Stefan Kapferer'
+                    email 'stefan@contextmapper.org'
+                }
+            }
+        }
+    }
+}
+
+model {
+    tasks.generatePomFileForMavenJavaPublication {
+        destination = file("$buildDir/generated-pom.xml")
+    }
+    tasks.publishMavenJavaPublicationToMavenLocal {
+        dependsOn project.tasks.signArchives
+    }
+    tasks.publishMavenJavaPublicationToMavenRepository {
+        dependsOn project.tasks.signArchives
+    }
+}

@@ -43,6 +43,10 @@ To use the ContextMapper DSL you need the following tools:
 If you want to contribute and setup the IDE on your local system follow the following instructions. [Here](./wiki/Development) you get the instructions in more details.
 
 ### Building the Project
+The project currently has two builds since we have to use Maven for building the Eclipse plugin but prefer Gradle in the standalone case.
+With Gradle you can only build the DSL and the IDE (LSP) project. It is further used to deploy these standalone JARs to the Maven central.
+
+#### Eclipse Build (Maven)
 The project uses the [Maven Wrapper](https://github.com/takari/maven-wrapper). 
 
 After cloning the project it can be built with the following command within the root directory of the project:
@@ -54,6 +58,15 @@ After cloning the project it can be built with the following command within the 
 `./mvnw clean integration-test`
 
 Of course they are also executed with a _clean install_.
+
+#### Standalone Build (Gradle)
+To build the standalone projects only, you can use the Gradle Wrapper:
+
+`./gradlew clean build`
+
+**Note:** If you want to deploy the libraries into your local Maven repository, you need a GPG key to sign the artifacts:
+
+`./gradlew clean publishToMavenLocal -Psigning.keyId=<your-gpg-key-id> -Psigning.password=<gpg-passphrase> -Psigning.secretKeyRingFile=<path-to-gpg-keyring-file>` 
 
 ### Setup Eclipse IDE
 Since this is an Xtext project you need an Eclipse IDE to work on it. Download the **Eclipse IDE for Java and DSL Developers** from [here](https://www.eclipse.org/downloads/packages/). The latest version of eclipse we worked with is [2018-09](https://www.eclipse.org/downloads/packages/release/2018-09/r/eclipse-ide-java-and-dsl-developers).

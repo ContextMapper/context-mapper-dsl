@@ -33,3 +33,8 @@ plugin.xml_gen
 **/src-gen
 **/xtend-gen
 **/model/generated/
+
+# Build
+.gradle/
+build/
+
