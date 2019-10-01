@@ -13,8 +13,7 @@ jobs:
     - bash <(curl -s https://codecov.io/bash)
     before_deploy:
     - mvn help:evaluate -N -Dexpression=project.version|grep -v '\['
-    - export project_version=v$(mvn help:evaluate -N -Dexpression=project.version|grep
-      -v '\[')
+    - export project_version=v$(mvn help:evaluate -N -Dexpression=project.version|grep -v '\[')
     deploy:
       provider: releases
       api_key:
