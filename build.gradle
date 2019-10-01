@@ -36,4 +36,7 @@ subprojects {
 		exclude group: 'asm'
 	}
 	
+    if (!project.hasProperty('signing.secretKeyRingFile')) {
+        project.ext.'signing.secretKeyRingFile' = "${rootDir}/secret-key.gpg"
+    }
 }

@@ -57,9 +57,8 @@ artifacts {
 
 signing {
     sign configurations.archives
+    required { gradle.taskGraph.hasTask("publishMavenJavaPublicationToMavenLocal") || gradle.taskGraph.hasTask("publishMavenJavaPublicationToMavenRepository") }
 }
-
-project.ext.'signing.secretKeyRingFile' = "${rootDir}/secret-key.gpg"
 
 publishing {
     publications {
