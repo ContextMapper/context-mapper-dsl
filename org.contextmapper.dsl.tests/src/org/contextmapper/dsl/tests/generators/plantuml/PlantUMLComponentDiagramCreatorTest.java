@@ -374,18 +374,21 @@ class PlantUMLComponentDiagramCreatorTest {
 		relationship.setUpstream(boundedContext1);
 		relationship.setDownstream(boundedContext2);
 		relationship.getUpstreamExposedAggregates().add(aggregate1);
-		relationship.getUpstreamExposedAggregates().add(aggregate2);
 		contextMap.getRelationships().add(relationship);
 
 		// when
-		String plantUML = this.creator.createDiagram(contextMap);
+		String plantUML1 = this.creator.createDiagram(contextMap);
+		relationship.getUpstreamExposedAggregates().add(aggregate2);
+		this.creator = new PlantUMLComponentDiagramCreator();
+		String plantUML2 = this.creator.createDiagram(contextMap);
 
 		// then
-		assertTrue(plantUML.contains("component [myContext1]" + System.lineSeparator()));
-		assertTrue(plantUML.contains("component [myContext2]" + System.lineSeparator()));
-		assertTrue(plantUML.contains("interface \"Upstream-Downstream\" as myContext2_to_myContext1" + System.lineSeparator()));
-		assertTrue(plantUML.contains("[myContext1] --> myContext2_to_myContext1" + System.lineSeparator()));
-		assertTrue(plantUML.contains("myContext2_to_myContext1 <.. [myContext2] : use Aggregates ExposedAggregate1, ExposedAggregate2 " + System.lineSeparator()));
+		assertTrue(plantUML1.contains("component [myContext1]" + System.lineSeparator()));
+		assertTrue(plantUML1.contains("component [myContext2]" + System.lineSeparator()));
+		assertTrue(plantUML1.contains("interface \"Upstream-Downstream\" as myContext2_to_myContext1" + System.lineSeparator()));
+		assertTrue(plantUML1.contains("[myContext1] --> myContext2_to_myContext1" + System.lineSeparator()));
+		assertTrue(plantUML1.contains("myContext2_to_myContext1 <.. [myContext2] : use Aggregate ExposedAggregate1 " + System.lineSeparator()));
+		assertTrue(plantUML2.contains("myContext2_to_myContext1 <.. [myContext2] : use Aggregates ExposedAggregate1, ExposedAggregate2 " + System.lineSeparator()));
 	}
 
 	@Test
