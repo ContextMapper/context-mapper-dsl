@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.CustomerSupplierRelationship;
@@ -32,8 +33,7 @@ import org.contextmapper.dsl.contextMappingDSL.UpstreamRole;
 import org.contextmapper.dsl.validation.ValidationMessages;
 import org.eclipse.emf.common.util.EList;
 
-public class PlantUMLComponentDiagramCreator extends AbstractPlantUMLDiagramCreator<ContextMap>
-		implements PlantUMLDiagramCreator<ContextMap> {
+public class PlantUMLComponentDiagramCreator extends AbstractPlantUMLDiagramCreator<ContextMap> implements PlantUMLDiagramCreator<ContextMap> {
 
 	private Set<String> interfaceNames = new HashSet<>();
 	private int interfaceCounter = 0;
@@ -61,32 +61,28 @@ public class PlantUMLComponentDiagramCreator extends AbstractPlantUMLDiagramCrea
 	}
 
 	private void printEmptyDiagramNote() {
-		sb.append("note").append(" ").append("\"").append(ValidationMessages.EMPTY_UML_COMPONENT_DIAGRAM_MESSAGE)
-				.append("\"").append(" as EmptyDiagramError");
+		sb.append("note").append(" ").append("\"").append(ValidationMessages.EMPTY_UML_COMPONENT_DIAGRAM_MESSAGE).append("\"").append(" as EmptyDiagramError");
 		linebreak();
 	}
 
 	private void printPartnershipRelationship(Partnership relationship) {
-		printSymmetricComponentRelationship(((Partnership) relationship).getParticipant1().getName(),
-				((Partnership) relationship).getParticipant2().getName(), getRelationshipLabel(relationship));
+		printSymmetricComponentRelationship(((Partnership) relationship).getParticipant1().getName(), ((Partnership) relationship).getParticipant2().getName(),
+				getRelationshipLabel(relationship));
 		linebreak();
 	}
 
 	private void printSharedKernelRelationship(SharedKernel relationship) {
-		printSymmetricComponentRelationship(((SharedKernel) relationship).getParticipant1().getName(),
-				((SharedKernel) relationship).getParticipant2().getName(), getRelationshipLabel(relationship));
+		printSymmetricComponentRelationship(((SharedKernel) relationship).getParticipant1().getName(), ((SharedKernel) relationship).getParticipant2().getName(),
+				getRelationshipLabel(relationship));
 		linebreak();
 	}
 
 	private void printUpstreamDownstreamRelationship(UpstreamDownstreamRelationship relationship) {
 		UpstreamDownstreamRelationship upDownRelationship = (UpstreamDownstreamRelationship) relationship;
-		String interfaceId = getUniqueInterfaceId(upDownRelationship.getName(),
-				upDownRelationship.getUpstream().getName(), upDownRelationship.getDownstream().getName());
+		String interfaceId = getUniqueInterfaceId(upDownRelationship.getName(), upDownRelationship.getUpstream().getName(), upDownRelationship.getDownstream().getName());
 		printInterface(getRelationshipLabel(relationship), interfaceId);
-		printInterfaceExposure(upDownRelationship.getUpstream().getName(), interfaceId,
-				upstreamRolesToArray(upDownRelationship.getUpstreamRoles()));
-		printInterfaceUsage(upDownRelationship.getDownstream().getName(), interfaceId,
-				downstreamRolesToArray(upDownRelationship.getDownstreamRoles()));
+		printInterfaceExposure(upDownRelationship.getUpstream().getName(), interfaceId, upstreamRolesToArray(upDownRelationship.getUpstreamRoles()));
+		printInterfaceUsage(interfaceId, upDownRelationship);
 		linebreak();
 	}
 
@@ -124,10 +120,14 @@ public class PlantUMLComponentDiagramCreator extends AbstractPlantUMLDiagramCrea
 		linebreak();
 	}
 
-	private void printInterfaceUsage(String component, String interfaceId, String[] roles) {
-		sb.append(interfaceId).append(" <.. ").append("[" + component + "]").append(" : ").append("use");
+	private void printInterfaceUsage(String interfaceId, UpstreamDownstreamRelationship relationship) {
+		sb.append(interfaceId).append(" <.. ").append("[" + relationship.getDownstream().getName() + "]").append(" : ").append("use ");
+		if (!relationship.getUpstreamExposedAggregates().isEmpty())
+			sb.append(relationship.getUpstreamExposedAggregates().size() > 1 ? "Aggregates " : "Aggregate ")
+					.append(aggregatesToCommaSeparatedString(relationship.getUpstreamExposedAggregates())).append(" ");
+		String[] roles = downstreamRolesToArray(relationship.getDownstreamRoles());
 		if (roles.length > 0)
-			sb.append(" : ").append(String.join(", ", roles));
+			sb.append("via ").append(String.join(", ", roles));
 		linebreak();
 	}
 
@@ -139,13 +139,15 @@ public class PlantUMLComponentDiagramCreator extends AbstractPlantUMLDiagramCrea
 	}
 
 	private String[] upstreamRolesToArray(EList<UpstreamRole> roles) {
-		return roles.stream().map(role -> role.getName()).collect(Collectors.toList())
-				.toArray(new String[roles.size()]);
+		return roles.stream().map(role -> role.getName()).collect(Collectors.toList()).toArray(new String[roles.size()]);
 	}
 
 	private String[] downstreamRolesToArray(EList<DownstreamRole> roles) {
-		return roles.stream().map(role -> role.getName()).collect(Collectors.toList())
-				.toArray(new String[roles.size()]);
+		return roles.stream().map(role -> role.getName()).collect(Collectors.toList()).toArray(new String[roles.size()]);
+	}
+
+	private String aggregatesToCommaSeparatedString(EList<Aggregate> aggregates) {
+		return String.join(", ", aggregates.stream().map(aggregate -> aggregate.getName()).collect(Collectors.toList()).toArray(new String[aggregates.size()]));
 	}
 
 	private String getRelationshipLabel(Relationship relationship) {
@@ -162,8 +164,7 @@ public class PlantUMLComponentDiagramCreator extends AbstractPlantUMLDiagramCrea
 		} else {
 			label.append(getRelationshipTypeLabel(relationship));
 		}
-		if (relationship.getImplementationTechnology() != null
-				&& !"".equals(relationship.getImplementationTechnology())) {
+		if (relationship.getImplementationTechnology() != null && !"".equals(relationship.getImplementationTechnology())) {
 			label.append(" (").append(relationship.getImplementationTechnology()).append(")");
 		}
 		return label.toString();
@@ -176,11 +177,9 @@ public class PlantUMLComponentDiagramCreator extends AbstractPlantUMLDiagramCrea
 		} else if (relationship instanceof CustomerSupplierRelationship) {
 			label.append(getRelationshipTypeLabel(relationship));
 		}
-		if ("".equals(label.toString()) && relationship.getImplementationTechnology() != null
-				&& !"".equals(relationship.getImplementationTechnology())) {
+		if ("".equals(label.toString()) && relationship.getImplementationTechnology() != null && !"".equals(relationship.getImplementationTechnology())) {
 			label.append(relationship.getImplementationTechnology());
-		} else if (relationship.getImplementationTechnology() != null
-				&& !"".equals(relationship.getImplementationTechnology())) {
+		} else if (relationship.getImplementationTechnology() != null && !"".equals(relationship.getImplementationTechnology())) {
 			label.append(" (").append(relationship.getImplementationTechnology()).append(")");
 		}
 		if ("".equals(label.toString())) {
