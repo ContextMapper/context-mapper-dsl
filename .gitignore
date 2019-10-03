@@ -29,6 +29,10 @@ hs_err_pid*
 **/.settings
 plugin.xml_gen
 
+# IntelliJ files
+.idea/
+**/*.iml
+
 # Xtext generated sources
 **/src-gen
 **/xtend-gen
