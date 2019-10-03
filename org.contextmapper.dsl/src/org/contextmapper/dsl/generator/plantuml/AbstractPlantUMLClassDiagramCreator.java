@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 The Context Mapper Project Team
+ * Copyright 2019 The Context Mapper Project Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,6 @@ package org.contextmapper.dsl.generator.plantuml;
 
 import java.util.List;
 
-import org.contextmapper.dsl.contextMappingDSL.Aggregate;
-import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
-import org.contextmapper.dsl.contextMappingDSL.Module;
-import org.contextmapper.dsl.contextMappingDSL.Subdomain;
-import org.contextmapper.dsl.validation.ValidationMessages;
 import org.contextmapper.tactic.dsl.tacticdsl.Attribute;
 import org.contextmapper.tactic.dsl.tacticdsl.CollectionType;
 import org.contextmapper.tactic.dsl.tacticdsl.CommandEvent;
@@ -35,100 +30,18 @@ import org.contextmapper.tactic.dsl.tacticdsl.EnumValue;
 import org.contextmapper.tactic.dsl.tacticdsl.Event;
 import org.contextmapper.tactic.dsl.tacticdsl.Parameter;
 import org.contextmapper.tactic.dsl.tacticdsl.Reference;
-import org.contextmapper.tactic.dsl.tacticdsl.Service;
-import org.contextmapper.tactic.dsl.tacticdsl.ServiceOperation;
 import org.contextmapper.tactic.dsl.tacticdsl.SimpleDomainObject;
 import org.contextmapper.tactic.dsl.tacticdsl.ValueObject;
-import org.eclipse.xtext.EcoreUtil2;
+import org.eclipse.emf.ecore.EObject;
 
 import com.google.common.collect.Lists;
 
-public class PlantUMLClassDiagramCreator extends AbstractPlantUMLDiagramCreator<BoundedContext> implements PlantUMLDiagramCreator<BoundedContext> {
+abstract public class AbstractPlantUMLClassDiagramCreator<T extends EObject> extends AbstractPlantUMLDiagramCreator<T> {
 
-	private List<UMLRelationship> relationships;
-	private List<SimpleDomainObject> boundedContextsDomainObjects;
+	protected List<UMLRelationship> relationships;
+	protected List<SimpleDomainObject> domainObjects;
 
-	@Override
-	protected void printDiagramContent(BoundedContext boundedContext) {
-		this.relationships = Lists.newArrayList();
-		this.boundedContextsDomainObjects = EcoreUtil2.<SimpleDomainObject>getAllContentsOfType(boundedContext, SimpleDomainObject.class);
-		if (this.boundedContextsDomainObjects.size() <= 0) {
-			printEmptyDiagramNote();
-			return;
-		}
-		for (Module module : boundedContext.getModules()) {
-			printModule(module);
-		}
-		for (Aggregate aggregate : boundedContext.getAggregates()) {
-			printAggregate(aggregate, 0);
-		}
-		printReferences(0);
-		printSubdomainLegend(boundedContext.getImplementedSubdomains());
-	}
-
-	private void printSubdomainLegend(List<Subdomain> subdomains) {
-		if (subdomains.isEmpty())
-			return;
-		sb.append("legend left");
-		linebreak();
-		for (Subdomain subdomain : subdomains) {
-			if (subdomain.getEntities().isEmpty()) {
-				sb.append("  ").append("This bounded context implements the subdomain '" + subdomain.getName() + "'.");
-			} else {
-				sb.append("  ").append("This bounded context implements the subdomain '" + subdomain.getName() + "', which contains the following entities:");
-			}
-			linebreak();
-			for (Entity entity : subdomain.getEntities()) {
-				sb.append("  ").append(" - ").append(entity.getName());
-				linebreak();
-			}
-		}
-		sb.append("endlegend");
-		linebreak();
-	}
-
-	private void printEmptyDiagramNote() {
-		sb.append("note").append(" ").append("\"").append(ValidationMessages.EMPTY_UML_CLASS_DIAGRAM_MESSAGE).append("\"").append(" as EmptyDiagramError");
-		linebreak();
-	}
-
-	private void printModule(Module module) {
-		sb.append("package ");
-		if (module.getBasePackage() != null && !"".equals(module.getBasePackage()))
-			sb.append(module.getBasePackage()).append(".").append(module.getName());
-		else
-			sb.append(module.getName());
-		sb.append(" {");
-		linebreak();
-		for (Aggregate aggregate : module.getAggregates()) {
-			printAggregate(aggregate, 1);
-		}
-		for (SimpleDomainObject simpleDomainObject : module.getDomainObjects()) {
-			printDomainObject(simpleDomainObject, 1);
-		}
-		for (Service service : module.getServices()) {
-			printService(service, 1);
-		}
-		sb.append("}");
-		linebreak();
-	}
-
-	private void printAggregate(Aggregate aggregate, int indentation) {
-		printIndentation(indentation);
-		sb.append("package ").append("\"'").append(aggregate.getName()).append("' ").append("Aggregate\"").append(" <<Rectangle>> ").append("{");
-		linebreak();
-		for (SimpleDomainObject domainObject : aggregate.getDomainObjects()) {
-			printDomainObject(domainObject, indentation + 1);
-		}
-		for (Service service : aggregate.getServices()) {
-			printService(service, indentation + 1);
-		}
-		printIndentation(indentation);
-		sb.append("}");
-		linebreak();
-	}
-
-	private void printDomainObject(SimpleDomainObject domainObject, int indentation) {
+	protected void printDomainObject(SimpleDomainObject domainObject, int indentation) {
 		if (domainObject instanceof Enum)
 			printEnum((Enum) domainObject, indentation);
 		else if (domainObject instanceof Entity)
@@ -186,18 +99,6 @@ public class PlantUMLClassDiagramCreator extends AbstractPlantUMLDiagramCreator<
 		addReferences2List(object, object.getReferences());
 	}
 
-	private void printService(Service service, int indentation) {
-		printIndentation(indentation);
-		sb.append("class").append(" ").append(service.getName());
-		sb.append(" <<Service>> ");
-		sb.append("{");
-		linebreak();
-		printServiceOperations(service.getName(), service.getOperations(), indentation + 1);
-		printIndentation(indentation);
-		sb.append("}");
-		linebreak();
-	}
-
 	private void addReferences2List(SimpleDomainObject sourceDomainObject, List<Reference> references) {
 		for (Reference reference : references) {
 			addDomainObjectReference2List(sourceDomainObject.getName(), reference.getDomainObjectType());
@@ -205,7 +106,7 @@ public class PlantUMLClassDiagramCreator extends AbstractPlantUMLDiagramCreator<
 	}
 
 	private void addDomainObjectReference2List(String sourceDomainObject, SimpleDomainObject targetDomainObject) {
-		if (this.boundedContextsDomainObjects.contains(targetDomainObject))
+		if (this.domainObjects.contains(targetDomainObject))
 			this.relationships.add(new UMLRelationship(sourceDomainObject, targetDomainObject.getName()));
 	}
 
@@ -224,13 +125,22 @@ public class PlantUMLClassDiagramCreator extends AbstractPlantUMLDiagramCreator<
 		}
 	}
 
-	private void printServiceOperations(String objectName, List<ServiceOperation> operations, int indentation) {
-		for (ServiceOperation operation : operations) {
-			printOperation(objectName, operation.getName(), operation.getReturnType(), operation.getParameters(), indentation);
+	private String getAttributeTypeAsString(Attribute attribute) {
+		if (attribute.getCollectionType() != CollectionType.NONE)
+			return attribute.getCollectionType() + "<" + attribute.getType() + ">";
+		return attribute.getType();
+	}
+
+	private void printReferenceAttributes(List<Reference> references, int indentation) {
+		for (Reference reference : references) {
+			printIndentation(indentation);
+			sb.append(getReferenceTypeAsString(reference));
+			sb.append(" ").append(reference.getName());
+			linebreak();
 		}
 	}
 
-	private void printOperation(String objectName, String operationName, ComplexType returnType, List<Parameter> parameters, int indentation) {
+	protected void printOperation(String objectName, String operationName, ComplexType returnType, List<Parameter> parameters, int indentation) {
 		printIndentation(indentation);
 		String returnTypeAsString;
 		if (returnType == null)
@@ -269,22 +179,7 @@ public class PlantUMLClassDiagramCreator extends AbstractPlantUMLDiagramCreator<
 		return reference.getDomainObjectType().getName();
 	}
 
-	private String getAttributeTypeAsString(Attribute attribute) {
-		if (attribute.getCollectionType() != CollectionType.NONE)
-			return attribute.getCollectionType() + "<" + attribute.getType() + ">";
-		return attribute.getType();
-	}
-
-	private void printReferenceAttributes(List<Reference> references, int indentation) {
-		for (Reference reference : references) {
-			printIndentation(indentation);
-			sb.append(getReferenceTypeAsString(reference));
-			sb.append(" ").append(reference.getName());
-			linebreak();
-		}
-	}
-
-	private void printReferences(int indentation) {
+	protected void printReferences(int indentation) {
 		for (UMLRelationship reference : relationships) {
 			printIndentation(indentation);
 			sb.append(reference.getSource()).append(" --> ").append(reference.getTarget());
@@ -292,13 +187,13 @@ public class PlantUMLClassDiagramCreator extends AbstractPlantUMLDiagramCreator<
 		}
 	}
 
-	private void printIndentation(int amount) {
+	protected void printIndentation(int amount) {
 		for (int i = 0; i < amount; i++) {
 			sb.append("\t");
 		}
 	}
 
-	private class UMLRelationship {
+	protected class UMLRelationship {
 		private String source;
 		private String target;
 

@@ -17,16 +17,21 @@ package org.contextmapper.dsl.tests.generators.plantuml;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
+import org.contextmapper.dsl.contextMappingDSL.Domain;
+import org.contextmapper.dsl.contextMappingDSL.Subdomain;
 import org.contextmapper.dsl.generator.PlantUMLGenerator;
 import org.contextmapper.dsl.generator.exception.NoContextMapDefinedException;
 import org.contextmapper.dsl.tests.generators.mocks.ContextMappingModelResourceMock;
 import org.contextmapper.dsl.tests.generators.mocks.IFileSystemAccess2Mock;
 import org.contextmapper.dsl.tests.generators.mocks.IGeneratorContextMock;
+import org.contextmapper.tactic.dsl.tacticdsl.Entity;
+import org.contextmapper.tactic.dsl.tacticdsl.TacticdslFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -45,9 +50,15 @@ class PlantUMLGeneratorTest {
 		ContextMappingModel model = ContextMappingDSLFactory.eINSTANCE.createContextMappingModel();
 		ContextMap contextMap = ContextMappingDSLFactory.eINSTANCE.createContextMap();
 		BoundedContext boundedContext = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
+		Domain domain = ContextMappingDSLFactory.eINSTANCE.createDomain();
+		Subdomain subdomain = ContextMappingDSLFactory.eINSTANCE.createSubdomain();
+		domain.setName("TestDomain");
+		subdomain.setName("TestSubdomain");
+		domain.getSubdomains().add(subdomain);
 		boundedContext.setName("TestContext");
 		contextMap.getBoundedContexts().add(boundedContext);
 		model.setMap(contextMap);
+		model.getDomains().add(domain);
 
 		// when
 		IFileSystemAccess2Mock filesystem = new IFileSystemAccess2Mock();
@@ -56,6 +67,29 @@ class PlantUMLGeneratorTest {
 		// then
 		assertTrue(filesystem.getGeneratedFilesMap().containsKey("testmodel_ContextMap.puml"));
 		assertTrue(filesystem.getGeneratedFilesMap().containsKey("testmodel_BC_TestContext.puml"));
+		assertFalse(filesystem.getGeneratedFilesMap().containsKey("testmodel_SD_TestSubdomain.puml"));
+	}
+
+	@Test
+	void canCreatePlantUMLDiagrmFiles4SubdomainIfEntitiesAvailable() {
+		// given
+		ContextMappingModel model = ContextMappingDSLFactory.eINSTANCE.createContextMappingModel();
+		ContextMap contextMap = ContextMappingDSLFactory.eINSTANCE.createContextMap();
+		Domain domain = ContextMappingDSLFactory.eINSTANCE.createDomain();
+		Subdomain subdomain = ContextMappingDSLFactory.eINSTANCE.createSubdomain();
+		domain.setName("TestDomain");
+		subdomain.setName("TestSubdomain");
+		domain.getSubdomains().add(subdomain);
+		subdomain.getEntities().add(createTestEntity("TestEntity"));
+		model.setMap(contextMap);
+		model.getDomains().add(domain);
+
+		// when
+		IFileSystemAccess2Mock filesystem = new IFileSystemAccess2Mock();
+		this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem, new IGeneratorContextMock());
+
+		// then
+		assertTrue(filesystem.getGeneratedFilesMap().containsKey("testmodel_SD_TestSubdomain.puml"));
 	}
 
 	@Test
@@ -73,6 +107,12 @@ class PlantUMLGeneratorTest {
 		assertThrows(NoContextMapDefinedException.class, () -> {
 			this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem, new IGeneratorContextMock());
 		});
+	}
+
+	private Entity createTestEntity(String name) {
+		Entity testEntity = TacticdslFactory.eINSTANCE.createEntity();
+		testEntity.setName(name);
+		return testEntity;
 	}
 
 }

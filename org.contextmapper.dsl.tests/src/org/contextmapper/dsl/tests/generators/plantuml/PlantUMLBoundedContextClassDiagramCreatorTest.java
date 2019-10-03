@@ -26,7 +26,7 @@ import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.Module;
 import org.contextmapper.dsl.contextMappingDSL.Subdomain;
-import org.contextmapper.dsl.generator.plantuml.PlantUMLClassDiagramCreator;
+import org.contextmapper.dsl.generator.plantuml.PlantUMLBoundedContextClassDiagramCreator;
 import org.contextmapper.dsl.tests.AbstractCMLInputFileTest;
 import org.contextmapper.dsl.validation.ValidationMessages;
 import org.contextmapper.tactic.dsl.tacticdsl.Attribute;
@@ -49,14 +49,14 @@ import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.Iterators;
 
-class PlantUMLClassDiagramCreatorTest extends AbstractCMLInputFileTest {
+class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFileTest {
 
-	private PlantUMLClassDiagramCreator creator;
+	private PlantUMLBoundedContextClassDiagramCreator creator;
 
 	@BeforeEach
 	public void prepare() {
 		super.prepare();
-		this.creator = new PlantUMLClassDiagramCreator();
+		this.creator = new PlantUMLBoundedContextClassDiagramCreator();
 	}
 
 	@Test
@@ -325,7 +325,7 @@ class PlantUMLClassDiagramCreatorTest extends AbstractCMLInputFileTest {
 		// then
 		assertTrue(plantUML.contains("legend left"));
 		assertTrue(plantUML.contains("  This bounded context implements the subdomain '" + subdomain.getName() + "'." + System.lineSeparator()));
-		assertTrue(plantUML.contains("endlegend"));
+		assertTrue(plantUML.contains("end legend"));
 	}
 
 	@Test
@@ -358,7 +358,7 @@ class PlantUMLClassDiagramCreatorTest extends AbstractCMLInputFileTest {
 				.contains("  This bounded context implements the subdomain '" + subdomain.getName() + "', which contains the following entities:" + System.lineSeparator()));
 		assertTrue(plantUML.contains("   - TestEntity1"));
 		assertTrue(plantUML.contains("   - TestEntity2"));
-		assertTrue(plantUML.contains("endlegend"));
+		assertTrue(plantUML.contains("end legend"));
 	}
 
 	@Test
@@ -457,7 +457,7 @@ class PlantUMLClassDiagramCreatorTest extends AbstractCMLInputFileTest {
 		assertTrue(plantUML.contains("	class MyModuleService <<Service>> {" + System.lineSeparator() + "		void myModuleServiceMethod()" + System.lineSeparator() + "	}"
 				+ System.lineSeparator()));
 	}
-
+	
 	@Override
 	protected String getTestFileDirectory() {
 		return "/integ-test-files/plantuml/";
