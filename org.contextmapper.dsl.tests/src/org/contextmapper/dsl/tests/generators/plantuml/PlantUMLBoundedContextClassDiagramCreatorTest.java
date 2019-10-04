@@ -161,6 +161,29 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 	}
 
 	@Test
+	public void respectNullableOnAttributes() {
+		// given
+		BoundedContext boundedContext = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
+		Aggregate aggregate = ContextMappingDSLFactory.eINSTANCE.createAggregate();
+		aggregate.setName("testAggregate");
+		boundedContext.getAggregates().add(aggregate);
+		Entity entity = TacticdslFactory.eINSTANCE.createEntity();
+		entity.setName("Test");
+		Attribute attribute = TacticdslFactory.eINSTANCE.createAttribute();
+		attribute.setType("int");
+		attribute.setName("amount");
+		attribute.setNullable(true);
+		entity.getAttributes().add(attribute);
+		aggregate.getDomainObjects().add(entity);
+
+		// when
+		String plantUML = this.creator.createDiagram(boundedContext);
+
+		// then
+		assertTrue(plantUML.contains("	class Test <<Entity>> {" + System.lineSeparator() + "		int[0..1] amount" + System.lineSeparator() + "	}" + System.lineSeparator()));
+	}
+
+	@Test
 	public void canCreateClassFromAggregateRoot() {
 		// given
 		BoundedContext boundedContext = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
@@ -328,7 +351,7 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 		assertTrue(plantUML.contains("  This bounded context implements the subdomain '" + subdomain.getName() + "'." + System.lineSeparator()));
 		assertTrue(plantUML.contains("end legend"));
 	}
-	
+
 	@Test
 	public void createsNoteForImplementedDomain() {
 		// given
@@ -487,7 +510,7 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 		assertTrue(plantUML.contains("	class MyModuleService <<Service>> {" + System.lineSeparator() + "		void myModuleServiceMethod()" + System.lineSeparator() + "	}"
 				+ System.lineSeparator()));
 	}
-	
+
 	@Override
 	protected String getTestFileDirectory() {
 		return "/integ-test-files/plantuml/";

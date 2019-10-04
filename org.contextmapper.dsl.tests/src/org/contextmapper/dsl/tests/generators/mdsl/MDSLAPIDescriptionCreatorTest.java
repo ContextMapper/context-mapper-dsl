@@ -95,6 +95,11 @@ public class MDSLAPIDescriptionCreatorTest extends AbstractCMLInputFileTest {
 	void canHandleMethodsWithoutParameters() throws IOException {
 		testCMLInputAndMDSLOutputFiles("mdsl-no-parameters");
 	}
+	
+	@Test
+	void canHandleNullableAttributes() throws IOException {
+		testCMLInputAndMDSLOutputFiles("mdsl-nullable-attributes");
+	}
 
 	@Test
 	void canCreateCommentInCaseThereIsNoOperationInAnAPI() throws IOException {

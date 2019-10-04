@@ -106,8 +106,11 @@ abstract public class AbstractPlantUMLClassDiagramCreator<T extends EObject> ext
 	}
 
 	private void addDomainObjectReference2List(String sourceDomainObject, SimpleDomainObject targetDomainObject) {
-		if (this.domainObjects.contains(targetDomainObject))
-			this.relationships.add(new UMLRelationship(sourceDomainObject, targetDomainObject.getName()));
+		if (this.domainObjects.contains(targetDomainObject)) {
+			UMLRelationship relationship = new UMLRelationship(sourceDomainObject, targetDomainObject.getName());
+			if (!this.relationships.contains(relationship))
+				this.relationships.add(relationship);
+		}
 	}
 
 	private void printAttributes(List<Attribute> attributes, int indentation) {
@@ -126,9 +129,12 @@ abstract public class AbstractPlantUMLClassDiagramCreator<T extends EObject> ext
 	}
 
 	private String getAttributeTypeAsString(Attribute attribute) {
+		String type = attribute.getType();
 		if (attribute.getCollectionType() != CollectionType.NONE)
-			return attribute.getCollectionType() + "<" + attribute.getType() + ">";
-		return attribute.getType();
+			type = attribute.getCollectionType() + "<" + attribute.getType() + ">";
+		if (attribute.isNullable())
+			type = type + "[0..1]";
+		return type;
 	}
 
 	private void printReferenceAttributes(List<Reference> references, int indentation) {
@@ -190,24 +196,6 @@ abstract public class AbstractPlantUMLClassDiagramCreator<T extends EObject> ext
 	protected void printIndentation(int amount) {
 		for (int i = 0; i < amount; i++) {
 			sb.append("\t");
-		}
-	}
-
-	protected class UMLRelationship {
-		private String source;
-		private String target;
-
-		public UMLRelationship(String source, String target) {
-			this.source = source;
-			this.target = target;
-		}
-
-		public String getSource() {
-			return source;
-		}
-
-		public String getTarget() {
-			return target;
 		}
 	}
 }

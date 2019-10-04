@@ -25,6 +25,7 @@ public class DataTypeAttribute {
 	private String type;
 	private List<DataTypeAttribute> children = Lists.newArrayList();
 	private boolean isCollection = false;
+	private boolean isNullable = false;
 
 	public String getName() {
 		return attributeName;
@@ -62,4 +63,11 @@ public class DataTypeAttribute {
 		return isCollection;
 	}
 
+	public void setIsNullable(boolean isNullable) {
+		this.isNullable = isNullable;
+	}
+
+	public boolean isNullable() {
+		return isNullable;
+	}
 }
