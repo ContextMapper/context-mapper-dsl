@@ -24,6 +24,7 @@ import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
+import org.contextmapper.dsl.contextMappingDSL.Domain;
 import org.contextmapper.dsl.contextMappingDSL.Module;
 import org.contextmapper.dsl.contextMappingDSL.Subdomain;
 import org.contextmapper.dsl.generator.plantuml.PlantUMLBoundedContextClassDiagramCreator;
@@ -313,7 +314,7 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 		Subdomain subdomain = ContextMappingDSLFactory.eINSTANCE.createSubdomain();
 		subdomain.setName("mySubdomain");
 		boundedContext.setName("myBoundedContext");
-		boundedContext.getImplementedSubdomains().add(subdomain);
+		boundedContext.getImplementedDomainParts().add(subdomain);
 		Aggregate aggregate = ContextMappingDSLFactory.eINSTANCE.createAggregate();
 		aggregate.setName("testAggregate");
 		boundedContext.getAggregates().add(aggregate);
@@ -327,6 +328,35 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 		assertTrue(plantUML.contains("  This bounded context implements the subdomain '" + subdomain.getName() + "'." + System.lineSeparator()));
 		assertTrue(plantUML.contains("end legend"));
 	}
+	
+	@Test
+	public void createsNoteForImplementedDomain() {
+		// given
+		BoundedContext boundedContext = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
+		Subdomain subdomain1 = ContextMappingDSLFactory.eINSTANCE.createSubdomain();
+		subdomain1.setName("mySubdomain1");
+		Subdomain subdomain2 = ContextMappingDSLFactory.eINSTANCE.createSubdomain();
+		subdomain2.setName("mySubdomain2");
+		Domain domain = ContextMappingDSLFactory.eINSTANCE.createDomain();
+		domain.setName("TestDomain");
+		domain.getSubdomains().add(subdomain1);
+		domain.getSubdomains().add(subdomain2);
+		boundedContext.setName("myBoundedContext");
+		boundedContext.getImplementedDomainParts().add(domain);
+		Aggregate aggregate = ContextMappingDSLFactory.eINSTANCE.createAggregate();
+		aggregate.setName("testAggregate");
+		boundedContext.getAggregates().add(aggregate);
+		aggregate.getDomainObjects().add(TacticdslFactory.eINSTANCE.createSimpleDomainObject());
+
+		// when
+		String plantUML = this.creator.createDiagram(boundedContext);
+
+		// then
+		assertTrue(plantUML.contains("legend left"));
+		assertTrue(plantUML.contains("  This bounded context implements the subdomain '" + subdomain1.getName() + "'." + System.lineSeparator()));
+		assertTrue(plantUML.contains("  This bounded context implements the subdomain '" + subdomain2.getName() + "'." + System.lineSeparator()));
+		assertTrue(plantUML.contains("end legend"));
+	}
 
 	@Test
 	public void createsNoteForImplementedSubdomainWithEntities() {
@@ -335,7 +365,7 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 		Subdomain subdomain = ContextMappingDSLFactory.eINSTANCE.createSubdomain();
 		subdomain.setName("mySubdomain");
 		boundedContext.setName("myBoundedContext");
-		boundedContext.getImplementedSubdomains().add(subdomain);
+		boundedContext.getImplementedDomainParts().add(subdomain);
 		Aggregate aggregate = ContextMappingDSLFactory.eINSTANCE.createAggregate();
 		aggregate.setName("testAggregate");
 		boundedContext.getAggregates().add(aggregate);

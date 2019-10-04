@@ -19,6 +19,8 @@ import java.util.List;
 
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
+import org.contextmapper.dsl.contextMappingDSL.Domain;
+import org.contextmapper.dsl.contextMappingDSL.DomainPart;
 import org.contextmapper.dsl.contextMappingDSL.Module;
 import org.contextmapper.dsl.contextMappingDSL.Subdomain;
 import org.contextmapper.dsl.validation.ValidationMessages;
@@ -47,7 +49,7 @@ public class PlantUMLBoundedContextClassDiagramCreator extends AbstractPlantUMLC
 			printAggregate(aggregate, 0);
 		}
 		printReferences(0);
-		printSubdomainLegend(boundedContext.getImplementedSubdomains());
+		printSubdomainLegend(getSubdomains(boundedContext.getImplementedDomainParts()));
 	}
 
 	private void printSubdomainLegend(List<Subdomain> subdomains) {
@@ -129,5 +131,17 @@ public class PlantUMLBoundedContextClassDiagramCreator extends AbstractPlantUMLC
 			printOperation(objectName, operation.getName(), operation.getReturnType(), operation.getParameters(), indentation);
 		}
 	}
-	
+
+	private List<Subdomain> getSubdomains(List<DomainPart> domainParts) {
+		List<Subdomain> subdomains = Lists.newArrayList();
+		domainParts.forEach(domainPart -> {
+			if (domainPart instanceof Domain) {
+				subdomains.addAll(((Domain) domainPart).getSubdomains());
+			} else {
+				subdomains.add((Subdomain) domainPart);
+			}
+		});
+		return subdomains;
+	}
+
 }

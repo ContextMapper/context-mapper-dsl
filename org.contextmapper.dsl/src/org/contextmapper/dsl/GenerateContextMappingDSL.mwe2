@@ -127,6 +127,7 @@ Workflow {
 				generateStub = false
 			}
 			validator = {
+				composedCheck = "org.contextmapper.dsl.validation.BoundedContextSemanticsValidator"
 				composedCheck = "org.contextmapper.dsl.validation.BoundedContextRelationshipSemanticsValidator"
 				composedCheck = "org.contextmapper.dsl.validation.ContextMapSemanticsValidator"
 				composedCheck = "org.contextmapper.dsl.validation.AggregateSemanticsValidator"
