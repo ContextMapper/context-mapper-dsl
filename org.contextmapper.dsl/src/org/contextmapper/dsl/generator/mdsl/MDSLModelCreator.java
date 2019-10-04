@@ -170,10 +170,10 @@ public class MDSLModelCreator {
 			for (Parameter parameter : parameters) {
 				ComplexType type = parameter.getParameterType();
 				if (type.getDomainObjectType() != null) {
-					attributes.add(getDataTypeAttribute4DomainObject(dataType, parameter.getName(), type.getDomainObjectType(), type.getCollectionType() != CollectionType.NONE));
+					attributes.add(getDataTypeAttribute4DomainObject(dataType, parameter.getName(), type.getDomainObjectType(), type.getCollectionType() != CollectionType.NONE, false));
 				} else {
 					attributes.add(createSimpleDataTypeAttributeWithoutChildren(parameter.getName(), mapAbstractDataType(type.getType()),
-							type.getCollectionType() != CollectionType.NONE));
+							type.getCollectionType() != CollectionType.NONE, false));
 				}
 			}
 			dataType.addAttributes(attributes);
@@ -211,7 +211,7 @@ public class MDSLModelCreator {
 				List<DataTypeAttribute> refAttributes = Lists.newArrayList();
 				for (Reference reference : object.getReferences()) {
 					refAttributes.add(getDataTypeAttribute4DomainObject(dataType, reference.getName(), reference.getDomainObjectType(),
-							reference.getCollectionType() != CollectionType.NONE));
+							reference.getCollectionType() != CollectionType.NONE, reference.isNullable()));
 				}
 				dataType.addAttributes(refAttributes);
 			}
@@ -219,11 +219,12 @@ public class MDSLModelCreator {
 		}
 	}
 
-	private DataTypeAttribute getDataTypeAttribute4DomainObject(DataType dataType, String attributeName, SimpleDomainObject simpleDomainObject, boolean isCollection) {
+	private DataTypeAttribute getDataTypeAttribute4DomainObject(DataType dataType, String attributeName, SimpleDomainObject simpleDomainObject, boolean isCollection, boolean isNullable) {
 		this.recursiveAttributeResolutionStack.push(simpleDomainObject.getName());
 		DataTypeAttribute mdslAttribute = new DataTypeAttribute();
 		mdslAttribute.setName(attributeName);
 		mdslAttribute.setIsCollection(isCollection);
+		mdslAttribute.setIsNullable(isNullable);
 		if (simpleDomainObject instanceof DomainObject) {
 			DomainObject object = (DomainObject) simpleDomainObject;
 			mdslAttribute.addChildren(getMDSLAttributesForAttributeList(object.getAttributes()));
@@ -232,11 +233,11 @@ public class MDSLModelCreator {
 				// recursive attribute resolution, if it is no cyclic reference
 				if (!this.recursiveAttributeResolutionStack.contains(reference.getDomainObjectType().getName())) {
 					refAttributes.add(getDataTypeAttribute4DomainObject(dataType, reference.getName(), reference.getDomainObjectType(),
-							reference.getCollectionType() != CollectionType.NONE));
+							reference.getCollectionType() != CollectionType.NONE, reference.isNullable()));
 				} else {
 					dataType.addComment("You declared a cyclic reference! We had to break the cycle at " + reference.getDomainObjectType().getName());
 					refAttributes.add(createSimpleDataTypeAttributeWithoutChildren(reference.getName(), mapAbstractDataType(reference.getDomainObjectType().getName()),
-							reference.getCollectionType() != CollectionType.NONE));
+							reference.getCollectionType() != CollectionType.NONE, reference.isNullable()));
 				}
 			}
 			mdslAttribute.addChildren(refAttributes);
@@ -251,16 +252,17 @@ public class MDSLModelCreator {
 		List<DataTypeAttribute> mdslAttributes = Lists.newArrayList();
 		for (Attribute attribute : attributes) {
 			mdslAttributes.add(createSimpleDataTypeAttributeWithoutChildren(attribute.getName(), mapAbstractDataType(attribute.getType()),
-					attribute.getCollectionType() != CollectionType.NONE));
+					attribute.getCollectionType() != CollectionType.NONE, attribute.isNullable()));
 		}
 		return mdslAttributes;
 	}
 
-	private DataTypeAttribute createSimpleDataTypeAttributeWithoutChildren(String attributeName, String attributeType, boolean isCollection) {
+	private DataTypeAttribute createSimpleDataTypeAttributeWithoutChildren(String attributeName, String attributeType, boolean isCollection, boolean isNullable) {
 		DataTypeAttribute attribute = new DataTypeAttribute();
 		attribute.setName(attributeName);
 		attribute.setType(attributeType);
 		attribute.setIsCollection(isCollection);
+		attribute.setIsNullable(isNullable);
 		return attribute;
 	}
 
