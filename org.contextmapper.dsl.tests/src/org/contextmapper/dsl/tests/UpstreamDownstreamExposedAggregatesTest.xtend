@@ -19,6 +19,7 @@ import com.google.inject.Inject
 import java.util.stream.Collectors
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLPackage
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel
+import org.contextmapper.dsl.contextMappingDSL.CustomerSupplierRelationship
 import org.contextmapper.dsl.contextMappingDSL.Relationship
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship
 import org.eclipse.xtext.testing.InjectWith
@@ -29,9 +30,8 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.^extension.ExtendWith
 
 import static org.contextmapper.dsl.tests.util.ParsingErrorAssertions.*
-import static org.junit.jupiter.api.Assertions.*
 import static org.contextmapper.dsl.validation.ValidationMessages.*
-import org.contextmapper.tactic.dsl.tacticdsl.TacticdslPackage
+import static org.junit.jupiter.api.Assertions.*
 
 @ExtendWith(InjectionExtension)
 @InjectWith(ContextMappingDSLInjectorProvider)
@@ -181,6 +181,34 @@ class UpstreamDownstreamExposedAggregatesTest {
 		assertThatNoParsingErrorsOccurred(result);
 		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.UPSTREAM_DOWNSTREAM_RELATIONSHIP, "",
 			String.format(EXPOSED_AGGREGATE_NOT_PART_OF_UPSTREAM_CONTEXT, "anotherAggregate", "testContext"));
+	}
+	
+	@Test
+	def void canDefineAttributesWithoutEqualSign() {
+		// given
+		val String dslSnippet = '''
+			ContextMap {
+				contains testContext
+				contains anotherTestContext
+			
+				anotherTestContext [S]->[C] testContext {
+					exposedAggregates agg1
+				}
+			}
+			
+			BoundedContext testContext
+			BoundedContext anotherTestContext {
+				Aggregate agg1
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		
+		val CustomerSupplierRelationship customerSupplierRelationship = result.map.relationships.get(0) as CustomerSupplierRelationship
+		assertEquals("agg1", customerSupplierRelationship.upstreamExposedAggregates.get(0).name);
 	}
 	
 }

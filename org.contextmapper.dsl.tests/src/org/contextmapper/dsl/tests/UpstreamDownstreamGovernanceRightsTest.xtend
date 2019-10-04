@@ -112,4 +112,30 @@ class UpstreamDownstreamGovernanceRightsTest {
 		assertEquals(DownstreamGovernanceRights.VETO_RIGHT, customerSupplierRelationship.downstreamGovernanceRights);
 	}
 	
+	@Test
+	def void canDefineAttributesWithoutEqualSign() {
+		// given
+		val String dslSnippet = '''
+			ContextMap {
+				contains testContext
+				contains anotherTestContext
+			
+				anotherTestContext [S]->[C] testContext {
+					downstreamRights INFLUENCER
+				}
+			}
+			
+			BoundedContext testContext
+			BoundedContext anotherTestContext
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		
+		val CustomerSupplierRelationship customerSupplierRelationship = result.map.relationships.get(0) as CustomerSupplierRelationship
+		assertEquals(DownstreamGovernanceRights.INFLUENCER, customerSupplierRelationship.downstreamGovernanceRights);
+	}
+	
 }

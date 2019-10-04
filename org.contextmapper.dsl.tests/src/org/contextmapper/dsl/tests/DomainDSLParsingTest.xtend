@@ -27,6 +27,7 @@ import org.junit.jupiter.api.^extension.ExtendWith
 
 import static org.contextmapper.dsl.tests.util.ParsingErrorAssertions.*
 import static org.junit.jupiter.api.Assertions.*
+import org.contextmapper.dsl.contextMappingDSL.SubDomainType
 
 @ExtendWith(InjectionExtension)
 @InjectWith(ContextMappingDSLInjectorProvider)
@@ -177,5 +178,25 @@ class DomainDSLParsingTest {
 		assertEquals(1, result.domains.get(0).subdomains.get(0).entities.size);
 		assertEquals("MyCoreEntity", result.domains.get(0).subdomains.get(0).entities.get(0).name);
 		assertEquals(2, result.domains.get(0).subdomains.get(0).entities.get(0).attributes.size);
+	}
+	
+	@Test
+	def void canDefineAttributesWithoutEqualSign() {
+		// given
+		val String dslSnippet = '''
+			Domain Insurance {
+				Subdomain core {
+					type CORE_DOMAIN
+					domainVisionStatement "my domain vision for this subdomain"
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		assertEquals("my domain vision for this subdomain", result.domains.get(0).subdomains.get(0).domainVisionStatement);
+		assertEquals(SubDomainType.CORE_DOMAIN, result.domains.get(0).subdomains.get(0).type);
 	}
 }

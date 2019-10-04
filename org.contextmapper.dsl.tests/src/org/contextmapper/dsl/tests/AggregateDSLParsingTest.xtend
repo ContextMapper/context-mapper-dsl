@@ -201,4 +201,38 @@ class AggregateDSLParsingTest {
 		validationTestHelper.assertError(result, TacticdslPackage.Literals.ENTITY, "",
 			String.format(AGGREGATE_CAN_ONLY_HAVE_ONE_AGGREGATE_ROOT, "myAggregate"));
 	}
+	
+	@Test
+	def void canDefineAttributesWithoutEqualSign() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext testContext {
+				Aggregate myAggregate {
+					likelihoodForChange OFTEN
+					responsibilities "can calculate customer risks..."
+					knowledgeLevel CONCRETE
+					useCases testUseCase1, testUseCase2
+					owner teamA
+				}
+			}
+			
+			BoundedContext teamA {
+				type TEAM
+			}
+			
+			UseCase testUseCase1
+			UseCase testUseCase2
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertEquals(LikelihoodForChange.OFTEN, result.boundedContexts.get(0).aggregates.get(0).likelihoodForChange);
+		assertEquals("can calculate customer risks...", result.boundedContexts.get(0).aggregates.get(0).responsibilities.get(0));
+		assertEquals(KnowledgeLevel.CONCRETE, result.boundedContexts.get(0).aggregates.get(0).knowledgeLevel);
+		val useCases = result.boundedContexts.get(0).aggregates.get(0).useCases.stream.map[name].collect(Collectors.toList);
+		assertTrue(useCases.contains("testUseCase1"));
+		assertTrue(useCases.contains("testUseCase2"));
+		assertEquals("teamA", result.boundedContexts.get(0).aggregates.get(0).owner.name);
+	}
 }
