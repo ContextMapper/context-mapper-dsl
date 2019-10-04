@@ -34,6 +34,7 @@ import static org.contextmapper.dsl.tests.util.ParsingErrorAssertions.*
 import static org.contextmapper.dsl.validation.ValidationMessages.*
 import static org.junit.jupiter.api.Assertions.*
 import java.util.ArrayList
+import org.contextmapper.dsl.contextMappingDSL.DownstreamGovernanceRights
 
 @ExtendWith(InjectionExtension)
 @InjectWith(ContextMappingDSLInjectorProvider)
@@ -654,6 +655,38 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 			assertEquals("testContext", upstreamDownstreamRelationship.upstream.name)
 			assertEquals("anotherTestContext", upstreamDownstreamRelationship.downstream.name)	
 		}
+	}
+	
+	@Test
+	def void canDefineAttributesWithoutEqualSign() {
+		// given
+		val String dslSnippet = '''
+			ContextMap {
+				contains testContext
+				contains anotherTestContext
+			
+				anotherTestContext [S]->[C] testContext {
+					implementationTechnology "RESTful HTTP"
+					downstreamRights INFLUENCER
+					exposedAggregates agg1
+				}
+			}
+			
+			BoundedContext testContext
+			BoundedContext anotherTestContext {
+				Aggregate agg1
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		
+		val UpstreamDownstreamRelationship upstreamDownstreamRelationship = result.map.relationships.get(0) as UpstreamDownstreamRelationship
+		assertEquals("RESTful HTTP", upstreamDownstreamRelationship.implementationTechnology);
+		assertEquals(DownstreamGovernanceRights.INFLUENCER, upstreamDownstreamRelationship.downstreamGovernanceRights);
+		assertEquals("agg1", upstreamDownstreamRelationship.upstreamExposedAggregates.get(0).name);
 	}
 
 }

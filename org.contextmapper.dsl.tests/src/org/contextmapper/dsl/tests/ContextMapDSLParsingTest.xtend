@@ -239,4 +239,22 @@ class ContextMapDSLParsingTest {
 		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.CONTEXT_MAP, "",
 			String.format(SELF_RELATIONSHIP_NOT_ALLOWED));
 	}
+	
+	@Test
+	def void canDefineAttributesWithoutEqualSign() {
+		// given
+		val String dslSnippet = '''
+			ContextMap {
+				type SYSTEM_LANDSCAPE
+				state AS_IS
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		assertEquals(ContextMapType.SYSTEM_LANDSCAPE, result.map.type);
+		assertEquals(ContextMapState.AS_IS, result.map.state);
+	}
 }

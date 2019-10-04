@@ -223,4 +223,32 @@ class BoundedContextDSLParsingTest {
 		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.BOUNDED_CONTEXT, "",
 			String.format(ONLY_TEAMS_CAN_REALIZE_OTHER_BOUNDED_CONTEXT, "NotATeam"));
 	} 
+	
+	@Test
+	def void canDefineAttributesWithoutEqualSign() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext testContext {
+				type FEATURE
+				implementationTechnology "Java / Spring Boot App"
+				knowledgeLevel META
+				domainVisionStatement "this is my vision"
+				responsibilities "a responsibility description...", "another responsibility"
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		assertEquals("Java / Spring Boot App", result.boundedContexts.get(0).implementationTechnology);
+		assertEquals(KnowledgeLevel.META, result.boundedContexts.get(0).knowledgeLevel);
+		assertEquals("this is my vision", result.boundedContexts.get(0).domainVisionStatement);
+		
+		val responsibilities = result.boundedContexts.get(0).responsibilities;
+		assertTrue(responsibilities.contains("a responsibility description..."));
+		assertTrue(responsibilities.contains("another responsibility"));
+		assertEquals(BoundedContextType.FEATURE, result.boundedContexts.get(0).type);
+	}
 }

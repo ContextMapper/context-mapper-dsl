@@ -218,4 +218,33 @@ class SymmetricRelationshipDSLParsingTest {
 		assertThatNoValidationErrorsOccurred(result);
 		assertEquals("Messaging", result.map.relationships.get(0).implementationTechnology);
 	}
+	
+	@Test
+	def void canDefineAttributesWithoutEqualSign() {
+		// given
+		val String dslSnippet = '''
+			ContextMap {
+				contains testContext
+				contains anotherTestContext
+
+				testContext Partnership anotherTestContext : testrel {
+				 	implementationTechnology "Messaging"
+			 	}
+			 	
+			 	testContext [SK]<->[SK] anotherTestContext {
+				 	implementationTechnology "RPC"
+			 	}
+			}
+
+			BoundedContext testContext
+			BoundedContext anotherTestContext
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		assertEquals("Messaging", result.map.relationships.get(0).implementationTechnology);
+		assertEquals("RPC", result.map.relationships.get(1).implementationTechnology);
+	}
 }

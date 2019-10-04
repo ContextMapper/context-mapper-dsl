@@ -33,8 +33,8 @@ ContextMap:
 	{ContextMap} // make sure there is always a context map
 	'ContextMap' (name=ID)?
 	OPEN
-		(('state' '=' state=ContextMapState)? &
-		('type' '=' type=ContextMapType)?)
+		(('state' ('=')? state=ContextMapState)? &
+		('type' ('=')? type=ContextMapType)?)
 		('contains' boundedContexts += [BoundedContext] ("," boundedContexts += [BoundedContext])*)*
 		relationships += Relationship*
 	CLOSE
@@ -44,11 +44,11 @@ BoundedContext:
 	'BoundedContext' name=ID (('implements' (implementedSubdomains+=[Subdomain]) ("," implementedSubdomains+=[Subdomain])*)? & ('realizes' (realizedBoundedContexts+=[BoundedContext]) ("," realizedBoundedContexts+=[BoundedContext])*)?)
 	(
 		OPEN
-			(('domainVisionStatement' '=' domainVisionStatement=STRING)? &
-			('type' '=' type=BoundedContextType)? &
-			(('responsibilities' '=' responsibilities+=STRING) ("," responsibilities+=STRING)*)? &
-			('implementationTechnology' '=' implementationTechnology=STRING)? &
-			('knowledgeLevel' '=' knowledgeLevel=KnowledgeLevel)?)
+			(('domainVisionStatement' ('=')? domainVisionStatement=STRING)? &
+			('type' ('=')? type=BoundedContextType)? &
+			(('responsibilities' ('=')? responsibilities+=STRING) ("," responsibilities+=STRING)*)? &
+			('implementationTechnology' ('=')? implementationTechnology=STRING)? &
+			('knowledgeLevel' ('=')? knowledgeLevel=KnowledgeLevel)?)
 			modules += Module*
 			aggregates += Aggregate*
 		CLOSE
@@ -68,8 +68,8 @@ Subdomain:
 	'Subdomain' name=ID
 	(
 		OPEN
-			(('type' '=' type=SubDomainType)? &
-			('domainVisionStatement' '=' domainVisionStatement=STRING)?)
+			(('type' ('=')? type=SubDomainType)? &
+			('domainVisionStatement' ('=')? domainVisionStatement=STRING)?)
 			entities += Entity*
 		CLOSE
 	)?
@@ -93,7 +93,7 @@ Partnership:
 	)
 	(':' name=ID)? 
 	(OPEN
-		('implementationTechnology' '=' implementationTechnology=STRING)?
+		('implementationTechnology' ('=')? implementationTechnology=STRING)?
 	CLOSE)?
 ;
 
@@ -108,7 +108,7 @@ SharedKernel:
 	)
 	(':' name=ID)? 
 	(OPEN
-		('implementationTechnology' '=' implementationTechnology=STRING)?
+		('implementationTechnology' ('=')? implementationTechnology=STRING)?
 	CLOSE)?
 ;
 
@@ -135,9 +135,9 @@ UpstreamDownstreamRelationship:
 		)
 		(':' name=ID)?
 		(OPEN (
-			('implementationTechnology' '=' implementationTechnology=STRING)? &
-			(('exposedAggregates' '=' upstreamExposedAggregates += [Aggregate]) ("," upstreamExposedAggregates += [Aggregate])*)? &
-			('downstreamRights' '=' downstreamGovernanceRights=DownstreamGovernanceRights)?
+			('implementationTechnology' ('=')? implementationTechnology=STRING)? &
+			(('exposedAggregates' ('=')? upstreamExposedAggregates += [Aggregate]) ("," upstreamExposedAggregates += [Aggregate])*)? &
+			('downstreamRights' ('=')? downstreamGovernanceRights=DownstreamGovernanceRights)?
 		)
 		CLOSE)?
 	)
@@ -163,9 +163,9 @@ CustomerSupplierRelationship:
 		)
 		(':' name=ID)?
 		(OPEN (
-			('implementationTechnology' '=' implementationTechnology=STRING)? &
-			(('exposedAggregates' '=' upstreamExposedAggregates += [Aggregate]) ("," upstreamExposedAggregates += [Aggregate])*)? &
-			('downstreamRights' '=' downstreamGovernanceRights=DownstreamGovernanceRights)?
+			('implementationTechnology' ('=')? implementationTechnology=STRING)? &
+			(('exposedAggregates' ('=')? upstreamExposedAggregates += [Aggregate]) ("," upstreamExposedAggregates += [Aggregate])*)? &
+			('downstreamRights' ('=')? downstreamGovernanceRights=DownstreamGovernanceRights)?
 		)
 		CLOSE)?
 	)
@@ -175,11 +175,11 @@ Aggregate :
   (doc=STRING)?
   "Aggregate" name=ID (OPEN
     (
-    	(('responsibilities' '=' responsibilities+=STRING) ("," responsibilities+=STRING)*)? &
-    	(('useCases' '=' useCases += [UseCase]) ("," useCases += [UseCase])*)? &
-    	('owner' '=' owner=[BoundedContext])? & 
-    	('knowledgeLevel' '=' knowledgeLevel=KnowledgeLevel)? &
-    	('likelihoodForChange' '=' likelihoodForChange=LikelihoodForChange)?
+    	(('responsibilities' ('=')? responsibilities+=STRING) ("," responsibilities+=STRING)*)? &
+    	(('useCases' ('=')? useCases += [UseCase]) ("," useCases += [UseCase])*)? &
+    	('owner' ('=')? owner=[BoundedContext])? & 
+    	('knowledgeLevel' ('=')? knowledgeLevel=KnowledgeLevel)? &
+    	('likelihoodForChange' ('=')? likelihoodForChange=LikelihoodForChange)?
     )
     ((services+=Service) |
      (resources+=Resource) |
@@ -190,7 +190,7 @@ Aggregate :
 UseCase:
 	'UseCase' name=ID 
 	(OPEN
-		(('isLatencyCritical' '=' isLatencyCritical?='true')? &
+		(('isLatencyCritical' ('=')? isLatencyCritical?='true')? &
 		(('reads' nanoentitiesRead+=STRING*) ("," nanoentitiesRead+=STRING)*)? &
         (('writes' nanoentitiesWritten+=STRING*) ("," nanoentitiesWritten+=STRING)*)?)  
 	CLOSE)?
