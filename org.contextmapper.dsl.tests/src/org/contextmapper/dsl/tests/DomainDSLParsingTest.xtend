@@ -17,23 +17,28 @@ package org.contextmapper.dsl.tests
 
 import com.google.inject.Inject
 import java.util.stream.Collectors
+import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLPackage
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel
 import org.contextmapper.dsl.contextMappingDSL.Domain
+import org.contextmapper.dsl.contextMappingDSL.SubDomainType
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.extensions.InjectionExtension
 import org.eclipse.xtext.testing.util.ParseHelper
+import org.eclipse.xtext.testing.validation.ValidationTestHelper
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.^extension.ExtendWith
 
 import static org.contextmapper.dsl.tests.util.ParsingErrorAssertions.*
 import static org.junit.jupiter.api.Assertions.*
-import org.contextmapper.dsl.contextMappingDSL.SubDomainType
+import static org.contextmapper.dsl.validation.ValidationMessages.*
 
 @ExtendWith(InjectionExtension)
 @InjectWith(ContextMappingDSLInjectorProvider)
 class DomainDSLParsingTest {
 	@Inject
 	ParseHelper<ContextMappingModel> parseHelper
+	
+	ValidationTestHelper validationTestHelper = new ValidationTestHelper();
 
 	@Test
 	def void canDefineDomain() {
@@ -101,8 +106,8 @@ class DomainDSLParsingTest {
 		// then
 		assertThatNoParsingErrorsOccurred(result);
 		assertThatNoValidationErrorsOccurred(result);
-		assertEquals(1, result.boundedContexts.get(0).implementedSubdomains.size);
-		assertEquals("core", result.boundedContexts.get(0).implementedSubdomains.get(0).name);
+		assertEquals(1, result.boundedContexts.get(0).implementedDomainParts.size);
+		assertEquals("core", result.boundedContexts.get(0).implementedDomainParts.get(0).name);
 	}
 
 	@Test
@@ -128,9 +133,9 @@ class DomainDSLParsingTest {
 		// then
 		assertThatNoParsingErrorsOccurred(result);
 		assertThatNoValidationErrorsOccurred(result);
-		assertEquals(2, result.boundedContexts.get(0).implementedSubdomains.size);
+		assertEquals(2, result.boundedContexts.get(0).implementedDomainParts.size);
 
-		val subdomainNames = result.boundedContexts.get(0).implementedSubdomains.stream.map[name].collect(Collectors.toList);
+		val subdomainNames = result.boundedContexts.get(0).implementedDomainParts.stream.map[name].collect(Collectors.toList);
 		assertTrue(subdomainNames.contains("core"));
 		assertTrue(subdomainNames.contains("support1"));
 	}
@@ -152,6 +157,66 @@ class DomainDSLParsingTest {
 		assertThatNoParsingErrorsOccurred(result);
 		assertThatNoValidationErrorsOccurred(result);
 		assertEquals("my domain vision for this subdomain", result.domains.get(0).subdomains.get(0).domainVisionStatement);
+	}
+	
+	@Test
+	def void canImplementWholeDomain() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext testContext implements Insurance
+			
+			Domain Insurance {
+				Subdomain core {
+					type = CORE_DOMAIN
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		assertEquals("Insurance", result.boundedContexts.get(0).implementedDomainParts.get(0).name);
+	}
+	
+	@Test
+	def void cannotImplementSubdomainAlreadyImplementedByDomain() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext testContext implements Insurance, core
+			
+			Domain Insurance {
+				Subdomain core {
+					type = CORE_DOMAIN
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.BOUNDED_CONTEXT, "",
+			String.format(ALREADY_IMPLEMENTED_SUBDOMAIN, "core", "Insurance"));
+	} 
+	
+	@Test
+	def void canWarnIfMultipleDomainsAreImplemented() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext testContext implements Insurance, Banking
+			
+			Domain Insurance {
+				Subdomain core {
+					type = CORE_DOMAIN
+				}
+			}
+			Domain Banking
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		validationTestHelper.assertWarning(result, ContextMappingDSLPackage.Literals.BOUNDED_CONTEXT, "", MULTIPLE_DOMAINS_IMPLEMENTED);
 	}
 
 	@Test

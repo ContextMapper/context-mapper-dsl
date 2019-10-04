@@ -41,7 +41,9 @@ ContextMap:
 ;
 
 BoundedContext:
-	'BoundedContext' name=ID (('implements' (implementedSubdomains+=[Subdomain]) ("," implementedSubdomains+=[Subdomain])*)? & ('realizes' (realizedBoundedContexts+=[BoundedContext]) ("," realizedBoundedContexts+=[BoundedContext])*)?)
+	'BoundedContext' name=ID (('implements' (implementedDomainParts+=[DomainPart]) ("," implementedDomainParts+=[DomainPart])*)? & 
+		                      ('realizes' (realizedBoundedContexts+=[BoundedContext]) ("," realizedBoundedContexts+=[BoundedContext])*)?
+	)
 	(
 		OPEN
 			(('domainVisionStatement' ('=')? domainVisionStatement=STRING)? &
@@ -53,6 +55,10 @@ BoundedContext:
 			aggregates += Aggregate*
 		CLOSE
 	)?
+;
+
+DomainPart:
+	Domain | Subdomain
 ;
 
 Domain:

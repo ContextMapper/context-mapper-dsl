@@ -69,7 +69,7 @@ public class MergeBoundedContextsRefactoring extends AbstractRefactoring impleme
 		// move content from BC2 to BC1
 		bc1.getAggregates().addAll(bc2.getAggregates());
 		bc1.getModules().addAll(bc2.getModules());
-		bc1.getImplementedSubdomains().addAll(bc2.getImplementedSubdomains());
+		bc1.getImplementedDomainParts().addAll(bc2.getImplementedDomainParts());
 		if (bc1.getType().equals(BoundedContextType.TEAM))
 			bc1.getRealizedBoundedContexts().addAll(bc2.getRealizedBoundedContexts());
 		bc1.getResponsibilities().addAll(bc2.getResponsibilities());

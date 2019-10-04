@@ -28,14 +28,16 @@ public class ValidationMessages {
 	public static final String SELF_RELATIONSHIP_NOT_ALLOWED = "Bounded context relationships must be declared between two different bounded contexts.";
 	public static final String OWNER_BC_IS_NOT_TEAM = "'%s' is not a team. The owner attribute must refer to a Bounded Context representing a team (type = TEAM)!";
 	public static final String AGGREGATE_CAN_ONLY_HAVE_ONE_AGGREGATE_ROOT = "Your aggregate '%s' contains multiple aggregate roots. An aggregate must only contain one root.";
-	
+	public static final String ALREADY_IMPLEMENTED_SUBDOMAIN = "The subdomain '%s' is already implemented through its domain '%s'.";
+	public static final String MULTIPLE_DOMAINS_IMPLEMENTED = "Are you sure you want to implement multiple Domains within one Bounded Context? A Bounded Context should typically implement only a part of your Domain; one or multiple Subdomains.";
+
 	/* Uniqueness problems */
 	public static final String BOUNDED_CONTEXT_NAME_NOT_UNIQUE = "Multiple bounded contexts with the name '%s' have been declared.";
 	public static final String AGGREGATE_NAME_NOT_UNIQUE = "Multiple aggregates with the name '%s' have been declared.";
 	public static final String MODULE_NAME_NOT_UNIQUE = "Duplicate name. There is already an existing Module named '%s'.";
 	public static final String USE_CASE_NAME_NOT_UNIQUE = "Multiple use cases with the name '%s' have been declared.";
 	public static final String DOMAIN_OBJECT_NOT_UNIQUE = "Multiple domain objects with the name '%s' have been declared.";
-	
+
 	/* Generator problems */
 	public static final String EMPTY_UML_COMPONENT_DIAGRAM_MESSAGE = "Sorry, we cannot generate a component diagram. Your Context Map seems to be empty.";
 	public static final String EMPTY_UML_CLASS_DIAGRAM_MESSAGE = "Sorry, we cannot generate a class diagram for this Bounded Context. There are no Aggregates or none of the Aggregates contain any domain objects (entities, value objects or domain events).";
