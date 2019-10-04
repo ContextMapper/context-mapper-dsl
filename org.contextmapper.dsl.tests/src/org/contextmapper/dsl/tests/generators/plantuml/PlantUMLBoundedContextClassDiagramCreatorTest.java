@@ -415,6 +415,28 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 	}
 
 	@Test
+	public void createsNoteForRefinedBoundedContext() {
+		// given
+		BoundedContext boundedContext = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
+		boundedContext.setName("myBoundedContext");
+		BoundedContext refinedContext = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
+		refinedContext.setName("superContext");
+		boundedContext.setRefinedBoundedContext(refinedContext);
+		Aggregate aggregate = ContextMappingDSLFactory.eINSTANCE.createAggregate();
+		aggregate.setName("testAggregate");
+		boundedContext.getAggregates().add(aggregate);
+		aggregate.getDomainObjects().add(TacticdslFactory.eINSTANCE.createSimpleDomainObject());
+
+		// when
+		String plantUML = this.creator.createDiagram(boundedContext);
+
+		// then
+		assertTrue(plantUML.contains("legend left"));
+		assertTrue(plantUML.contains("  This Bounded Context 'myBoundedContext' refines the 'superContext' Bounded Context." + System.lineSeparator()));
+		assertTrue(plantUML.contains("end legend"));
+	}
+	
+	@Test
 	public void canCreateMethodForDomainObjectOperations() {
 		// given
 		BoundedContext boundedContext = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
