@@ -251,4 +251,23 @@ class BoundedContextDSLParsingTest {
 		assertTrue(responsibilities.contains("another responsibility"));
 		assertEquals(BoundedContextType.FEATURE, result.boundedContexts.get(0).type);
 	}
+	
+	@Test
+	def void canRefineOtherBoundedContext() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext StrategicDDD
+			BoundedContext ContextMapper refines StrategicDDD
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		
+		val contextMapperContext = result.boundedContexts.get(1);
+		assertEquals("ContextMapper", contextMapperContext.name);
+		assertEquals("StrategicDDD", contextMapperContext.refinedBoundedContext.name);
+	}
 }

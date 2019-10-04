@@ -42,7 +42,8 @@ ContextMap:
 
 BoundedContext:
 	'BoundedContext' name=ID (('implements' (implementedDomainParts+=[DomainPart]) ("," implementedDomainParts+=[DomainPart])*)? & 
-		                      ('realizes' (realizedBoundedContexts+=[BoundedContext]) ("," realizedBoundedContexts+=[BoundedContext])*)?
+		                      ('realizes' (realizedBoundedContexts+=[BoundedContext]) ("," realizedBoundedContexts+=[BoundedContext])*)? & 
+		                      ('refines' refinedBoundedContext=[BoundedContext])?
 	)
 	(
 		OPEN

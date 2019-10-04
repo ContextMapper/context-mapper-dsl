@@ -49,14 +49,20 @@ public class PlantUMLBoundedContextClassDiagramCreator extends AbstractPlantUMLC
 			printAggregate(aggregate, 0);
 		}
 		printReferences(0);
-		printSubdomainLegend(getSubdomains(boundedContext.getImplementedDomainParts()));
+		printLegend(boundedContext);
 	}
 
-	private void printSubdomainLegend(List<Subdomain> subdomains) {
-		if (subdomains.isEmpty())
+	private void printLegend(BoundedContext boundedContext) {
+		List<Subdomain> subdomains = getSubdomains(boundedContext.getImplementedDomainParts());
+		if (subdomains.isEmpty() && boundedContext.getRefinedBoundedContext() == null)
 			return;
 		sb.append("legend left");
 		linebreak();
+		if (boundedContext.getRefinedBoundedContext() != null) {
+			sb.append("  ").append("This Bounded Context '").append(boundedContext.getName()).append("' refines the '").append(boundedContext.getRefinedBoundedContext().getName())
+					.append("' Bounded Context.");
+			linebreak();
+		}
 		for (Subdomain subdomain : subdomains) {
 			if (subdomain.getEntities().isEmpty()) {
 				sb.append("  ").append("This bounded context implements the subdomain '" + subdomain.getName() + "'.");
