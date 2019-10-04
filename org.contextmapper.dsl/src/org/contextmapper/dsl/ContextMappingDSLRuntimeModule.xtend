@@ -15,6 +15,7 @@
  */
 package org.contextmapper.dsl
 
+import org.contextmapper.dsl.scoping.NullGlobalScopeProvider
 import org.eclipse.xtext.util.formallang.PdaUtil
 
 /**
@@ -24,6 +25,10 @@ class ContextMappingDSLRuntimeModule extends AbstractContextMappingDSLRuntimeMod
 	
 	def Class<? extends PdaUtil> bindPdaUtil() {
 		return ContextMapperPDAUtil
+	}
+	
+	override bindIGlobalScopeProvider() {
+		return NullGlobalScopeProvider
 	}
 	
 }
