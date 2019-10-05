@@ -14,9 +14,6 @@ subprojects {
 	ext.xtextVersion = '2.18.0'
 	repositories {
 		jcenter()
-		maven {
-			url 'https://clojars.org/repo'
-		}
 	}
 	
 	apply plugin: 'java'

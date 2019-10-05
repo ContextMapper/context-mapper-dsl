@@ -8,7 +8,7 @@ dependencies {
 	compile group: 'org.freemarker', name: 'freemarker', version: '2.3.22'
 	compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.9'
 	compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.9.9'
-	compile group: 'org.eclipse.emf.henshin', name: 'henshin-interpreter', version: '1.4.0'
+	compile group: 'org.contextmapper', name: 'henshin-interpreter', version: '1.4.0'
 }
 configurations {
 	mwe2 {
