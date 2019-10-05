@@ -11,7 +11,11 @@ if [ "$CONTINUE_RELEASE" = "Y" ]; then
    "message": "Trigger Release",
    "branch":"master",
    "config": {
-     "script": "xvfb-run ./.travis/prepareReleaseTravis.sh"
+     "jobs": {
+       "include": {
+         "script": "xvfb-run ./.travis/prepareReleaseTravis.sh"
+       }
+     }
     }
   }}'
 
