@@ -15,7 +15,6 @@
  */
 package org.contextmapper.dsl.generator.mdsl;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -23,10 +22,11 @@ import java.util.Stack;
 import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
-import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
 import org.contextmapper.dsl.generator.exception.GeneratorInputException;
+import org.contextmapper.dsl.generator.mdsl.generatorcontext.DownstreamContext;
+import org.contextmapper.dsl.generator.mdsl.generatorcontext.UpstreamAPIContext;
 import org.contextmapper.dsl.generator.mdsl.model.DataType;
 import org.contextmapper.dsl.generator.mdsl.model.DataTypeAttribute;
 import org.contextmapper.dsl.generator.mdsl.model.EndpointClient;
@@ -95,11 +95,9 @@ public class MDSLModelCreator {
 		for (DataType dataType : dataTypeMapping.values()) {
 			specification.addDataType(dataType);
 		}
-		specification.addProvider(
-				createProvider(context.getUpstreamContext().getName() + PROVIDER_NAME_EXTENSION, context.getJoinedImplementationTechnologies(), specification.getEndpoints()));
-		for (String downstreamName : context.getConsumedAggregatesByDownstreamContext().keySet()) {
-			specification.addClient(createClient(downstreamName + CLIENT_NAME_EXTENSION, context.getConsumedAggregatesByDownstreamContext().get(downstreamName).stream()
-					.map(agg -> agg.getName() + AGGREGATE_NAME_EXTENSION).collect(Collectors.toList())));
+		specification.addProvider(createProvider(context, specification.getEndpoints()));
+		for (DownstreamContext downstreamContext : context.getDownstreamContexts()) {
+			specification.addClient(createClient(downstreamContext));
 		}
 		return specification;
 	}
@@ -299,9 +297,10 @@ public class MDSLModelCreator {
 		return BASE_TYPE; // default case: we have to define a data type
 	}
 
-	private EndpointProvider createProvider(String providerName, String implementationTechnology, List<EndpointContract> endpointContracts) {
+	private EndpointProvider createProvider(UpstreamAPIContext context, List<EndpointContract> endpointContracts) {
 		EndpointProvider provider = new EndpointProvider();
-		provider.setName(providerName);
+		String implementationTechnology = context.getJoinedImplementationTechnologies();
+		provider.setName(context.getUpstreamContext().getName() + PROVIDER_NAME_EXTENSION);
 		for (EndpointContract contract : endpointContracts) {
 			EndpointOffer offer = new EndpointOffer();
 			offer.setOfferedEndpoint(contract);
@@ -310,14 +309,24 @@ public class MDSLModelCreator {
 			offer.setProtocolComment(!"".equals(implementationTechnology) ? "" : PROTOCOL_NOT_DEFINED_COMMENT);
 			provider.addEndpointOffer(offer);
 		}
+		if (!context.getUpstreamRoles().isEmpty()) {
+			String roles = String.join(" and ", context.getUpstreamRoles().stream().map(ur -> ur.getLiteral()).collect(Collectors.toSet()));
+			provider.addComment("The upstream Bounded Context '" + context.getUpstreamContext().getName() + "' implements " + roles + ".");
+		}
 		return provider;
 	}
 
-	private EndpointClient createClient(String clientName, List<String> endpointNames) {
+	private EndpointClient createClient(DownstreamContext downstreamContext) {
 		EndpointClient client = new EndpointClient();
-		client.setName(clientName);
-		for (String offer : endpointNames) {
+		client.setName(downstreamContext.getDownstreamName() + CLIENT_NAME_EXTENSION);
+		List<String> endpoints = downstreamContext.getConsumedAggregates().stream()
+				.map(agg -> agg.getName() + AGGREGATE_NAME_EXTENSION).collect(Collectors.toList());
+		for (String offer : endpoints) {
 			client.addConsumedOffer(offer);
+		}
+		if (!downstreamContext.getDownstreamRoles().isEmpty()) {
+			String roles = String.join(" and ", downstreamContext.getDownstreamRoles().stream().map(ur -> ur.getLiteral()).collect(Collectors.toSet()));
+			client.addComment("The downstream Bounded Context '" + downstreamContext.getDownstreamName() + "' implements " + roles + ".");
 		}
 		return client;
 	}
@@ -340,13 +349,13 @@ public class MDSLModelCreator {
 				context.setUpstreamContext(relationship.getUpstream());
 				upstreamContextMap.put(upstreamAPIName, context);
 			}
+			context.getUpstreamRoles().addAll(relationship.getUpstreamRoles());
+			//context.getDownstreamRoles().addAll(relationship.getDownstreamRoles());
 			for (Aggregate exposedAggregate : relationship.getUpstreamExposedAggregates()) {
 				if (!context.getExposedAggregates().stream().map(agg -> agg.getName()).collect(Collectors.toList()).contains(exposedAggregate.getName()))
 					context.getExposedAggregates().add(exposedAggregate);
 			}
-			if (!context.getDownstreamContexts().stream().map(bc -> bc.getName()).collect(Collectors.toList()).contains(relationship.getDownstream().getName()))
-				context.getDownstreamContexts().add(relationship.getDownstream());
-			context.addDownstreamConsumations(relationship.getDownstream().getName(), relationship.getUpstreamExposedAggregates());
+			context.addDownstreamContext4Relationship(relationship);
 			if (relationship.getImplementationTechnology() != null && !"".equals(relationship.getImplementationTechnology()))
 				context.getImplementationTechnologies().add(relationship.getImplementationTechnology());
 		}
@@ -387,62 +396,6 @@ public class MDSLModelCreator {
 		if (!atLeastOneAggregateWithAnOperation)
 			throw new GeneratorInputException(
 					"None of your exposed Aggregates contains either Service or 'Aggregate Root' operations/methods. Therefore there is nothing to generate. Add at least one operation/method to the 'Aggregate Root' or to a Service in one of your exposed Aggregates to get a result.");
-	}
-
-	private class UpstreamAPIContext {
-		private String apiName;
-		private BoundedContext upstreamContext;
-		private List<Aggregate> exposedAggregates = Lists.newArrayList();
-		private List<BoundedContext> downstreamContexts = Lists.newArrayList();
-		private List<String> implementationTechnologies = Lists.newArrayList();
-		private Map<String, List<Aggregate>> consumedAggregatesByDownstreamContext = Maps.newHashMap();
-
-		public void setApiName(String apiName) {
-			this.apiName = apiName;
-		}
-
-		public String getApiName() {
-			return apiName;
-		}
-
-		public void setUpstreamContext(BoundedContext upstreamContext) {
-			this.upstreamContext = upstreamContext;
-		}
-
-		public BoundedContext getUpstreamContext() {
-			return upstreamContext;
-		}
-
-		public List<Aggregate> getExposedAggregates() {
-			return exposedAggregates;
-		}
-
-		public List<BoundedContext> getDownstreamContexts() {
-			return downstreamContexts;
-		}
-
-		public List<String> getImplementationTechnologies() {
-			return implementationTechnologies;
-		}
-
-		public String getJoinedImplementationTechnologies() {
-			return String.join(", ", new HashSet<>(implementationTechnologies));
-		}
-
-		public void addDownstreamConsumations(String downstreamName, List<Aggregate> consumedAggregates) {
-			if (!this.consumedAggregatesByDownstreamContext.containsKey(downstreamName)) {
-				this.consumedAggregatesByDownstreamContext.put(downstreamName, Lists.newArrayList());
-			}
-			for (Aggregate aggregate : consumedAggregates) {
-				if (!this.consumedAggregatesByDownstreamContext.get(downstreamName).stream().map(agg -> agg.getName()).collect(Collectors.toList()).contains(aggregate.getName()))
-					this.consumedAggregatesByDownstreamContext.get(downstreamName).add(aggregate);
-			}
-		}
-
-		public Map<String, List<Aggregate>> getConsumedAggregatesByDownstreamContext() {
-			return consumedAggregatesByDownstreamContext;
-		}
-
 	}
 
 }

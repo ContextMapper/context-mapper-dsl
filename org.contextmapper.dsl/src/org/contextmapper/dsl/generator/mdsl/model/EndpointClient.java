@@ -23,6 +23,7 @@ public class EndpointClient {
 
 	private String name;
 	private List<String> consumedOfferNames = Lists.newArrayList();
+	private List<String> comments = Lists.newArrayList();
 
 	public String getName() {
 		return name;
@@ -38,6 +39,22 @@ public class EndpointClient {
 
 	public void addConsumedOffer(String offer) {
 		this.consumedOfferNames.add(offer);
+	}
+	
+	public void addComment(String comment) {
+		this.comments.add(comment);
+	}
+
+	public List<String> getComments() {
+		return comments;
+	}
+
+	public boolean hasComments() {
+		return !this.comments.isEmpty();
+	}
+
+	public boolean hasMultipleComments() {
+		return !this.comments.isEmpty() && this.comments.size() > 1;
 	}
 
 }

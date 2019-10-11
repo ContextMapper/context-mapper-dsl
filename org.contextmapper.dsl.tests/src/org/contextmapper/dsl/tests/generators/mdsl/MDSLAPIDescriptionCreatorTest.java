@@ -131,6 +131,11 @@ public class MDSLAPIDescriptionCreatorTest extends AbstractCMLInputFileTest {
 	void onlyUsePublicOperations() throws IOException {
 		testCMLInputAndMDSLOutputFiles("mdsl-only-use-public-operations");
 	}
+	
+	@Test
+	void canCreateUpstreamDownstreamRoleComments() throws IOException {
+		testCMLInputAndMDSLOutputFiles("mdsl-upstream-downstream-role-comments");
+	}
 
 	private void testCMLInputAndMDSLOutputFiles(String baseFilename) throws IOException {
 		// given

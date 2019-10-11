@@ -1,0 +1,30 @@
+API description CustomerManagementContextAPI
+
+data type Address P
+data type Parameter1Type P
+data type Parameter2Type P
+data type ReturnType P
+data type anotherMethodParameter { "param1":Parameter1Type, "param2":Parameter2Type }
+
+endpoint type CustomersAggregate
+	exposes
+		operation updateAddress
+			expecting
+				payload Address
+			delivering
+				payload ReturnType
+		operation anotherMethod
+			expecting
+				payload anotherMethodParameter
+
+/* The upstream Bounded Context 'CustomerManagementContext' implements OHS and PL. */
+API provider CustomerManagementContextProvider
+	offers CustomersAggregate
+	at endpoint location "http://localhost:8000"
+		via protocol "RESTful HTTP"
+
+/* The downstream Bounded Context 'ContractManagementContext' implements ACL. */
+API client ContractManagementContextClient
+	consumes CustomersAggregate
+
+IPA

@@ -23,6 +23,7 @@ public class EndpointProvider {
 
 	private String name;
 	private List<EndpointOffer> endpointOffers = Lists.newArrayList();
+	private List<String> comments = Lists.newArrayList();
 
 	public String getName() {
 		return name;
@@ -38,6 +39,22 @@ public class EndpointProvider {
 
 	public void addEndpointOffer(EndpointOffer offer) {
 		this.endpointOffers.add(offer);
+	}
+
+	public void addComment(String comment) {
+		this.comments.add(comment);
+	}
+
+	public List<String> getComments() {
+		return comments;
+	}
+
+	public boolean hasComments() {
+		return !this.comments.isEmpty();
+	}
+
+	public boolean hasMultipleComments() {
+		return !this.comments.isEmpty() && this.comments.size() > 1;
 	}
 
 }
