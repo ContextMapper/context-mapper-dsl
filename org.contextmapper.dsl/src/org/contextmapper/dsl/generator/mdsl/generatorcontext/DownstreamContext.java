@@ -30,32 +30,36 @@ public class DownstreamContext {
 	private BoundedContext downstreamContext;
 	private List<Aggregate> consumedAggregates = Lists.newArrayList();
 	private Set<DownstreamRole> downstreamRoles = Sets.newHashSet();
-	
+
 	DownstreamContext(BoundedContext downstreamContext) {
 		this.downstreamContext = downstreamContext;
 	}
-	
+
 	public String getDownstreamName() {
 		return downstreamContext.getName();
 	}
-	
+
 	public void addConsumedAggregates(List<Aggregate> consumedAggregates) {
 		for (Aggregate aggregate : consumedAggregates) {
 			if (!this.consumedAggregates.stream().map(agg -> agg.getName()).collect(Collectors.toList()).contains(aggregate.getName()))
 				this.consumedAggregates.add(aggregate);
 		}
 	}
-	
+
 	public List<Aggregate> getConsumedAggregates() {
 		return consumedAggregates;
 	}
-	
+
 	public void addDownstreamRoles(List<DownstreamRole> downstreamRoles) {
 		this.downstreamRoles.addAll(downstreamRoles);
 	}
-	
+
 	public Set<DownstreamRole> getDownstreamRoles() {
 		return downstreamRoles;
 	}
-	
+
+	public String getDomainVisionStatement() {
+		return this.downstreamContext.getDomainVisionStatement();
+	}
+
 }

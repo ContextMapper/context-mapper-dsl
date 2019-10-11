@@ -1,0 +1,26 @@
+ContextMap {
+	contains CustomerManagementContext, ContractManagementContext
+	
+	CustomerManagementContext -> ContractManagementContext {
+		exposedAggregates = Customers
+		implementationTechnology = "RESTful HTTP"
+	}
+	
+}
+
+BoundedContext ContractManagementContext {
+	domainVisionStatement "Contracts vision statement ..."
+}
+
+BoundedContext CustomerManagementContext {
+	domainVisionStatement "Customers vision statement ..."
+	
+	Aggregate Customers {
+		Entity Customer {
+			aggregateRoot
+			
+			def ReturnType updateAddress(Address address);
+			def void anotherMethod(Parameter1Type param1, Parameter2Type param2);
+		}
+	}
+}

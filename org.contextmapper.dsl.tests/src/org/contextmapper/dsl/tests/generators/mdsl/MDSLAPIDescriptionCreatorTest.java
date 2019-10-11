@@ -136,6 +136,11 @@ public class MDSLAPIDescriptionCreatorTest extends AbstractCMLInputFileTest {
 	void canCreateUpstreamDownstreamRoleComments() throws IOException {
 		testCMLInputAndMDSLOutputFiles("mdsl-upstream-downstream-role-comments");
 	}
+	
+	@Test
+	void canCreateDomainVisionStatementComments() throws IOException {
+		testCMLInputAndMDSLOutputFiles("mdsl-domain-vision-statements-test");
+	}
 
 	private void testCMLInputAndMDSLOutputFiles(String baseFilename) throws IOException {
 		// given

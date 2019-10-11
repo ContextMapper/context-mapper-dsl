@@ -88,6 +88,7 @@ public class MDSLModelCreator {
 	private ServiceSpecification createServiceSpecification(String apiName, UpstreamAPIContext context) {
 		ServiceSpecification specification = new ServiceSpecification();
 		specification.setName(apiName);
+		specification.setUpstreamDomainVisionStatement(context.getUpstreamContext().getDomainVisionStatement());
 		dataTypeMapping = Maps.newTreeMap();
 		for (Aggregate aggregate : context.getExposedAggregates()) {
 			specification.addEndpoint(createEndpoint(aggregate, specification));
@@ -328,6 +329,8 @@ public class MDSLModelCreator {
 			String roles = String.join(" and ", downstreamContext.getDownstreamRoles().stream().map(ur -> ur.getLiteral()).collect(Collectors.toSet()));
 			client.addComment("The downstream Bounded Context '" + downstreamContext.getDownstreamName() + "' implements " + roles + ".");
 		}
+		if(downstreamContext.getDomainVisionStatement() != null && !"".equals(downstreamContext.getDomainVisionStatement()))
+			client.addComment(downstreamContext.getDomainVisionStatement());
 		return client;
 	}
 
