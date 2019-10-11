@@ -24,7 +24,6 @@ API provider CustomerManagementContextProvider
 	at endpoint location "http://localhost:8000"
 		via protocol "RESTful HTTP"
 
-/* The downstream Bounded Context 'ContractManagementContext' implements ACL. */
 API client ContractManagementContextClient
 	consumes CustomersAggregate
 

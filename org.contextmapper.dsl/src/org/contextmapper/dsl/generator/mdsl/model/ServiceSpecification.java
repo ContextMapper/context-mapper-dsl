@@ -27,6 +27,7 @@ public class ServiceSpecification {
 	private List<EndpointContract> endpoints = Lists.newArrayList();
 	private List<EndpointProvider> providers = Lists.newArrayList();
 	private List<EndpointClient> clients = Lists.newArrayList();
+	private APIUsageContext usageContext;
 
 	public String getName() {
 		return name;
@@ -74,6 +75,14 @@ public class ServiceSpecification {
 
 	public void addClient(EndpointClient client) {
 		this.clients.add(client);
+	}
+	
+	public void setUsageContext(APIUsageContext usageContext) {
+		this.usageContext = usageContext;
+	}
+	
+	public APIUsageContext getUsageContext() {
+		return usageContext;
 	}
 
 	public boolean hasUpstreamDomainVisionStatement() {
