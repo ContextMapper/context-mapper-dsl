@@ -35,6 +35,17 @@ endpoint type ${endpoint.name}
 </#list>
 
 <#list serviceSpecification.providers as provider>
+<#if provider.hasComments()>
+	<#if provider.hasMultipleComments()>
+/* 
+		<#list provider.comments as comment>
+ * ${comment}
+		</#list>
+ */
+	<#else>
+/* ${provider.comments[0]} */
+	</#if>
+</#if>
 API provider ${provider.name}
 	<#list provider.endpointOffers as offer>
 	offers ${offer.offeredEndpoint.name}
@@ -44,6 +55,17 @@ API provider ${provider.name}
 </#list>
 
 <#list serviceSpecification.clients as client>
+<#if client.hasComments()>
+	<#if client.hasMultipleComments()>
+/* 
+		<#list client.comments as comment>
+ * ${comment}
+		</#list>
+ */
+	<#else>
+/* ${client.comments[0]} */
+	</#if>
+</#if>
 API client ${client.name}
 	<#list client.consumedOfferNames as offername>
 	consumes ${offername}
