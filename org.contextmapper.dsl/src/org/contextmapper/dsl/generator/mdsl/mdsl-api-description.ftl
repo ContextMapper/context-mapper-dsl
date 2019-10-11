@@ -4,6 +4,9 @@
  */
 </#if>
 API description ${serviceSpecification.name}
+<#if serviceSpecification.usageContext?has_content>
+usage context ${serviceSpecification.usageContext.toString()} for BACKEND_INTEGRATION
+</#if>
 
 <#macro renderDataTypeAttributesRecursive attributes>{ <#list attributes as attribute><#if attribute.hasChildren()>"${attribute.getName()}":<@renderDataTypeAttributesRecursive attribute.getChildren() /><#if attribute.isCollection()>*<#elseif attribute.isNullable()>?</#if><#else>"${attribute.getName()}":${attribute.getType()}<#if attribute.isCollection()>*<#elseif attribute.isNullable()>?</#if></#if><#if attribute_index < attributes?size - 1>, </#if></#list> }</#macro>
 <#list serviceSpecification.dataTypes as dataType>

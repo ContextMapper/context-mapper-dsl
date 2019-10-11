@@ -1,5 +1,5 @@
 API description CustomerManagementContextAPI
-usage context PUBLIC_API for BACKEND_INTEGRATION
+usage context COMMUNITY_API for BACKEND_INTEGRATION
 
 data type Address P
 data type Parameter1Type P
@@ -18,13 +18,12 @@ endpoint type CustomersAggregate
 			expecting
 				payload anotherMethodParameter
 
-/* The upstream Bounded Context 'CustomerManagementContext' implements OHS and PL. */
+/* The upstream Bounded Context 'CustomerManagementContext' implements OHS. */
 API provider CustomerManagementContextProvider
 	offers CustomersAggregate
 	at endpoint location "http://localhost:8000"
 		via protocol "RESTful HTTP"
 
-/* The downstream Bounded Context 'ContractManagementContext' implements ACL. */
 API client ContractManagementContextClient
 	consumes CustomersAggregate
 

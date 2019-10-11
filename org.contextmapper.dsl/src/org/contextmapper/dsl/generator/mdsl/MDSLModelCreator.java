@@ -24,9 +24,11 @@ import java.util.stream.Collectors;
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
+import org.contextmapper.dsl.contextMappingDSL.UpstreamRole;
 import org.contextmapper.dsl.generator.exception.GeneratorInputException;
 import org.contextmapper.dsl.generator.mdsl.generatorcontext.DownstreamContext;
 import org.contextmapper.dsl.generator.mdsl.generatorcontext.UpstreamAPIContext;
+import org.contextmapper.dsl.generator.mdsl.model.APIUsageContext;
 import org.contextmapper.dsl.generator.mdsl.model.DataType;
 import org.contextmapper.dsl.generator.mdsl.model.DataTypeAttribute;
 import org.contextmapper.dsl.generator.mdsl.model.EndpointClient;
@@ -89,6 +91,13 @@ public class MDSLModelCreator {
 		ServiceSpecification specification = new ServiceSpecification();
 		specification.setName(apiName);
 		specification.setUpstreamDomainVisionStatement(context.getUpstreamContext().getDomainVisionStatement());
+		
+		if (context.getUpstreamRoles().contains(UpstreamRole.OPEN_HOST_SERVICE) && context.getUpstreamRoles().contains(UpstreamRole.PUBLISHED_LANGUAGE)) {
+			specification.setUsageContext(APIUsageContext.PUBLIC_API);
+		} else if (context.getUpstreamRoles().contains(UpstreamRole.OPEN_HOST_SERVICE)) {
+			specification.setUsageContext(APIUsageContext.COMMUNITY_API);
+		}
+		
 		dataTypeMapping = Maps.newTreeMap();
 		for (Aggregate aggregate : context.getExposedAggregates()) {
 			specification.addEndpoint(createEndpoint(aggregate, specification));

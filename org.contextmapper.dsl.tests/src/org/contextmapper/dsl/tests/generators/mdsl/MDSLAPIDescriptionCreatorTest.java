@@ -141,6 +141,16 @@ public class MDSLAPIDescriptionCreatorTest extends AbstractCMLInputFileTest {
 	void canCreateDomainVisionStatementComments() throws IOException {
 		testCMLInputAndMDSLOutputFiles("mdsl-domain-vision-statements-test");
 	}
+	
+	@Test
+	void canCreateUsageContextCommunityAPI() throws IOException {
+		testCMLInputAndMDSLOutputFiles("mdsl-usage-context-community-api");
+	}
+	
+	@Test
+	void canCreateUsageContextPublicAPI() throws IOException {
+		testCMLInputAndMDSLOutputFiles("mdsl-usage-context-public-api");
+	}
 
 	private void testCMLInputAndMDSLOutputFiles(String baseFilename) throws IOException {
 		// given
