@@ -1,9 +1,19 @@
 API description CustomerManagementContextAPI
 
+// PROTECTED REGION DATA TYPES BEGIN
+// Hint: move data types which should not be overwritten by the generator into this section.
+
+// PROTECTED REGION DATA TYPES END
+
 data type BankAccount P
 data type JustSomeParameterType P
 data type ReturnType P
 data type updateCustomerParameter { "customer":{ "firstName":V<string>, "lastName":V<string>, "account":BankAccount, "address":{ "street":V<string>, "houseNumber":V<int> } }, "param2":JustSomeParameterType }
+
+// PROTECTED REGION ENDPOINTS BEGIN
+// Hint: move endpoints which should not be overwritten by the generator into this section.
+
+// PROTECTED REGION ENDPOINTS END
 
 endpoint type CustomersAggregate
 	exposes
@@ -13,10 +23,20 @@ endpoint type CustomersAggregate
 			delivering
 				payload ReturnType
 
+// PROTECTED REGION PROVIDERS BEGIN
+// Hint: move providers which should not be overwritten by the generator into this section.
+
+// PROTECTED REGION PROVIDERS END
+
 API provider CustomerManagementContextProvider
 	offers CustomersAggregate
 	at endpoint location "http://localhost:8000"
 		via protocol "RESTful HTTP"
+
+// PROTECTED REGION CLIENTS BEGIN
+// Hint: move providers which should not be overwritten by the generator into this section.
+
+// PROTECTED REGION CLIENTS END
 
 API client ContractManagementContextClient
 	consumes CustomersAggregate

@@ -8,6 +8,12 @@ API description ${serviceSpecification.name}
 usage context ${serviceSpecification.usageContext.toString()} for BACKEND_INTEGRATION
 </#if>
 
+<#if serviceSpecification.dataTypeProtectedRegion?has_content>
+// PROTECTED REGION DATA TYPES BEGIN
+${serviceSpecification.dataTypeProtectedRegion}
+// PROTECTED REGION DATA TYPES END
+</#if>
+
 <#macro renderDataTypeAttributesRecursive attributes>{ <#list attributes as attribute><#if attribute.hasChildren()>"${attribute.getName()}":<@renderDataTypeAttributesRecursive attribute.getChildren() /><#if attribute.isCollection()>*<#elseif attribute.isNullable()>?</#if><#else>"${attribute.getName()}":${attribute.getType()}<#if attribute.isCollection()>*<#elseif attribute.isNullable()>?</#if></#if><#if attribute_index < attributes?size - 1>, </#if></#list> }</#macro>
 <#list serviceSpecification.dataTypes as dataType>
 	<#if !dataType.isPrimitiveType()>
@@ -21,6 +27,12 @@ data type ${dataType.name} <@renderDataTypeAttributesRecursive dataType.getChild
 		</#if>
 	</#if>
 </#list>
+
+<#if serviceSpecification.endpointProtectedRegion?has_content>
+// PROTECTED REGION ENDPOINTS BEGIN
+${serviceSpecification.endpointProtectedRegion}
+// PROTECTED REGION ENDPOINTS END
+</#if>
 
 <#list serviceSpecification.endpoints as endpoint>
 endpoint type ${endpoint.name}
@@ -42,6 +54,12 @@ endpoint type ${endpoint.name}
 		</#list>
 </#list>
 
+<#if serviceSpecification.providerProtectedRegion?has_content>
+// PROTECTED REGION PROVIDERS BEGIN
+${serviceSpecification.providerProtectedRegion}
+// PROTECTED REGION PROVIDERS END
+</#if>
+
 <#list serviceSpecification.providers as provider>
 <#if provider.hasComments()>
 	<#if provider.hasMultipleComments()>
@@ -61,6 +79,12 @@ API provider ${provider.name}
 		via protocol "${offer.protocol}"<#if offer.hasProtocolComment()> // ${offer.getProtocolComment()}</#if>
 	</#list>
 </#list>
+
+<#if serviceSpecification.clientProtectedRegion?has_content>
+// PROTECTED REGION CLIENTS BEGIN
+${serviceSpecification.clientProtectedRegion}
+// PROTECTED REGION CLIENTS END
+</#if>
 
 <#list serviceSpecification.clients as client>
 <#if client.hasComments()>

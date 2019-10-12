@@ -28,6 +28,10 @@ public class ServiceSpecification {
 	private List<EndpointProvider> providers = Lists.newArrayList();
 	private List<EndpointClient> clients = Lists.newArrayList();
 	private APIUsageContext usageContext;
+	private String dataTypeProtectedRegion;
+	private String endpointProtectedRegion;
+	private String providerProtectedRegion;
+	private String clientProtectedRegion;
 
 	public String getName() {
 		return name;
@@ -87,6 +91,38 @@ public class ServiceSpecification {
 
 	public boolean hasUpstreamDomainVisionStatement() {
 		return this.upstreamDomainVisionStatement != null && !"".equals(upstreamDomainVisionStatement);
+	}
+	
+	public void setDataTypeProtectedRegion(String dataTypeProtectedRegion) {
+		this.dataTypeProtectedRegion = dataTypeProtectedRegion;
+	}
+	
+	public String getDataTypeProtectedRegion() {
+		return dataTypeProtectedRegion;
+	}
+	
+	public void setEndpointProtectedRegion(String endpointProtectedRegion) {
+		this.endpointProtectedRegion = endpointProtectedRegion;
+	}
+	
+	public String getEndpointProtectedRegion() {
+		return endpointProtectedRegion;
+	}
+	
+	public void setProviderProtectedRegion(String providerProtectedRegion) {
+		this.providerProtectedRegion = providerProtectedRegion;
+	}
+	
+	public String getProviderProtectedRegion() {
+		return providerProtectedRegion;
+	}
+	
+	public void setClientProtectedRegion(String clientProtectedRegion) {
+		this.clientProtectedRegion = clientProtectedRegion;
+	}
+	
+	public String getClientProtectedRegion() {
+		return clientProtectedRegion;
 	}
 
 }

@@ -2,14 +2,14 @@ API description CustomerManagementContextAPI
 
 // PROTECTED REGION DATA TYPES BEGIN
 // Hint: move data types which should not be overwritten by the generator into this section.
-
+data type MyPreservedDataType P
 // PROTECTED REGION DATA TYPES END
 
 data type Address P
 data type Parameter1Type P
 data type Parameter2Type P
 data type ReturnType P
-data type anotherMethodParameter { "param1":Parameter1Type, "param2":Parameter2Type* }
+data type anotherMethodParameter { "param1":Parameter1Type, "param2":Parameter2Type }
 
 // PROTECTED REGION ENDPOINTS BEGIN
 // Hint: move endpoints which should not be overwritten by the generator into this section.
@@ -22,7 +22,7 @@ endpoint type CustomersAggregate
 			expecting
 				payload Address
 			delivering
-				payload ReturnType*
+				payload ReturnType
 		operation anotherMethod
 			expecting
 				payload anotherMethodParameter

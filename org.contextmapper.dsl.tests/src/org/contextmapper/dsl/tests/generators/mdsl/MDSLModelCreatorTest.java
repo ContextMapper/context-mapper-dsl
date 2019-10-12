@@ -24,6 +24,7 @@ import java.util.List;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.generator.exception.GeneratorInputException;
 import org.contextmapper.dsl.generator.mdsl.MDSLModelCreator;
+import org.contextmapper.dsl.generator.mdsl.ProtectedRegionContextFactory;
 import org.contextmapper.dsl.generator.mdsl.model.DataType;
 import org.contextmapper.dsl.generator.mdsl.model.EndpointClient;
 import org.contextmapper.dsl.generator.mdsl.model.EndpointContract;

@@ -18,6 +18,8 @@ package org.contextmapper.dsl.generator;
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.generator.mdsl.MDSLAPIDescriptionCreator;
 import org.contextmapper.dsl.generator.mdsl.MDSLModelCreator;
+import org.contextmapper.dsl.generator.mdsl.ProtectedRegionContext;
+import org.contextmapper.dsl.generator.mdsl.ProtectedRegionContextFactory;
 import org.contextmapper.dsl.generator.mdsl.model.ServiceSpecification;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.xtext.generator.IFileSystemAccess2;
@@ -29,11 +31,20 @@ public class MDSLContractsGenerator extends AbstractContextMapGenerator {
 	@Override
 	protected void generateFromContextMap(ContextMap contextMap, IFileSystemAccess2 fsa, URI inputFileURI) {
 		MDSLModelCreator mdslModelCreator = new MDSLModelCreator(contextMap);
-		for(ServiceSpecification serviceSpecification : mdslModelCreator.createServiceSpecifications()) {
-			MDSLAPIDescriptionCreator dslCreator = new MDSLAPIDescriptionCreator();
-			String fileName = inputFileURI.trimFileExtension().lastSegment();
-			fsa.generateFile(fileName + "_" + serviceSpecification.getName() + "." + MDSL_FILE_EXT, dslCreator.createAPIDescriptionText(serviceSpecification));
+		for (ServiceSpecification serviceSpecification : mdslModelCreator.createServiceSpecifications()) {
+			String mdslFileName = inputFileURI.trimFileExtension().lastSegment() + "_" + serviceSpecification.getName() + "." + MDSL_FILE_EXT;
+			ProtectedRegionContext protectedRegionContext = createProtectedRegionContext(mdslFileName, fsa);
+			MDSLAPIDescriptionCreator dslCreator = new MDSLAPIDescriptionCreator(protectedRegionContext);
+			fsa.generateFile(mdslFileName, dslCreator.createAPIDescriptionText(serviceSpecification));
 		}
 	}
 
+	private ProtectedRegionContext createProtectedRegionContext(String mdslFileName, IFileSystemAccess2 fsa) {
+		ProtectedRegionContextFactory factory = new ProtectedRegionContextFactory();
+		if (fsa.isFile(mdslFileName)) {
+			return factory.createProtectedRegionContextForExistingMDSLFile(fsa.readTextFile(mdslFileName).toString());
+		} else {
+			return factory.createProtectedRegionContextForNewMDSLFile();
+		}
+	}
 }

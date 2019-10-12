@@ -1,9 +1,19 @@
 API description CustomerManagementContextAPI
 
+// PROTECTED REGION DATA TYPES BEGIN
+// Hint: move data types which should not be overwritten by the generator into this section.
+
+// PROTECTED REGION DATA TYPES END
+
 // You declared a cyclic reference! We had to break the cycle at CyclicVO
 data type CyclicVO { "name":V<string>, "refToMyself":{ "name":V<string>, "refToMyself":CyclicVO } }
 // You declared a cyclic reference! We had to break the cycle at CyclicVO2
 data type CyclicVO2 { "name":V<string>, "refToMyself":{ "name":V<string>, "refToMyself":CyclicVO2* }* }
+
+// PROTECTED REGION ENDPOINTS BEGIN
+// Hint: move endpoints which should not be overwritten by the generator into this section.
+
+// PROTECTED REGION ENDPOINTS END
 
 endpoint type CustomersAggregate
 	exposes
@@ -23,10 +33,20 @@ endpoint type CustomersAggregate
 			delivering
 				payload V<string>
 
+// PROTECTED REGION PROVIDERS BEGIN
+// Hint: move providers which should not be overwritten by the generator into this section.
+
+// PROTECTED REGION PROVIDERS END
+
 API provider CustomerManagementContextProvider
 	offers CustomersAggregate
 	at endpoint location "http://localhost:8000"
 		via protocol "RESTful HTTP"
+
+// PROTECTED REGION CLIENTS BEGIN
+// Hint: move providers which should not be overwritten by the generator into this section.
+
+// PROTECTED REGION CLIENTS END
 
 API client ContractManagementContextClient
 	consumes CustomersAggregate
