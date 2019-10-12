@@ -8,10 +8,11 @@ API description ${serviceSpecification.name}
 usage context ${serviceSpecification.usageContext.toString()} for BACKEND_INTEGRATION
 </#if>
 
+<#if serviceSpecification.dataTypeProtectedRegion?has_content>
 // PROTECTED REGION DATA TYPES BEGIN
-// Hint: move data types which should not be overwritten by the generator into this section.
-
-// PROTECTED REGION END
+${serviceSpecification.dataTypeProtectedRegion}
+// PROTECTED REGION DATA TYPES END
+</#if>
 
 <#macro renderDataTypeAttributesRecursive attributes>{ <#list attributes as attribute><#if attribute.hasChildren()>"${attribute.getName()}":<@renderDataTypeAttributesRecursive attribute.getChildren() /><#if attribute.isCollection()>*<#elseif attribute.isNullable()>?</#if><#else>"${attribute.getName()}":${attribute.getType()}<#if attribute.isCollection()>*<#elseif attribute.isNullable()>?</#if></#if><#if attribute_index < attributes?size - 1>, </#if></#list> }</#macro>
 <#list serviceSpecification.dataTypes as dataType>
@@ -27,10 +28,11 @@ data type ${dataType.name} <@renderDataTypeAttributesRecursive dataType.getChild
 	</#if>
 </#list>
 
+<#if serviceSpecification.endpointProtectedRegion?has_content>
 // PROTECTED REGION ENDPOINTS BEGIN
-// Hint: move endpoints which should not be overwritten by the generator into this section.
-
-// PROTECTED REGION END
+${serviceSpecification.endpointProtectedRegion}
+// PROTECTED REGION ENDPOINTS END
+</#if>
 
 <#list serviceSpecification.endpoints as endpoint>
 endpoint type ${endpoint.name}
@@ -52,10 +54,11 @@ endpoint type ${endpoint.name}
 		</#list>
 </#list>
 
+<#if serviceSpecification.providerProtectedRegion?has_content>
 // PROTECTED REGION PROVIDERS BEGIN
-// Hint: move providers which should not be overwritten by the generator into this section.
-
-// PROTECTED REGION END
+${serviceSpecification.providerProtectedRegion}
+// PROTECTED REGION PROVIDERS END
+</#if>
 
 <#list serviceSpecification.providers as provider>
 <#if provider.hasComments()>
@@ -77,10 +80,11 @@ API provider ${provider.name}
 	</#list>
 </#list>
 
+<#if serviceSpecification.clientProtectedRegion?has_content>
 // PROTECTED REGION CLIENTS BEGIN
-// Hint: move providers which should not be overwritten by the generator into this section.
-
-// PROTECTED REGION END
+${serviceSpecification.clientProtectedRegion}
+// PROTECTED REGION CLIENTS END
+</#if>
 
 <#list serviceSpecification.clients as client>
 <#if client.hasComments()>

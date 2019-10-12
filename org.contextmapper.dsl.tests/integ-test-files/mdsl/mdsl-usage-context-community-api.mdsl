@@ -4,7 +4,7 @@ usage context COMMUNITY_API for BACKEND_INTEGRATION
 // PROTECTED REGION DATA TYPES BEGIN
 // Hint: move data types which should not be overwritten by the generator into this section.
 
-// PROTECTED REGION END
+// PROTECTED REGION DATA TYPES END
 
 data type Address P
 data type Parameter1Type P
@@ -15,7 +15,7 @@ data type anotherMethodParameter { "param1":Parameter1Type, "param2":Parameter2T
 // PROTECTED REGION ENDPOINTS BEGIN
 // Hint: move endpoints which should not be overwritten by the generator into this section.
 
-// PROTECTED REGION END
+// PROTECTED REGION ENDPOINTS END
 
 endpoint type CustomersAggregate
 	exposes
@@ -31,7 +31,7 @@ endpoint type CustomersAggregate
 // PROTECTED REGION PROVIDERS BEGIN
 // Hint: move providers which should not be overwritten by the generator into this section.
 
-// PROTECTED REGION END
+// PROTECTED REGION PROVIDERS END
 
 /* The upstream Bounded Context 'CustomerManagementContext' implements OHS. */
 API provider CustomerManagementContextProvider
@@ -42,7 +42,7 @@ API provider CustomerManagementContextProvider
 // PROTECTED REGION CLIENTS BEGIN
 // Hint: move providers which should not be overwritten by the generator into this section.
 
-// PROTECTED REGION END
+// PROTECTED REGION CLIENTS END
 
 API client ContractManagementContextClient
 	consumes CustomersAggregate

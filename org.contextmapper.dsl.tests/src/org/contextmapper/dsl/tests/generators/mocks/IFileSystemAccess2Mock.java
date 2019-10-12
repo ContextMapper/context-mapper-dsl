@@ -16,17 +16,19 @@
 package org.contextmapper.dsl.tests.generators.mocks;
 
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.xtext.generator.IFileSystemAccess2;
 import org.eclipse.xtext.util.RuntimeIOException;
 
+import com.google.common.collect.Maps;
+
 public class IFileSystemAccess2Mock implements IFileSystemAccess2 {
 
-	Map<String, CharSequence> countingMap = new HashMap<String, CharSequence>();
-
+	Map<String, CharSequence> countingMap = Maps.newHashMap();
+	private Map<String, String> fileMap = Maps.newHashMap();
+	
 	public Map<String, CharSequence> getGeneratedFilesMap() {
 		return countingMap;
 	}
@@ -84,7 +86,7 @@ public class IFileSystemAccess2Mock implements IFileSystemAccess2 {
 
 	@Override
 	public CharSequence readTextFile(String fileName) throws RuntimeIOException {
-		return null;
+		return this.fileMap.get(fileName);
 	}
 
 	@Override
@@ -94,7 +96,11 @@ public class IFileSystemAccess2Mock implements IFileSystemAccess2 {
 
 	@Override
 	public boolean isFile(String path) throws RuntimeIOException {
-		return false;
+		return this.fileMap.containsKey(path);
+	}
+	
+	public void storeFile(String path, String content) {
+		this.fileMap.put(path, content);
 	}
 
 }

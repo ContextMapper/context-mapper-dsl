@@ -3,7 +3,7 @@ API description CustomerManagementContextAPI
 // PROTECTED REGION DATA TYPES BEGIN
 // Hint: move data types which should not be overwritten by the generator into this section.
 
-// PROTECTED REGION END
+// PROTECTED REGION DATA TYPES END
 
 // You declared a cyclic reference! We had to break the cycle at CyclicVO
 data type CyclicVO { "name":V<string>, "refToMyself":{ "name":V<string>, "refToMyself":CyclicVO } }
@@ -13,7 +13,7 @@ data type CyclicVO2 { "name":V<string>, "refToMyself":{ "name":V<string>, "refTo
 // PROTECTED REGION ENDPOINTS BEGIN
 // Hint: move endpoints which should not be overwritten by the generator into this section.
 
-// PROTECTED REGION END
+// PROTECTED REGION ENDPOINTS END
 
 endpoint type CustomersAggregate
 	exposes
@@ -36,7 +36,7 @@ endpoint type CustomersAggregate
 // PROTECTED REGION PROVIDERS BEGIN
 // Hint: move providers which should not be overwritten by the generator into this section.
 
-// PROTECTED REGION END
+// PROTECTED REGION PROVIDERS END
 
 API provider CustomerManagementContextProvider
 	offers CustomersAggregate
@@ -46,7 +46,7 @@ API provider CustomerManagementContextProvider
 // PROTECTED REGION CLIENTS BEGIN
 // Hint: move providers which should not be overwritten by the generator into this section.
 
-// PROTECTED REGION END
+// PROTECTED REGION CLIENTS END
 
 API client ContractManagementContextClient
 	consumes CustomersAggregate

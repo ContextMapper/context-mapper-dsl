@@ -5,8 +5,13 @@ import java.io.StringWriter;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.commons.io.FileUtils;
+import org.contextmapper.dsl.generator.mdsl.model.DataType;
+import org.contextmapper.dsl.generator.mdsl.model.EndpointClient;
+import org.contextmapper.dsl.generator.mdsl.model.EndpointContract;
+import org.contextmapper.dsl.generator.mdsl.model.EndpointProvider;
 import org.contextmapper.dsl.generator.mdsl.model.ServiceSpecification;
 
 import freemarker.template.Configuration;
@@ -19,12 +24,15 @@ public class MDSLAPIDescriptionCreator {
 
 	private Configuration freemarkerConfig;
 	private Template freemarkerTemplate;
+	private ProtectedRegionContext protectedRegionContext;
 
-	public MDSLAPIDescriptionCreator() {
+	public MDSLAPIDescriptionCreator(ProtectedRegionContext protectedRegionContext) {
+		this.protectedRegionContext = protectedRegionContext;
 		loadFreemarkerTemplate();
 	}
 
 	public String createAPIDescriptionText(ServiceSpecification serviceSpecification) {
+		updateServiceSpecification4ProtectedRegions(serviceSpecification);
 		Map<String, Object> root = new HashMap<>();
 		root.put("serviceSpecification", serviceSpecification);
 		StringWriter writer = new StringWriter();
@@ -57,6 +65,41 @@ public class MDSLAPIDescriptionCreator {
 	private long getPID() {
 		String processName = java.lang.management.ManagementFactory.getRuntimeMXBean().getName();
 		return Long.parseLong(processName.split("@")[0]);
+	}
+
+	private void updateServiceSpecification4ProtectedRegions(ServiceSpecification serviceSpecification) {
+		serviceSpecification.setDataTypeProtectedRegion(protectedRegionContext.getProtectedDataTypeRegion());
+		serviceSpecification.setEndpointProtectedRegion(protectedRegionContext.getProtectedEndpointRegion());
+		serviceSpecification.setProviderProtectedRegion(protectedRegionContext.getProtectedProviderRegion());
+		serviceSpecification.setClientProtectedRegion(protectedRegionContext.getProtectedClientRegion());
+
+		// remove protected data types
+		for (String protectedDataTye : this.protectedRegionContext.getDataTypeIdentifiers()) {
+			Optional<DataType> dataType = serviceSpecification.getDataTypes().stream().filter(dt -> dt.getName().equals(protectedDataTye)).findAny();
+			if (dataType.isPresent())
+				serviceSpecification.getDataTypes().remove(dataType.get());
+		}
+
+		// remove protected endpoints
+		for (String protectedEndpoint : this.protectedRegionContext.getEndpointIdentifiers()) {
+			Optional<EndpointContract> endpoint = serviceSpecification.getEndpoints().stream().filter(ec -> ec.getName().equals(protectedEndpoint)).findAny();
+			if (endpoint.isPresent())
+				serviceSpecification.getEndpoints().remove(endpoint.get());
+		}
+
+		// remove protected providers
+		for (String protectedProvider : this.protectedRegionContext.getProviderIdentifiers()) {
+			Optional<EndpointProvider> provider = serviceSpecification.getProviders().stream().filter(p -> p.getName().equals(protectedProvider)).findAny();
+			if (provider.isPresent())
+				serviceSpecification.getProviders().remove(provider.get());
+		}
+
+		// remove protected clients
+		for (String protectedClient : this.protectedRegionContext.getClientIdentifiers()) {
+			Optional<EndpointClient> client = serviceSpecification.getClients().stream().filter(cl -> cl.getName().equals(protectedClient)).findAny();
+			if (client.isPresent())
+				serviceSpecification.getClients().remove(client.get());
+		}
 	}
 
 }

@@ -1,0 +1,13 @@
+API description CustomerManagementContextAPI
+
+// PROTECTED REGION DATA TYPES BEGIN
+// Hint: move data types which should not be overwritten by the generator into this section.
+data type Parameter1Type P
+data type YetAnotherDataType P
+// PROTECTED REGION DATA TYPES END
+
+data type Address P
+data type Parameter1Type P
+data type Parameter2Type P
+
+IPA

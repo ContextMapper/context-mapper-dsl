@@ -3,7 +3,7 @@ API description CustomerManagementContextAPI
 // PROTECTED REGION DATA TYPES BEGIN
 // Hint: move data types which should not be overwritten by the generator into this section.
 
-// PROTECTED REGION END
+// PROTECTED REGION DATA TYPES END
 
 data type Address { "street":V<string>, "houseNumber":V<int>, "city":V<string> }
 data type AnyReturnType P
@@ -12,7 +12,7 @@ data type yetAnotherMethodParameter { "param1":V<int>, "param2":V<bool> }
 // PROTECTED REGION ENDPOINTS BEGIN
 // Hint: move endpoints which should not be overwritten by the generator into this section.
 
-// PROTECTED REGION END
+// PROTECTED REGION ENDPOINTS END
 
 endpoint type CustomersAggregate
 	exposes
@@ -33,7 +33,7 @@ endpoint type CustomersAggregate
 // PROTECTED REGION PROVIDERS BEGIN
 // Hint: move providers which should not be overwritten by the generator into this section.
 
-// PROTECTED REGION END
+// PROTECTED REGION PROVIDERS END
 
 API provider CustomerManagementContextProvider
 	offers CustomersAggregate
@@ -43,7 +43,7 @@ API provider CustomerManagementContextProvider
 // PROTECTED REGION CLIENTS BEGIN
 // Hint: move providers which should not be overwritten by the generator into this section.
 
-// PROTECTED REGION END
+// PROTECTED REGION CLIENTS END
 
 API client ContractManagementContextClient
 	consumes CustomersAggregate
