@@ -6,6 +6,9 @@
    <feature id="org.contextmapper.dsl.feature.source" version="0.0.0">
       <category name="main.source"/>
    </feature>
+   <feature id="org.contextmapper.servicecutter.feature">
+      <category name="main"/>
+   </feature>
    <bundle id="org.eclipse.emf.henshin.interpreter" version="1.4.0.201611301251">
       <category name="main"/>
    </bundle>
@@ -15,8 +18,12 @@
    <feature id="org.contextmapper.contextmap.generator.feature" version="0.0.0">
       <category name="main"/>
    </feature>
+   <feature id="org.contextmapper.servicecutter.feature" version="0.0.0">
+      <category name="main"/>
+   </feature>
    <category-def name="main" label="ContextMappingDSL"/>
    <category-def name="main.source" label="ContextMappingDSL (Sources)"/>
    <repository-reference location="http://download.eclipse.org/modeling/emft/henshin/updates/release/" enabled="true" />
    <repository-reference location="https://dl.bintray.com/contextmapper/context-map-generator-releases/" enabled="true" />
+   <repository-reference location="https://dl.bintray.com/contextmapper/service-cutter-library-releases/" enabled="true" />
 </site>
