@@ -141,6 +141,8 @@ abstract public class AbstractPlantUMLClassDiagramCreator<T extends EObject> ext
 		for (Reference reference : references) {
 			printIndentation(indentation);
 			sb.append(getReferenceTypeAsString(reference));
+			if (reference.isNullable())
+				sb.append("[0..1]");
 			sb.append(" ").append(reference.getName());
 			linebreak();
 		}

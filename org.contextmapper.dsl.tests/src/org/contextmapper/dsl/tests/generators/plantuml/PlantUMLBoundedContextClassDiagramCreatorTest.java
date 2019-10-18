@@ -182,6 +182,32 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 		// then
 		assertTrue(plantUML.contains("	class Test <<Entity>> {" + System.lineSeparator() + "		int[0..1] amount" + System.lineSeparator() + "	}" + System.lineSeparator()));
 	}
+	
+	@Test
+	public void respectNullableOnReferences() {
+		// given
+		BoundedContext boundedContext = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
+		Aggregate aggregate = ContextMappingDSLFactory.eINSTANCE.createAggregate();
+		aggregate.setName("testAggregate");
+		boundedContext.getAggregates().add(aggregate);
+		Entity entity = TacticdslFactory.eINSTANCE.createEntity();
+		entity.setName("Test");
+		Entity referencedEntity = TacticdslFactory.eINSTANCE.createEntity();
+		referencedEntity.setName("ReferencedEntity");
+		Reference reference = TacticdslFactory.eINSTANCE.createReference();
+		reference.setName("otherEntity");
+		reference.setDomainObjectType(referencedEntity);
+		reference.setNullable(true);
+		entity.getReferences().add(reference);
+		aggregate.getDomainObjects().add(entity);
+		aggregate.getDomainObjects().add(referencedEntity);
+
+		// when
+		String plantUML = this.creator.createDiagram(boundedContext);
+
+		// then
+		assertTrue(plantUML.contains("	class Test <<Entity>> {" + System.lineSeparator() + "		ReferencedEntity[0..1] otherEntity" + System.lineSeparator() + "	}" + System.lineSeparator()));
+	}
 
 	@Test
 	public void canCreateClassFromAggregateRoot() {
