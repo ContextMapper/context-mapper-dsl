@@ -157,6 +157,12 @@ public class MDSLAPIDescriptionCreatorTest extends AbstractCMLInputFileTest {
 	void canOverwriteOnlyUnprotectedParts() throws IOException {
 		testCMLInputAndMDSLOutputFiles("mdsl-protected-regions", true);
 	}
+	
+	@Test
+	void canMatchMDSLPatterns() throws IOException {
+		testCMLInputAndMDSLOutputFiles("mdsl-serves-as-test-1");
+		testCMLInputAndMDSLOutputFiles("mdsl-serves-as-test-2");
+	}
 
 	private void testCMLInputAndMDSLOutputFiles(String baseFilename) throws IOException {
 		testCMLInputAndMDSLOutputFiles(baseFilename, false);

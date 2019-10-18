@@ -20,7 +20,7 @@ BoundedContext ContractManagementContext
 
 BoundedContext CustomerManagementContext {
 
-	"INFORMATION_HOLDER_RESOURCE"	
+	"custom serves as"	
 	Aggregate Customers {
 		Entity Customer {
 			aggregateRoot

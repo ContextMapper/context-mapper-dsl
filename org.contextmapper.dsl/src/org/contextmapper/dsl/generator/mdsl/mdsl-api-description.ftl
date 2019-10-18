@@ -36,6 +36,9 @@ ${serviceSpecification.endpointProtectedRegion}
 
 <#list serviceSpecification.endpoints as endpoint>
 endpoint type ${endpoint.name}
+	<#if endpoint.servesAs?has_content>
+	serves as <#if endpoint.isServesAsPatternMatched()>${endpoint.servesAs}<#else>"${endpoint.servesAs}"</#if>
+	</#if>
 	<#if endpoint.operations?has_content>
 	exposes
 	<#else>
@@ -43,6 +46,9 @@ endpoint type ${endpoint.name}
 	</#if>
 		<#list endpoint.operations as operation>
 		operation ${operation.name}
+			<#if operation.endpointResponsibility?has_content>
+			with responsibility <#if operation.isEndpointResponsibilityPatternMatched()>${operation.endpointResponsibility}<#else>"${operation.endpointResponsibility}"</#if>
+			</#if>
 			<#if operation.expectingPayload?has_content>
 			expecting
 				payload ${operation.expectingPayload.name}<#if operation.expectingCollection()>*</#if>

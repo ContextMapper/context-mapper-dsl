@@ -22,6 +22,8 @@ import com.google.common.collect.Lists;
 public class EndpointContract {
 
 	private String name;
+	private String servesAs;
+	private boolean servesAsPatternMatched = false;
 	private List<EndpointOperation> operations = Lists.newArrayList();
 
 	public String getName() {
@@ -38,6 +40,22 @@ public class EndpointContract {
 
 	public void addOperation(EndpointOperation operation) {
 		this.operations.add(operation);
+	}
+	
+	public void setServesAs(String servesAs) {
+		this.servesAs = servesAs;
+	}
+	
+	public String getServesAs() {
+		return servesAs;
+	}
+	
+	public void setServesAsPatternMatched(boolean servesAsPatternMatched) {
+		this.servesAsPatternMatched = servesAsPatternMatched;
+	}
+	
+	public boolean isServesAsPatternMatched() {
+		return servesAsPatternMatched;
 	}
 
 }

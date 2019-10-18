@@ -22,6 +22,8 @@ public class EndpointOperation {
 	private boolean expectingCollection = false;
 	private boolean deliveringCollection = false;
 	private DataType deliveringPayload;
+	private String endpointResponsibility;
+	private boolean endpointResponsibilityPatternMatched;
 
 	public String getName() {
 		return name;
@@ -61,6 +63,22 @@ public class EndpointOperation {
 	
 	public void setExpectingCollection(boolean expectingCollection) {
 		this.expectingCollection = expectingCollection;
+	}
+	
+	public void setEndpointResponsibility(String endpointResponsibility) {
+		this.endpointResponsibility = endpointResponsibility;
+	}
+	
+	public String getEndpointResponsibility() {
+		return endpointResponsibility;
+	}
+	
+	public void setEndpointResponsibilityPatternMatched(boolean endpointResponsibilityPatternMatched) {
+		this.endpointResponsibilityPatternMatched = endpointResponsibilityPatternMatched;
+	}
+	
+	public boolean isEndpointResponsibilityPatternMatched() {
+		return endpointResponsibilityPatternMatched;
 	}
 
 }
