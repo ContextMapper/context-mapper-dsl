@@ -125,9 +125,9 @@ public class PlantUMLComponentDiagramCreator extends AbstractPlantUMLDiagramCrea
 		if (!relationship.getUpstreamExposedAggregates().isEmpty())
 			sb.append(relationship.getUpstreamExposedAggregates().size() > 1 ? "Aggregates " : "Aggregate ")
 					.append(aggregatesToCommaSeparatedString(relationship.getUpstreamExposedAggregates())).append(" ");
-		String[] roles = downstreamRolesToArray(relationship.getDownstreamRoles());
-		if (roles.length > 0)
-			sb.append("via ").append(String.join(", ", roles));
+		String downstreamRoleString = downstreamRoleToString(relationship.getDownstreamRoles());
+		if (!"".equals(downstreamRoleString))
+			sb.append(downstreamRoleString);
 		linebreak();
 	}
 
@@ -142,8 +142,15 @@ public class PlantUMLComponentDiagramCreator extends AbstractPlantUMLDiagramCrea
 		return roles.stream().map(role -> role.getName()).collect(Collectors.toList()).toArray(new String[roles.size()]);
 	}
 
-	private String[] downstreamRolesToArray(EList<DownstreamRole> roles) {
-		return roles.stream().map(role -> role.getName()).collect(Collectors.toList()).toArray(new String[roles.size()]);
+	private String downstreamRoleToString(EList<DownstreamRole> roles) {
+		if (roles.isEmpty())
+			return "";
+		// currently CML only supports one downstream role (ACL or CONFORMIST)
+		if (roles.get(0).equals(DownstreamRole.ANTICORRUPTION_LAYER)) {
+			return "via " + roles.get(0).getName();
+		} else {
+			return "as " + roles.get(0).getName();
+		}
 	}
 
 	private String aggregatesToCommaSeparatedString(EList<Aggregate> aggregates) {

@@ -203,7 +203,7 @@ class PlantUMLComponentDiagramCreatorTest {
 		relationship.setImplementationTechnology("SOAP");
 		relationship.setName("myRel");
 		relationship.getUpstreamRoles().add(UpstreamRole.OPEN_HOST_SERVICE);
-		relationship.getDownstreamRoles().add(DownstreamRole.ANTICORRUPTION_LAYER);
+		relationship.getDownstreamRoles().add(DownstreamRole.CONFORMIST);
 		contextMap.getRelationships().add(relationship);
 
 		// when
@@ -214,7 +214,7 @@ class PlantUMLComponentDiagramCreatorTest {
 		assertTrue(plantUML.contains("component [myContext2]" + System.lineSeparator()));
 		assertTrue(plantUML.contains("interface \"myRel (SOAP)\" as myRel" + System.lineSeparator()));
 		assertTrue(plantUML.contains("[myContext1] --> myRel : OPEN_HOST_SERVICE" + System.lineSeparator()));
-		assertTrue(plantUML.contains("myRel <.. [myContext2] : use via ANTICORRUPTION_LAYER" + System.lineSeparator()));
+		assertTrue(plantUML.contains("myRel <.. [myContext2] : use as CONFORMIST" + System.lineSeparator()));
 	}
 
 	@Test
