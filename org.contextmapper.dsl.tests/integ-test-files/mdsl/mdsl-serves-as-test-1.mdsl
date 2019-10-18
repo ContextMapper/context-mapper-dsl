@@ -17,7 +17,7 @@ data type anotherMethodParameter { "param1":Parameter1Type, "param2":Parameter2T
 // PROTECTED REGION ENDPOINTS END
 
 endpoint type CustomersAggregate
-	serves as INFORMATION_HOLDER_RESOURCE
+	serves as "custom serves as"
 	exposes
 		operation updateAddress
 			with responsibility COMPUTATION_FUNCTION

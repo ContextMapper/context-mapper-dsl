@@ -20,12 +20,12 @@ BoundedContext ContractManagementContext
 
 BoundedContext CustomerManagementContext {
 
-	"INFORMATION_HOLDER_RESOURCE"	
+	""	
 	Aggregate Customers {
 		Entity Customer {
 			aggregateRoot
 			
-			"COMPUTATION_FUNCTION"
+			""
 			def ReturnType updateAddress(Address address);
 			"JustSomeResponsibility"
 			def void anotherMethod(Parameter1Type param1, Parameter2Type param2);

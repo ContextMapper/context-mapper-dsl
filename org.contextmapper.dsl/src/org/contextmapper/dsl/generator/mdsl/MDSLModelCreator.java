@@ -129,18 +129,32 @@ public class MDSLModelCreator {
 			if (serviceOperation.getVisibility().equals(Visibility.PUBLIC))
 				endpoint.addOperation(createOperation(serviceOperation, specification));
 		}
+		setEndpointServesAsString(endpoint, aggregate.getDoc());
 		return endpoint;
+	}
+	
+	private void setEndpointServesAsString(EndpointContract endpoint, String docString) {
+		if (docString == null || "".equals(docString))
+			return;
+		String pattern = new MDSLPatternMatcher().matchPatterns(MDSLPatternMatcher.ENDPOINT_SERVES_AS_PATTERNS, docString);
+		if (!"".equals(pattern)) {
+			endpoint.setServesAsPatternMatched(true);
+			endpoint.setServesAs(pattern);
+		} else {
+			endpoint.setServesAs(docString);
+		}
 	}
 
 	private EndpointOperation createOperation(DomainObjectOperation domainObjectOperation, ServiceSpecification specification) {
-		return createOperation(domainObjectOperation.getName(), domainObjectOperation.getParameters(), domainObjectOperation.getReturnType(), specification);
+		return createOperation(domainObjectOperation.getName(), domainObjectOperation.getParameters(), domainObjectOperation.getReturnType(), specification,
+				domainObjectOperation.getDoc());
 	}
 
 	private EndpointOperation createOperation(ServiceOperation serviceOperation, ServiceSpecification specification) {
-		return createOperation(serviceOperation.getName(), serviceOperation.getParameters(), serviceOperation.getReturnType(), specification);
+		return createOperation(serviceOperation.getName(), serviceOperation.getParameters(), serviceOperation.getReturnType(), specification, serviceOperation.getDoc());
 	}
 
-	private EndpointOperation createOperation(String operationName, List<Parameter> parameters, ComplexType returnType, ServiceSpecification specification) {
+	private EndpointOperation createOperation(String operationName, List<Parameter> parameters, ComplexType returnType, ServiceSpecification specification, String docString) {
 		EndpointOperation operation = new EndpointOperation();
 		operation.setName(operationName);
 
@@ -157,7 +171,20 @@ public class MDSLModelCreator {
 			operation.setDeliveringPayload(getDataType4ComplexType(returnType));
 			operation.setDeliveringCollection(returnType.getCollectionType() != CollectionType.NONE);
 		}
+		setOperationResponsibility(operation, docString);
 		return operation;
+	}
+	
+	private void setOperationResponsibility(EndpointOperation operation, String docString) {
+		if (docString == null || "".equals(docString))
+			return;
+		String pattern = new MDSLPatternMatcher().matchPatterns(MDSLPatternMatcher.OPERATION_RESPONSIBILITY_PATTERNS, docString);
+		if (!"".equals(pattern)) {
+			operation.setEndpointResponsibilityPatternMatched(true);
+			operation.setEndpointResponsibility(pattern);
+		} else {
+			operation.setEndpointResponsibility(docString);
+		}
 	}
 
 	private DataType createVoidReturnType() {
