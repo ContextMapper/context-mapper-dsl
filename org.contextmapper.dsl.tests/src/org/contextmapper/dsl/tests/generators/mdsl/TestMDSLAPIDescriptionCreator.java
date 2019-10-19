@@ -13,20 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.contextmapper.dsl.generator.mdsl;
+package org.contextmapper.dsl.tests.generators.mdsl;
 
-public enum ProtectedRegionIdentifier {
+import org.contextmapper.dsl.generator.mdsl.MDSLAPIDescriptionCreator;
+import org.contextmapper.dsl.generator.mdsl.ProtectedRegionContext;
 
-	DATA_TYPE_REGION("data types"), ENDPOINT_REGION("endpoint types"), PROVIDER_REGION("API providers"), CLIENT_REGION("API clients");
+public class TestMDSLAPIDescriptionCreator extends MDSLAPIDescriptionCreator {
 
-	private String identifier;
-
-	ProtectedRegionIdentifier(String identifier) {
-		this.identifier = identifier;
+	public TestMDSLAPIDescriptionCreator(ProtectedRegionContext protectedRegionContext) {
+		super(protectedRegionContext);
 	}
 
 	@Override
-	public String toString() {
-		return identifier;
+	protected String getTimestampString(String inputFileName) {
+		return "Generated from DDD Context Map.";
 	}
+
 }

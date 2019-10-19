@@ -1,33 +1,30 @@
+// Generated from DDD Context Map.
 API description MyBoundedContextAPI
 
-// PROTECTED REGION DATA TYPES BEGIN
-// Hint: move data types which should not be overwritten by the generator into this section.
+// ** BEGIN PROTECTED REGION for data types
 
-// PROTECTED REGION DATA TYPES END
+// ** END PROTECTED REGION for data types
 
 
-// PROTECTED REGION ENDPOINTS BEGIN
-// Hint: move endpoints which should not be overwritten by the generator into this section.
+// ** BEGIN PROTECTED REGION for endpoint types
 
-// PROTECTED REGION ENDPOINTS END
+// ** END PROTECTED REGION for endpoint types
 
 endpoint type myAggregate
 // Your aggregate root does not specify any methods/operations. Therefore we can not generate any endpoint operations.
 
-// PROTECTED REGION PROVIDERS BEGIN
-// Hint: move providers which should not be overwritten by the generator into this section.
+// ** BEGIN PROTECTED REGION for API providers
 
-// PROTECTED REGION PROVIDERS END
+// ** END PROTECTED REGION for API providers
 
 API provider MyBoundedContextProvider
 	offers myAggregate
 	at endpoint location "http://localhost:8001"
 		via protocol "tbd" // The protocol is generated if you specify the implementation technology in CML
 
-// PROTECTED REGION CLIENTS BEGIN
-// Hint: move providers which should not be overwritten by the generator into this section.
+// ** BEGIN PROTECTED REGION for API clients
 
-// PROTECTED REGION CLIENTS END
+// ** END PROTECTED REGION for API clients
 
 API client MyDownstreamContextClient
 	consumes myAggregateAggregate

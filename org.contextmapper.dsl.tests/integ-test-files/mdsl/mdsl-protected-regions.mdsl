@@ -1,15 +1,16 @@
+// Generated from DDD Context Map.
 API description CustomerManagementContextAPI
 
-// PROTECTED REGION DATA TYPES BEGIN
+// ** BEGIN PROTECTED REGION for data types
 data type Address { "street":V<string>, "city":V<string> }
-// PROTECTED REGION DATA TYPES END
+// ** END PROTECTED REGION for data types
 
 data type Parameter1Type P
 data type Parameter2Type P
 data type ReturnType P
 data type anotherMethodParameter { "param1":Parameter1Type, "param2":Parameter2Type }
 
-// PROTECTED REGION ENDPOINTS BEGIN
+// ** BEGIN PROTECTED REGION for endpoint types
 endpoint type CustomersAggregate
 	exposes
 		operation updateAddressChanged
@@ -22,10 +23,10 @@ endpoint type CustomersAggregate
 				payload anotherMethodParameter
 
 endpoint type YetAnotherEnpoint
-// PROTECTED REGION ENDPOINTS END
+// ** END PROTECTED REGION for endpoint types
 
 
-// PROTECTED REGION PROVIDERS BEGIN
+// ** BEGIN PROTECTED REGION for API providers
 API provider CustomerManagementContextProvider
 	offers CustomersAggregate
 	at endpoint location "http://localhost:8001"
@@ -33,16 +34,16 @@ API provider CustomerManagementContextProvider
 
 API provider YetAnotherProvider
 	offers YetAnotherEnpoint
-// PROTECTED REGION PROVIDERS END
+// ** END PROTECTED REGION for API providers
 
 
-// PROTECTED REGION CLIENTS BEGIN
+// ** BEGIN PROTECTED REGION for API clients
 API client ContractManagementContextClient
 	consumes CustomersAggregate
 
 API client YetAnotherClient
 	consumes YetAnotherEnpoint
-// PROTECTED REGION CLIENTS END
+// ** END PROTECTED REGION for API clients
 
 
 IPA

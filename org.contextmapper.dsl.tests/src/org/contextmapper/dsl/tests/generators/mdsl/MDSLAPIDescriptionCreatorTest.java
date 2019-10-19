@@ -113,9 +113,9 @@ public class MDSLAPIDescriptionCreatorTest extends AbstractCMLInputFileTest {
 
 		// when
 		List<ServiceSpecification> serviceSpecifications = mdslCreator.createServiceSpecifications();
-		MDSLAPIDescriptionCreator dslTextCreator = new MDSLAPIDescriptionCreator(new ProtectedRegionContextFactory().createProtectedRegionContextForNewMDSLFile());
+		MDSLAPIDescriptionCreator dslTextCreator = new TestMDSLAPIDescriptionCreator(new ProtectedRegionContextFactory().createProtectedRegionContextForNewMDSLFile());
 		ServiceSpecification spec = serviceSpecifications.stream().filter(s -> s.getName().equals("MyBoundedContextAPI")).findFirst().get();
-		String dslText = dslTextCreator.createAPIDescriptionText(spec);
+		String dslText = dslTextCreator.createAPIDescriptionText(spec, input.getURI().toFileString());
 
 		// then
 		File expectedResultFile = new File(Paths.get("").toAbsolutePath().toString(), "/integ-test-files/mdsl/" + baseFilename + ".mdsl");
@@ -163,6 +163,11 @@ public class MDSLAPIDescriptionCreatorTest extends AbstractCMLInputFileTest {
 		testCMLInputAndMDSLOutputFiles("mdsl-serves-as-test-1");
 		testCMLInputAndMDSLOutputFiles("mdsl-serves-as-test-2");
 	}
+	
+	@Test
+	void canIgnoreCommentedTypesInProtectedRegion() throws IOException {
+		testCMLInputAndMDSLOutputFiles("mdsl-protected-regions-do-not-match-commented-types", true);
+	}
 
 	private void testCMLInputAndMDSLOutputFiles(String baseFilename) throws IOException {
 		testCMLInputAndMDSLOutputFiles(baseFilename, false);
@@ -181,11 +186,11 @@ public class MDSLAPIDescriptionCreatorTest extends AbstractCMLInputFileTest {
 		if (overwriteExistingFile) {
 			File existingFile = new File(Paths.get("").toAbsolutePath().toString(), "/integ-test-files/mdsl/" + baseFilename + "-existing.mdsl");
 			String existingFileContent = FileUtils.readFileToString(existingFile);
-			dslTextCreator = new MDSLAPIDescriptionCreator(new ProtectedRegionContextFactory().createProtectedRegionContextForExistingMDSLFile(existingFileContent));
+			dslTextCreator = new TestMDSLAPIDescriptionCreator(new ProtectedRegionContextFactory().createProtectedRegionContextForExistingMDSLFile(existingFileContent));
 		} else {
-			dslTextCreator = new MDSLAPIDescriptionCreator(new ProtectedRegionContextFactory().createProtectedRegionContextForNewMDSLFile());
+			dslTextCreator = new TestMDSLAPIDescriptionCreator(new ProtectedRegionContextFactory().createProtectedRegionContextForNewMDSLFile());
 		}
-		String dslText = dslTextCreator.createAPIDescriptionText(serviceSpecifications.get(0));
+		String dslText = dslTextCreator.createAPIDescriptionText(serviceSpecifications.get(0), input.getURI().toFileString());
 
 		// then
 		File expectedResultFile = new File(Paths.get("").toAbsolutePath().toString(), "/integ-test-files/mdsl/" + baseFilename + ".mdsl");

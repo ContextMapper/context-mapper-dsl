@@ -58,8 +58,7 @@ public class ProtectedRegionReaderTest {
 		String protectedRegion = reader.getProtectedRegionContent(mdslInputFile, ProtectedRegionIdentifier.DATA_TYPE_REGION);
 
 		// then
-		assertEquals("// Hint: move data types which should not be overwritten by the generator into this section.\ndata type Parameter1Type P\ndata type YetAnotherDataType P",
-				protectedRegion);
+		assertEquals("data type Parameter1Type P\ndata type YetAnotherDataType P", protectedRegion);
 	}
 
 	@Test

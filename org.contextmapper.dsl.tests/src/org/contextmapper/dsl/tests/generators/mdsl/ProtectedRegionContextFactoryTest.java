@@ -38,10 +38,10 @@ public class ProtectedRegionContextFactoryTest {
 		ProtectedRegionContext context = factory.createProtectedRegionContextForNewMDSLFile();
 
 		// then
-		assertEquals("// Hint: move data types which should not be overwritten by the generator into this section.\n", context.getProtectedDataTypeRegion());
-		assertEquals("// Hint: move endpoints which should not be overwritten by the generator into this section.\n", context.getProtectedEndpointRegion());
-		assertEquals("// Hint: move providers which should not be overwritten by the generator into this section.\n", context.getProtectedProviderRegion());
-		assertEquals("// Hint: move providers which should not be overwritten by the generator into this section.\n", context.getProtectedClientRegion());
+		assertEquals("", context.getProtectedDataTypeRegion());
+		assertEquals("", context.getProtectedEndpointRegion());
+		assertEquals("", context.getProtectedProviderRegion());
+		assertEquals("", context.getProtectedClientRegion());
 		assertEquals(0, context.getDataTypeIdentifiers().size());
 		assertEquals(0, context.getEndpointIdentifiers().size());
 		assertEquals(0, context.getProviderIdentifiers().size());
@@ -59,19 +59,16 @@ public class ProtectedRegionContextFactoryTest {
 		ProtectedRegionContext context = factory.createProtectedRegionContextForExistingMDSLFile(mdslInputFile);
 
 		// then
-		assertEquals("// Hint: move data types which should not be overwritten by the generator into this section.\ndata type Address P\ndata type Parameter1Type P",
-				context.getProtectedDataTypeRegion());
+		assertEquals("data type Address P\ndata type Parameter1Type P", context.getProtectedDataTypeRegion());
 		assertEquals(
-				"// Hint: move endpoints which should not be overwritten by the generator into this section.\nendpoint type CustomersAggregate\n	exposes\n"
-						+ "		operation updateAddress\n			expecting\n				payload Address\n			delivering\n"
+				"endpoint type CustomersAggregate\n	exposes\n" + "		operation updateAddress\n			expecting\n				payload Address\n			delivering\n"
 						+ "				payload ReturnType\n		operation anotherMethod\n			expecting\n				payload anotherMethodParameter",
 				context.getProtectedEndpointRegion());
 		assertEquals(
-				"// Hint: move providers which should not be overwritten by the generator into this section.\nAPI provider CustomerManagementContextProvider\n"
+				"API provider CustomerManagementContextProvider\n"
 						+ "	offers CustomersAggregate\n	at endpoint location \"http://localhost:8000\"\n		via protocol \"RESTful HTTP\"",
 				context.getProtectedProviderRegion());
-		assertEquals("// Hint: move providers which should not be overwritten by the generator into this section.\nAPI client ContractManagementContextClient\n"
-				+ "	consumes CustomersAggregate", context.getProtectedClientRegion());
+		assertEquals("API client ContractManagementContextClient\n" + "	consumes CustomersAggregate", context.getProtectedClientRegion());
 		assertEquals(2, context.getDataTypeIdentifiers().size());
 		assertEquals(1, context.getEndpointIdentifiers().size());
 		assertEquals(1, context.getProviderIdentifiers().size());

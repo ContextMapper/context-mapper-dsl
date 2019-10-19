@@ -53,8 +53,4 @@ public class EndpointProvider {
 		return !this.comments.isEmpty();
 	}
 
-	public boolean hasMultipleComments() {
-		return !this.comments.isEmpty() && this.comments.size() > 1;
-	}
-
 }

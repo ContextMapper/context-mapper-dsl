@@ -19,10 +19,10 @@ public class ProtectedRegionContextFactory {
 
 	public ProtectedRegionContext createProtectedRegionContextForNewMDSLFile() {
 		ProtectedRegionContext context = new ProtectedRegionContext();
-		context.setProtectedDataTypeRegion("// Hint: move data types which should not be overwritten by the generator into this section.\n");
-		context.setProtectedEndpointRegion("// Hint: move endpoints which should not be overwritten by the generator into this section.\n");
-		context.setProtectedProviderRegion("// Hint: move providers which should not be overwritten by the generator into this section.\n");
-		context.setProtectedClientRegion("// Hint: move providers which should not be overwritten by the generator into this section.\n");
+		context.setProtectedDataTypeRegion("");
+		context.setProtectedEndpointRegion("");
+		context.setProtectedProviderRegion("");
+		context.setProtectedClientRegion("");
 		return context;
 	}
 
