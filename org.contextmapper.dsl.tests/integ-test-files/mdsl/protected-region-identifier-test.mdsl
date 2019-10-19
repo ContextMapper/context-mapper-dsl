@@ -1,17 +1,16 @@
+// Generated from DDD Context Map.
 API description CustomerManagementContextAPI
 
-// PROTECTED REGION DATA TYPES BEGIN
-// Hint: move data types which should not be overwritten by the generator into this section.
+// ** BEGIN PROTECTED REGION for data types
 data type Address P
 data type Parameter1Type P
-// PROTECTED REGION DATA TYPES END
+// ** END PROTECTED REGION for data types
 
 data type Parameter2Type P
 data type ReturnType P
 data type anotherMethodParameter { "param1":Parameter1Type, "param2":Parameter2Type }
 
-// PROTECTED REGION ENDPOINTS BEGIN
-// Hint: move endpoints which should not be overwritten by the generator into this section.
+// ** BEGIN PROTECTED REGION for endpoint types
 endpoint type CustomersAggregate
 	exposes
 		operation updateAddress
@@ -22,20 +21,18 @@ endpoint type CustomersAggregate
 		operation anotherMethod
 			expecting
 				payload anotherMethodParameter
-// PROTECTED REGION ENDPOINTS END
+// ** END PROTECTED REGION for endpoint types
 
-// PROTECTED REGION PROVIDERS BEGIN
-// Hint: move providers which should not be overwritten by the generator into this section.
+// ** BEGIN PROTECTED REGION for API providers
 API provider CustomerManagementContextProvider
 	offers CustomersAggregate
 	at endpoint location "http://localhost:8000"
 		via protocol "RESTful HTTP"
-// PROTECTED REGION PROVIDERS END
+// ** END PROTECTED REGION for API providers
 
-// PROTECTED REGION CLIENTS BEGIN
-// Hint: move providers which should not be overwritten by the generator into this section.
+// ** BEGIN PROTECTED REGION for API clients
 API client ContractManagementContextClient
 	consumes CustomersAggregate
-// PROTECTED REGION CLIENTS END
+// ** END PROTECTED REGION for API clients
 
 IPA

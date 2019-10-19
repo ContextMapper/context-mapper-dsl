@@ -22,7 +22,6 @@ import com.google.common.collect.Lists;
 public class ServiceSpecification {
 
 	private String name;
-	private String upstreamDomainVisionStatement;
 	private List<DataType> dataTypes = Lists.newArrayList();
 	private List<EndpointContract> endpoints = Lists.newArrayList();
 	private List<EndpointProvider> providers = Lists.newArrayList();
@@ -39,14 +38,6 @@ public class ServiceSpecification {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public String getUpstreamDomainVisionStatement() {
-		return upstreamDomainVisionStatement;
-	}
-
-	public void setUpstreamDomainVisionStatement(String upstreamDomainVisionStatement) {
-		this.upstreamDomainVisionStatement = upstreamDomainVisionStatement;
 	}
 
 	public List<DataType> getDataTypes() {
@@ -89,10 +80,6 @@ public class ServiceSpecification {
 		return usageContext;
 	}
 
-	public boolean hasUpstreamDomainVisionStatement() {
-		return this.upstreamDomainVisionStatement != null && !"".equals(upstreamDomainVisionStatement);
-	}
-	
 	public void setDataTypeProtectedRegion(String dataTypeProtectedRegion) {
 		this.dataTypeProtectedRegion = dataTypeProtectedRegion;
 	}

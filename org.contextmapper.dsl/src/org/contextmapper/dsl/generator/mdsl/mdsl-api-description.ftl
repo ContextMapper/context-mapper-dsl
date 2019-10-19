@@ -1,17 +1,15 @@
-<#if serviceSpecification.hasUpstreamDomainVisionStatement()>
-/*
- * ${serviceSpecification.upstreamDomainVisionStatement}
- */
+<#if timestampString?has_content>
+// ${timestampString}
 </#if>
 API description ${serviceSpecification.name}
 <#if serviceSpecification.usageContext?has_content>
 usage context ${serviceSpecification.usageContext.toString()} for BACKEND_INTEGRATION
 </#if>
 
-<#if serviceSpecification.dataTypeProtectedRegion?has_content>
-// PROTECTED REGION DATA TYPES BEGIN
+<#if serviceSpecification.dataTypeProtectedRegion??>
+// ** BEGIN PROTECTED REGION for data types
 ${serviceSpecification.dataTypeProtectedRegion}
-// PROTECTED REGION DATA TYPES END
+// ** END PROTECTED REGION for data types
 </#if>
 
 <#macro renderDataTypeAttributesRecursive attributes>{ <#list attributes as attribute><#if attribute.hasChildren()>"${attribute.getName()}":<@renderDataTypeAttributesRecursive attribute.getChildren() /><#if attribute.isCollection()>*<#elseif attribute.isNullable()>?</#if><#else>"${attribute.getName()}":${attribute.getType()}<#if attribute.isCollection()>*<#elseif attribute.isNullable()>?</#if></#if><#if attribute_index < attributes?size - 1>, </#if></#list> }</#macro>
@@ -28,10 +26,10 @@ data type ${dataType.name} <@renderDataTypeAttributesRecursive dataType.getChild
 	</#if>
 </#list>
 
-<#if serviceSpecification.endpointProtectedRegion?has_content>
-// PROTECTED REGION ENDPOINTS BEGIN
+<#if serviceSpecification.endpointProtectedRegion??>
+// ** BEGIN PROTECTED REGION for endpoint types
 ${serviceSpecification.endpointProtectedRegion}
-// PROTECTED REGION ENDPOINTS END
+// ** END PROTECTED REGION for endpoint types
 </#if>
 
 <#list serviceSpecification.endpoints as endpoint>
@@ -60,25 +58,19 @@ endpoint type ${endpoint.name}
 		</#list>
 </#list>
 
-<#if serviceSpecification.providerProtectedRegion?has_content>
-// PROTECTED REGION PROVIDERS BEGIN
+<#if serviceSpecification.providerProtectedRegion??>
+// ** BEGIN PROTECTED REGION for API providers
 ${serviceSpecification.providerProtectedRegion}
-// PROTECTED REGION PROVIDERS END
+// ** END PROTECTED REGION for API providers
 </#if>
 
 <#list serviceSpecification.providers as provider>
-<#if provider.hasComments()>
-	<#if provider.hasMultipleComments()>
-/* 
-		<#list provider.comments as comment>
- * ${comment}
-		</#list>
- */
-	<#else>
-/* ${provider.comments[0]} */
-	</#if>
-</#if>
 API provider ${provider.name}
+<#if provider.hasComments()>
+	<#list provider.comments as comment>
+	// ${comment}
+	</#list>
+</#if>
 	<#list provider.endpointOffers as offer>
 	offers ${offer.offeredEndpoint.name}
 	at endpoint location "${offer.location}"
@@ -86,25 +78,19 @@ API provider ${provider.name}
 	</#list>
 </#list>
 
-<#if serviceSpecification.clientProtectedRegion?has_content>
-// PROTECTED REGION CLIENTS BEGIN
+<#if serviceSpecification.clientProtectedRegion??>
+// ** BEGIN PROTECTED REGION for API clients
 ${serviceSpecification.clientProtectedRegion}
-// PROTECTED REGION CLIENTS END
+// ** END PROTECTED REGION for API clients
 </#if>
 
 <#list serviceSpecification.clients as client>
-<#if client.hasComments()>
-	<#if client.hasMultipleComments()>
-/* 
-		<#list client.comments as comment>
- * ${comment}
-		</#list>
- */
-	<#else>
-/* ${client.comments[0]} */
-	</#if>
-</#if>
 API client ${client.name}
+<#if client.hasComments()>
+	<#list client.comments as comment>
+	// ${comment}
+	</#list>
+</#if>
 	<#list client.consumedOfferNames as offername>
 	consumes ${offername}
 	</#list>

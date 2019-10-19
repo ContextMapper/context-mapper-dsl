@@ -90,7 +90,6 @@ public class MDSLModelCreator {
 	private ServiceSpecification createServiceSpecification(String apiName, UpstreamAPIContext context) {
 		ServiceSpecification specification = new ServiceSpecification();
 		specification.setName(apiName);
-		specification.setUpstreamDomainVisionStatement(context.getUpstreamContext().getDomainVisionStatement());
 		
 		if (context.getUpstreamRoles().contains(UpstreamRole.OPEN_HOST_SERVICE) && context.getUpstreamRoles().contains(UpstreamRole.PUBLISHED_LANGUAGE)) {
 			specification.setUsageContext(APIUsageContext.PUBLIC_API);
@@ -347,9 +346,11 @@ public class MDSLModelCreator {
 			provider.addEndpointOffer(offer);
 		}
 		if (!context.getUpstreamRoles().isEmpty()) {
-			String roles = String.join(" and ", context.getUpstreamRoles().stream().map(ur -> ur.getLiteral()).collect(Collectors.toSet()));
-			provider.addComment("The upstream Bounded Context '" + context.getUpstreamContext().getName() + "' implements " + roles + ".");
+			String roles = String.join(" and ", context.getUpstreamRoles().stream().map(ur -> ur.getName() + " (" + ur.getLiteral() + ")").collect(Collectors.toList()));
+			provider.addComment("Generated from DDD upstream Bounded Context '" + context.getUpstreamContext().getName() + "' implementing " + roles + ".");
 		}
+		if (context.getUpstreamContext().getDomainVisionStatement() != null && !"".equals(context.getUpstreamContext().getDomainVisionStatement()))
+			provider.addComment(context.getUpstreamContext().getDomainVisionStatement());
 		return provider;
 	}
 
@@ -362,10 +363,10 @@ public class MDSLModelCreator {
 			client.addConsumedOffer(offer);
 		}
 		if (!downstreamContext.getDownstreamRoles().isEmpty()) {
-			String roles = String.join(" and ", downstreamContext.getDownstreamRoles().stream().map(ur -> ur.getLiteral()).collect(Collectors.toSet()));
-			client.addComment("The downstream Bounded Context '" + downstreamContext.getDownstreamName() + "' implements " + roles + ".");
+			String roles = String.join(" and ", downstreamContext.getDownstreamRoles().stream().map(ur -> ur.getName() + " (" + ur.getLiteral() + ")").collect(Collectors.toList()));
+			client.addComment("Generated from DDD downstream Bounded Context '" + downstreamContext.getDownstreamName() + "' implementing " + roles + ".");
 		}
-		if(downstreamContext.getDomainVisionStatement() != null && !"".equals(downstreamContext.getDomainVisionStatement()))
+		if (downstreamContext.getDomainVisionStatement() != null && !"".equals(downstreamContext.getDomainVisionStatement()))
 			client.addComment(downstreamContext.getDomainVisionStatement());
 		return client;
 	}

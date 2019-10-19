@@ -19,7 +19,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
@@ -28,12 +27,11 @@ import org.contextmapper.dsl.contextMappingDSL.UpstreamRole;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 
 public class UpstreamAPIContext {
 	private String apiName;
 	private BoundedContext upstreamContext;
-	private Set<UpstreamRole> upstreamRoles = Sets.newHashSet();
+	private List<UpstreamRole> upstreamRoles = Lists.newArrayList();
 	private List<Aggregate> exposedAggregates = Lists.newArrayList();
 	private List<String> implementationTechnologies = Lists.newArrayList();
 	private Map<String, DownstreamContext> downstreamContexts = Maps.newHashMap();
@@ -54,7 +52,7 @@ public class UpstreamAPIContext {
 		return upstreamContext;
 	}
 	
-	public Set<UpstreamRole> getUpstreamRoles() {
+	public List<UpstreamRole> getUpstreamRoles() {
 		return this.upstreamRoles;
 	}
 

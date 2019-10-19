@@ -43,20 +43,22 @@ public class ProtectedRegionReader {
 
 	public Set<String> getIdentifiersInProtectedRegion(String protectedRegion, ProtectedRegionIdentifier regionIdentifier) {
 		Set<String> ids = Sets.newHashSet();
-		Pattern pattern = Pattern.compile(getIdentifierKeyWord(regionIdentifier) + " ([\\^]?[a-zA-Z_]{1}[a-zA-Z0-9_]*)");
-		Matcher matcher = pattern.matcher(protectedRegion);
-		while (matcher.find()) {
-			ids.add(matcher.group(1));
+		for (String line : protectedRegion.split("\\r?\\n")) {
+			Pattern pattern = Pattern.compile("^[^\\/]?" + getIdentifierKeyWord(regionIdentifier) + " ([\\^]?[a-zA-Z_]{1}[a-zA-Z0-9_]*).*$");
+			Matcher matcher = pattern.matcher(line);
+			while (matcher.find()) {
+				ids.add(matcher.group(1));
+			}
 		}
 		return ids;
 	}
 
 	private String getRegionStartString(ProtectedRegionIdentifier regionIdentifier) {
-		return "// PROTECTED REGION " + regionIdentifier.toString() + " BEGIN";
+		return "// ** BEGIN PROTECTED REGION for " + regionIdentifier.toString();
 	}
 
 	private String getRegionEndString(ProtectedRegionIdentifier regionIdentifier) {
-		return "// PROTECTED REGION " + regionIdentifier.toString() + " END";
+		return "// ** END PROTECTED REGION for " + regionIdentifier.toString();
 	}
 
 	private String getIdentifierKeyWord(ProtectedRegionIdentifier regionIdentifier) {

@@ -3,6 +3,8 @@ package org.contextmapper.dsl.generator.mdsl;
 import java.io.File;
 import java.io.StringWriter;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -31,10 +33,11 @@ public class MDSLAPIDescriptionCreator {
 		loadFreemarkerTemplate();
 	}
 
-	public String createAPIDescriptionText(ServiceSpecification serviceSpecification) {
+	public String createAPIDescriptionText(ServiceSpecification serviceSpecification, String inputFileName) {
 		updateServiceSpecification4ProtectedRegions(serviceSpecification);
 		Map<String, Object> root = new HashMap<>();
 		root.put("serviceSpecification", serviceSpecification);
+		root.put("timestampString", getTimestampString(inputFileName));
 		StringWriter writer = new StringWriter();
 		try {
 			freemarkerTemplate.process(root, writer);
@@ -43,9 +46,13 @@ public class MDSLAPIDescriptionCreator {
 		}
 		return writer.toString();
 	}
+	
+	protected String getTimestampString(String inputFileName) {
+		return "Generated from DDD Context Map '" + inputFileName + "' at " + new SimpleDateFormat("dd.MM.YYYY HH:mm:ss z").format(new Date()) + ".";
+	}
 
 	private void loadFreemarkerTemplate() {
-		URL url = getClass().getResource(TEMPLATE_NAME);
+		URL url = MDSLAPIDescriptionCreator.class.getResource(TEMPLATE_NAME);
 		File templateDir = new File(System.getProperty("java.io.tmpdir"), "context-mapper-freemarker-templates-" + getPID());
 		if (!templateDir.exists())
 			templateDir.mkdir();
