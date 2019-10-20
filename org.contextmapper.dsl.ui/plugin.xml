@@ -488,6 +488,15 @@
 			</activeWhen>
 		</handler>
 		<handler 
+			class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.contextmapper.dsl.ui.handler.SuspendPartnershipRefactoringHandler"
+			commandId="org.contextmapper.dsl.ui.handler.SuspendPartnershipRefactoringCommand">
+			<activeWhen>
+				<reference
+					definitionId="org.contextmapper.dsl.ContextMappingDSL.Editor.opened">
+				</reference>
+			</activeWhen>
+		</handler>
+		<handler 
 			class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.eclipse.xtext.ui.refactoring.ui.DefaultRenameElementHandler"
 			commandId="org.eclipse.xtext.ui.refactoring.RenameElement">
 			<activeWhen>
@@ -551,6 +560,12 @@
              id="org.contextmapper.dsl.ui.handler.ExtractSharedKernelRefactoringCommand">
 	      </command>
 	</extension>
+	<extension
+	      point="org.eclipse.ui.commands">
+	      <command name="Suspend Partnership" categoryId="org.eclipse.xtext.ui.category.refactoring"
+             id="org.contextmapper.dsl.ui.handler.SuspendPartnershipRefactoringCommand">
+	      </command>
+	</extension>
 	<extension point="org.eclipse.ui.menus">
 		<menuContribution
 			locationURI="popup:#TextEditorContext?after=group.edit">
@@ -607,6 +622,11 @@
 					</visibleWhen>
 				</command>
 				<command defaultHandler="org.contextmapper.dsl.ui.handler.ExtractSharedKernelRefactoringHandler" commandId="org.contextmapper.dsl.ui.handler.ExtractSharedKernelRefactoringCommand"
+					style="push">
+					<visibleWhen checkEnabled="true">
+					</visibleWhen>
+				</command>
+				<command defaultHandler="org.contextmapper.dsl.ui.handler.SuspendPartnershipRefactoringHandler" commandId="org.contextmapper.dsl.ui.handler.SuspendPartnershipRefactoringCommand"
 					style="push">
 					<visibleWhen checkEnabled="true">
 					</visibleWhen>

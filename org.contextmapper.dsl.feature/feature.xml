@@ -6,7 +6,7 @@
       provider-name="Context Mapper Project Team"
       plugin="org.contextmapper.dsl.ui">
 
-   <description url="https://contextmapper.github.io/">
+   <description url="https://contextmapper.org/">
       Eclipse Plugin for the Context Mapper DSL.
    </description>
 

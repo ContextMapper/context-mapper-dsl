@@ -18,7 +18,7 @@ public abstract class ContextMapperWizardPage extends WizardPage {
 	
 	@Override
 	public void performHelp() {
-		Program.launch("https://contextmapper.github.io/docs/architectural-refactorings/");
+		Program.launch("https://contextmapper.org/docs/architectural-refactorings/");
 	}
 	
 }

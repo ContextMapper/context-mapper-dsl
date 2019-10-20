@@ -140,6 +140,6 @@ public class AggregateSelectionWizardPage extends ContextMapperWizardPage {
 
 	@Override
 	public void performHelp() {
-		Program.launch("https://contextmapper.github.io/docs/ar-extract-aggregates-by-nfr/");
+		Program.launch("https://contextmapper.org/docs/ar-extract-aggregates-by-nfr/");
 	}
 }
