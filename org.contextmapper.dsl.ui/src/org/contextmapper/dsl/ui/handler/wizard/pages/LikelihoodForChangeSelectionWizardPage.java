@@ -116,6 +116,6 @@ public class LikelihoodForChangeSelectionWizardPage extends ContextMapperWizardP
 
 	@Override
 	public void performHelp() {
-		Program.launch("https://contextmapper.github.io/docs/ar-extract-aggregates-by-volatility/");
+		Program.launch("https://contextmapper.org/docs/ar-extract-aggregates-by-volatility/");
 	}
 }

@@ -126,7 +126,7 @@ def customizePom(pom) {
             url 'https://github.com/ContextMapper/context-mapper-dsl'
             organization {
                 name 'Context Mapper'
-                url 'https://contextmapper.github.io/'
+                url 'https://contextmapper.org/'
             }
             issueManagement {
                 system 'GitHub'

@@ -153,6 +153,6 @@ public class TwoAggregatesSelectionWizardPage extends ContextMapperWizardPage {
 
 	@Override
 	public void performHelp() {
-		Program.launch("https://contextmapper.github.io/docs/ar-merge-aggregates/");
+		Program.launch("https://contextmapper.org/docs/ar-merge-aggregates/");
 	}
 }

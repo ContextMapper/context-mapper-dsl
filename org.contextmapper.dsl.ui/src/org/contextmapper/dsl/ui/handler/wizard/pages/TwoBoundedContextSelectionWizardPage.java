@@ -35,7 +35,9 @@ import org.eclipse.swt.widgets.Label;
 public class TwoBoundedContextSelectionWizardPage extends ContextMapperWizardPage {
 
 	private String initialBoundedContext1;
+	private String initialBoundedContext2;
 	private List<String> allBoundedContexts;
+	private boolean textFieldsDisabled = false;
 
 	private Combo comboBC1;
 	private Combo comboBC2;
@@ -74,6 +76,8 @@ public class TwoBoundedContextSelectionWizardPage extends ContextMapperWizardPag
 		comboBC1.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		comboBC1.setItems(this.allBoundedContexts.toArray(new String[this.allBoundedContexts.size()]));
 		comboBC1.select(this.allBoundedContexts.indexOf(this.initialBoundedContext1));
+		if (textFieldsDisabled)
+			comboBC1.setEnabled(false);
 		comboBC1.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -96,6 +100,10 @@ public class TwoBoundedContextSelectionWizardPage extends ContextMapperWizardPag
 		comboBC2 = new Combo(container, SWT.DROP_DOWN);
 		comboBC2.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		comboBC2.setItems(this.allBoundedContexts.toArray(new String[this.allBoundedContexts.size()]));
+		if (this.initialBoundedContext2 != null)
+			comboBC2.select(this.allBoundedContexts.indexOf(this.initialBoundedContext2));
+		if (textFieldsDisabled)
+			comboBC2.setEnabled(false);
 		comboBC2.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -148,6 +156,14 @@ public class TwoBoundedContextSelectionWizardPage extends ContextMapperWizardPag
 		return comboBC2.getText();
 	}
 	
+	public void setInitialBoundedContext2(String boundedContext2) {
+		this.initialBoundedContext2 = boundedContext2;
+	}
+	
+	public void disableTextFields() {
+		this.textFieldsDisabled = true;
+	}
+	
 	public boolean takeAttributesFromSecondBoundedContext() {
 		return takeAttributesFromSecondBoundedContextCheckBox.getSelection();
 	}
@@ -159,6 +175,6 @@ public class TwoBoundedContextSelectionWizardPage extends ContextMapperWizardPag
 
 	@Override
 	public void performHelp() {
-		Program.launch("https://contextmapper.github.io/docs/ar-merge-bounded-contexts/");
+		Program.launch("https://contextmapper.org/docs/ar-merge-bounded-contexts/");
 	}
 }

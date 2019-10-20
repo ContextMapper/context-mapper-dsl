@@ -15,7 +15,7 @@ The Context Mapper project has been developed as part of research projects at [H
     * Specify bounded contexts (Tactic DDD): Tactic DSL based on [Sculptor](https://github.com/sculptor/sculptor)
     * Find examples in our [examples repository](https://github.com/ContextMapper/context-mapper-examples)
     * Consult our [online documentation](https://contextmapper.org/docs/) to get detailed language documentation, manuals and how to get started.
-* Use our [Architectural Refactorings (ARs)](https://contextmapper.github.io/docs/architectural-refactorings/) to evolve and improve your DDD context maps iteratively.
+* Use our [Architectural Refactorings (ARs)](https://contextmapper.org/docs/architectural-refactorings/) to evolve and improve your DDD context maps iteratively.
 * Generate [MDSL](https://socadk.github.io/MDSL/) (micro-) service contracts out of DDD context maps
 * Generate [PlantUML](http://plantuml.com/) component diagram from context map
 * Generate [PlantUML](http://plantuml.com/) class diagram from bounded context and/or subdomain (tactic DDD)
@@ -37,9 +37,9 @@ To use the ContextMapper DSL (CML) you need the following tools:
 ## Getting Started (Eclipse)
 If you want to use our Context Mapper tool (Eclipse plugin), these are the steps to get started:
  1. Install the Eclipse plugin for creating context maps with ContextMapper DSL by using the following update site: [https://dl.bintray.com/contextmapper/context-mapping-dsl/updates/](https://dl.bintray.com/contextmapper/context-mapping-dsl/updates/)
- 2. Find a detailed manual how to create your first CML project [here](https://contextmapper.github.io/docs/getting-started-create-project/).
+ 2. Find a detailed manual how to create your first CML project [here](https://contextmapper.org/docs/getting-started-create-project/).
  3. Examples which introduce the language (CML) capabilities can be found here: [https://github.com/ContextMapper/context-mapper-examples](https://github.com/ContextMapper/context-mapper-examples)
- 4. Further instructions, user guides and documentation can be found on our website [https://contextmapper.github.io/](https://contextmapper.github.io/).
+ 4. Further instructions, user guides and documentation can be found on our website [https://contextmapper.org/](https://contextmapper.org/).
 
 ## Getting Started (Standalone Library Usage)
 If you want to use the Context Mapper DSL (CML) language and the generator tools as standalone library within your Java application you can add the following dependency to your project.
@@ -113,7 +113,7 @@ That's it. You should have a clean workspace now without build errors.
 Contribution is always welcome! Here are some ways how you can contribute:
  * Create Github issues if you find bugs or just want to give suggestions for improvements.
  * This is an open source project: if you want to code, [create pull requests](https://help.github.com/articles/creating-a-pull-request/) from [forks of this repository](https://help.github.com/articles/fork-a-repo/). Please refer to a Github issue if you contribute this way. In our [wiki](https://github.com/ContextMapper/context-mapper-dsl/wiki/IDE-Setup) you can find out how to build the project and setup the development environment locally.
- * If you want to contribute to our documentation and user guides on our website [https://contextmapper.github.io/](https://contextmapper.github.io/), create pull requests from forks of the corresponding page repo [https://github.com/ContextMapper/contextmapper.github.io](https://github.com/ContextMapper/contextmapper.github.io) or create issues [there](https://github.com/ContextMapper/contextmapper.github.io/issues).
+ * If you want to contribute to our documentation and user guides on our website [https://contextmapper.org/](https://contextmapper.org/), create pull requests from forks of the corresponding page repo [https://github.com/ContextMapper/contextmapper.github.io](https://github.com/ContextMapper/contextmapper.github.io) or create issues [there](https://github.com/ContextMapper/contextmapper.github.io/issues).
 
 ## Licence
 ContextMapper is released under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).

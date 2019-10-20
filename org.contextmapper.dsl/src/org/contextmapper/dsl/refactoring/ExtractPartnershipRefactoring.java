@@ -18,33 +18,36 @@ package org.contextmapper.dsl.refactoring;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.contextmapper.dsl.contextMappingDSL.SharedKernel;
+import org.contextmapper.dsl.contextMappingDSL.Partnership;
 import org.contextmapper.dsl.contextMappingDSL.SymmetricRelationship;
 
 /**
  * 
- * AR: Extracts a Shared Kernel to a new Bounded Context and establishes
- * upstream-downstream relationships between the new and the existing two
+ * This is the 'extract' mode of the 'Suspend Partnership' AR. It extracts a new
+ * Bounded Context for the common model parts and establishes
+ * upstream-downstream relationships between the new and the two existing
  * Bounded Contexts.
  * 
  * @author Stefan Kapferer
  *
  */
-public class ExtractSharedKernelRefactoring extends AbstractExtractSymmetricRelationshipRefactoring implements Refactoring {
+public class ExtractPartnershipRefactoring extends AbstractExtractSymmetricRelationshipRefactoring implements Refactoring {
 
-	public ExtractSharedKernelRefactoring(String boundedContext1, String boundedContext2) {
+	public ExtractPartnershipRefactoring(String boundedContext1, String boundedContext2) {
 		super(boundedContext1, boundedContext2);
 	}
 
 	@Override
 	List<SymmetricRelationship> getMatchingRelationships() {
-		return model.getMap().getRelationships().stream().filter(rel -> rel instanceof SharedKernel).map(rel -> (SharedKernel) rel)
-				.filter(sk -> sk.getParticipant1().getName().equals(boundedContext1) && sk.getParticipant2().getName().equals(boundedContext2)).collect(Collectors.toList());
+		return model.getMap().getRelationships().stream().filter(rel -> rel instanceof Partnership).map(rel -> (Partnership) rel)
+				.filter(p -> (p.getParticipant1().getName().equals(boundedContext1) && p.getParticipant2().getName().equals(boundedContext2))
+						|| (p.getParticipant1().getName().equals(boundedContext2) && p.getParticipant2().getName().equals(boundedContext1)))
+				.collect(Collectors.toList());
 	}
 
 	@Override
 	String getRelationshipType() {
-		return "SharedKernel";
+		return "Partnership";
 	}
 
 }
