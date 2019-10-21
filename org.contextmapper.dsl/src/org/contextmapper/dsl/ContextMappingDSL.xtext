@@ -33,8 +33,8 @@ ContextMap:
 	{ContextMap} // make sure there is always a context map
 	'ContextMap' (name=ID)?
 	OPEN
-		(('state' ('=')? state=ContextMapState)? &
-		('type' ('=')? type=ContextMapType)?)
+		(('type' ('=')? type=ContextMapType)? &
+		('state' ('=')? state=ContextMapState)?)
 		('contains' boundedContexts += [BoundedContext] ("," boundedContexts += [BoundedContext])*)*
 		relationships += Relationship*
 	CLOSE
@@ -124,17 +124,17 @@ UpstreamDownstreamRelationship:
 	(
 		(
 			(
-				(upstream = [BoundedContext] '[''U'(','(upstreamRoles+=UpstreamRole) ("," upstreamRoles+=UpstreamRole)*)?']' '->' '[''D'(','(downstreamRoles+=DownstreamRole) ("," downstreamRoles+=DownstreamRole)*)?']' downstream = [BoundedContext]) |
-				('[''U'(','(upstreamRoles+=UpstreamRole) ("," upstreamRoles+=UpstreamRole)*)?']' upstream = [BoundedContext] '->''[''D'(','(downstreamRoles+=DownstreamRole) ("," downstreamRoles+=DownstreamRole)*)?']' downstream = [BoundedContext]) |
-				(upstream = [BoundedContext] '[''U'(','(upstreamRoles+=UpstreamRole) ("," upstreamRoles+=UpstreamRole)*)?']''->' downstream = [BoundedContext] '[''D'(','(downstreamRoles+=DownstreamRole) ("," downstreamRoles+=DownstreamRole)*)?']') |
-				('[''U'(','(upstreamRoles+=UpstreamRole) ("," upstreamRoles+=UpstreamRole)*)?']' upstream = [BoundedContext] '->' downstream = [BoundedContext] '[''D'(','(downstreamRoles+=DownstreamRole) ("," downstreamRoles+=DownstreamRole)*)?']') |
+				(upstream = [BoundedContext] '['(('U') | (('U'',')?(upstreamRoles+=UpstreamRole) ("," upstreamRoles+=UpstreamRole)*))?']' '->' '['(('D') | (('D'',')?(downstreamRoles+=DownstreamRole) ("," downstreamRoles+=DownstreamRole)*))?']' downstream = [BoundedContext]) |
+				('['(('U') | (('U'',')?(upstreamRoles+=UpstreamRole) ("," upstreamRoles+=UpstreamRole)*))?']' upstream = [BoundedContext] '->''['(('D') | (('D'',')?(downstreamRoles+=DownstreamRole) ("," downstreamRoles+=DownstreamRole)*))?']' downstream = [BoundedContext]) |
+				(upstream = [BoundedContext] '['(('U') | (('U'',')?(upstreamRoles+=UpstreamRole) ("," upstreamRoles+=UpstreamRole)*))?']''->' downstream = [BoundedContext] '['(('D') | (('D'',')?(downstreamRoles+=DownstreamRole) ("," downstreamRoles+=DownstreamRole)*))?']') |
+				('['(('U') | (('U'',')?(upstreamRoles+=UpstreamRole) ("," upstreamRoles+=UpstreamRole)*))?']' upstream = [BoundedContext] '->' downstream = [BoundedContext] '['(('D') | (('D'',')?(downstreamRoles+=DownstreamRole) ("," downstreamRoles+=DownstreamRole)*))?']') |
 				(upstream = [BoundedContext] '->' downstream = [BoundedContext])
 			) |
 			(
-				(downstream = [BoundedContext] '[''D'(','(downstreamRoles+=DownstreamRole) ("," downstreamRoles+=DownstreamRole)*)?']' '<-' '[''U'(','(upstreamRoles+=UpstreamRole) ("," upstreamRoles+=UpstreamRole)*)?']' upstream = [BoundedContext]) |
-				('[''D'(','(downstreamRoles+=DownstreamRole) ("," downstreamRoles+=DownstreamRole)*)?']' downstream = [BoundedContext] '<-''[''U'(','(upstreamRoles+=UpstreamRole) ("," upstreamRoles+=UpstreamRole)*)?']' upstream = [BoundedContext]) |
-				(downstream = [BoundedContext] '[''D'(','(downstreamRoles+=DownstreamRole) ("," downstreamRoles+=DownstreamRole)*)?']''<-' upstream = [BoundedContext] '[''U'(','(upstreamRoles+=UpstreamRole) ("," upstreamRoles+=UpstreamRole)*)?']') |
-				('[''D'(','(downstreamRoles+=DownstreamRole) ("," downstreamRoles+=DownstreamRole)*)?']' downstream = [BoundedContext] '<-' upstream = [BoundedContext] '[''U'(','(upstreamRoles+=UpstreamRole) ("," upstreamRoles+=UpstreamRole)*)?']') |
+				(downstream = [BoundedContext] '['(('D') | (('D'',')?(downstreamRoles+=DownstreamRole) ("," downstreamRoles+=DownstreamRole)*))?']' '<-' '['(('U') | (('U'',')?(upstreamRoles+=UpstreamRole) ("," upstreamRoles+=UpstreamRole)*))?']' upstream = [BoundedContext]) |
+				('['(('D') | (('D'',')?(downstreamRoles+=DownstreamRole) ("," downstreamRoles+=DownstreamRole)*))?']' downstream = [BoundedContext] '<-''['(('U') | (('U'',')?(upstreamRoles+=UpstreamRole) ("," upstreamRoles+=UpstreamRole)*))?']' upstream = [BoundedContext]) |
+				(downstream = [BoundedContext] '['(('D') | (('D'',')?(downstreamRoles+=DownstreamRole) ("," downstreamRoles+=DownstreamRole)*))?']''<-' upstream = [BoundedContext] '['(('U') | (('U'',')?(upstreamRoles+=UpstreamRole) ("," upstreamRoles+=UpstreamRole)*))?']') |
+				('['(('D') | (('D'',')?(downstreamRoles+=DownstreamRole) ("," downstreamRoles+=DownstreamRole)*))?']' downstream = [BoundedContext] '<-' upstream = [BoundedContext] '['(('U') | (('U'',')?(upstreamRoles+=UpstreamRole) ("," upstreamRoles+=UpstreamRole)*))?']') |
 				(downstream = [BoundedContext] '<-' upstream = [BoundedContext])
 			) |
 			(upstream = [BoundedContext] ('['((upstreamRoles+=UpstreamRole) ("," upstreamRoles+=UpstreamRole)*)?']')?'Upstream-Downstream'('['((downstreamRoles+=DownstreamRole) ("," downstreamRoles+=DownstreamRole)*)?']')? downstream = [BoundedContext]) |
