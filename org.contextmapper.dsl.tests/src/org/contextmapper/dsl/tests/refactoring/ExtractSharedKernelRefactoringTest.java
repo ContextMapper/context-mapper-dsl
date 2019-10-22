@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
@@ -32,15 +33,19 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtext.xbase.lib.IteratorExtensions;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import com.google.common.collect.Iterators;
 
 public class ExtractSharedKernelRefactoringTest extends AbstractRefactoringTest {
 
-	@Test
-	void canExtractSharedKernel() throws IOException {
+	@ParameterizedTest
+	@MethodSource("createExtractSharedKernelParameters")
+	void canExtractSharedKernel(String inputFile, String resultingNewBC) throws IOException {
 		// given
-		Resource input = getResourceCopyOfTestCML("extract-shared-kernel-test-1-input.cml");
+		Resource input = getResourceCopyOfTestCML(inputFile);
 
 		// when
 		new ExtractSharedKernelRefactoring("CustomerManagement", "AnotherContext").doRefactor(input);
@@ -51,21 +56,26 @@ public class ExtractSharedKernelRefactoringTest extends AbstractRefactoringTest 
 		ContextMap map = contextMappingModels.get(0).getMap();
 		BoundedContext bc1 = map.getBoundedContexts().stream().filter(bc -> bc.getName().equals("CustomerManagement")).findFirst().get();
 		BoundedContext bc2 = map.getBoundedContexts().stream().filter(bc -> bc.getName().equals("AnotherContext")).findFirst().get();
-		BoundedContext newBC = map.getBoundedContexts().stream().filter(bc -> bc.getName().equals("CustomerManagement_AnotherContext_SharedKernel")).findFirst().get();
+		BoundedContext newBC = map.getBoundedContexts().stream().filter(bc -> bc.getName().equals(resultingNewBC)).findFirst().get();
 		assertEquals(2, map.getRelationships().size());
 		assertEquals(3, map.getBoundedContexts().size());
-		
+
 		Relationship rel1 = map.getRelationships().get(0);
 		Relationship rel2 = map.getRelationships().get(1);
 		assertTrue(rel1 instanceof UpstreamDownstreamRelationship);
 		assertTrue(rel2 instanceof UpstreamDownstreamRelationship);
-		
+
 		UpstreamDownstreamRelationship upDown1 = (UpstreamDownstreamRelationship) rel1;
 		UpstreamDownstreamRelationship upDown2 = (UpstreamDownstreamRelationship) rel2;
 		assertTrue(upDown1.getUpstream().equals(newBC));
 		assertTrue(upDown1.getDownstream().equals(bc1));
 		assertTrue(upDown2.getUpstream().equals(newBC));
 		assertTrue(upDown2.getDownstream().equals(bc2));
+	}
+
+	private static Stream<Arguments> createExtractSharedKernelParameters() {
+		return Stream.of(Arguments.of("extract-shared-kernel-test-1-input.cml", "CustomerManagement_AnotherContext_SharedKernel"),
+				Arguments.of("extract-shared-kernel-test-2-input.cml", "CustomerManagement_AnotherContext_SharedKernel_1"));
 	}
 
 	@Test

@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
@@ -32,15 +33,19 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtext.xbase.lib.IteratorExtensions;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import com.google.common.collect.Iterators;
 
 public class ExtractPartnershipRefactoringTest extends AbstractRefactoringTest {
 
-	@Test
-	void canExtractPartnership() throws IOException {
+	@ParameterizedTest
+	@MethodSource("createExtractPartnershipParameters")
+	void canExtractPartnership(String inputFile, String resultingNewBC) throws IOException {
 		// given
-		Resource input = getResourceCopyOfTestCML("extract-partnership-test-1-input.cml");
+		Resource input = getResourceCopyOfTestCML(inputFile);
 
 		// when
 		new ExtractPartnershipRefactoring("CustomerManagement", "AnotherContext").doRefactor(input);
@@ -51,7 +56,7 @@ public class ExtractPartnershipRefactoringTest extends AbstractRefactoringTest {
 		ContextMap map = contextMappingModels.get(0).getMap();
 		BoundedContext bc1 = map.getBoundedContexts().stream().filter(bc -> bc.getName().equals("CustomerManagement")).findFirst().get();
 		BoundedContext bc2 = map.getBoundedContexts().stream().filter(bc -> bc.getName().equals("AnotherContext")).findFirst().get();
-		BoundedContext newBC = map.getBoundedContexts().stream().filter(bc -> bc.getName().equals("CustomerManagement_AnotherContext_Partnership")).findFirst().get();
+		BoundedContext newBC = map.getBoundedContexts().stream().filter(bc -> bc.getName().equals(resultingNewBC)).findFirst().get();
 		assertEquals(2, map.getRelationships().size());
 		assertEquals(3, map.getBoundedContexts().size());
 		
@@ -66,6 +71,11 @@ public class ExtractPartnershipRefactoringTest extends AbstractRefactoringTest {
 		assertTrue(upDown1.getDownstream().equals(bc1));
 		assertTrue(upDown2.getUpstream().equals(newBC));
 		assertTrue(upDown2.getDownstream().equals(bc2));
+	}
+	
+	private static Stream<Arguments> createExtractPartnershipParameters() {
+		return Stream.of(Arguments.of("extract-partnership-test-1-input.cml", "CustomerManagement_AnotherContext_Partnership"),
+				Arguments.of("extract-partnership-test-2-input.cml", "CustomerManagement_AnotherContext_Partnership_1"));
 	}
 
 	@Test

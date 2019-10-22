@@ -1,0 +1,10 @@
+ContextMap {
+	contains CustomerManagement, AnotherContext
+	
+	CustomerManagement [P]<->[P] AnotherContext	
+}
+
+BoundedContext CustomerManagement
+BoundedContext AnotherContext
+
+BoundedContext CustomerManagement_AnotherContext_Partnership

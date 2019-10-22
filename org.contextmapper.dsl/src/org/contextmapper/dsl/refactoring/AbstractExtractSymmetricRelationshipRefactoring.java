@@ -16,6 +16,8 @@
 package org.contextmapper.dsl.refactoring;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
@@ -53,7 +55,7 @@ public abstract class AbstractExtractSymmetricRelationshipRefactoring extends Ab
 
 		// create new BC for Shared Kernel or Partnership
 		BoundedContext newBC = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
-		newBC.setName(boundedContext1 + "_" + boundedContext2 + "_" + getRelationshipType());
+		newBC.setName(getNewBoundedContextName());
 		model.getBoundedContexts().add(newBC);
 		contextMap.getBoundedContexts().add(newBC);
 
@@ -100,4 +102,17 @@ public abstract class AbstractExtractSymmetricRelationshipRefactoring extends Ab
 		return getMatchingRelationships().get(0);
 	}
 
+	private String getNewBoundedContextName() {
+		Set<String> existingNames = model.getBoundedContexts().stream().map(bc -> bc.getName()).collect(Collectors.toSet());
+		String name = boundedContext1 + "_" + boundedContext2 + "_" + getRelationshipType();
+		if (existingNames.contains(name)) {
+			int counter = 1;
+			while (existingNames.contains(name)) {
+				name = boundedContext1 + "_" + boundedContext2 + "_" + getRelationshipType() + "_" + counter;
+				counter++;
+			}
+		}
+		return name;
+	}
+	
 }
