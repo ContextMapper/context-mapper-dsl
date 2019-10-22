@@ -1,6 +1,6 @@
 // Generated from DDD Context Map.
 API description CustomerManagementContextAPI
-usage context COMMUNITY_API for BACKEND_INTEGRATION
+usage context COMMUNITY_API for BACKEND_INTEGRATION and FRONTEND_INTEGRATION
 
 // ** BEGIN PROTECTED REGION for data types
 
