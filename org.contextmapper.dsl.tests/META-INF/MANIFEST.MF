@@ -8,6 +8,7 @@ Bundle-SymbolicName: org.contextmapper.dsl.tests; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.contextmapper.dsl,
  org.junit.jupiter.api;bundle-version="[5.0.0,6.0.0)",
+ org.junit.jupiter.params;bundle-version="[5.0.0,6.0.0)",
  org.eclipse.xtext.testing,
  org.eclipse.xtext.xbase.testing,
  org.eclipse.xtext.xbase.lib;bundle-version="2.14.0",
