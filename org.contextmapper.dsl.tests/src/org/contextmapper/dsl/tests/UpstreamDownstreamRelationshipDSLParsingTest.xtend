@@ -127,15 +127,9 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 		''';
 		val dslSnippets = new ArrayList<String>;
 		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "testContext [U,OHS,PL]->[D,CF] anotherTestContext"));
-		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "[U,OHS,PL]testContext -> [D,CF]anotherTestContext"));
-		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "testContext[U,OHS,PL] -> anotherTestContext[D,CF]"));
-		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "[U,OHS,PL]testContext -> anotherTestContext[D,CF]"));
-		
-		// also without the U and D:
+		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "testContext [U,OHS,PL]->[CF] anotherTestContext"));
+		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "testContext [OHS,PL]->[D,CF] anotherTestContext"));
 		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "testContext [OHS,PL]->[CF] anotherTestContext"));
-		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "[OHS,PL]testContext -> [CF]anotherTestContext"));
-		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "testContext[OHS,PL] -> anotherTestContext[CF]"));
-		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "[OHS,PL]testContext -> anotherTestContext[CF]"));
 		
 		for(dslSnippet : dslSnippets) {
 			// when
@@ -174,15 +168,9 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 		''';
 		val dslSnippets = new ArrayList<String>;
 		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "anotherTestContext [D,CF]<-[U,OHS,PL] testContext"));
-		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "[D,CF]anotherTestContext <- [U,OHS,PL]testContext"));
-		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "anotherTestContext[D,CF] <- testContext[U,OHS,PL]"));
-		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "[D,CF]anotherTestContext <- testContext[U,OHS,PL]"));
-		
-		// also without the U and D:
+		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "anotherTestContext [D,CF]<-[OHS,PL] testContext"));
+		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "anotherTestContext [CF]<-[U,OHS,PL] testContext"));
 		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "anotherTestContext [CF]<-[OHS,PL] testContext"));
-		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "[CF]anotherTestContext <- [OHS,PL]testContext"));
-		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "anotherTestContext[CF] <- testContext[OHS,PL]"));
-		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "[CF]anotherTestContext <- testContext[OHS,PL]"));
 		
 		for(dslSnippet : dslSnippets) {
 			// when
@@ -200,6 +188,83 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 	
 			assertTrue(upstreamDownstreamRelationship.upstreamRoles.contains(UpstreamRole.OPEN_HOST_SERVICE))
 			assertTrue(upstreamDownstreamRelationship.upstreamRoles.contains(UpstreamRole.PUBLISHED_LANGUAGE))
+	
+			assertTrue(upstreamDownstreamRelationship.downstreamRoles.contains(DownstreamRole.CONFORMIST))			
+		}
+	}
+	
+	@Test
+	def void canDefineUpstreamDownstreamInShortSyntaxWithUpstreamRolesOnly() {
+		// given
+		val String dslSnippetTemplate = '''
+			ContextMap {
+				contains testContext
+				contains anotherTestContext
+			
+				<<relationship>>
+			}
+			
+			BoundedContext testContext
+			BoundedContext anotherTestContext
+		''';
+		val dslSnippets = new ArrayList<String>;
+		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "anotherTestContext [D]<-[U,OHS,PL] testContext"));
+		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "anotherTestContext [D]<-[OHS,PL] testContext"));
+		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "anotherTestContext <-[U,OHS,PL] testContext"));
+		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "anotherTestContext <-[OHS,PL] testContext"));
+		
+		for(dslSnippet : dslSnippets) {
+			// when
+			val ContextMappingModel result = parseHelper.parse(dslSnippet);
+			// then
+			assertThatNoParsingErrorsOccurred(result);
+			assertThatNoValidationErrorsOccurred(result);
+	
+			val Relationship relationship = result.map.relationships.get(0)
+			assertTrue(relationship.class.interfaces.contains(UpstreamDownstreamRelationship))
+	
+			val UpstreamDownstreamRelationship upstreamDownstreamRelationship = relationship as UpstreamDownstreamRelationship
+			assertEquals("testContext", upstreamDownstreamRelationship.upstream.name)
+			assertEquals("anotherTestContext", upstreamDownstreamRelationship.downstream.name)
+	
+			assertTrue(upstreamDownstreamRelationship.upstreamRoles.contains(UpstreamRole.OPEN_HOST_SERVICE))
+			assertTrue(upstreamDownstreamRelationship.upstreamRoles.contains(UpstreamRole.PUBLISHED_LANGUAGE))
+		}
+	}
+	
+	@Test
+	def void canDefineUpstreamDownstreamInShortSyntaxWithDownstreamRolesOnly() {
+		// given
+		val String dslSnippetTemplate = '''
+			ContextMap {
+				contains testContext
+				contains anotherTestContext
+			
+				<<relationship>>
+			}
+			
+			BoundedContext testContext
+			BoundedContext anotherTestContext
+		''';
+		val dslSnippets = new ArrayList<String>;
+		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "anotherTestContext [D,CF]<-[U] testContext"));
+		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "anotherTestContext [D,CF]<- testContext"));
+		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "anotherTestContext [CF]<-[U] testContext"));
+		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "anotherTestContext [CF]<- testContext"));
+		
+		for(dslSnippet : dslSnippets) {
+			// when
+			val ContextMappingModel result = parseHelper.parse(dslSnippet);
+			// then
+			assertThatNoParsingErrorsOccurred(result);
+			assertThatNoValidationErrorsOccurred(result);
+	
+			val Relationship relationship = result.map.relationships.get(0)
+			assertTrue(relationship.class.interfaces.contains(UpstreamDownstreamRelationship))
+	
+			val UpstreamDownstreamRelationship upstreamDownstreamRelationship = relationship as UpstreamDownstreamRelationship
+			assertEquals("testContext", upstreamDownstreamRelationship.upstream.name)
+			assertEquals("anotherTestContext", upstreamDownstreamRelationship.downstream.name)
 	
 			assertTrue(upstreamDownstreamRelationship.downstreamRoles.contains(DownstreamRole.CONFORMIST))			
 		}
@@ -309,15 +374,7 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 		val dslSnippets = new ArrayList<String>;
 		// all variants only with S and C
 		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "anotherTestContext [C]<-[S] testContext"));
-		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "[C]anotherTestContext <- [S]testContext"));
-		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "anotherTestContext[C] <- testContext[S]"));
-		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "[C]anotherTestContext <- testContext[S]"));
-		
-		// all variants with U, S and D, C
 		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "anotherTestContext [D,C]<-[U,S] testContext"));
-		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "[D,C]anotherTestContext <- [U,S]testContext"));
-		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "anotherTestContext[D,C] <- testContext[U,S]"));
-		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "[D,C]anotherTestContext <- testContext[U,S]"));
 		
 		for(dslSnippet : dslSnippets) {
 			// when
@@ -352,15 +409,7 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 		val dslSnippets = new ArrayList<String>;
 		// all variants only with S and C
 		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "testContext [S]->[C] anotherTestContext"));
-		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "[S]testContext -> [C]anotherTestContext"));
-		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "testContext[S] -> anotherTestContext[C]"));
-		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "[S]testContext -> anotherTestContext[C]"));
-		
-		// all variants with U, S and D, C
 		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "testContext [U,S]->[D,C] anotherTestContext"));
-		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "[U,S]testContext -> [D,C]anotherTestContext"));
-		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "testContext[U,S] -> anotherTestContext[D,C]"));
-		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "[U,S]testContext -> anotherTestContext[D,C]"));
 		
 		for(dslSnippet : dslSnippets) {
 			// when
@@ -395,15 +444,7 @@ class UpstreamDownstreamRelationshipDSLParsingTest {
 		val dslSnippets = new ArrayList<String>;
 		// all variants only with S and C
 		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "testContext [S,PL]->[C,ACL] anotherTestContext"));
-		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "[S,PL]testContext -> [C,ACL]anotherTestContext"));
-		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "testContext[S,PL] -> anotherTestContext[C,ACL]"));
-		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "[S,PL]testContext -> anotherTestContext[C,ACL]"));
-		
-		// all variants with U, S and D, C
 		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "testContext [U,S,PL]->[D,C,ACL] anotherTestContext"));
-		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "[U,S,PL]testContext -> [D,C,ACL]anotherTestContext"));
-		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "testContext[U,S,PL] -> anotherTestContext[D,C,ACL]"));
-		dslSnippets.add(dslSnippetTemplate.replace("<<relationship>>", "[U,S,PL]testContext -> anotherTestContext[D,C,ACL]"));
 		
 		for(dslSnippet : dslSnippets) {
 			// when
