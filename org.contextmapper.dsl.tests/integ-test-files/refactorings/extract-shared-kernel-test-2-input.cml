@@ -1,0 +1,10 @@
+ContextMap {
+	contains CustomerManagement, AnotherContext
+	
+	CustomerManagement [SK]<->[SK] AnotherContext	
+}
+
+BoundedContext CustomerManagement
+BoundedContext AnotherContext
+
+BoundedContext CustomerManagement_AnotherContext_SharedKernel
