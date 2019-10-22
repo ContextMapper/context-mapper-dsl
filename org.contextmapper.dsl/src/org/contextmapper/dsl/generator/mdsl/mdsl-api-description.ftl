@@ -3,7 +3,7 @@
 </#if>
 API description ${serviceSpecification.name}
 <#if serviceSpecification.usageContext?has_content>
-usage context ${serviceSpecification.usageContext.toString()} for BACKEND_INTEGRATION
+usage context ${serviceSpecification.usageContext.toString()} for BACKEND_INTEGRATION and FRONTEND_INTEGRATION
 </#if>
 
 <#if serviceSpecification.dataTypeProtectedRegion??>
