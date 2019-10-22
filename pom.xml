@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.contextmapper.dsl</groupId>
-	<version>4.4.1-SNAPSHOT</version>
+	<version>4.4.1</version>
 	<artifactId>org.contextmapper.dsl.parent</artifactId>
 	<packaging>pom</packaging>
 
@@ -35,7 +35,7 @@
 	<scm>
 		<connection>scm:git:https://${env.GITHUB_USERNAME}:${env.GITHUB_PASSWORD}@github.com/ContextMapper/context-mapper-dsl.git</connection>
 		<developerConnection>scm:git:https://${env.GITHUB_USERNAME}:${env.GITHUB_PASSWORD}@github.com/ContextMapper/context-mapper-dsl.git</developerConnection>
-	  <tag>HEAD</tag>
+	  <tag>v4.4.1</tag>
   </scm>
 
 	<build>
