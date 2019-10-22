@@ -32,7 +32,8 @@ public class ProtectedRegionReader {
 	public String getProtectedRegionContent(String mdslInput, ProtectedRegionIdentifier regionIdentifier) {
 		String regionStartString = getRegionStartString(regionIdentifier);
 		if (containsProtectedRegion(mdslInput, regionIdentifier))
-			return mdslInput.substring(mdslInput.indexOf(regionStartString) + regionStartString.length() + 1, mdslInput.lastIndexOf(getRegionEndString(regionIdentifier)) - 1);
+			return mdslInput.substring(mdslInput.indexOf(regionStartString) + regionStartString.length() + System.lineSeparator().length(),
+					mdslInput.lastIndexOf(getRegionEndString(regionIdentifier)) - System.lineSeparator().length());
 		return null;
 	}
 
