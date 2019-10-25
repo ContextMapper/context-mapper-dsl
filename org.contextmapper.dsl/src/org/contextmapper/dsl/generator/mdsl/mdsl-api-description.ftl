@@ -6,7 +6,7 @@ API description ${serviceSpecification.name}
 usage context ${serviceSpecification.usageContext.toString()} for BACKEND_INTEGRATION and FRONTEND_INTEGRATION
 </#if>
 
-<#if serviceSpecification.dataTypeProtectedRegion??>
+<#if serviceSpecification.dataTypeProtectedRegion?has_content>
 // ** BEGIN PROTECTED REGION for data types
 ${serviceSpecification.dataTypeProtectedRegion}
 // ** END PROTECTED REGION for data types
@@ -26,7 +26,7 @@ data type ${dataType.name} <@renderDataTypeAttributesRecursive dataType.getChild
 	</#if>
 </#list>
 
-<#if serviceSpecification.endpointProtectedRegion??>
+<#if serviceSpecification.endpointProtectedRegion?has_content>
 // ** BEGIN PROTECTED REGION for endpoint types
 ${serviceSpecification.endpointProtectedRegion}
 // ** END PROTECTED REGION for endpoint types
@@ -58,7 +58,7 @@ endpoint type ${endpoint.name}
 		</#list>
 </#list>
 
-<#if serviceSpecification.providerProtectedRegion??>
+<#if serviceSpecification.providerProtectedRegion?has_content>
 // ** BEGIN PROTECTED REGION for API providers
 ${serviceSpecification.providerProtectedRegion}
 // ** END PROTECTED REGION for API providers
@@ -78,7 +78,7 @@ API provider ${provider.name}
 	</#list>
 </#list>
 
-<#if serviceSpecification.clientProtectedRegion??>
+<#if serviceSpecification.clientProtectedRegion?has_content>
 // ** BEGIN PROTECTED REGION for API clients
 ${serviceSpecification.clientProtectedRegion}
 // ** END PROTECTED REGION for API clients
