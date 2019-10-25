@@ -1,17 +1,11 @@
 // Generated from DDD Context Map.
 API description CustomerManagementContextAPI
 
-// ** BEGIN PROTECTED REGION for data types
-
-// ** END PROTECTED REGION for data types
 
 data type BankAccount P
 data type Customer { "firstName":V<string>?, "lastName":V<string>?, "account":BankAccount, "address":{ "street":V<string>, "houseNumber":V<int> } }
 data type ReturnType P
 
-// ** BEGIN PROTECTED REGION for endpoint types
-
-// ** END PROTECTED REGION for endpoint types
 
 endpoint type CustomersAggregate
 	exposes
@@ -21,18 +15,12 @@ endpoint type CustomersAggregate
 			delivering
 				payload ReturnType
 
-// ** BEGIN PROTECTED REGION for API providers
-
-// ** END PROTECTED REGION for API providers
 
 API provider CustomerManagementContextProvider
 	offers CustomersAggregate
 	at endpoint location "http://localhost:8000"
 		via protocol "RESTful HTTP"
 
-// ** BEGIN PROTECTED REGION for API clients
-
-// ** END PROTECTED REGION for API clients
 
 API client ContractManagementContextClient
 	consumes CustomersAggregate
