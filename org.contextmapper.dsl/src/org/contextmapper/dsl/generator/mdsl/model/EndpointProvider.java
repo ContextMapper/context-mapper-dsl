@@ -24,6 +24,7 @@ public class EndpointProvider {
 	private String name;
 	private List<EndpointOffer> endpointOffers = Lists.newArrayList();
 	private List<String> comments = Lists.newArrayList();
+	private String domainVisionStatement;
 
 	public String getName() {
 		return name;
@@ -52,5 +53,13 @@ public class EndpointProvider {
 	public boolean hasComments() {
 		return !this.comments.isEmpty();
 	}
-
+	
+	public void setDomainVisionStatement(String domainVisionStatement) {
+		this.domainVisionStatement = domainVisionStatement;
+	}
+	
+	public String getDomainVisionStatement() {
+		return domainVisionStatement;
+	}
+	
 }

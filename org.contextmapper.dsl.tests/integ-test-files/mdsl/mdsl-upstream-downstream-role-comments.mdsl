@@ -22,15 +22,15 @@ endpoint type CustomersAggregate
 				payload anotherMethodParameter
 
 
+// Generated from DDD upstream Bounded Context 'CustomerManagementContext' implementing OPEN_HOST_SERVICE (OHS) and PUBLISHED_LANGUAGE (PL).
 API provider CustomerManagementContextProvider
-	// Generated from DDD upstream Bounded Context 'CustomerManagementContext' implementing OPEN_HOST_SERVICE (OHS) and PUBLISHED_LANGUAGE (PL).
 	offers CustomersAggregate
 	at endpoint location "http://localhost:8000"
 		via protocol "RESTful HTTP"
 
 
+// Generated from DDD downstream Bounded Context 'ContractManagementContext' implementing ANTICORRUPTION_LAYER (ACL).
 API client ContractManagementContextClient
-	// Generated from DDD downstream Bounded Context 'ContractManagementContext' implementing ANTICORRUPTION_LAYER (ACL).
 	consumes CustomersAggregate
 
 IPA

@@ -350,7 +350,7 @@ public class MDSLModelCreator {
 			provider.addComment("Generated from DDD upstream Bounded Context '" + context.getUpstreamContext().getName() + "' implementing " + roles + ".");
 		}
 		if (context.getUpstreamContext().getDomainVisionStatement() != null && !"".equals(context.getUpstreamContext().getDomainVisionStatement()))
-			provider.addComment(context.getUpstreamContext().getDomainVisionStatement());
+			provider.setDomainVisionStatement(context.getUpstreamContext().getDomainVisionStatement());
 		return provider;
 	}
 
@@ -367,7 +367,7 @@ public class MDSLModelCreator {
 			client.addComment("Generated from DDD downstream Bounded Context '" + downstreamContext.getDownstreamName() + "' implementing " + roles + ".");
 		}
 		if (downstreamContext.getDomainVisionStatement() != null && !"".equals(downstreamContext.getDomainVisionStatement()))
-			client.addComment(downstreamContext.getDomainVisionStatement());
+			client.setDomainVisionStatement(downstreamContext.getDomainVisionStatement());
 		return client;
 	}
 
