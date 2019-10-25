@@ -65,12 +65,15 @@ ${serviceSpecification.providerProtectedRegion}
 </#if>
 
 <#list serviceSpecification.providers as provider>
-API provider ${provider.name}
 <#if provider.hasComments()>
 	<#list provider.comments as comment>
-	// ${comment}
+// ${comment}
 	</#list>
 </#if>
+API provider ${provider.name}
+	<#if provider.domainVisionStatement?has_content>
+	// ${provider.domainVisionStatement}
+	</#if>
 	<#list provider.endpointOffers as offer>
 	offers ${offer.offeredEndpoint.name}
 	at endpoint location "${offer.location}"
@@ -85,12 +88,15 @@ ${serviceSpecification.clientProtectedRegion}
 </#if>
 
 <#list serviceSpecification.clients as client>
-API client ${client.name}
 <#if client.hasComments()>
 	<#list client.comments as comment>
-	// ${comment}
+// ${comment}
 	</#list>
 </#if>
+API client ${client.name}
+	<#if client.domainVisionStatement?has_content>
+	// ${client.domainVisionStatement}
+	</#if>
 	<#list client.consumedOfferNames as offername>
 	consumes ${offername}
 	</#list>
