@@ -342,7 +342,7 @@ BasicType :
 
 Attribute :
   (doc=STRING)?
-  (visibility=Visibility)? (collectionType=CollectionType"<")? type=Type (">")? name=ID
+  (visibility=Visibility)? ((collectionType=CollectionType"<" type=Type ">") | type=Type) name=ID
     ((key?="key")? &
      ((notChangeable?=NOT "changeable") | ("changeable"))? &
      ((required?="required") | (NOT "required"))? &
@@ -375,7 +375,7 @@ Attribute :
 
 Reference :
   (doc=STRING)?
-  REF (visibility=Visibility)? (collectionType=CollectionType"<")? (("@")?domainObjectType=[SimpleDomainObject]) (">")? name=ID
+  REF (visibility=Visibility)? ((collectionType=CollectionType"<" (("@")?domainObjectType=[SimpleDomainObject]) ">") | (("@")?domainObjectType=[SimpleDomainObject])) name=ID
     ((key?="key")? &
      ((notChangeable?=NOT "changeable") | ("changeable"))? &
      ((required?="required") | (NOT "required"))? &

@@ -17,8 +17,10 @@ package org.contextmapper.tactic.dsl.formatting2
 
 import com.google.inject.Inject
 import org.contextmapper.tactic.dsl.services.TacticDDDLanguageGrammarAccess
+import org.contextmapper.tactic.dsl.tacticdsl.Attribute
 import org.contextmapper.tactic.dsl.tacticdsl.DomainEvent
 import org.contextmapper.tactic.dsl.tacticdsl.Entity
+import org.contextmapper.tactic.dsl.tacticdsl.Reference
 import org.contextmapper.tactic.dsl.tacticdsl.TacticDDDModel
 import org.eclipse.xtext.formatting2.AbstractFormatter2
 import org.eclipse.xtext.formatting2.IFormattableDocument
@@ -67,6 +69,16 @@ class TacticDDDLanguageFormatter extends AbstractFormatter2 {
 		for (reference : domainEvent.references) {
 			reference.format
 		}
+	}
+
+	def dispatch void format(Attribute attribute, extension IFormattableDocument document) {
+		attribute.regionFor.keyword('<').surround[noSpace]
+		attribute.regionFor.keyword('>').prepend[noSpace]
+	}
+	
+	def dispatch void format(Reference reference, extension IFormattableDocument document) {
+		reference.regionFor.keyword('<').surround[noSpace]
+		reference.regionFor.keyword('>').prepend[noSpace]
 	}
 
 }
