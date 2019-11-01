@@ -44,6 +44,7 @@ class TacticDDDLanguageFormatter extends AbstractFormatter2 {
 
 		entity.regionFor.keyword('aggregateRoot').append[newLine]
 		entity.prepend[newLines = 1]
+		entity.regionFor.keyword('Entity').prepend[newLine]
 
 		for (attribute : entity.attributes) {
 			attribute.format

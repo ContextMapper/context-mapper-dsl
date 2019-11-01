@@ -185,6 +185,7 @@ DomainObject :
   Entity | ValueObject | Event;
 
 Entity :
+  (comment=SL_COMMENT)?
   (doc=STRING)?
   (abstract?="abstract")? "Entity" name=ID ("extends" (("@"extends=[Entity]) | (extendsName=JavaIdentifier)))?
   ("with" ("@")?traits+=[Trait])* ("{"
