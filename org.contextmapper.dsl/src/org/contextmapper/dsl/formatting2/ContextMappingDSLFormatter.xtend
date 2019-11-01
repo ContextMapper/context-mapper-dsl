@@ -97,6 +97,9 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 			aggregate.regionFor.ruleCallTo(OPENRule).append[newLine],
 			aggregate.regionFor.ruleCallTo(CLOSERule).prepend[newLine].append[newLine]
 		)[indent]
+		
+		aggregate.prepend[newLines = 1]
+		aggregate.regionFor.keyword('Aggregate').prepend[newLine]
 
 		for (domainObject : aggregate.domainObjects) {
 			domainObject.format

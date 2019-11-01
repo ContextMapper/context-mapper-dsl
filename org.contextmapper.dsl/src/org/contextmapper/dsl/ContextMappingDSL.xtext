@@ -41,6 +41,7 @@ ContextMap:
 ;
 
 BoundedContext:
+	(comment=SL_COMMENT)?
 	'BoundedContext' name=ID (('implements' (implementedDomainParts+=[DomainPart]) ("," implementedDomainParts+=[DomainPart])*)? & 
 		                      ('realizes' (realizedBoundedContexts+=[BoundedContext]) ("," realizedBoundedContexts+=[BoundedContext])*)? & 
 		                      ('refines' refinedBoundedContext=[BoundedContext])?
@@ -157,6 +158,7 @@ CustomerSupplierRelationship:
 ;
 
 Aggregate :
+  (comment=SL_COMMENT)?
   (doc=STRING)?
   "Aggregate" name=ID (OPEN
     (
