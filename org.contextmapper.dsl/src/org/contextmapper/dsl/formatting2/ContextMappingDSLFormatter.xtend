@@ -88,6 +88,12 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 		relationship.regionFor.keyword('PL').surround[noSpace]
 		relationship.regionFor.keyword('ACL').surround[noSpace]
 		relationship.regionFor.keyword('CF').surround[noSpace]
+		relationship.regionFor.keywords('SK').forEach[
+			surround[noSpace]
+		]
+		relationship.regionFor.keywords('P').forEach[
+			surround[noSpace]
+		]
 
 		relationship.prepend[newLines = 2]
 	}

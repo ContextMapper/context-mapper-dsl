@@ -107,12 +107,12 @@ Partnership:
 
 SharedKernel:
 	(
-		(participant1 = [BoundedContext] '<->' participant2 = [BoundedContext]) |
 		(participant1 = [BoundedContext] '[''SK'']' '<->' '[''SK'']' participant2 = [BoundedContext]) |
 		('[''SK'']' participant1 = [BoundedContext] '<->' '[''SK'']' participant2 = [BoundedContext]) |
 		(participant1 = [BoundedContext] '[''SK'']' '<->' participant2 = [BoundedContext] '[''SK'']') |
 		('[''SK'']' participant1 = [BoundedContext] '<->' participant2 = [BoundedContext] '[''SK'']') |
-		(participant1 = [BoundedContext] 'Shared-Kernel' participant2 = [BoundedContext])
+		(participant1 = [BoundedContext] 'Shared-Kernel' participant2 = [BoundedContext]) |
+		(participant1 = [BoundedContext] '<->' participant2 = [BoundedContext])
 	)
 	(':' name=ID)? 
 	(OPEN
