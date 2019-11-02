@@ -497,6 +497,24 @@
 			</activeWhen>
 		</handler>
 		<handler 
+			class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.contextmapper.dsl.ui.handler.SwitchFromSharedKernelToPartnershipRefactoringHandler"
+			commandId="org.contextmapper.dsl.ui.handler.SwitchFromSharedKernelToPartnershipRefactoringCommand">
+			<activeWhen>
+				<reference
+					definitionId="org.contextmapper.dsl.ContextMappingDSL.Editor.opened">
+				</reference>
+			</activeWhen>
+		</handler>
+		<handler 
+			class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.contextmapper.dsl.ui.handler.SwitchFromPartnershipToSharedKernelRefactoringHandler"
+			commandId="org.contextmapper.dsl.ui.handler.SwitchFromPartnershipToSharedKernelRefactoringCommand">
+			<activeWhen>
+				<reference
+					definitionId="org.contextmapper.dsl.ContextMappingDSL.Editor.opened">
+				</reference>
+			</activeWhen>
+		</handler>
+		<handler 
 			class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.eclipse.xtext.ui.refactoring.ui.DefaultRenameElementHandler"
 			commandId="org.eclipse.xtext.ui.refactoring.RenameElement">
 			<activeWhen>
@@ -566,6 +584,18 @@
              id="org.contextmapper.dsl.ui.handler.SuspendPartnershipRefactoringCommand">
 	      </command>
 	</extension>
+	<extension
+	      point="org.eclipse.ui.commands">
+	      <command name="Change to Partnership" categoryId="org.eclipse.xtext.ui.category.refactoring"
+             id="org.contextmapper.dsl.ui.handler.SwitchFromSharedKernelToPartnershipRefactoringCommand">
+	      </command>
+	</extension>
+	<extension
+	      point="org.eclipse.ui.commands">
+	      <command name="Change to Shared Kernel" categoryId="org.eclipse.xtext.ui.category.refactoring"
+             id="org.contextmapper.dsl.ui.handler.SwitchFromPartnershipToSharedKernelRefactoringCommand">
+	      </command>
+	</extension>
 	<extension point="org.eclipse.ui.menus">
 		<menuContribution
 			locationURI="popup:#TextEditorContext?after=group.edit">
@@ -627,6 +657,16 @@
 					</visibleWhen>
 				</command>
 				<command defaultHandler="org.contextmapper.dsl.ui.handler.SuspendPartnershipRefactoringHandler" commandId="org.contextmapper.dsl.ui.handler.SuspendPartnershipRefactoringCommand"
+					style="push">
+					<visibleWhen checkEnabled="true">
+					</visibleWhen>
+				</command>
+				<command defaultHandler="org.contextmapper.dsl.ui.handler.SwitchFromSharedKernelToPartnershipRefactoringHandler" commandId="org.contextmapper.dsl.ui.handler.SwitchFromSharedKernelToPartnershipRefactoringCommand"
+					style="push">
+					<visibleWhen checkEnabled="true">
+					</visibleWhen>
+				</command>
+				<command defaultHandler="org.contextmapper.dsl.ui.handler.SwitchFromPartnershipToSharedKernelRefactoringHandler" commandId="org.contextmapper.dsl.ui.handler.SwitchFromPartnershipToSharedKernelRefactoringCommand"
 					style="push">
 					<visibleWhen checkEnabled="true">
 					</visibleWhen>
