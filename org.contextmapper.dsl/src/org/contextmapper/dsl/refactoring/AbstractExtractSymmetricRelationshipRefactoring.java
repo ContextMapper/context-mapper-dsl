@@ -54,8 +54,7 @@ public abstract class AbstractExtractSymmetricRelationshipRefactoring extends Ab
 		contextMap.getRelationships().remove(getMatchingRelationship());
 
 		// create new BC for Shared Kernel or Partnership
-		BoundedContext newBC = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
-		newBC.setName(getNewBoundedContextName());
+		BoundedContext newBC = createBoundedContext();
 		model.getBoundedContexts().add(newBC);
 		contextMap.getBoundedContexts().add(newBC);
 
@@ -76,6 +75,12 @@ public abstract class AbstractExtractSymmetricRelationshipRefactoring extends Ab
 	abstract List<SymmetricRelationship> getMatchingRelationships();
 
 	abstract String getRelationshipType();
+
+	protected BoundedContext createBoundedContext() {
+		BoundedContext newBC = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
+		newBC.setName(getNewBoundedContextName());
+		return newBC;
+	}
 
 	private void checkPreconditions() {
 		if (boundedContext1 == null || boundedContext2 == null)
@@ -114,5 +119,5 @@ public abstract class AbstractExtractSymmetricRelationshipRefactoring extends Ab
 		}
 		return name;
 	}
-	
+
 }

@@ -18,8 +18,13 @@ package org.contextmapper.dsl.refactoring;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.contextmapper.dsl.contextMappingDSL.Aggregate;
+import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
+import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
 import org.contextmapper.dsl.contextMappingDSL.SharedKernel;
 import org.contextmapper.dsl.contextMappingDSL.SymmetricRelationship;
+import org.contextmapper.tactic.dsl.tacticdsl.Entity;
+import org.contextmapper.tactic.dsl.tacticdsl.TacticdslFactory;
 
 /**
  * 
@@ -45,6 +50,20 @@ public class ExtractSharedKernelRefactoring extends AbstractExtractSymmetricRela
 	@Override
 	String getRelationshipType() {
 		return "SharedKernel";
+	}
+
+	@Override
+	protected BoundedContext createBoundedContext() {
+		BoundedContext newBC = super.createBoundedContext();
+		newBC.setComment("// Extracted Bounded Context for Shared Kernel. Please specify the kernel model here:");
+		Aggregate aggregate = ContextMappingDSLFactory.eINSTANCE.createAggregate();
+		aggregate.setName("SharedKernelAggregate");
+		Entity entity = TacticdslFactory.eINSTANCE.createEntity();
+		entity.setAggregateRoot(true);
+		entity.setName("SharedKernelRoot");
+		aggregate.getDomainObjects().add(entity);
+		newBC.getAggregates().add(aggregate);
+		return newBC;
 	}
 
 }

@@ -18,8 +18,13 @@ package org.contextmapper.dsl.refactoring;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.contextmapper.dsl.contextMappingDSL.Aggregate;
+import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
+import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
 import org.contextmapper.dsl.contextMappingDSL.Partnership;
 import org.contextmapper.dsl.contextMappingDSL.SymmetricRelationship;
+import org.contextmapper.tactic.dsl.tacticdsl.Entity;
+import org.contextmapper.tactic.dsl.tacticdsl.TacticdslFactory;
 
 /**
  * 
@@ -48,6 +53,20 @@ public class ExtractPartnershipRefactoring extends AbstractExtractSymmetricRelat
 	@Override
 	String getRelationshipType() {
 		return "Partnership";
+	}
+	
+	@Override
+	protected BoundedContext createBoundedContext() {
+		BoundedContext newBC = super.createBoundedContext();
+		newBC.setComment("// Extracted Bounded Context for common model parts. Please specify the common model here:");
+		Aggregate aggregate = ContextMappingDSLFactory.eINSTANCE.createAggregate();
+		aggregate.setName("CommonModelAggregate");
+		Entity entity = TacticdslFactory.eINSTANCE.createEntity();
+		entity.setAggregateRoot(true);
+		entity.setName("CommonModelPartRoot");
+		aggregate.getDomainObjects().add(entity);
+		newBC.getAggregates().add(aggregate);
+		return newBC;
 	}
 
 }

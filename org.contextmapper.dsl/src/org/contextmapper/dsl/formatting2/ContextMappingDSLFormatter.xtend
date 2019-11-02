@@ -67,6 +67,8 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 		)[indent]
 
 		boundedContext.prepend[newLines = 2]
+		if(boundedContext.comment !== null && !"".equals(boundedContext.comment))
+			boundedContext.regionFor.keyword('BoundedContext').prepend[newLine]
 
 		for (aggregate : boundedContext.aggregates) {
 			aggregate.format
