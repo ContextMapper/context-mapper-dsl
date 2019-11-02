@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Stream;
 
+import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
@@ -29,6 +30,7 @@ import org.contextmapper.dsl.contextMappingDSL.Relationship;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
 import org.contextmapper.dsl.refactoring.ExtractSharedKernelRefactoring;
 import org.contextmapper.dsl.refactoring.exception.RefactoringInputException;
+import org.contextmapper.tactic.dsl.tacticdsl.Entity;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtext.xbase.lib.IteratorExtensions;
 import org.junit.jupiter.api.Assertions;
@@ -76,6 +78,27 @@ public class ExtractSharedKernelRefactoringTest extends AbstractRefactoringTest 
 	private static Stream<Arguments> createExtractSharedKernelParameters() {
 		return Stream.of(Arguments.of("extract-shared-kernel-test-1-input.cml", "CustomerManagement_AnotherContext_SharedKernel"),
 				Arguments.of("extract-shared-kernel-test-2-input.cml", "CustomerManagement_AnotherContext_SharedKernel_1"));
+	}
+
+	@Test
+	public void canCreateAggregateInNewBoundedContext() throws IOException {
+		// given
+		Resource input = getResourceCopyOfTestCML("extract-shared-kernel-test-1-input.cml");
+
+		// when
+		new ExtractSharedKernelRefactoring("CustomerManagement", "AnotherContext").doRefactor(input);
+
+		// then
+		List<ContextMappingModel> contextMappingModels = IteratorExtensions
+				.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(reloadResource(input).getAllContents(), ContextMappingModel.class));
+		ContextMap map = contextMappingModels.get(0).getMap();
+		BoundedContext newBC = map.getBoundedContexts().stream().filter(bc -> bc.getName().equals("CustomerManagement_AnotherContext_SharedKernel")).findFirst().get();
+		assertEquals(1, newBC.getAggregates().size());
+		Aggregate aggregate = newBC.getAggregates().get(0);
+		assertEquals("SharedKernelAggregate", aggregate.getName());
+		assertEquals(1, aggregate.getDomainObjects().size());
+		assertEquals("SharedKernelRoot", aggregate.getDomainObjects().get(0).getName());
+		assertTrue(((Entity) aggregate.getDomainObjects().get(0)).isAggregateRoot());
 	}
 
 	@Test
