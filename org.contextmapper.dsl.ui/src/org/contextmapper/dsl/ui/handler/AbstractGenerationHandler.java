@@ -43,6 +43,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.statushandlers.StatusManager;
 import org.eclipse.xtext.builder.EclipseResourceFileSystemAccess2;
 import org.eclipse.xtext.generator.GeneratorContext;
+import org.eclipse.xtext.generator.IFileSystemAccess2;
 import org.eclipse.xtext.generator.IGenerator2;
 import org.eclipse.xtext.resource.IResourceDescriptions;
 import org.eclipse.xtext.ui.editor.XtextEditor;
@@ -85,9 +86,7 @@ public abstract class AbstractGenerationHandler extends AbstractHandler implemen
 				fsa.setProject(project);
 				fsa.setOutputPath("src-gen");
 				fsa.setMonitor(new NullProgressMonitor());
-				getGenerator().doGenerate(resource, fsa, new GeneratorContext());
-			} catch (GeneratorInputException e) {
-				MessageDialog.openInformation(HandlerUtil.getActiveShell(event), "Model Input", e.getMessage());
+				runGeneration(resource, event, fsa);
 			} catch (Exception e) {
 				String message = e.getMessage() != null && !"".equals(e.getMessage()) ? e.getMessage() : e.getClass().getName() + " occurred in " + this.getClass().getName();
 				Status status = new Status(IStatus.ERROR, DslActivator.PLUGIN_ID, message, e);
@@ -96,6 +95,19 @@ public abstract class AbstractGenerationHandler extends AbstractHandler implemen
 			}
 		}
 		return null;
+	}
+
+	protected void runGeneration(Resource resource, ExecutionEvent event, IFileSystemAccess2 fsa) {
+		try {
+			getGenerator().doGenerate(resource, fsa, new GeneratorContext());
+		} catch (GeneratorInputException e) {
+			MessageDialog.openInformation(HandlerUtil.getActiveShell(event), "Model Input", e.getMessage());
+		} catch (Exception e) {
+			String message = e.getMessage() != null && !"".equals(e.getMessage()) ? e.getMessage() : e.getClass().getName() + " occurred in " + this.getClass().getName();
+			Status status = new Status(IStatus.ERROR, DslActivator.PLUGIN_ID, message, e);
+			StatusManager.getManager().handle(status);
+			ErrorDialog.openError(HandlerUtil.getActiveShell(event), "Error", "Exception occured during execution of command!", status);
+		}
 	}
 
 	private Resource getResource(ExecutionEvent event) {
