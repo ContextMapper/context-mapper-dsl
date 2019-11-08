@@ -23,6 +23,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Optional;
 
 import org.contextmapper.contextmap.generator.model.ContextMap;
 import org.contextmapper.dsl.generator.contextmap.ContextMapFormat;
@@ -31,6 +32,8 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.xtext.generator.IFileSystemAccess2;
 
 import guru.nidi.graphviz.engine.Format;
+import guru.nidi.graphviz.service.CommandRunner;
+import guru.nidi.graphviz.service.SystemUtils;
 
 public class ContextMapGenerator extends AbstractContextMapGenerator {
 
@@ -113,6 +116,14 @@ public class ContextMapGenerator extends AbstractContextMapGenerator {
 
 	protected org.contextmapper.contextmap.generator.ContextMapGenerator createContextMapGenerator() {
 		return new org.contextmapper.contextmap.generator.ContextMapGenerator();
+	}
+
+	public boolean isGraphvizInstalled() {
+		String execName = SystemUtils.executableName("dot");
+		String envPath = Optional.ofNullable(System.getenv("PATH")).orElse("");
+		if (CommandRunner.isExecutableFound(execName, envPath))
+			return true;
+		return false;
 	}
 
 }

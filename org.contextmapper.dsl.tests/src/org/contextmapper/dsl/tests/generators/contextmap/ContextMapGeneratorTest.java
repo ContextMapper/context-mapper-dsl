@@ -16,8 +16,8 @@
 package org.contextmapper.dsl.tests.generators.contextmap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
@@ -198,6 +198,11 @@ class ContextMapGeneratorTest {
 		assertTrue(filesystem.getGeneratedFilesSet().contains("testmodel_ContextMap.png"));
 		assertEquals(111, graphvizGenerator.getHeight());
 		assertFalse(graphvizGenerator.getWidth() == 111);
+	}
+
+	@Test
+	void canTestIfGraphvizIsInstalled() {
+		assertTrue(generator.isGraphvizInstalled());
 	}
 
 	private class TestContextMapGenerator extends ContextMapGenerator {

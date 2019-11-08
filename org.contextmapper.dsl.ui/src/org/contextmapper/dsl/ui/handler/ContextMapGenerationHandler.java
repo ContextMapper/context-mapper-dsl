@@ -43,6 +43,12 @@ public class ContextMapGenerationHandler extends AbstractGenerationHandler {
 
 	@Override
 	protected void runGeneration(Resource resource, ExecutionEvent event, IFileSystemAccess2 fsa) {
+		if (!generator.isGraphvizInstalled()) {
+			MessageDialog.openInformation(HandlerUtil.getActiveShell(event), "Graphviz installation not found",
+					"Graphviz has not been found on your system. Ensure it is installed and the binaries are part of your PATH environment variable.");
+			return;
+		}
+
 		GenerateContextMapContext context = new GenerateContextMapContext();
 		new WizardDialog(HandlerUtil.getActiveShell(event), new GenerateContextMapWizard(context, executionContext -> {
 			generator.setContextMapFormat(context.getFormat());
