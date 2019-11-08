@@ -52,7 +52,7 @@ class ServiceCutterInputGeneratorTest {
 		this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem, new IGeneratorContextMock());
 
 		// then
-		assertTrue(filesystem.getGeneratedFilesMap().containsKey("testmodel.json"));
+		assertTrue(filesystem.getGeneratedFilesSet().contains("testmodel.json"));
 	}
 
 }

@@ -53,7 +53,7 @@ class MDSLContractsGeneratorTest extends AbstractCMLInputFileTest {
 		new MDSLContractsGenerator().doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem, new IGeneratorContextMock());
 
 		// then
-		assertTrue(filesystem.getGeneratedFilesMap().containsKey("testmodel_CustomerManagementContextAPI.mdsl"));
+		assertTrue(filesystem.getGeneratedFilesSet().contains("testmodel_CustomerManagementContextAPI.mdsl"));
 	}
 
 	@Test
@@ -73,7 +73,7 @@ class MDSLContractsGeneratorTest extends AbstractCMLInputFileTest {
 		new MDSLContractsGenerator().doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem, new IGeneratorContextMock());
 
 		// then
-		assertTrue(filesystem.getGeneratedFilesMap().containsKey(mdslFileName));
+		assertTrue(filesystem.getGeneratedFilesSet().contains(mdslFileName));
 		ProtectedRegionReader reader = new ProtectedRegionReader();
 		String protectedSection = reader.getProtectedRegionContent(filesystem.readTextFile(mdslFileName).toString(), ProtectedRegionIdentifier.DATA_TYPE_REGION);
 		Set<String> ids = reader.getIdentifiersInProtectedRegion(protectedSection, ProtectedRegionIdentifier.DATA_TYPE_REGION);

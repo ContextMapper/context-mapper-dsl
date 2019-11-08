@@ -12,7 +12,11 @@
    <bundle id="org.eclipse.emf.henshin.model" version="1.4.0.201611301251">
       <category name="main"/>
    </bundle>
+   <feature id="org.contextmapper.contextmap.generator.feature" version="0.0.0">
+      <category name="main"/>
+   </feature>
    <category-def name="main" label="ContextMappingDSL"/>
    <category-def name="main.source" label="ContextMappingDSL (Sources)"/>
    <repository-reference location="http://download.eclipse.org/modeling/emft/henshin/updates/release/" enabled="true" />
+   <repository-reference location="https://dl.bintray.com/contextmapper/context-map-generator-releases/" enabled="true" />
 </site>

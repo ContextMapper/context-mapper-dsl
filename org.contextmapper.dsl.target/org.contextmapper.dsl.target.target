@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><?pde version="3.8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?pde version="3.8"?>
 <target name="org.contextmapper.dsl.target" sequenceNumber="1">
 	<locations>
 		<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
@@ -51,6 +52,10 @@
 			<unit id="org.eclipse.gmf.tooling.runtime.feature.group" version="3.2.1.201409171321"/>
 			<unit id="org.eclipse.gmf.tooling.simplemap.feature.group" version="1.0.0.201409171321"/>
 			<repository location="http://download.eclipse.org/modeling/gmp/gmf-tooling/updates/releases-3.2.1/"/>
+		</location>
+		<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+			<repository location="https://dl.bintray.com/contextmapper/context-map-generator-releases/"/>
+			<unit id="org.contextmapper.contextmap.generator.feature.feature.group" version="1.0.0"/>
 		</location>
 	</locations>
 </target>

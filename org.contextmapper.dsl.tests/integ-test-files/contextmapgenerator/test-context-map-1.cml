@@ -1,0 +1,31 @@
+ContextMap InsuranceContextMap {
+	contains CustomerManagementContext
+	contains CustomerSelfServiceContext
+	contains PrintingContext
+	contains PolicyManagementContext
+	contains RiskManagementContext
+	contains DebtCollection
+	
+	CustomerSelfServiceContext [D,C]<-[U,S] CustomerManagementContext
+	
+	CustomerManagementContext [D,ACL]<-[U,OHS,PL] PrintingContext
+	
+	RiskManagementContext [P]<->[P] PolicyManagementContext
+
+	PolicyManagementContext [D,CF]<-[U,OHS] CustomerManagementContext
+
+	PolicyManagementContext [SK]<->[SK] DebtCollection
+	
+}
+
+BoundedContext CustomerManagementContext
+
+BoundedContext CustomerSelfServiceContext
+
+BoundedContext PrintingContext
+
+BoundedContext PolicyManagementContext
+
+BoundedContext RiskManagementContext
+
+BoundedContext DebtCollection
