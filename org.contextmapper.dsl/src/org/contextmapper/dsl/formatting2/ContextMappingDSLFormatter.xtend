@@ -84,6 +84,10 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 			relationship.regionFor.ruleCallTo(CLOSERule).prepend[newLine].append[newLines = 2]
 		)[indent]
 		
+		relationship.regionFor.keyword('implementationTechnology').prepend[newLine]
+		relationship.regionFor.keyword('exposedAggregates').prepend[newLine]
+		relationship.regionFor.keyword('downstreamRights').prepend[newLine]
+		
 		relationship.regionFor.keyword('U').surround[noSpace]
 		relationship.regionFor.keyword('D').surround[noSpace]
 		relationship.regionFor.keyword('OHS').surround[noSpace]

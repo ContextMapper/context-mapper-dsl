@@ -132,7 +132,7 @@ UpstreamDownstreamRelationship:
 		(':' name=ID)?
 		(OPEN (
 			('implementationTechnology' ('=')? implementationTechnology=STRING)? &
-			(('exposedAggregates' ('=')? upstreamExposedAggregates += [Aggregate]) ("," upstreamExposedAggregates += [Aggregate])*)? &
+			(('exposedAggregates' ('=')? upstreamExposedAggregates += [Aggregate]) ("," upstreamExposedAggregates += [Aggregate])* (exposedAggregatesComment=SL_COMMENT)?)? &
 			('downstreamRights' ('=')? downstreamGovernanceRights=DownstreamGovernanceRights)?
 		)
 		CLOSE)?
@@ -150,7 +150,7 @@ CustomerSupplierRelationship:
 		(':' name=ID)?
 		(OPEN (
 			('implementationTechnology' ('=')? implementationTechnology=STRING)? &
-			(('exposedAggregates' ('=')? upstreamExposedAggregates += [Aggregate]) ("," upstreamExposedAggregates += [Aggregate])*)? &
+			(('exposedAggregates' ('=')? upstreamExposedAggregates += [Aggregate]) ("," upstreamExposedAggregates += [Aggregate])* (exposedAggregatesComment=SL_COMMENT)?)? &
 			('downstreamRights' ('=')? downstreamGovernanceRights=DownstreamGovernanceRights)?
 		)
 		CLOSE)?
