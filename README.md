@@ -9,6 +9,8 @@ With the ContextMapper DSL language you can express DDD context maps. Once you h
 Checkout our website [https://contextmapper.org/](https://contextmapper.org/) to get started.
 The Context Mapper project has been developed as part of research projects at [HSR](https://www.hsr.ch) and you can find the project reports and further background information [here](https://contextmapper.org/background-and-publications/).
 
+**Eclipse Update Site: https://dl.bintray.com/contextmapper/context-mapping-dsl/updates/**
+
 ## Features
 * ContextMapper DSL language support (CML files)
     * Write context maps with bounded contexts and their relationships (Strategic DDD)
