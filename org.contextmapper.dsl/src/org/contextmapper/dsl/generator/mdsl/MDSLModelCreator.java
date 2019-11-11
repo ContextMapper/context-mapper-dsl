@@ -15,9 +15,12 @@
  */
 package org.contextmapper.dsl.generator.mdsl;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.Stack;
 import java.util.stream.Collectors;
 
@@ -39,13 +42,17 @@ import org.contextmapper.dsl.generator.mdsl.model.EndpointProvider;
 import org.contextmapper.dsl.generator.mdsl.model.ServiceSpecification;
 import org.contextmapper.tactic.dsl.tacticdsl.Attribute;
 import org.contextmapper.tactic.dsl.tacticdsl.CollectionType;
+import org.contextmapper.tactic.dsl.tacticdsl.CommandEvent;
 import org.contextmapper.tactic.dsl.tacticdsl.ComplexType;
+import org.contextmapper.tactic.dsl.tacticdsl.DomainEvent;
 import org.contextmapper.tactic.dsl.tacticdsl.DomainObject;
 import org.contextmapper.tactic.dsl.tacticdsl.DomainObjectOperation;
+import org.contextmapper.tactic.dsl.tacticdsl.Entity;
 import org.contextmapper.tactic.dsl.tacticdsl.Parameter;
 import org.contextmapper.tactic.dsl.tacticdsl.Reference;
 import org.contextmapper.tactic.dsl.tacticdsl.ServiceOperation;
 import org.contextmapper.tactic.dsl.tacticdsl.SimpleDomainObject;
+import org.contextmapper.tactic.dsl.tacticdsl.ValueObject;
 import org.contextmapper.tactic.dsl.tacticdsl.Visibility;
 
 import com.google.common.collect.Lists;
@@ -90,13 +97,13 @@ public class MDSLModelCreator {
 	private ServiceSpecification createServiceSpecification(String apiName, UpstreamAPIContext context) {
 		ServiceSpecification specification = new ServiceSpecification();
 		specification.setName(apiName);
-		
+
 		if (context.getUpstreamRoles().contains(UpstreamRole.OPEN_HOST_SERVICE) && context.getUpstreamRoles().contains(UpstreamRole.PUBLISHED_LANGUAGE)) {
 			specification.setUsageContext(APIUsageContext.PUBLIC_API);
 		} else if (context.getUpstreamRoles().contains(UpstreamRole.OPEN_HOST_SERVICE)) {
 			specification.setUsageContext(APIUsageContext.COMMUNITY_API);
 		}
-		
+
 		dataTypeMapping = Maps.newTreeMap();
 		for (Aggregate aggregate : context.getExposedAggregates()) {
 			specification.addEndpoint(createEndpoint(aggregate, specification));
@@ -131,7 +138,7 @@ public class MDSLModelCreator {
 		setEndpointServesAsString(endpoint, aggregate.getDoc());
 		return endpoint;
 	}
-	
+
 	private void setEndpointServesAsString(EndpointContract endpoint, String docString) {
 		if (docString == null || "".equals(docString))
 			return;
@@ -173,7 +180,7 @@ public class MDSLModelCreator {
 		setOperationResponsibility(operation, docString);
 		return operation;
 	}
-	
+
 	private void setOperationResponsibility(EndpointOperation operation, String docString) {
 		if (docString == null || "".equals(docString))
 			return;
@@ -204,7 +211,8 @@ public class MDSLModelCreator {
 			for (Parameter parameter : parameters) {
 				ComplexType type = parameter.getParameterType();
 				if (type.getDomainObjectType() != null) {
-					attributes.add(getDataTypeAttribute4DomainObject(dataType, parameter.getName(), type.getDomainObjectType(), type.getCollectionType() != CollectionType.NONE, false));
+					attributes.add(
+							getDataTypeAttribute4DomainObject(dataType, parameter.getName(), type.getDomainObjectType(), type.getCollectionType() != CollectionType.NONE, false));
 				} else {
 					attributes.add(createSimpleDataTypeAttributeWithoutChildren(parameter.getName(), mapAbstractDataType(type.getType()),
 							type.getCollectionType() != CollectionType.NONE, false));
@@ -241,9 +249,9 @@ public class MDSLModelCreator {
 			dataTypeMapping.put(dataTypeName, dataType);
 			if (type.getDomainObjectType() != null && type.getDomainObjectType() instanceof DomainObject) {
 				DomainObject object = (DomainObject) type.getDomainObjectType();
-				dataType.addAttributes(getMDSLAttributesForAttributeList(object.getAttributes()));
+				dataType.addAttributes(getMDSLAttributesForAttributeList(getDomainObjectAttributes(object)));
 				List<DataTypeAttribute> refAttributes = Lists.newArrayList();
-				for (Reference reference : object.getReferences()) {
+				for (Reference reference : getDomainObjectReferences(object)) {
 					refAttributes.add(getDataTypeAttribute4DomainObject(dataType, reference.getName(), reference.getDomainObjectType(),
 							reference.getCollectionType() != CollectionType.NONE, reference.isNullable()));
 				}
@@ -253,7 +261,8 @@ public class MDSLModelCreator {
 		}
 	}
 
-	private DataTypeAttribute getDataTypeAttribute4DomainObject(DataType dataType, String attributeName, SimpleDomainObject simpleDomainObject, boolean isCollection, boolean isNullable) {
+	private DataTypeAttribute getDataTypeAttribute4DomainObject(DataType dataType, String attributeName, SimpleDomainObject simpleDomainObject, boolean isCollection,
+			boolean isNullable) {
 		this.recursiveAttributeResolutionStack.push(simpleDomainObject.getName());
 		DataTypeAttribute mdslAttribute = new DataTypeAttribute();
 		mdslAttribute.setName(attributeName);
@@ -261,9 +270,9 @@ public class MDSLModelCreator {
 		mdslAttribute.setIsNullable(isNullable);
 		if (simpleDomainObject instanceof DomainObject) {
 			DomainObject object = (DomainObject) simpleDomainObject;
-			mdslAttribute.addChildren(getMDSLAttributesForAttributeList(object.getAttributes()));
+			mdslAttribute.addChildren(getMDSLAttributesForAttributeList(getDomainObjectAttributes(object)));
 			List<DataTypeAttribute> refAttributes = Lists.newArrayList();
-			for (Reference reference : object.getReferences()) {
+			for (Reference reference : getDomainObjectReferences(object)) {
 				// recursive attribute resolution, if it is no cyclic reference
 				if (!this.recursiveAttributeResolutionStack.contains(reference.getDomainObjectType().getName())) {
 					refAttributes.add(getDataTypeAttribute4DomainObject(dataType, reference.getName(), reference.getDomainObjectType(),
@@ -280,6 +289,46 @@ public class MDSLModelCreator {
 		}
 		this.recursiveAttributeResolutionStack.pop();
 		return mdslAttribute;
+	}
+
+	private List<Attribute> getDomainObjectAttributes(DomainObject domainObject) {
+		List<Attribute> attributes = new ArrayList<>();
+
+		DomainObject extendsType = getExtendsType(domainObject);
+		while (extendsType != null) {
+			attributes.addAll(extendsType.getAttributes());
+			extendsType = getExtendsType(extendsType);
+		}
+		attributes.addAll(domainObject.getAttributes());
+
+		return attributes;
+	}
+
+	private List<Reference> getDomainObjectReferences(DomainObject domainObject) {
+		List<Reference> references = new ArrayList<>();
+
+		DomainObject extendsType = getExtendsType(domainObject);
+		while (extendsType != null) {
+			references.addAll(extendsType.getReferences());
+			extendsType = getExtendsType(extendsType);
+		}
+		references.addAll(domainObject.getReferences());
+
+		return references;
+	}
+
+	private DomainObject getExtendsType(DomainObject domainObject) {
+		if (domainObject instanceof Entity) {
+			return ((Entity) domainObject).getExtends();
+		} else if (domainObject instanceof CommandEvent) {
+			return ((CommandEvent) domainObject).getExtends();
+		} else if (domainObject instanceof DomainEvent) {
+			return ((DomainEvent) domainObject).getExtends();
+		} else if (domainObject instanceof ValueObject) {
+			return ((ValueObject) domainObject).getExtends();
+		} else {
+			return null;
+		}
 	}
 
 	private List<DataTypeAttribute> getMDSLAttributesForAttributeList(List<Attribute> attributes) {
@@ -357,13 +406,13 @@ public class MDSLModelCreator {
 	private EndpointClient createClient(DownstreamContext downstreamContext) {
 		EndpointClient client = new EndpointClient();
 		client.setName(downstreamContext.getDownstreamName() + CLIENT_NAME_EXTENSION);
-		List<String> endpoints = downstreamContext.getConsumedAggregates().stream()
-				.map(agg -> agg.getName() + AGGREGATE_NAME_EXTENSION).collect(Collectors.toList());
+		List<String> endpoints = downstreamContext.getConsumedAggregates().stream().map(agg -> agg.getName() + AGGREGATE_NAME_EXTENSION).collect(Collectors.toList());
 		for (String offer : endpoints) {
 			client.addConsumedOffer(offer);
 		}
 		if (!downstreamContext.getDownstreamRoles().isEmpty()) {
-			String roles = String.join(" and ", downstreamContext.getDownstreamRoles().stream().map(ur -> ur.getName() + " (" + ur.getLiteral() + ")").collect(Collectors.toList()));
+			String roles = String.join(" and ",
+					downstreamContext.getDownstreamRoles().stream().map(ur -> ur.getName() + " (" + ur.getLiteral() + ")").collect(Collectors.toList()));
 			client.addComment("Generated from DDD downstream Bounded Context '" + downstreamContext.getDownstreamName() + "' implementing " + roles + ".");
 		}
 		if (downstreamContext.getDomainVisionStatement() != null && !"".equals(downstreamContext.getDomainVisionStatement()))
@@ -390,7 +439,7 @@ public class MDSLModelCreator {
 				upstreamContextMap.put(upstreamAPIName, context);
 			}
 			context.getUpstreamRoles().addAll(relationship.getUpstreamRoles());
-			//context.getDownstreamRoles().addAll(relationship.getDownstreamRoles());
+			// context.getDownstreamRoles().addAll(relationship.getDownstreamRoles());
 			for (Aggregate exposedAggregate : relationship.getUpstreamExposedAggregates()) {
 				if (!context.getExposedAggregates().stream().map(agg -> agg.getName()).collect(Collectors.toList()).contains(exposedAggregate.getName()))
 					context.getExposedAggregates().add(exposedAggregate);
