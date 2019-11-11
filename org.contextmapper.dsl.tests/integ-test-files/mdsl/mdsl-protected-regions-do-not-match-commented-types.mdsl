@@ -5,10 +5,10 @@ API description CustomerManagementContextAPI
 // data type Address { "street":V<string>, "city":V<string> }
 // ** END PROTECTED REGION for data types
 
-data type Address P
-data type Parameter1Type P
-data type Parameter2Type P
-data type ReturnType P
+data type Address P // the type Address has not been specified or does not contain any attributes in CML
+data type Parameter1Type P // the type Parameter1Type has not been specified or does not contain any attributes in CML
+data type Parameter2Type P // the type Parameter2Type has not been specified or does not contain any attributes in CML
+data type ReturnType P // the type ReturnType has not been specified or does not contain any attributes in CML
 data type anotherMethodParameter { "param1":Parameter1Type, "param2":Parameter2Type }
 
 // ** BEGIN PROTECTED REGION for endpoint types

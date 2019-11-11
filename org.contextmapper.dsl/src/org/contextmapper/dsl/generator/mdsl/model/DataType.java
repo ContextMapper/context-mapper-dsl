@@ -45,7 +45,7 @@ public class DataType {
 	}
 
 	public boolean isAbstractDataType() {
-		return isAbstractType;
+		return isAbstractType || children.isEmpty();
 	}
 
 	public boolean isPrimitiveType() {
