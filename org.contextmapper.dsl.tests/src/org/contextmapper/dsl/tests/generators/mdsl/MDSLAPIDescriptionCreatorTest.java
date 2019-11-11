@@ -168,6 +168,11 @@ public class MDSLAPIDescriptionCreatorTest extends AbstractCMLInputFileTest {
 	void canIgnoreCommentedTypesInProtectedRegion() throws IOException {
 		testCMLInputAndMDSLOutputFiles("mdsl-protected-regions-do-not-match-commented-types", true);
 	}
+	
+	@Test
+	void canHandleEntitiesWithoutAttributes() throws IOException {
+		testCMLInputAndMDSLOutputFiles("mdsl-entity-without-attributes");
+	}
 
 	private void testCMLInputAndMDSLOutputFiles(String baseFilename) throws IOException {
 		testCMLInputAndMDSLOutputFiles(baseFilename, false);
