@@ -173,6 +173,11 @@ public class MDSLAPIDescriptionCreatorTest extends AbstractCMLInputFileTest {
 	void canHandleEntitiesWithoutAttributes() throws IOException {
 		testCMLInputAndMDSLOutputFiles("mdsl-entity-without-attributes");
 	}
+	
+	@Test
+	void canResolveSuperTypeAttributes() throws IOException {
+		testCMLInputAndMDSLOutputFiles("mdsl-entity-extending-other-entity");
+	}
 
 	private void testCMLInputAndMDSLOutputFiles(String baseFilename) throws IOException {
 		testCMLInputAndMDSLOutputFiles(baseFilename, false);
