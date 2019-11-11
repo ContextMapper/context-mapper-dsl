@@ -2,9 +2,9 @@
 API description CustomerManagementContextAPI
 
 
-data type BankAccount P
+data type BankAccount P // the type BankAccount has not been specified or does not contain any attributes in CML
 data type Customer { "firstName":V<string>, "lastName":V<string>, "account":BankAccount, "address":{ "street":V<string>, "houseNumber":V<int> } }
-data type ReturnType P
+data type ReturnType P // the type ReturnType has not been specified or does not contain any attributes in CML
 
 
 endpoint type CustomersAggregate

@@ -19,7 +19,7 @@ ${serviceSpecification.dataTypeProtectedRegion}
 // ${dataType.getCommentsString()}
 		</#if>
 		<#if dataType.isAbstractDataType()>
-data type ${dataType.name} P
+data type ${dataType.name} P // the type ${dataType.name} has not been specified or does not contain any attributes in CML
 		<#else>
 data type ${dataType.name} <@renderDataTypeAttributesRecursive dataType.getChildren() />
 		</#if>
