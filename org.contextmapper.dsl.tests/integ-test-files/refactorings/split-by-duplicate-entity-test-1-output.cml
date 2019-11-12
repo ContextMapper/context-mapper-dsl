@@ -3,7 +3,7 @@ ContextMap {
 	contains CustomerManagement
 	contains PolicyManagement
 
-	PolicyManagement [D,ACL]<-[U,OHS,PL] CustomerManagement
+	PolicyManagement [D, ACL]<-[U, OHS, PL] CustomerManagement
 
 }
 
