@@ -558,6 +558,30 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 		assertTrue(plantUML.contains("	class MyModuleService <<Service>> {" + System.lineSeparator() + "		void myModuleServiceMethod()" + System.lineSeparator() + "	}"
 				+ System.lineSeparator()));
 	}
+	
+	@Test
+	public void canCreateInheritance() {
+		// given
+		BoundedContext boundedContext = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
+		Aggregate aggregate = ContextMappingDSLFactory.eINSTANCE.createAggregate();
+		aggregate.setName("testAggregate");
+		boundedContext.getAggregates().add(aggregate);
+		Entity entity1 = TacticdslFactory.eINSTANCE.createEntity();
+		entity1.setName("Customer");
+		Entity entity2 = TacticdslFactory.eINSTANCE.createEntity();
+		entity2.setName("AbstractEntity");
+		entity1.setExtends(entity2);
+		aggregate.getDomainObjects().add(entity1);
+		aggregate.getDomainObjects().add(entity2);
+
+		// when
+		String plantUML = this.creator.createDiagram(boundedContext);
+
+		// then
+		assertTrue(plantUML.contains("	class Customer <<Entity>> {" + System.lineSeparator() + "	}" + System.lineSeparator()));
+		assertTrue(plantUML.contains("	class AbstractEntity <<Entity>> {" + System.lineSeparator() + "	}" + System.lineSeparator()));
+		assertTrue(plantUML.contains("Customer --|> AbstractEntity" + System.lineSeparator()));
+	}
 
 	@Override
 	protected String getTestFileDirectory() {

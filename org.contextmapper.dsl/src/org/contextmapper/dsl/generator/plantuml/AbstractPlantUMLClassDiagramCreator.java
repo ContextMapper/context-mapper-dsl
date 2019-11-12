@@ -39,6 +39,7 @@ import com.google.common.collect.Lists;
 abstract public class AbstractPlantUMLClassDiagramCreator<T extends EObject> extends AbstractPlantUMLDiagramCreator<T> {
 
 	protected List<UMLRelationship> relationships;
+	protected List<UMLRelationship> extensions;
 	protected List<SimpleDomainObject> domainObjects;
 
 	protected void printDomainObject(SimpleDomainObject domainObject, int indentation) {
@@ -97,6 +98,14 @@ abstract public class AbstractPlantUMLClassDiagramCreator<T extends EObject> ext
 		sb.append("}");
 		linebreak();
 		addReferences2List(object, object.getReferences());
+		if (object instanceof Entity && ((Entity) object).getExtends() != null)
+			addExtensionToList(object.getName(), ((Entity) object).getExtends());
+		if (object instanceof CommandEvent && ((CommandEvent) object).getExtends() != null)
+			addExtensionToList(object.getName(), ((CommandEvent) object).getExtends());
+		if (object instanceof DomainEvent && ((DomainEvent) object).getExtends() != null)
+			addExtensionToList(object.getName(), ((DomainEvent) object).getExtends());
+		if (object instanceof ValueObject && ((ValueObject) object).getExtends() != null)
+			addExtensionToList(object.getName(), ((ValueObject) object).getExtends());
 	}
 
 	private void addReferences2List(SimpleDomainObject sourceDomainObject, List<Reference> references) {
@@ -110,6 +119,14 @@ abstract public class AbstractPlantUMLClassDiagramCreator<T extends EObject> ext
 			UMLRelationship relationship = new UMLRelationship(sourceDomainObject, targetDomainObject.getName());
 			if (!this.relationships.contains(relationship))
 				this.relationships.add(relationship);
+		}
+	}
+
+	private void addExtensionToList(String sourceDomainObject, SimpleDomainObject extendedDomainObject) {
+		if (this.domainObjects.contains(extendedDomainObject)) {
+			UMLRelationship relationship = new UMLRelationship(sourceDomainObject, extendedDomainObject.getName());
+			if (!this.extensions.contains(relationship))
+				this.extensions.add(relationship);
 		}
 	}
 
@@ -191,6 +208,11 @@ abstract public class AbstractPlantUMLClassDiagramCreator<T extends EObject> ext
 		for (UMLRelationship reference : relationships) {
 			printIndentation(indentation);
 			sb.append(reference.getSource()).append(" --> ").append(reference.getTarget());
+			linebreak();
+		}
+		for (UMLRelationship extension : extensions) {
+			printIndentation(indentation);
+			sb.append(extension.getSource()).append(" --|> ").append(extension.getTarget());
 			linebreak();
 		}
 	}

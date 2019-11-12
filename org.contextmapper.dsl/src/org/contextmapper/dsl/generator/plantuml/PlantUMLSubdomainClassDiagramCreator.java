@@ -33,6 +33,7 @@ public class PlantUMLSubdomainClassDiagramCreator extends AbstractPlantUMLClassD
 	@Override
 	protected void printDiagramContent(Subdomain subdomain) {
 		this.relationships = Lists.newArrayList();
+		this.extensions = Lists.newArrayList();
 		this.domainObjects = EcoreUtil2.<SimpleDomainObject>getAllContentsOfType(subdomain, SimpleDomainObject.class);
 
 		printSubdomain(subdomain, 0);

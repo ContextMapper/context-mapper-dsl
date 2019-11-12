@@ -37,6 +37,7 @@ public class PlantUMLBoundedContextClassDiagramCreator extends AbstractPlantUMLC
 	@Override
 	protected void printDiagramContent(BoundedContext boundedContext) {
 		this.relationships = Lists.newArrayList();
+		this.extensions = Lists.newArrayList();
 		this.domainObjects = EcoreUtil2.<SimpleDomainObject>getAllContentsOfType(boundedContext, SimpleDomainObject.class);
 		if (this.domainObjects.size() <= 0) {
 			printEmptyDiagramNote();
