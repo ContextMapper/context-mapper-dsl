@@ -16,6 +16,7 @@
 package org.contextmapper.dsl.generator.mdsl.model;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
 
@@ -24,6 +25,7 @@ public class DataType {
 	private String name;
 	private boolean isAbstractType = true;
 	private boolean isPrimitiveType = false;
+	private boolean isEnumType = false;
 	private List<DataTypeAttribute> children = Lists.newArrayList();
 	private List<String> comments = Lists.newArrayList();
 
@@ -66,5 +68,19 @@ public class DataType {
 
 	public void addComment(String comment) {
 		this.comments.add(comment);
+	}
+
+	public void setIsEnumType(boolean isEnumType) {
+		this.isEnumType = isEnumType;
+	}
+
+	public boolean isEnumType() {
+		return isEnumType;
+	}
+
+	public String getEnumValuesString() {
+		if (!isEnumType)
+			throw new RuntimeException("getEnumValuesString() called on datatype which is not an enum!");
+		return String.join("|", this.children.stream().map(attr -> "\"" + attr.getName() + "\"").collect(Collectors.toList()));
 	}
 }

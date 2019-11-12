@@ -178,6 +178,11 @@ public class MDSLAPIDescriptionCreatorTest extends AbstractCMLInputFileTest {
 	void canResolveSuperTypeAttributes() throws IOException {
 		testCMLInputAndMDSLOutputFiles("mdsl-entity-extending-other-entity");
 	}
+	
+	@Test
+	void canHandleEnums() throws IOException {
+		testCMLInputAndMDSLOutputFiles("mdsl-enum-support");
+	}
 
 	private void testCMLInputAndMDSLOutputFiles(String baseFilename) throws IOException {
 		testCMLInputAndMDSLOutputFiles(baseFilename, false);

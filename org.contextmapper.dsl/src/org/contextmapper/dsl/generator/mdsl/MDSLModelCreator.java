@@ -16,11 +16,9 @@
 package org.contextmapper.dsl.generator.mdsl;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.Stack;
 import java.util.stream.Collectors;
 
@@ -48,6 +46,8 @@ import org.contextmapper.tactic.dsl.tacticdsl.DomainEvent;
 import org.contextmapper.tactic.dsl.tacticdsl.DomainObject;
 import org.contextmapper.tactic.dsl.tacticdsl.DomainObjectOperation;
 import org.contextmapper.tactic.dsl.tacticdsl.Entity;
+import org.contextmapper.tactic.dsl.tacticdsl.Enum;
+import org.contextmapper.tactic.dsl.tacticdsl.EnumValue;
 import org.contextmapper.tactic.dsl.tacticdsl.Parameter;
 import org.contextmapper.tactic.dsl.tacticdsl.Reference;
 import org.contextmapper.tactic.dsl.tacticdsl.ServiceOperation;
@@ -256,9 +256,35 @@ public class MDSLModelCreator {
 							reference.getCollectionType() != CollectionType.NONE, reference.isNullable()));
 				}
 				dataType.addAttributes(refAttributes);
+			} else if (type.getDomainObjectType() != null && type.getDomainObjectType() instanceof Enum) {
+				Enum enumm = (Enum) type.getDomainObjectType();
+				dataType.setIsEnumType(true);
+				dataType.addAttributes(createAttributesForEnum(enumm));
 			}
 			return dataType;
 		}
+	}
+
+	private List<DataTypeAttribute> createAttributesForEnum(Enum enumm) {
+		List<DataTypeAttribute> attributes = new ArrayList<>();
+		for (EnumValue value : enumm.getValues()) {
+			DataTypeAttribute attribute = new DataTypeAttribute();
+			attribute.setName(value.getName());
+			attribute.setType(enumm.getName());
+			attributes.add(attribute);
+		}
+		return attributes;
+	}
+
+	private DataType createEnumDataType(Enum enumm) {
+		if (dataTypeMapping.containsKey(enumm.getName()))
+			return dataTypeMapping.get(enumm.getName());
+		DataType dataType = new DataType();
+		dataType.setName(enumm.getName());
+		dataType.setIsEnumType(true);
+		dataType.addAttributes(createAttributesForEnum(enumm));
+		dataTypeMapping.put(enumm.getName(), dataType);
+		return dataType;
 	}
 
 	private DataTypeAttribute getDataTypeAttribute4DomainObject(DataType dataType, String attributeName, SimpleDomainObject simpleDomainObject, boolean isCollection,
@@ -284,6 +310,8 @@ public class MDSLModelCreator {
 				}
 			}
 			mdslAttribute.addChildren(refAttributes);
+		} else if (simpleDomainObject instanceof Enum) {
+			mdslAttribute.setType(createEnumDataType((Enum) simpleDomainObject).getName());
 		} else {
 			mdslAttribute.setType(mapAbstractDataType(simpleDomainObject.getName()));
 		}

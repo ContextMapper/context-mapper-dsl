@@ -20,6 +20,8 @@ ${serviceSpecification.dataTypeProtectedRegion}
 		</#if>
 		<#if dataType.isAbstractDataType()>
 data type ${dataType.name} P // the type ${dataType.name} has not been specified or does not contain any attributes in CML
+		<#elseif dataType.isEnumType()>
+data type ${dataType.name} {${dataType.getEnumValuesString()}}
 		<#else>
 data type ${dataType.name} <@renderDataTypeAttributesRecursive dataType.getChildren() />
 		</#if>
