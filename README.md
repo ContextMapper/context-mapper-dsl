@@ -19,9 +19,10 @@ The Context Mapper project has been developed as part of research projects at [H
     * Find examples in our [examples repository](https://github.com/ContextMapper/context-mapper-examples)
     * Consult our [online documentation](https://contextmapper.org/docs/) to get detailed language documentation, manuals and how to get started.
 * Use our [Architectural Refactorings (ARs)](https://contextmapper.org/docs/architectural-refactorings/) to evolve and improve your DDD context maps iteratively.
-* Generate [MDSL](https://socadk.github.io/MDSL/) (micro-) service contracts out of DDD context maps
+* Generate [graphical Context Maps](https://contextmapper.org/docs/context-map-generator/)
 * Generate [PlantUML](http://plantuml.com/) component diagram from context map
 * Generate [PlantUML](http://plantuml.com/) class diagram from bounded context and/or subdomain (tactic DDD)
+* Generate [MDSL](https://socadk.github.io/MDSL/) (micro-) service contracts out of DDD context maps
 * Generate [ServiceCutter](https://github.com/ServiceCutter/ServiceCutter) input files for service decomposition proposals
 * Convert [ServiceCutter](https://github.com/ServiceCutter/ServiceCutter) output back into context map (CML)
 
@@ -30,8 +31,12 @@ To use the ContextMapper DSL (CML) you need the following tools:
 
 * [Java JDK](https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) (JDK 8 or newer)
 * [Eclipse](https://www.eclipse.org/downloads/packages/)
-* ContextMapper Eclipse Plugin (Eclipse Update Site: [https://dl.bintray.com/contextmapper/context-mapping-dsl/updates/](https://dl.bintray.com/contextmapper/context-mapping-dsl/updates/))
-* You may want to install one the following two plugins to display the plantUML diagrams directly in Eclipse:
+* ContextMapper Eclipse Plugin (**Update Site**: **[https://dl.bintray.com/contextmapper/context-mapping-dsl/updates/](https://dl.bintray.com/contextmapper/context-mapping-dsl/updates/)**)
+* If you want to use our [Context Map generator](https://contextmapper.org/docs/context-map-generator/) you need to have [Graphviz](https://www.graphviz.org/) installed on your system.
+    * Ensure that the binaries are part of the _PATH_ environment variable and can be called from the terminal.
+    * Especially on Windows this is not the case after the installation of [Graphviz](https://www.graphviz.org/). The default installation path is
+      `C:\Program Files (x86)\GraphvizX.XX`, which means you have to add `C:\Program Files (x86)\GraphvizX.XX\bin` to your _PATH_ variable.
+* You may want to install one of the following two plugins to display the plantUML diagrams directly in Eclipse:
     * [Asciidoctor Editor](https://marketplace.eclipse.org/content/asciidoctor-editor) (Update site: [https://dl.bintray.com/de-jcup/asciidoctoreditor](https://dl.bintray.com/de-jcup/asciidoctoreditor))
     * [PlantUML Eclipse Plugin](https://github.com/hallvard/plantuml) (Update site: [http://hallvard.github.io/plantuml/](http://hallvard.github.io/plantuml/))
     * **Note:** Both plugins require [Graphviz](http://www.graphviz.org/) to be installed on your machine!
