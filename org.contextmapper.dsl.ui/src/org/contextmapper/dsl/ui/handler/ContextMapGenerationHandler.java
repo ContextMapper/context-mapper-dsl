@@ -16,6 +16,7 @@
 package org.contextmapper.dsl.ui.handler;
 
 import org.contextmapper.dsl.generator.ContextMapGenerator;
+import org.contextmapper.dsl.generator.contextmap.ContextMapFormat;
 import org.contextmapper.dsl.generator.exception.GeneratorInputException;
 import org.contextmapper.dsl.ui.handler.wizard.GenerateContextMapContext;
 import org.contextmapper.dsl.ui.handler.wizard.GenerateContextMapWizard;
@@ -63,7 +64,7 @@ public class ContextMapGenerationHandler extends AbstractGenerationHandler {
 
 		GenerateContextMapContext context = new GenerateContextMapContext();
 		new WizardDialog(HandlerUtil.getActiveShell(event), new GenerateContextMapWizard(context, executionContext -> {
-			generator.setContextMapFormat(context.getFormat());
+			generator.setContextMapFormats(context.getFormats().toArray(new ContextMapFormat[context.getFormats().size()]));
 			generator.setLabelSpacingFactor(context.getLabelSpacingFactor());
 			if (context.isFixWidth())
 				generator.setWidth(context.getWidth());

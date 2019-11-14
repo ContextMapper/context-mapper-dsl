@@ -15,23 +15,25 @@
  */
 package org.contextmapper.dsl.ui.handler.wizard;
 
+import java.util.Set;
+
 import org.contextmapper.dsl.generator.contextmap.ContextMapFormat;
 
 public class GenerateContextMapContext {
 
-	private ContextMapFormat format;
+	private Set<ContextMapFormat> formats;
 	private int labelSpacingFactor;
 	private boolean fixWidth;
 	private boolean fixHeight;
 	private int width;
 	private int height;
 
-	public void setFormat(ContextMapFormat format) {
-		this.format = format;
+	public void setFormats(Set<ContextMapFormat> formats) {
+		this.formats = formats;
 	}
 
-	public ContextMapFormat getFormat() {
-		return format;
+	public Set<ContextMapFormat> getFormats() {
+		return formats;
 	}
 
 	public void setLabelSpacingFactor(int labelSpacingFactor) {

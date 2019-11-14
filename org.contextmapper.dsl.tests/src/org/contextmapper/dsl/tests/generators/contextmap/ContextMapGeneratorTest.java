@@ -64,7 +64,7 @@ class ContextMapGeneratorTest {
 
 		// when
 		IFileSystemAccess2Mock filesystem = new IFileSystemAccess2Mock();
-		this.generator.setContextMapFormat(ContextMapFormat.SVG);
+		this.generator.setContextMapFormats(ContextMapFormat.SVG);
 		this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem, new IGeneratorContextMock());
 
 		// then
@@ -80,7 +80,7 @@ class ContextMapGeneratorTest {
 
 		// when
 		IFileSystemAccess2Mock filesystem = new IFileSystemAccess2Mock();
-		this.generator.setContextMapFormat(ContextMapFormat.DOT);
+		this.generator.setContextMapFormats(ContextMapFormat.DOT);
 		this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem, new IGeneratorContextMock());
 
 		// then
