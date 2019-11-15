@@ -43,10 +43,10 @@ public class GenerateContextMapWizardPage extends ContextMapperWizardPage {
 	private Button heightCheckBox;
 	private Spinner heightSpinner;
 
-	private Set<ContextMapFormat> selectedFormats;// = ContextMapFormat.PNG;
+	private Set<ContextMapFormat> selectedFormats;
 	private int labelSpacingFactor = 5;
-	private int width = 3600;
-	private int height = 1500;
+	private int width = 2000;
+	private int height = 1000;
 
 	public GenerateContextMapWizardPage() {
 		super("Generate Context Map Configuration Page");
