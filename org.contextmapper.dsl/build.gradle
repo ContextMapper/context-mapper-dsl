@@ -9,7 +9,7 @@ dependencies {
 	compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.9'
 	compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.9.9'
 	compile group: 'org.contextmapper', name: 'henshin-interpreter', version: '1.4.0'
-	compile group: 'org.contextmapper', name: 'context-map-generator', version: '1.0.0'
+	compile group: 'org.contextmapper', name: 'context-map-generator', version: '1.0.1'
 }
 configurations {
 	mwe2 {

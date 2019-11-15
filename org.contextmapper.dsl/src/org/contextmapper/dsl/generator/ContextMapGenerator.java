@@ -16,14 +16,16 @@
 package org.contextmapper.dsl.generator;
 
 import static org.contextmapper.dsl.generator.contextmap.ContextMapFormat.DOT;
-import static org.contextmapper.dsl.generator.contextmap.ContextMapFormat.PNG;
 import static org.contextmapper.dsl.generator.contextmap.ContextMapFormat.SVG;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 import org.contextmapper.contextmap.generator.model.ContextMap;
 import org.contextmapper.dsl.generator.contextmap.ContextMapFormat;
@@ -37,18 +39,24 @@ import guru.nidi.graphviz.service.SystemUtils;
 
 public class ContextMapGenerator extends AbstractContextMapGenerator {
 
-	private ContextMapFormat format = PNG;
+	private Set<ContextMapFormat> formats;
 	private int labelSpacingFactor = 5;
 	private int width = -1;
 	private int height = -1;
 	private boolean useWidth = true;
+
+	public ContextMapGenerator() {
+		this.formats = new HashSet<>();
+		formats.add(ContextMapFormat.PNG);
+		formats.add(ContextMapFormat.SVG);
+		formats.add(ContextMapFormat.DOT);
+	}
 
 	@Override
 	protected void generateFromContextMap(org.contextmapper.dsl.contextMappingDSL.ContextMap cmlContextMap, IFileSystemAccess2 fsa, URI inputFileURI) {
 		String fileName = inputFileURI.trimFileExtension().lastSegment();
 
 		try {
-			ByteArrayOutputStream outputstream = new ByteArrayOutputStream();
 			ContextMap contextMap = new ContextMapModelConverter().convert(cmlContextMap);
 			org.contextmapper.contextmap.generator.ContextMapGenerator generator = createContextMapGenerator();
 			generator.setLabelSpacingFactor(labelSpacingFactor);
@@ -56,9 +64,13 @@ public class ContextMapGenerator extends AbstractContextMapGenerator {
 				generator.setWidth(width);
 			else if (this.height > 0)
 				generator.setHeight(height);
-			generator.generateContextMapGraphic(contextMap, getGraphvizLibFormat(), outputstream);
-			InputStream inputstream = new ByteArrayInputStream(outputstream.toByteArray());
-			fsa.generateFile(fileName + "_ContextMap." + format.getFileExtension(), inputstream);
+			for (ContextMapFormat format : formats) {
+				ByteArrayOutputStream outputstream = new ByteArrayOutputStream();
+				generator.generateContextMapGraphic(contextMap, getGraphvizLibFormat(format), outputstream);
+				InputStream inputstream = new ByteArrayInputStream(outputstream.toByteArray());
+				fsa.generateFile(fileName + "_ContextMap." + format.getFileExtension(), inputstream);
+			}
+
 		} catch (IOException e) {
 			throw new RuntimeException("An error occured while generating the Context Map!", e);
 		}
@@ -66,12 +78,13 @@ public class ContextMapGenerator extends AbstractContextMapGenerator {
 	}
 
 	/**
-	 * Changes the format which will be generated when calling the generator.
+	 * Changes the formats which will be generated when calling the generator.
 	 * 
-	 * @param format the requested format
+	 * @param formats the formats which shall be generated
 	 */
-	public void setContextMapFormat(ContextMapFormat format) {
-		this.format = format;
+	public void setContextMapFormats(ContextMapFormat... formats) {
+		this.formats.clear();
+		this.formats.addAll(Arrays.asList(formats));
 	}
 
 	/**
@@ -106,7 +119,7 @@ public class ContextMapGenerator extends AbstractContextMapGenerator {
 		this.height = height;
 	}
 
-	private Format getGraphvizLibFormat() {
+	private Format getGraphvizLibFormat(ContextMapFormat format) {
 		if (format == SVG)
 			return Format.SVG;
 		if (format == DOT)

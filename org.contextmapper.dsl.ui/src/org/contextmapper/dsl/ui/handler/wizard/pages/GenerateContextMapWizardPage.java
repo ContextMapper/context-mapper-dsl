@@ -15,21 +15,21 @@
  */
 package org.contextmapper.dsl.ui.handler.wizard.pages;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.contextmapper.dsl.generator.contextmap.ContextMapFormat;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Scale;
@@ -37,20 +37,23 @@ import org.eclipse.swt.widgets.Spinner;
 
 public class GenerateContextMapWizardPage extends ContextMapperWizardPage {
 
-	private Combo formatSelectionCombo;
 	private Composite container;
 	private Button widthCheckBox;
 	private Spinner widthSpinner;
 	private Button heightCheckBox;
 	private Spinner heightSpinner;
 
-	private ContextMapFormat selectedFormat = ContextMapFormat.PNG;
+	private Set<ContextMapFormat> selectedFormats;
 	private int labelSpacingFactor = 5;
-	private int width = 3600;
-	private int height = 1500;
+	private int width = 2000;
+	private int height = 1000;
 
 	public GenerateContextMapWizardPage() {
 		super("Generate Context Map Configuration Page");
+		this.selectedFormats = new HashSet<>();
+		this.selectedFormats.add(ContextMapFormat.PNG);
+		this.selectedFormats.add(ContextMapFormat.SVG);
+		this.selectedFormats.add(ContextMapFormat.DOT);
 	}
 
 	@Override
@@ -73,21 +76,33 @@ public class GenerateContextMapWizardPage extends ContextMapperWizardPage {
 
 		// name label
 		Label formatSelectionLabel = new Label(container, SWT.NONE);
-		formatSelectionLabel.setText("Format:");
+		formatSelectionLabel.setText("Generated formats:");
 
-		// selection field
-		formatSelectionCombo = new Combo(container, SWT.DROP_DOWN | SWT.READ_ONLY);
-		formatSelectionCombo.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		List<String> selectionStrings = Arrays.asList(ContextMapFormat.values()).stream().map(l -> l.toString()).collect(Collectors.toList());
-		formatSelectionCombo.setItems(selectionStrings.toArray(new String[selectionStrings.size()]));
-		formatSelectionCombo.select(selectionStrings.indexOf(ContextMapFormat.PNG.toString()));
-		formatSelectionCombo.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				selectedFormat = ContextMapFormat.valueOf(formatSelectionCombo.getText());
+		// format selection checkboxes
+		Group formatSelectionGroup = new Group(container, SWT.NONE);
+		GridLayout gridLayout = new GridLayout();
+		gridLayout.numColumns = 3;
+		formatSelectionGroup.setLayout(gridLayout);
+		formatSelectionGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
+		SelectionListener formatSelectionListener = new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent event) {
+				Button button = ((Button) event.widget);
+				ContextMapFormat format = ContextMapFormat.valueOf(button.getText());
+				if (button.getSelection())
+					selectedFormats.add(format);
+				else if (selectedFormats.contains(format))
+					selectedFormats.remove(format);
 				setPageComplete(isPageComplete());
-			}
-		});
+			};
+		};
+
+		for (ContextMapFormat format : ContextMapFormat.values()) {
+			Button button = new Button(formatSelectionGroup, SWT.CHECK);
+			button.setText(format.toString());
+			button.setSelection(true);
+			button.addSelectionListener(formatSelectionListener);
+		}
 
 		// fix width to custom value
 		widthCheckBox = new Button(container, SWT.CHECK);
@@ -169,11 +184,10 @@ public class GenerateContextMapWizardPage extends ContextMapperWizardPage {
 	@Override
 	public void setVisible(boolean visible) {
 		super.setVisible(visible);
-		this.formatSelectionCombo.forceFocus();
 	}
 
-	public ContextMapFormat getSelectedFormat() {
-		return selectedFormat;
+	public Set<ContextMapFormat> getSelectedFormats() {
+		return new HashSet<>(selectedFormats);
 	}
 
 	public int getLabelSpacingFactor() {
@@ -198,7 +212,7 @@ public class GenerateContextMapWizardPage extends ContextMapperWizardPage {
 
 	@Override
 	public boolean isPageComplete() {
-		return this.selectedFormat != null;
+		return this.selectedFormats.size() > 0;
 	}
 
 	@Override

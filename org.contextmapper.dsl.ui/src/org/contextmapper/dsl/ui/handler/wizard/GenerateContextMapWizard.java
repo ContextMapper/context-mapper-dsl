@@ -46,7 +46,7 @@ public class GenerateContextMapWizard extends Wizard {
 
 	@Override
 	public boolean performFinish() {
-		context.setFormat(page.getSelectedFormat());
+		context.setFormats(page.getSelectedFormats());
 		context.setLabelSpacingFactor(page.getLabelSpacingFactor());
 		context.setFixHeight(page.takeHeight());
 		context.setFixWidth(page.takeWidth());
