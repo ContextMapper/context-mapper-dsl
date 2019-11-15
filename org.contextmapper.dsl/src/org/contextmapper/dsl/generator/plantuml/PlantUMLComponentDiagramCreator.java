@@ -81,7 +81,10 @@ public class PlantUMLComponentDiagramCreator extends AbstractPlantUMLDiagramCrea
 		UpstreamDownstreamRelationship upDownRelationship = (UpstreamDownstreamRelationship) relationship;
 		String interfaceId = getUniqueInterfaceId(upDownRelationship.getName(), upDownRelationship.getUpstream().getName(), upDownRelationship.getDownstream().getName());
 		printInterface(getRelationshipLabel(relationship), interfaceId);
-		printInterfaceExposure(upDownRelationship.getUpstream().getName(), interfaceId, upstreamRolesToArray(upDownRelationship.getUpstreamRoles()));
+		if (upDownRelationship instanceof CustomerSupplierRelationship)
+			printCustomerSupplierInterfaceExposure(upDownRelationship.getUpstream().getName(), interfaceId, upstreamRolesToArray(upDownRelationship.getUpstreamRoles()));
+		else
+			printUpstreamDownstreamInterfaceExposure(upDownRelationship.getUpstream().getName(), interfaceId, upstreamRolesToArray(upDownRelationship.getUpstreamRoles()));
 		printInterfaceUsage(interfaceId, upDownRelationship);
 		linebreak();
 	}
@@ -121,20 +124,38 @@ public class PlantUMLComponentDiagramCreator extends AbstractPlantUMLDiagramCrea
 	}
 
 	private void printInterfaceUsage(String interfaceId, UpstreamDownstreamRelationship relationship) {
-		sb.append(interfaceId).append(" <.. ").append("[" + relationship.getDownstream().getName() + "]").append(" : ").append("use ");
-		if (!relationship.getUpstreamExposedAggregates().isEmpty())
+		String downstreamRoleString = downstreamRoleToString(relationship.getDownstreamRoles());
+		sb.append(interfaceId).append(" <.. ").append("[" + relationship.getDownstream().getName() + "]").append(" : ");
+		if (relationship instanceof CustomerSupplierRelationship) {
+			sb.append("Customer ");
+		} else if (relationship.getUpstreamExposedAggregates().isEmpty() && "".equals(downstreamRoleString)) {
+			sb.append("consume");
+		} else {
+			sb.append("use ");
+		}
+		if (!relationship.getUpstreamExposedAggregates().isEmpty()) {
+			if (relationship instanceof CustomerSupplierRelationship)
+				sb.append("of ");
 			sb.append(relationship.getUpstreamExposedAggregates().size() > 1 ? "Aggregates " : "Aggregate ")
 					.append(aggregatesToCommaSeparatedString(relationship.getUpstreamExposedAggregates())).append(" ");
-		String downstreamRoleString = downstreamRoleToString(relationship.getDownstreamRoles());
+		}
 		if (!"".equals(downstreamRoleString))
 			sb.append(downstreamRoleString);
 		linebreak();
 	}
 
-	private void printInterfaceExposure(String component, String interfaceId, String[] roles) {
+	private void printUpstreamDownstreamInterfaceExposure(String component, String interfaceId, String[] roles) {
 		sb.append("[" + component + "]").append(" --> ").append(interfaceId);
 		if (roles.length > 0)
 			sb.append(" : ").append(String.join(", ", roles));
+		linebreak();
+	}
+
+	private void printCustomerSupplierInterfaceExposure(String component, String interfaceId, String[] roles) {
+		sb.append("[" + component + "]").append(" --> ").append(interfaceId);
+		sb.append(" : Supplier");
+		if (roles.length > 0)
+			sb.append(" of ").append(String.join(", ", roles));
 		linebreak();
 	}
 

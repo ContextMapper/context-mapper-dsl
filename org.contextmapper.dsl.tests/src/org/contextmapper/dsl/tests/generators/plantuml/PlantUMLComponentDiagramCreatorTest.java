@@ -294,8 +294,8 @@ class PlantUMLComponentDiagramCreatorTest {
 		assertTrue(plantUML.contains("component [myContext1]" + System.lineSeparator()));
 		assertTrue(plantUML.contains("component [myContext2]" + System.lineSeparator()));
 		assertTrue(plantUML.contains("interface \"Customer-Supplier (SOAP)\" as myContext2_to_myContext1" + System.lineSeparator()));
-		assertTrue(plantUML.contains("[myContext1] --> myContext2_to_myContext1 : OPEN_HOST_SERVICE" + System.lineSeparator()));
-		assertTrue(plantUML.contains("myContext2_to_myContext1 <.. [myContext2] : use via ANTICORRUPTION_LAYER" + System.lineSeparator()));
+		assertTrue(plantUML.contains("[myContext1] --> myContext2_to_myContext1 : Supplier of OPEN_HOST_SERVICE" + System.lineSeparator()));
+		assertTrue(plantUML.contains("myContext2_to_myContext1 <.. [myContext2] : Customer via ANTICORRUPTION_LAYER" + System.lineSeparator()));
 	}
 
 	@Test
@@ -314,7 +314,7 @@ class PlantUMLComponentDiagramCreatorTest {
 		relationship.setImplementationTechnology("SOAP");
 		relationship.setName("MyCS");
 		relationship.getUpstreamRoles().add(UpstreamRole.OPEN_HOST_SERVICE);
-		relationship.getDownstreamRoles().add(DownstreamRole.ANTICORRUPTION_LAYER);
+		relationship.getDownstreamRoles().add(DownstreamRole.CONFORMIST);
 		contextMap.getRelationships().add(relationship);
 
 		// when
@@ -324,8 +324,8 @@ class PlantUMLComponentDiagramCreatorTest {
 		assertTrue(plantUML.contains("component [myContext1]" + System.lineSeparator()));
 		assertTrue(plantUML.contains("component [myContext2]" + System.lineSeparator()));
 		assertTrue(plantUML.contains("interface \"MyCS (SOAP)\" as MyCS" + System.lineSeparator()));
-		assertTrue(plantUML.contains("[myContext1] --> MyCS : OPEN_HOST_SERVICE" + System.lineSeparator()));
-		assertTrue(plantUML.contains("MyCS <.. [myContext2] : use via ANTICORRUPTION_LAYER" + System.lineSeparator()));
+		assertTrue(plantUML.contains("[myContext1] --> MyCS : Supplier of OPEN_HOST_SERVICE" + System.lineSeparator()));
+		assertTrue(plantUML.contains("MyCS <.. [myContext2] : Customer as CONFORMIST" + System.lineSeparator()));
 	}
 
 	@Test
@@ -351,7 +351,7 @@ class PlantUMLComponentDiagramCreatorTest {
 		assertTrue(plantUML.contains("component [myContext2]" + System.lineSeparator()));
 		assertTrue(plantUML.contains("interface \"Upstream-Downstream\" as myContext2_to_myContext1" + System.lineSeparator()));
 		assertTrue(plantUML.contains("[myContext1] --> myContext2_to_myContext1" + System.lineSeparator()));
-		assertTrue(plantUML.contains("myContext2_to_myContext1 <.. [myContext2] : use " + System.lineSeparator()));
+		assertTrue(plantUML.contains("myContext2_to_myContext1 <.. [myContext2] : consume" + System.lineSeparator()));
 	}
 
 	@Test
@@ -389,6 +389,43 @@ class PlantUMLComponentDiagramCreatorTest {
 		assertTrue(plantUML1.contains("[myContext1] --> myContext2_to_myContext1" + System.lineSeparator()));
 		assertTrue(plantUML1.contains("myContext2_to_myContext1 <.. [myContext2] : use Aggregate ExposedAggregate1 " + System.lineSeparator()));
 		assertTrue(plantUML2.contains("myContext2_to_myContext1 <.. [myContext2] : use Aggregates ExposedAggregate1, ExposedAggregate2 " + System.lineSeparator()));
+	}
+	
+	@Test
+	public void canAddExposedAggregatesToCustomerSupplierUsageLabel() {
+		// given
+		ContextMap contextMap = ContextMappingDSLFactory.eINSTANCE.createContextMap();
+		BoundedContext boundedContext1 = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
+		boundedContext1.setName("myContext1");
+		Aggregate aggregate1 = ContextMappingDSLFactory.eINSTANCE.createAggregate();
+		aggregate1.setName("ExposedAggregate1");
+		Aggregate aggregate2 = ContextMappingDSLFactory.eINSTANCE.createAggregate();
+		aggregate2.setName("ExposedAggregate2");
+		boundedContext1.getAggregates().add(aggregate1);
+		boundedContext1.getAggregates().add(aggregate2);
+		BoundedContext boundedContext2 = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
+		boundedContext2.setName("myContext2");
+		contextMap.getBoundedContexts().add(boundedContext1);
+		contextMap.getBoundedContexts().add(boundedContext2);
+		UpstreamDownstreamRelationship relationship = ContextMappingDSLFactory.eINSTANCE.createCustomerSupplierRelationship();
+		relationship.setUpstream(boundedContext1);
+		relationship.setDownstream(boundedContext2);
+		relationship.getUpstreamExposedAggregates().add(aggregate1);
+		contextMap.getRelationships().add(relationship);
+
+		// when
+		String plantUML1 = this.creator.createDiagram(contextMap);
+		relationship.getUpstreamExposedAggregates().add(aggregate2);
+		this.creator = new PlantUMLComponentDiagramCreator();
+		String plantUML2 = this.creator.createDiagram(contextMap);
+
+		// then
+		assertTrue(plantUML1.contains("component [myContext1]" + System.lineSeparator()));
+		assertTrue(plantUML1.contains("component [myContext2]" + System.lineSeparator()));
+		assertTrue(plantUML1.contains("interface \"Customer-Supplier\" as myContext2_to_myContext1" + System.lineSeparator()));
+		assertTrue(plantUML1.contains("[myContext1] --> myContext2_to_myContext1 : Supplier" + System.lineSeparator()));
+		assertTrue(plantUML1.contains("myContext2_to_myContext1 <.. [myContext2] : Customer of Aggregate ExposedAggregate1 " + System.lineSeparator()));
+		assertTrue(plantUML2.contains("myContext2_to_myContext1 <.. [myContext2] : Customer of Aggregates ExposedAggregate1, ExposedAggregate2 " + System.lineSeparator()));
 	}
 
 	@Test
