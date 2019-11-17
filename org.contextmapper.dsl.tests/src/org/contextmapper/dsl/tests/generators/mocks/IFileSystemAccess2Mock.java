@@ -42,6 +42,7 @@ public class IFileSystemAccess2Mock implements IFileSystemAccess2 {
 	@Override
 	public void generateFile(String fileName, CharSequence contents) {
 		this.countingMapTextGenerators.put(fileName, contents);
+		this.fileMap.put(fileName, contents.toString());
 	}
 
 	@Override

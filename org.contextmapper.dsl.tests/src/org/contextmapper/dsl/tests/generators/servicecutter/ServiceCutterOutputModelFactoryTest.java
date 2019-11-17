@@ -24,9 +24,10 @@ import java.nio.file.Paths;
 
 import org.contextmapper.dsl.generator.servicecutter.output.factory.ServiceCutterOutputModelFactory;
 import org.contextmapper.dsl.generator.servicecutter.output.factory.ServiceCutterOutputModelReadingException;
-import org.contextmapper.dsl.generator.servicecutter.output.model.ServiceCutterOutputModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import ch.hsr.servicecutter.api.model.SolverResult;
 
 class ServiceCutterOutputModelFactoryTest {
 
@@ -45,13 +46,13 @@ class ServiceCutterOutputModelFactoryTest {
 		ServiceCutterOutputModelFactory factory = new ServiceCutterOutputModelFactory();
 
 		// when
-		ServiceCutterOutputModel model = factory.createFromJsonFile(integTestFile);
+		SolverResult solverResult = factory.createFromJsonFile(integTestFile);
 
 		// then
-		assertNotNull(model);
-		assertEquals(3, model.getServices().size());
-		assertEquals(2, model.getRelations().size());
-		assertEquals(2, model.getUseCaseResponsibility().size());
+		assertNotNull(solverResult);
+		assertEquals(3, solverResult.getServices().size());
+		assertEquals(2, solverResult.getRelations().size());
+		assertEquals(2, solverResult.getUseCaseResponsibility().size());
 	}
 
 	@Test

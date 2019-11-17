@@ -27,8 +27,6 @@ import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.generator.servicecutter.input.converter.ContextMappingModelToServiceCutterERDConverter;
-import org.contextmapper.dsl.generator.servicecutter.input.model.EntityRelationshipDiagram;
-import org.contextmapper.dsl.generator.servicecutter.input.model.Relationtype;
 import org.contextmapper.tactic.dsl.tacticdsl.Attribute;
 import org.contextmapper.tactic.dsl.tacticdsl.DomainEvent;
 import org.contextmapper.tactic.dsl.tacticdsl.Entity;
@@ -38,6 +36,9 @@ import org.contextmapper.tactic.dsl.tacticdsl.ValueObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import ch.hsr.servicecutter.api.model.EntityRelation.RelationType;
+import ch.hsr.servicecutter.api.model.EntityRelationDiagram;
 
 class ContextMappingModelToServiceCutterERDConverterTest {
 
@@ -57,7 +58,7 @@ class ContextMappingModelToServiceCutterERDConverterTest {
 		contextMap.getBoundedContexts().add(boundedContext);
 
 		// when
-		EntityRelationshipDiagram scDiagram = this.converter.convert("TestModel", contextMap);
+		EntityRelationDiagram scDiagram = this.converter.convert("TestModel", contextMap);
 
 		// then
 		assertEquals("TestModel", scDiagram.getName());
@@ -78,7 +79,7 @@ class ContextMappingModelToServiceCutterERDConverterTest {
 		boundedContext.getAggregates().add(aggregate);
 
 		// when
-		EntityRelationshipDiagram scDiagram = this.converter.convert("TestModel", contextMap);
+		EntityRelationDiagram scDiagram = this.converter.convert("TestModel", contextMap);
 
 		// then
 		assertEquals(2, scDiagram.getEntities().size());
@@ -107,12 +108,12 @@ class ContextMappingModelToServiceCutterERDConverterTest {
 		entity.getAttributes().add(attribute);
 
 		// when
-		EntityRelationshipDiagram scDiagram = this.converter.convert("TestModel", contextMap);
+		EntityRelationDiagram scDiagram = this.converter.convert("TestModel", contextMap);
 
 		// then
 		List<String> entityNames = scDiagram.getEntities().stream().map(e -> e.getName()).collect(Collectors.toList());
 		assertTrue(entityNames.contains("TestEntity"));
-		org.contextmapper.dsl.generator.servicecutter.input.model.Entity scEntity = getEntity(scDiagram.getEntities(), "TestEntity");
+		ch.hsr.servicecutter.api.model.Entity scEntity = getEntity(scDiagram.getEntities(), "TestEntity");
 		assertEquals(1, scEntity.getNanoentities().size());
 		assertEquals("attribute1", scEntity.getNanoentities().get(0));
 	}
@@ -135,12 +136,12 @@ class ContextMappingModelToServiceCutterERDConverterTest {
 		domainEvent.getAttributes().add(attribute);
 
 		// when
-		EntityRelationshipDiagram scDiagram = this.converter.convert("TestModel", contextMap);
+		EntityRelationDiagram scDiagram = this.converter.convert("TestModel", contextMap);
 
 		// then
 		List<String> entityNames = scDiagram.getEntities().stream().map(e -> e.getName()).collect(Collectors.toList());
 		assertTrue(entityNames.contains("TestDomainEvent"));
-		org.contextmapper.dsl.generator.servicecutter.input.model.Entity scEntity = getEntity(scDiagram.getEntities(), "TestDomainEvent");
+		ch.hsr.servicecutter.api.model.Entity scEntity = getEntity(scDiagram.getEntities(), "TestDomainEvent");
 		assertEquals(1, scEntity.getNanoentities().size());
 		assertEquals("attribute1", scEntity.getNanoentities().get(0));
 	}
@@ -163,12 +164,12 @@ class ContextMappingModelToServiceCutterERDConverterTest {
 		valueObject.getAttributes().add(attribute);
 
 		// when
-		EntityRelationshipDiagram scDiagram = this.converter.convert("TestModel", contextMap);
+		EntityRelationDiagram scDiagram = this.converter.convert("TestModel", contextMap);
 
 		// then
 		List<String> entityNames = scDiagram.getEntities().stream().map(e -> e.getName()).collect(Collectors.toList());
 		assertTrue(entityNames.contains("TestValueObject"));
-		org.contextmapper.dsl.generator.servicecutter.input.model.Entity scEntity = getEntity(scDiagram.getEntities(), "TestValueObject");
+		ch.hsr.servicecutter.api.model.Entity scEntity = getEntity(scDiagram.getEntities(), "TestValueObject");
 		assertEquals(1, scEntity.getNanoentities().size());
 		assertEquals("attribute1", scEntity.getNanoentities().get(0));
 	}
@@ -199,16 +200,16 @@ class ContextMappingModelToServiceCutterERDConverterTest {
 		EcoreUtil.resolveAll(contextMap);
 
 		// when
-		EntityRelationshipDiagram scDiagram = this.converter.convert("TestModel", contextMap);
+		EntityRelationDiagram scDiagram = this.converter.convert("TestModel", contextMap);
 
 		// then
-		List<String> relationStrings = scDiagram.getRelations().stream().map(r -> r.getOrigin() + "_" + r.getDestination() + "_" + r.getType()).collect(Collectors.toList());
-		assertTrue(relationStrings.contains("Entity1_Entity2_" + Relationtype.AGGREGATION));
+		List<String> relationStrings = scDiagram.getRelations().stream().map(r -> r.getOrigin().getName() + "_" + r.getDestination().getName() + "_" + r.getType()).collect(Collectors.toList());
+		assertTrue(relationStrings.contains("Entity1_Entity2_" + RelationType.AGGREGATION));
 	}
 
-	private org.contextmapper.dsl.generator.servicecutter.input.model.Entity getEntity(List<org.contextmapper.dsl.generator.servicecutter.input.model.Entity> entities,
+	private ch.hsr.servicecutter.api.model.Entity getEntity(List<ch.hsr.servicecutter.api.model.Entity> entities,
 			String name) {
-		for (org.contextmapper.dsl.generator.servicecutter.input.model.Entity entity : entities) {
+		for (ch.hsr.servicecutter.api.model.Entity entity : entities) {
 			if (name.equals(entity.getName()))
 				return entity;
 		}

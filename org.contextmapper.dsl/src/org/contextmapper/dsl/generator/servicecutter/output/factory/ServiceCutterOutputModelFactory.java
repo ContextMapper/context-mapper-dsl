@@ -17,9 +17,9 @@ package org.contextmapper.dsl.generator.servicecutter.output.factory;
 
 import java.io.File;
 
-import org.contextmapper.dsl.generator.servicecutter.output.model.ServiceCutterOutputModel;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import ch.hsr.servicecutter.api.model.SolverResult;
 
 public class ServiceCutterOutputModelFactory {
 
@@ -29,11 +29,11 @@ public class ServiceCutterOutputModelFactory {
 		this.objectMapper = new ObjectMapper();
 	}
 
-	public ServiceCutterOutputModel createFromJsonFile(File jsonFile) {
+	public SolverResult createFromJsonFile(File jsonFile) {
 		try {
-			return objectMapper.readValue(jsonFile, ServiceCutterOutputModel.class);
+			return objectMapper.readValue(jsonFile, SolverResult.class);
 		} catch (Exception e) {
-			throw new ServiceCutterOutputModelReadingException(jsonFile.getAbsolutePath());
+			throw new ServiceCutterOutputModelReadingException(jsonFile.getAbsolutePath(), e);
 		}
 	}
 

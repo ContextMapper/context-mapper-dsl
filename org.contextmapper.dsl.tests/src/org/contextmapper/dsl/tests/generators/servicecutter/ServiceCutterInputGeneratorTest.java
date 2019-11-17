@@ -16,24 +16,37 @@
 package org.contextmapper.dsl.tests.generators.servicecutter;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.List;
+
+import org.apache.commons.io.FileUtils;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.generator.ServiceCutterInputGenerator;
+import org.contextmapper.dsl.tests.AbstractCMLInputFileTest;
 import org.contextmapper.dsl.tests.generators.mocks.ContextMappingModelResourceMock;
 import org.contextmapper.dsl.tests.generators.mocks.IFileSystemAccess2Mock;
 import org.contextmapper.dsl.tests.generators.mocks.IGeneratorContextMock;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.xtext.xbase.lib.IteratorExtensions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class ServiceCutterInputGeneratorTest {
+import com.google.common.collect.Iterators;
+
+class ServiceCutterInputGeneratorTest extends AbstractCMLInputFileTest {
 
 	private ServiceCutterInputGenerator generator;
 
 	@BeforeEach
 	public void prepare() {
+		super.prepare();
 		this.generator = new ServiceCutterInputGenerator();
 	}
 
@@ -53,6 +66,29 @@ class ServiceCutterInputGeneratorTest {
 
 		// then
 		assertTrue(filesystem.getGeneratedFilesSet().contains("testmodel.json"));
+	}
+	
+	@Test
+	void canSerializeCorrectly() throws IOException {
+		// given
+		Resource input = getResourceCopyOfTestCML("DDD_Sample_Input.cml");
+		List<ContextMappingModel> models = IteratorExtensions.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(input.getAllContents(), ContextMappingModel.class));
+		ContextMappingModel model = models.get(0);
+		
+		// when
+		IFileSystemAccess2Mock filesystem = new IFileSystemAccess2Mock();
+		this.generator.doGenerate(new ContextMappingModelResourceMock(model, "DDD_Sample", "cml"), filesystem, new IGeneratorContextMock());
+		
+		// then
+		String generatedJSON = filesystem.readTextFile("DDD_Sample.json").toString();
+		File expectedResultFile = new File(Paths.get("").toAbsolutePath().toString(), "/integ-test-files/servicecutter/DDD_Sample_Expected_JSON_Input.json");
+		String expectedResult = FileUtils.readFileToString(expectedResultFile);
+		assertEquals(expectedResult, generatedJSON);
+	}
+	
+	@Override
+	protected String getTestFileDirectory() {
+		return "/integ-test-files/servicecutter/";
 	}
 
 }

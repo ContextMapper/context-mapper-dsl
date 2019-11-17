@@ -24,9 +24,10 @@ import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.generator.servicecutter.output.converter.ServiceCutterOutputToContextMappingModelConverter;
 import org.contextmapper.dsl.generator.servicecutter.output.factory.ServiceCutterOutputModelFactory;
-import org.contextmapper.dsl.generator.servicecutter.output.model.ServiceCutterOutputModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import ch.hsr.servicecutter.api.model.SolverResult;
 
 class ServiceCutterOutputToContextMappingModelConverterTest {
 
@@ -42,10 +43,10 @@ class ServiceCutterOutputToContextMappingModelConverterTest {
 	@Test
 	void testWithSampleFile() {
 		// given
-		ServiceCutterOutputModel model = new ServiceCutterOutputModelFactory().createFromJsonFile(sampleFile);
+		SolverResult solverResult = new ServiceCutterOutputModelFactory().createFromJsonFile(sampleFile);
 
 		// when
-		ContextMappingModel contextMappingModel = this.converter.convert(model);
+		ContextMappingModel contextMappingModel = this.converter.convert(solverResult);
 		ContextMap contextMap = contextMappingModel.getMap();
 		
 		// then

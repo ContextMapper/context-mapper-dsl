@@ -20,9 +20,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.File;
 import java.nio.file.Paths;
 
+import org.contextmapper.dsl.ContextMappingDSLStandaloneSetup;
 import org.contextmapper.dsl.generator.CMLByServiceCutterOutputGenerator;
 import org.contextmapper.dsl.generator.servicecutter.output.factory.ServiceCutterOutputModelFactory;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,11 +44,12 @@ class CMLByServiceCutterOutputGeneratorTest {
 	@Test
 	void testGenerator() {
 		// given
+		ContextMappingDSLStandaloneSetup.doSetup();
 		URI uri = URI.createFileURI(this.integTestFile.getAbsolutePath());
 
 		// when
 		ServiceCutterOutputModelFactory modelFactory = new ServiceCutterOutputModelFactory();
-		this.generator.doGenerate(uri, modelFactory.createFromJsonFile(this.integTestFile));
+		this.generator.doGenerate(new ResourceSetImpl(), uri, modelFactory.createFromJsonFile(this.integTestFile));
 
 		// then
 		File resultFile = new File(Paths.get("").toAbsolutePath().toString(), resultFilePath);
