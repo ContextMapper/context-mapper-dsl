@@ -15,6 +15,9 @@
  */
 package org.contextmapper.dsl.ui.handler;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.contextmapper.dsl.generator.exception.GeneratorInputException;
 import org.contextmapper.dsl.ui.internal.DslActivator;
 import org.eclipse.core.commands.AbstractHandler;
@@ -27,6 +30,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.common.util.URI;
@@ -81,7 +85,7 @@ public abstract class AbstractGenerationHandler extends AbstractHandler implemen
 				String message = e.getMessage() != null && !"".equals(e.getMessage()) ? e.getMessage() : e.getClass().getName() + " occurred in " + this.getClass().getName();
 				Status status = new Status(IStatus.ERROR, DslActivator.PLUGIN_ID, message, e);
 				StatusManager.getManager().handle(status);
-				ErrorDialog.openError(HandlerUtil.getActiveShell(event), "Error", "Exception occured during execution of command!", status);
+				ErrorDialog.openError(HandlerUtil.getActiveShell(event), "Error", "Exception occured during execution of command!", createMultiStatus(e.getLocalizedMessage(), e));
 			}
 		}
 		return null;
@@ -96,7 +100,7 @@ public abstract class AbstractGenerationHandler extends AbstractHandler implemen
 			String message = e.getMessage() != null && !"".equals(e.getMessage()) ? e.getMessage() : e.getClass().getName() + " occurred in " + this.getClass().getName();
 			Status status = new Status(IStatus.ERROR, DslActivator.PLUGIN_ID, message, e);
 			StatusManager.getManager().handle(status);
-			ErrorDialog.openError(HandlerUtil.getActiveShell(event), "Error", "Exception occured during execution of command!", status);
+			ErrorDialog.openError(HandlerUtil.getActiveShell(event), "Error", "Exception occured during execution of command!", createMultiStatus(e.getLocalizedMessage(), e));
 		}
 	}
 
@@ -106,10 +110,7 @@ public abstract class AbstractGenerationHandler extends AbstractHandler implemen
 			IStructuredSelection structuredSelection = (IStructuredSelection) selection;
 			Object firstElement = structuredSelection.getFirstElement();
 			if (firstElement instanceof IFile) {
-				IFile file = (IFile) firstElement;
-				URI uri = URI.createPlatformResourceURI(file.getFullPath().toString(), true);
-				ResourceSet rs = resourceSetProvider.get(file.getProject());
-				return rs.getResource(uri, true);
+				return getResource((IFile) firstElement);
 			}
 		} else if (selection instanceof TextSelection && EditorUtils.getActiveXtextEditor() != null) {
 			XtextEditor xEditor = EditorUtils.getActiveXtextEditor();
@@ -123,7 +124,7 @@ public abstract class AbstractGenerationHandler extends AbstractHandler implemen
 		return null;
 	}
 
-	private IFile getSelectedFile(ExecutionEvent event) {
+	protected IFile getSelectedFile(ExecutionEvent event) {
 		ISelection selection = HandlerUtil.getCurrentSelection(event);
 		if (selection instanceof IStructuredSelection) {
 			IStructuredSelection structuredSelection = (IStructuredSelection) selection;
@@ -141,6 +142,12 @@ public abstract class AbstractGenerationHandler extends AbstractHandler implemen
 		return null;
 	}
 
+	protected Resource getResource(IFile file) {
+		URI uri = URI.createPlatformResourceURI(file.getFullPath().toString(), true);
+		ResourceSet rs = resourceSetProvider.get(file.getProject());
+		return rs.getResource(uri, true);
+	}
+
 	protected IPath getGenFolder(IFile file) {
 		IFolder srcGenFolder = file.getProject().getFolder("src-gen");
 		if (!srcGenFolder.exists()) {
@@ -151,6 +158,16 @@ public abstract class AbstractGenerationHandler extends AbstractHandler implemen
 			}
 		}
 		return srcGenFolder.getProjectRelativePath();
+	}
+
+	protected MultiStatus createMultiStatus(String msg, Throwable t) {
+		List<Status> childStatuses = new ArrayList<>();
+		StackTraceElement[] stackTraces = Thread.currentThread().getStackTrace();
+		for (StackTraceElement stackTrace : stackTraces) {
+			Status status = new Status(IStatus.ERROR, "org.contextmapper.dsl.ui", stackTrace.toString());
+			childStatuses.add(status);
+		}
+		return new MultiStatus("org.contextmapper.dsl.ui", IStatus.ERROR, childStatuses.toArray(new Status[] {}), t.toString(), t);
 	}
 
 	@Override

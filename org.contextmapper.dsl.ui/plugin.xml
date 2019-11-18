@@ -808,7 +808,7 @@
 		<command name="Generate ContextMap by ServiceCutter Output" id="org.contextmapper.dsl.ui.handler.CMLByServiceCutterOutputGenerationCommand"></command>
 		<command name="ServiceCutter: Initialize User Representations File (Exemplary)" id="org.contextmapper.dsl.ui.handler.ServiceCutterUserRepresentationsExampleGenerationCommand"></command>
 		<command name="MDSL: Generate Service Contracts" id="org.contextmapper.dsl.ui.handler.MDSLGenerationCommand"></command>
-		<command name="Service Cutter: Generate New Service Cut" id="org.contextmapper.dsl.ui.handler.NewServiceCutContextMapGenerationCommand"></command>
+		<command name="ServiceCutter: Generate New Service Cut" id="org.contextmapper.dsl.ui.handler.NewServiceCutContextMapGenerationCommand"></command>
 	</extension>
 	<extension point="org.eclipse.ui.menus">
 		<menuContribution locationURI="popup:org.eclipse.ui.popup.any?after=additions">

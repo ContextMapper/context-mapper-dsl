@@ -33,6 +33,7 @@ import ch.hsr.servicecutter.api.ServiceCutterContext;
 import ch.hsr.servicecutter.api.ServiceCutterContextBuilder;
 import ch.hsr.servicecutter.api.model.EntityRelationDiagram;
 import ch.hsr.servicecutter.api.model.SolverResult;
+import ch.hsr.servicecutter.api.model.UserRepresentationContainer;
 import ch.hsr.servicecutter.solver.SolverConfiguration;
 
 /**
@@ -45,6 +46,7 @@ import ch.hsr.servicecutter.solver.SolverConfiguration;
 public class NewServiceCutContextMapGenerator extends AbstractContextMapGenerator {
 
 	private SolverConfiguration solverConfiguration;
+	private UserRepresentationContainer userRepresentationContainer;
 
 	/**
 	 * Sets a custom {@link SolverConfiguration}. If not called, a default
@@ -58,6 +60,17 @@ public class NewServiceCutContextMapGenerator extends AbstractContextMapGenerato
 		return this;
 	}
 
+	/**
+	 * Sets the user representations for the Service Cutter solver.
+	 * 
+	 * @param userRepresentationContainer the container with the user
+	 *                                    representations
+	 */
+	public NewServiceCutContextMapGenerator setUserRepresentationContainer(UserRepresentationContainer userRepresentationContainer) {
+		this.userRepresentationContainer = userRepresentationContainer;
+		return this;
+	}
+
 	@Override
 	protected void generateFromContextMap(ContextMap contextMap, IFileSystemAccess2 fsa, URI inputFileURI) {
 		String fileBaseName = inputFileURI.trimFileExtension().lastSegment();
@@ -67,6 +80,8 @@ public class NewServiceCutContextMapGenerator extends AbstractContextMapGenerato
 		ServiceCutterContextBuilder contextBuilder = new ServiceCutterContextBuilder(erdInput);
 		if (solverConfiguration != null)
 			contextBuilder.withCustomSolverConfiguration(solverConfiguration);
+		if (userRepresentationContainer != null)
+			contextBuilder.withUserRepresentations(userRepresentationContainer);
 		ServiceCutterContext context = contextBuilder.build();
 
 		// calculate new service cut
