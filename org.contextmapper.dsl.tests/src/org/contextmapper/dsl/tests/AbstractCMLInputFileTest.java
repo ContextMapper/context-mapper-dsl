@@ -27,6 +27,7 @@ import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
 import org.contextmapper.dsl.ContextMappingDSLStandaloneSetup;
+import org.contextmapper.servicecutter.dsl.ServiceCutterConfigurationDSLStandaloneSetup;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -48,6 +49,14 @@ public abstract class AbstractCMLInputFileTest {
 		File testFile = new File(testDir, testCMLName);
 		FileUtils.copyFile(getTestFile(testCMLName), testFile);
 		new ContextMappingDSLStandaloneSetup().createInjectorAndDoEMFRegistration();
+		ResourceSet rs = new ResourceSetImpl();
+		return rs.getResource(URI.createFileURI(testFile.getAbsolutePath()), true);
+	}
+	
+	protected Resource getResourceCopyOfTestSCL(String testSCLName) throws IOException {
+		File testFile = new File(testDir, testSCLName);
+		FileUtils.copyFile(getTestFile(testSCLName), testFile);
+		new ServiceCutterConfigurationDSLStandaloneSetup().createInjectorAndDoEMFRegistration();
 		ResourceSet rs = new ResourceSetImpl();
 		return rs.getResource(URI.createFileURI(testFile.getAbsolutePath()), true);
 	}

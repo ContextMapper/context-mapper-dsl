@@ -17,29 +17,23 @@ package org.contextmapper.dsl.tests.generators.servicecutter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.io.File;
-import java.nio.file.Paths;
+import java.io.IOException;
 
 import org.contextmapper.dsl.generator.servicecutter.input.converter.SCLToUserRepresentationsConverter;
-import org.contextmapper.servicecutter.dsl.ServiceCutterConfigurationDSLStandaloneSetup;
+import org.contextmapper.dsl.tests.AbstractCMLInputFileTest;
 import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.ServiceCutterUserRepresentationsModel;
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.junit.jupiter.api.Test;
 
 import ch.hsr.servicecutter.api.model.UserRepresentationContainer;
 
-public class SCLToUserRepresentationsConverterTest {
-
-	private static final String TEST_SCL_FILE = "/integ-test-files/servicecutter/DDD_Sample_ServiceCutter-User-Representations.scl";
+public class SCLToUserRepresentationsConverterTest extends AbstractCMLInputFileTest {
 
 	@Test
-	void canConvertSCLFileToServiceCutterUserRepresentations() {
+	void canConvertSCLFileToServiceCutterUserRepresentations() throws IOException {
 		// given
-		ServiceCutterConfigurationDSLStandaloneSetup.doSetup();
-		Resource resource = new ResourceSetImpl().getResource(URI.createURI(new File(Paths.get("").toAbsolutePath().toString(), TEST_SCL_FILE).getAbsolutePath()), true);
-		ServiceCutterUserRepresentationsModel sclModel = (ServiceCutterUserRepresentationsModel) resource.getContents().get(0);
+		Resource sclInput = getResourceCopyOfTestSCL("DDD_Sample_ServiceCutter-User-Representations.scl");
+		ServiceCutterUserRepresentationsModel sclModel = (ServiceCutterUserRepresentationsModel) sclInput.getContents().get(0);
 		
 		// when
 		UserRepresentationContainer container = new SCLToUserRepresentationsConverter().convert(sclModel);
@@ -58,6 +52,11 @@ public class SCLToUserRepresentationsConverterTest {
 		assertEquals(0, container.getSeparatedSecurityZones().size());
 		assertEquals(4, container.getSharedOwnerGroups().size());
 		assertEquals(9, container.getUseCases().size());
+	}
+	
+	@Override
+	protected String getTestFileDirectory() {
+		return "/integ-test-files/servicecutter/";
 	}
 
 }
