@@ -687,6 +687,8 @@
 				<separator
 	         		name="org.contextmapper.dsl.ui.separator2" visible="true">
 				</separator>
+				<command defaultHandler="org.contextmapper.dsl.ui.handler.NewServiceCutContextMapGenerationHandler" commandId="org.contextmapper.dsl.ui.handler.NewServiceCutContextMapGenerationCommand" style="push">
+				</command>
 				<command defaultHandler="org.contextmapper.dsl.ui.handler.ServiceCutterGenerationHandler" commandId="org.contextmapper.dsl.ui.handler.ServiceCutterGenerationCommand" style="push">
 				</command>
 				<command defaultHandler="org.contextmapper.dsl.ui.handler.ServiceCutterUserRepresentationsExampleGenerationHandler" commandId="org.contextmapper.dsl.ui.handler.ServiceCutterUserRepresentationsExampleGenerationCommand" style="push">
@@ -787,14 +789,14 @@
 		<handler class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.contextmapper.dsl.ui.handler.CMLByServiceCutterOutputGenerationHandler"
 			commandId="org.contextmapper.dsl.ui.handler.CMLByServiceCutterOutputGenerationCommand">
 		</handler>
-		<handler class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.contextmapper.dsl.ui.handler.ServiceCutterResultGenerationHandler"
-			commandId="org.contextmapper.dsl.ui.handler.ServiceCutterResultGenerationCommand">
-		</handler>
 		<handler class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.contextmapper.dsl.ui.handler.ServiceCutterUserRepresentationsExampleGenerationHandler"
 			commandId="org.contextmapper.dsl.ui.handler.ServiceCutterUserRepresentationsExampleGenerationCommand">
 		</handler>
 		<handler class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.contextmapper.dsl.ui.handler.MDSLGenerationHandler"
 			commandId="org.contextmapper.dsl.ui.handler.MDSLGenerationCommand">
+		</handler>
+		<handler class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.contextmapper.dsl.ui.handler.NewServiceCutContextMapGenerationHandler"
+			commandId="org.contextmapper.dsl.ui.handler.NewServiceCutContextMapGenerationCommand">
 		</handler>
 	</extension>
 	<extension point="org.eclipse.ui.commands">
@@ -804,9 +806,9 @@
 		<command name="Save Model as XMI" id="org.contextmapper.dsl.ui.handler.XMIGenerationCommand"></command>
 		<command name="ServiceCutter: Generate User Representations File (JSON)" id="org.contextmapper.servicecutter.dsl.ui.handler.ServiceCutterUserRepresentationsJSONGenerationCommand"></command>
 		<command name="Generate ContextMap by ServiceCutter Output" id="org.contextmapper.dsl.ui.handler.CMLByServiceCutterOutputGenerationCommand"></command>
-		<command name="Generate Service Cutter Result by ERD JSON File (Beta)" id="org.contextmapper.dsl.ui.handler.ServiceCutterResultGenerationCommand"></command>
 		<command name="ServiceCutter: Initialize User Representations File (Exemplary)" id="org.contextmapper.dsl.ui.handler.ServiceCutterUserRepresentationsExampleGenerationCommand"></command>
 		<command name="MDSL: Generate Service Contracts" id="org.contextmapper.dsl.ui.handler.MDSLGenerationCommand"></command>
+		<command name="Service Cutter: Generate New Service Cut" id="org.contextmapper.dsl.ui.handler.NewServiceCutContextMapGenerationCommand"></command>
 	</extension>
 	<extension point="org.eclipse.ui.menus">
 		<menuContribution locationURI="popup:org.eclipse.ui.popup.any?after=additions">
@@ -844,6 +846,15 @@
 				<separator
 	         		name="org.contextmapper.dsl.ui.separator2" visible="true">
 				</separator>
+				<command defaultHandler="org.contextmapper.dsl.ui.handler.NewServiceCutContextMapGenerationHandler" commandId="org.contextmapper.dsl.ui.handler.NewServiceCutContextMapGenerationCommand" style="push">
+					<visibleWhen checkEnabled="false">
+						<iterate>
+							<adapt type="org.eclipse.core.resources.IResource">
+								<test property="org.eclipse.core.resources.name" value="*.cml"/>
+							</adapt>
+						</iterate>
+					</visibleWhen>
+				</command>
 				<command defaultHandler="org.contextmapper.dsl.ui.handler.ServiceCutterGenerationHandler" commandId="org.contextmapper.dsl.ui.handler.ServiceCutterGenerationCommand" style="push">
 					<visibleWhen checkEnabled="false">
 						<iterate>
@@ -863,15 +874,6 @@
 					</visibleWhen>
 				</command>
 				<command defaultHandler="org.contextmapper.dsl.ui.handler.CMLByServiceCutterOutputGenerationHandler" commandId="org.contextmapper.dsl.ui.handler.CMLByServiceCutterOutputGenerationCommand" style="push">
-					<visibleWhen checkEnabled="false">
-						<iterate>
-							<adapt type="org.eclipse.core.resources.IResource">
-								<test property="org.eclipse.core.resources.name" value="*.json"/>
-							</adapt>
-						</iterate>
-					</visibleWhen>
-				</command>
-				<command defaultHandler="org.contextmapper.dsl.ui.handler.ServiceCutterResultGenerationHandler" commandId="org.contextmapper.dsl.ui.handler.ServiceCutterResultGenerationCommand" style="push">
 					<visibleWhen checkEnabled="false">
 						<iterate>
 							<adapt type="org.eclipse.core.resources.IResource">

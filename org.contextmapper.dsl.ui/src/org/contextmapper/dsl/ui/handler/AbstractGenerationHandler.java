@@ -23,9 +23,9 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
@@ -72,19 +72,9 @@ public abstract class AbstractGenerationHandler extends AbstractHandler implemen
 		IFile file = getSelectedFile(event);
 		if (resource != null && file != null) {
 			try {
-				IProject project = file.getProject();
-				IFolder srcGenFolder = project.getFolder("src-gen");
-				if (!srcGenFolder.exists()) {
-					try {
-						srcGenFolder.create(true, true, new NullProgressMonitor());
-					} catch (CoreException e) {
-						return null;
-					}
-				}
-
 				final EclipseResourceFileSystemAccess2 fsa = fileAccessProvider.get();
-				fsa.setProject(project);
-				fsa.setOutputPath("src-gen");
+				fsa.setProject(file.getProject());
+				fsa.setOutputPath(getGenFolder(file).toString());
 				fsa.setMonitor(new NullProgressMonitor());
 				runGeneration(resource, event, fsa);
 			} catch (Exception e) {
@@ -149,6 +139,18 @@ public abstract class AbstractGenerationHandler extends AbstractHandler implemen
 			}
 		}
 		return null;
+	}
+
+	protected IPath getGenFolder(IFile file) {
+		IFolder srcGenFolder = file.getProject().getFolder("src-gen");
+		if (!srcGenFolder.exists()) {
+			try {
+				srcGenFolder.create(true, true, new NullProgressMonitor());
+			} catch (CoreException e) {
+				return null;
+			}
+		}
+		return srcGenFolder.getProjectRelativePath();
 	}
 
 	@Override

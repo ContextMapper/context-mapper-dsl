@@ -74,6 +74,7 @@ public class IFileSystemAccess2Mock implements IFileSystemAccess2 {
 	@Override
 	public void generateFile(String fileName, InputStream content) throws RuntimeIOException {
 		this.countingMapBinaryGenerators.put(fileName, content);
+		this.fileMap.put(fileName, "");
 	}
 
 	@Override
