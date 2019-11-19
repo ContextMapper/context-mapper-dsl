@@ -36,7 +36,10 @@ import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.ui.handler.wizard.pages.components.SCLFileChooser;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -78,12 +81,25 @@ public class GenerateNewServiceCutContextMapWizardPage extends ContextMapperWiza
 
 	@Override
 	public void createControl(Composite parent) {
-		container = new Composite(parent, SWT.NONE);
+		Composite mainComposite = new Composite(parent, SWT.NONE);
+		mainComposite.setLayout(GridLayoutFactory.fillDefaults().create());
+		
+		ScrolledComposite scrollComp = new ScrolledComposite(mainComposite, SWT.V_SCROLL);
+		scrollComp.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).hint(SWT.DEFAULT, 500).create());
+		scrollComp.setLayout(new GridLayout(1,false));
+		scrollComp.setExpandHorizontal(true);
+		scrollComp.setExpandVertical(true);
+		scrollComp.setAlwaysShowScrollBars(true);
+		
+		container = new Composite(scrollComp, SWT.NONE);
+		scrollComp.setContent(container);
+		
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 2;
 		layout.verticalSpacing = 10;
 		container.setLayout(layout);
-
+		container.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		
 		// SCL file selection
 		new Label(container, SWT.NONE).setText("User representations:");
 		sclFileChooser = new SCLFileChooser(container);
@@ -156,7 +172,11 @@ public class GenerateNewServiceCutContextMapWizardPage extends ContextMapperWiza
 		createCriteriaPrioritySelectionCombo(constraintsCriteriaGroup, PREDEFINED_SERVICE);
 		createCriteriaPrioritySelectionCombo(constraintsCriteriaGroup, SECURITY_CONSTRAINT);
 
-		setControl(container);
+		container.setLayout(new GridLayout(1,false));
+		container.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		scrollComp.setMinSize(container.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		
+		setControl(mainComposite);
 		setPageComplete(false);
 	}
 
