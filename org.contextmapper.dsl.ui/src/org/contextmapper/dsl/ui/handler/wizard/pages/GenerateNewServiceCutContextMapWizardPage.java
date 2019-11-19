@@ -117,11 +117,11 @@ public class GenerateNewServiceCutContextMapWizardPage extends ContextMapperWiza
 		cohesivenessCriteriaGroup.setLayoutData(cohesivenessCriteriaGroupGridData);
 		cohesivenessCriteriaGroup.setText("Cohesiveness Criteria");
 
-		createCriteriaPrioritySelectionCombo(cohesivenessCriteriaGroup, SolverPriority.M, IDENTITY_LIFECYCLE);
-		createCriteriaPrioritySelectionCombo(cohesivenessCriteriaGroup, SolverPriority.M, SEMANTIC_PROXIMITY);
-		createCriteriaPrioritySelectionCombo(cohesivenessCriteriaGroup, SolverPriority.M, SHARED_OWNER);
-		createCriteriaPrioritySelectionCombo(cohesivenessCriteriaGroup, SolverPriority.M, LATENCY);
-		createCriteriaPrioritySelectionCombo(cohesivenessCriteriaGroup, SolverPriority.M, SECURITY_CONTEXUALITY);
+		createCriteriaPrioritySelectionCombo(cohesivenessCriteriaGroup, IDENTITY_LIFECYCLE);
+		createCriteriaPrioritySelectionCombo(cohesivenessCriteriaGroup, SEMANTIC_PROXIMITY);
+		createCriteriaPrioritySelectionCombo(cohesivenessCriteriaGroup, SHARED_OWNER);
+		createCriteriaPrioritySelectionCombo(cohesivenessCriteriaGroup, LATENCY);
+		createCriteriaPrioritySelectionCombo(cohesivenessCriteriaGroup, SECURITY_CONTEXUALITY);
 
 		// Compatibility Criteria
 		Group compatibilityCriteriaGroup = new Group(container, SWT.NONE);
@@ -134,12 +134,12 @@ public class GenerateNewServiceCutContextMapWizardPage extends ContextMapperWiza
 		compatibilityCriteriaGroup.setLayoutData(compatibilityCriteriaGroupGridData);
 		compatibilityCriteriaGroup.setText("Compatibility Criteria");
 
-		createCriteriaPrioritySelectionCombo(compatibilityCriteriaGroup, SolverPriority.XS, STRUCTURAL_VOLATILITY);
-		createCriteriaPrioritySelectionCombo(compatibilityCriteriaGroup, SolverPriority.XS, CONSISTENCY);
-		createCriteriaPrioritySelectionCombo(compatibilityCriteriaGroup, SolverPriority.XS, AVAILABILITY);
-		createCriteriaPrioritySelectionCombo(compatibilityCriteriaGroup, SolverPriority.XS, CONTENT_VOLATILITY);
-		createCriteriaPrioritySelectionCombo(compatibilityCriteriaGroup, SolverPriority.XS, STORAGE_SIMILARITY);
-		createCriteriaPrioritySelectionCombo(compatibilityCriteriaGroup, SolverPriority.XS, SECURITY_CRITICALITY);
+		createCriteriaPrioritySelectionCombo(compatibilityCriteriaGroup, STRUCTURAL_VOLATILITY);
+		createCriteriaPrioritySelectionCombo(compatibilityCriteriaGroup, CONSISTENCY);
+		createCriteriaPrioritySelectionCombo(compatibilityCriteriaGroup, AVAILABILITY);
+		createCriteriaPrioritySelectionCombo(compatibilityCriteriaGroup, CONTENT_VOLATILITY);
+		createCriteriaPrioritySelectionCombo(compatibilityCriteriaGroup, STORAGE_SIMILARITY);
+		createCriteriaPrioritySelectionCombo(compatibilityCriteriaGroup, SECURITY_CRITICALITY);
 
 		// Constraints Criteria
 		Group constraintsCriteriaGroup = new Group(container, SWT.NONE);
@@ -152,21 +152,21 @@ public class GenerateNewServiceCutContextMapWizardPage extends ContextMapperWiza
 		constraintsCriteriaGroup.setLayoutData(constraintsCriteriaGroupGridData);
 		constraintsCriteriaGroup.setText("Constraints Criteria");
 
-		createCriteriaPrioritySelectionCombo(constraintsCriteriaGroup, SolverPriority.M, CONSISTENCY_CONSTRAINT);
-		createCriteriaPrioritySelectionCombo(constraintsCriteriaGroup, SolverPriority.M, PREDEFINED_SERVICE);
-		createCriteriaPrioritySelectionCombo(constraintsCriteriaGroup, SolverPriority.M, SECURITY_CONSTRAINT);
+		createCriteriaPrioritySelectionCombo(constraintsCriteriaGroup, CONSISTENCY_CONSTRAINT);
+		createCriteriaPrioritySelectionCombo(constraintsCriteriaGroup, PREDEFINED_SERVICE);
+		createCriteriaPrioritySelectionCombo(constraintsCriteriaGroup, SECURITY_CONSTRAINT);
 
 		setControl(container);
 		setPageComplete(false);
 	}
 
-	private void createCriteriaPrioritySelectionCombo(Composite parent, SolverPriority defaultValue, String criterionId) {
+	private void createCriteriaPrioritySelectionCombo(Composite parent, String criterionId) {
 		new Label(parent, SWT.NONE).setText(criterionId + ": ");
 		Combo priorityCombo = new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
 		priorityCombo.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		List<String> selectionStrings = Arrays.asList(SolverPriority.values()).stream().map(l -> l.name()).collect(Collectors.toList());
 		priorityCombo.setItems(selectionStrings.toArray(new String[selectionStrings.size()]));
-		priorityCombo.select(selectionStrings.indexOf(defaultValue.name()));
+		priorityCombo.select(selectionStrings.indexOf(solverConfiguration.getPriorities().get(criterionId).name()));
 		priorityCombo.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
