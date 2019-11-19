@@ -59,7 +59,7 @@
 		</location>
 		<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 			<repository location="https://dl.bintray.com/contextmapper/service-cutter-library-releases/"/>
-			<unit id="org.contextmapper.servicecutter.feature.feature.group" version="1.1.2"/>
+			<unit id="org.contextmapper.servicecutter.feature.feature.group" version="1.1.3"/>
 		</location>
 	</locations>
 </target>
