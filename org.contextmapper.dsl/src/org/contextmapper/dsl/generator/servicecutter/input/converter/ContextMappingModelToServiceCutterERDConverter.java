@@ -15,6 +15,7 @@
  */
 package org.contextmapper.dsl.generator.servicecutter.input.converter;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,10 +23,6 @@ import java.util.Map;
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
-import org.contextmapper.dsl.generator.servicecutter.input.model.Entity;
-import org.contextmapper.dsl.generator.servicecutter.input.model.EntityRelation;
-import org.contextmapper.dsl.generator.servicecutter.input.model.EntityRelationshipDiagram;
-import org.contextmapper.dsl.generator.servicecutter.input.model.Relationtype;
 import org.contextmapper.tactic.dsl.tacticdsl.Attribute;
 import org.contextmapper.tactic.dsl.tacticdsl.DomainEvent;
 import org.contextmapper.tactic.dsl.tacticdsl.DomainObject;
@@ -33,6 +30,11 @@ import org.contextmapper.tactic.dsl.tacticdsl.Reference;
 import org.contextmapper.tactic.dsl.tacticdsl.SimpleDomainObject;
 import org.contextmapper.tactic.dsl.tacticdsl.ValueObject;
 import org.eclipse.xtext.EcoreUtil2;
+
+import ch.hsr.servicecutter.api.model.Entity;
+import ch.hsr.servicecutter.api.model.EntityRelation;
+import ch.hsr.servicecutter.api.model.EntityRelation.RelationType;
+import ch.hsr.servicecutter.api.model.EntityRelationDiagram;
 
 /**
  * Converter to convert context map to ServiceCutter ERD model.
@@ -42,12 +44,15 @@ import org.eclipse.xtext.EcoreUtil2;
  */
 public class ContextMappingModelToServiceCutterERDConverter {
 
-	private EntityRelationshipDiagram target;
+	private EntityRelationDiagram target;
 	private Map<String, DomainObject> dslEntityLookupTable = new HashMap<>();
 	private Map<String, Entity> entityLookupTable = new HashMap<>();
 
-	public EntityRelationshipDiagram convert(String modelName, ContextMap contextMap) {
-		this.target = new EntityRelationshipDiagram(modelName);
+	public EntityRelationDiagram convert(String modelName, ContextMap contextMap) {
+		this.target = new EntityRelationDiagram();
+		this.target.setName(modelName);
+		this.target.setEntities(new ArrayList<>());
+		this.target.setRelations(new ArrayList<>());
 		initializeEntityLookupTable(contextMap);
 		for (BoundedContext bc : contextMap.getBoundedContexts()) {
 			mapBoundedContext(bc);
@@ -60,10 +65,13 @@ public class ContextMappingModelToServiceCutterERDConverter {
 		List<Aggregate> allAggregates = EcoreUtil2.<Aggregate>eAllOfType(bc, Aggregate.class);
 		for (Aggregate aggregate : allAggregates) {
 			// boundedContextEntity.addNanoEntity(aggregate.getName() + "_Aggregate");
-			target.addEntityRelation(new EntityRelation(boundedContextEntity.getName(),
-					mapAggregate(aggregate).getName(), Relationtype.AGGREGATION));
+			EntityRelation entityRelation = new EntityRelation();
+			entityRelation.setOrigin(boundedContextEntity);
+			entityRelation.setDestination(mapAggregate(aggregate));
+			entityRelation.setType(RelationType.AGGREGATION);
+			target.getRelations().add(entityRelation);
 		}
-		target.addEntity(boundedContextEntity);
+		target.getEntities().add(boundedContextEntity);
 	}
 
 	private Entity mapAggregate(Aggregate aggregate) {
@@ -72,11 +80,14 @@ public class ContextMappingModelToServiceCutterERDConverter {
 			// aggregrateEntity.addNanoEntity(simpleDomainObject.getName());
 			if (isDomainObjectUsed4ServiceCutter(simpleDomainObject)) {
 				DomainObject dslDomainObject = (DomainObject) simpleDomainObject;
-				target.addEntityRelation(new EntityRelation(aggregrateEntity.getName(),
-						mapDomainObject(dslDomainObject).getName(), Relationtype.AGGREGATION));
+				EntityRelation relation = new EntityRelation();
+				relation.setOrigin(aggregrateEntity);
+				relation.setDestination(mapDomainObject(dslDomainObject));
+				relation.setType(RelationType.AGGREGATION);
+				target.getRelations().add(relation);
 			}
 		}
-		target.addEntity(aggregrateEntity);
+		target.getEntities().add(aggregrateEntity);
 		return aggregrateEntity;
 	}
 
@@ -87,29 +98,34 @@ public class ContextMappingModelToServiceCutterERDConverter {
 
 	private Entity mapDomainObject(DomainObject dslDomainObject) {
 		Entity entityEntity = getEntity(dslDomainObject.getName());
+		entityEntity.setNanoentities(new ArrayList<>());
 		for (Attribute attribute : dslDomainObject.getAttributes()) {
-			entityEntity.addNanoEntity(attribute.getName());
+			entityEntity.getNanoentities().add(attribute.getName());
 		}
 		for (Reference reference : dslDomainObject.getReferences()) {
 			// Handle enums as attributes for now
 			if (reference.getDomainObjectType() instanceof org.contextmapper.tactic.dsl.tacticdsl.Enum) {
-				entityEntity.addNanoEntity(reference.getName());
+				entityEntity.getNanoentities().add(reference.getName());
 			} else {
 				String refType = reference.getDomainObjectType().getName();
 				// entityEntity.addNanoEntity(reference.getName());
 				if (this.dslEntityLookupTable.containsKey(refType)) {
-					target.addEntityRelation(new EntityRelation(entityEntity.getName(), getEntity(refType).getName(),
-							Relationtype.AGGREGATION));
+					EntityRelation relation = new EntityRelation();
+					relation.setOrigin(entityEntity);
+					relation.setDestination(getEntity(refType));
+					relation.setType(RelationType.AGGREGATION);
+					target.getRelations().add(relation);
 				}
 			}
 		}
-		target.addEntity(entityEntity);
+		target.getEntities().add(entityEntity);
 		return entityEntity;
 	}
 
 	private void initializeEntityLookupTable(ContextMap contextMap) {
-		org.contextmapper.tactic.dsl.tacticdsl.Entity m = EcoreUtil2.getContainerOfType(contextMap, org.contextmapper.tactic.dsl.tacticdsl.Entity.class);
-		
+		org.contextmapper.tactic.dsl.tacticdsl.Entity m = EcoreUtil2.getContainerOfType(contextMap,
+				org.contextmapper.tactic.dsl.tacticdsl.Entity.class);
+
 		// use Entities
 		addDomainObjectToLookupTable(EcoreUtil2.<org.contextmapper.tactic.dsl.tacticdsl.Entity>getAllContentsOfType(
 				EcoreUtil2.getRootContainer(contextMap), org.contextmapper.tactic.dsl.tacticdsl.Entity.class));

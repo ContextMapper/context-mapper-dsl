@@ -22,6 +22,7 @@ import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.generator.exception.NoContextMapDefinedException;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.xtext.generator.AbstractGenerator;
 import org.eclipse.xtext.generator.IFileSystemAccess2;
@@ -33,11 +34,13 @@ import com.google.common.collect.Iterators;
 public abstract class AbstractContextMapGenerator extends AbstractGenerator {
 
 	protected ContextMappingModel contextMappingModel;
+	protected ResourceSet resourceSet;
 
 	@Override
 	public void doGenerate(Resource resource, IFileSystemAccess2 fsa, IGeneratorContext context) {
-		List<ContextMappingModel> contextMappingModels = IteratorExtensions
-				.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(resource.getAllContents(), ContextMappingModel.class));
+		this.resourceSet = resource.getResourceSet();
+		List<ContextMappingModel> contextMappingModels = IteratorExtensions.<ContextMappingModel>toList(
+				Iterators.<ContextMappingModel>filter(resource.getAllContents(), ContextMappingModel.class));
 
 		if (contextMappingModels.isEmpty())
 			throw new NoContextMapDefinedException();

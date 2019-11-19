@@ -17,16 +17,14 @@ package org.contextmapper.dsl.generator;
 
 import java.io.IOException;
 
-import org.contextmapper.dsl.ContextMappingDSLStandaloneSetup;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.generator.servicecutter.output.converter.ServiceCutterOutputToContextMappingModelConverter;
-import org.contextmapper.dsl.generator.servicecutter.output.model.ServiceCutterOutputModel;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.eclipse.xtext.resource.XtextResourceSet;
 
-import com.google.inject.Injector;
+import ch.hsr.servicecutter.api.model.SolverResult;
 
 public class CMLByServiceCutterOutputGenerator {
 
@@ -36,11 +34,8 @@ public class CMLByServiceCutterOutputGenerator {
 		this.converter = new ServiceCutterOutputToContextMappingModelConverter();
 	}
 
-	public void doGenerate(final URI jsonFileURI, final ServiceCutterOutputModel serviceCutterOutputModel) {
-		Injector injector = new ContextMappingDSLStandaloneSetup().createInjectorAndDoEMFRegistration();
-		XtextResourceSet resourceSet = injector.getInstance(XtextResourceSet.class);
-
-		ContextMappingModel model = this.converter.convert(serviceCutterOutputModel);
+	public void doGenerate(final ResourceSet resourceSet, final URI jsonFileURI, final SolverResult serviceCutterResult) {
+		ContextMappingModel model = this.converter.convert(serviceCutterResult);
 
 		EcoreUtil.resolveAll(model);
 		Resource cmlResource = resourceSet.createResource(jsonFileURI.trimFileExtension().appendFileExtension("cml"));

@@ -1,0 +1,255 @@
+{
+  "name" : "DDD_Sample",
+  "entities" : [ {
+    "name" : "Cargo",
+    "nanoentities" : [ "trackingId" ]
+  }, {
+    "name" : "Delivery",
+    "nanoentities" : [ "misdirected", "eta", "isUnloadedAtDestination", "calculatedAt", "transportStatus", "routingStatus" ]
+  }, {
+    "name" : "HandlingActivity",
+    "nanoentities" : [ "handlingEventType" ]
+  }, {
+    "name" : "Itinerary",
+    "nanoentities" : [ "itineraryNumber" ]
+  }, {
+    "name" : "Leg",
+    "nanoentities" : [ "loadTime", "unloadTime" ]
+  }, {
+    "name" : "RouteSpecification",
+    "nanoentities" : [ "arrivalDeadline" ]
+  }, {
+    "name" : "CargoItineraryLegDeliveryRouteSpecification_Aggregate",
+    "nanoentities" : [ ]
+  }, {
+    "name" : "HandlingEvent",
+    "nanoentities" : [ "handlingType", "completionTime", "registrationTime" ]
+  }, {
+    "name" : "HandlingHistory",
+    "nanoentities" : [ ]
+  }, {
+    "name" : "Handling_Aggregate",
+    "nanoentities" : [ ]
+  }, {
+    "name" : "CargoBookingContext_BC",
+    "nanoentities" : [ ]
+  }, {
+    "name" : "Voyage",
+    "nanoentities" : [ ]
+  }, {
+    "name" : "CarrierMovement",
+    "nanoentities" : [ "departureTime", "arrivalTime" ]
+  }, {
+    "name" : "Schedule",
+    "nanoentities" : [ ]
+  }, {
+    "name" : "VoyageNumber",
+    "nanoentities" : [ "number" ]
+  }, {
+    "name" : "Voyage_Aggregate",
+    "nanoentities" : [ ]
+  }, {
+    "name" : "VoyagePlanningContext_BC",
+    "nanoentities" : [ ]
+  }, {
+    "name" : "Location",
+    "nanoentities" : [ "portcode", "name" ]
+  }, {
+    "name" : "UnLocode",
+    "nanoentities" : [ "unLocode" ]
+  }, {
+    "name" : "LocationShared",
+    "nanoentities" : [ "portCode" ]
+  }, {
+    "name" : "Location_Aggregate",
+    "nanoentities" : [ ]
+  }, {
+    "name" : "LocationContext_BC",
+    "nanoentities" : [ ]
+  } ],
+  "relations" : [ {
+    "origin" : "Cargo",
+    "destination" : "LocationShared",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "Cargo",
+    "destination" : "RouteSpecification",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "Cargo",
+    "destination" : "Itinerary",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "Cargo",
+    "destination" : "Delivery",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "CargoItineraryLegDeliveryRouteSpecification_Aggregate",
+    "destination" : "Cargo",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "Delivery",
+    "destination" : "LocationShared",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "Delivery",
+    "destination" : "Voyage",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "Delivery",
+    "destination" : "HandlingActivity",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "Delivery",
+    "destination" : "HandlingEvent",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "CargoItineraryLegDeliveryRouteSpecification_Aggregate",
+    "destination" : "Delivery",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "HandlingActivity",
+    "destination" : "LocationShared",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "HandlingActivity",
+    "destination" : "Voyage",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "CargoItineraryLegDeliveryRouteSpecification_Aggregate",
+    "destination" : "HandlingActivity",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "Itinerary",
+    "destination" : "Leg",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "CargoItineraryLegDeliveryRouteSpecification_Aggregate",
+    "destination" : "Itinerary",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "Leg",
+    "destination" : "Voyage",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "Leg",
+    "destination" : "LocationShared",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "Leg",
+    "destination" : "LocationShared",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "CargoItineraryLegDeliveryRouteSpecification_Aggregate",
+    "destination" : "Leg",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "RouteSpecification",
+    "destination" : "LocationShared",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "RouteSpecification",
+    "destination" : "LocationShared",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "CargoItineraryLegDeliveryRouteSpecification_Aggregate",
+    "destination" : "RouteSpecification",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "CargoBookingContext_BC",
+    "destination" : "CargoItineraryLegDeliveryRouteSpecification_Aggregate",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "HandlingEvent",
+    "destination" : "Voyage",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "HandlingEvent",
+    "destination" : "LocationShared",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "HandlingEvent",
+    "destination" : "Cargo",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "Handling_Aggregate",
+    "destination" : "HandlingEvent",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "HandlingHistory",
+    "destination" : "HandlingEvent",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "Handling_Aggregate",
+    "destination" : "HandlingHistory",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "CargoBookingContext_BC",
+    "destination" : "Handling_Aggregate",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "Voyage",
+    "destination" : "VoyageNumber",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "Voyage",
+    "destination" : "Schedule",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "Voyage_Aggregate",
+    "destination" : "Voyage",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "CarrierMovement",
+    "destination" : "LocationShared",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "CarrierMovement",
+    "destination" : "LocationShared",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "Voyage_Aggregate",
+    "destination" : "CarrierMovement",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "Schedule",
+    "destination" : "CarrierMovement",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "Voyage_Aggregate",
+    "destination" : "Schedule",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "Voyage_Aggregate",
+    "destination" : "VoyageNumber",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "VoyagePlanningContext_BC",
+    "destination" : "Voyage_Aggregate",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "Location",
+    "destination" : "UnLocode",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "Location_Aggregate",
+    "destination" : "Location",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "Location_Aggregate",
+    "destination" : "UnLocode",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "LocationShared",
+    "destination" : "Location",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "Location_Aggregate",
+    "destination" : "LocationShared",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "LocationContext_BC",
+    "destination" : "Location_Aggregate",
+    "type" : "AGGREGATION"
+  } ]
+}

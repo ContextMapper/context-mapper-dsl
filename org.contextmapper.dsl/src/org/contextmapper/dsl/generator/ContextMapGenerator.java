@@ -56,25 +56,23 @@ public class ContextMapGenerator extends AbstractContextMapGenerator {
 	protected void generateFromContextMap(org.contextmapper.dsl.contextMappingDSL.ContextMap cmlContextMap, IFileSystemAccess2 fsa, URI inputFileURI) {
 		String fileName = inputFileURI.trimFileExtension().lastSegment();
 
-		try {
-			ContextMap contextMap = new ContextMapModelConverter().convert(cmlContextMap);
-			org.contextmapper.contextmap.generator.ContextMapGenerator generator = createContextMapGenerator();
-			generator.setLabelSpacingFactor(labelSpacingFactor);
-			if (this.width > 0 && useWidth)
-				generator.setWidth(width);
-			else if (this.height > 0)
-				generator.setHeight(height);
-			for (ContextMapFormat format : formats) {
-				ByteArrayOutputStream outputstream = new ByteArrayOutputStream();
+		ContextMap contextMap = new ContextMapModelConverter().convert(cmlContextMap);
+		org.contextmapper.contextmap.generator.ContextMapGenerator generator = createContextMapGenerator();
+		generator.setLabelSpacingFactor(labelSpacingFactor);
+		if (this.width > 0 && useWidth)
+			generator.setWidth(width);
+		else if (this.height > 0)
+			generator.setHeight(height);
+		for (ContextMapFormat format : formats) {
+			try (ByteArrayOutputStream outputstream = new ByteArrayOutputStream()) {
 				generator.generateContextMapGraphic(contextMap, getGraphvizLibFormat(format), outputstream);
-				InputStream inputstream = new ByteArrayInputStream(outputstream.toByteArray());
-				fsa.generateFile(fileName + "_ContextMap." + format.getFileExtension(), inputstream);
+				try (InputStream inputstream = new ByteArrayInputStream(outputstream.toByteArray())) {
+					fsa.generateFile(fileName + "_ContextMap." + format.getFileExtension(), inputstream);
+				}
+			} catch (IOException e) {
+				throw new RuntimeException("An error occured while generating the Context Map!", e);
 			}
-
-		} catch (IOException e) {
-			throw new RuntimeException("An error occured while generating the Context Map!", e);
 		}
-
 	}
 
 	/**

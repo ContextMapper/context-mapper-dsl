@@ -27,14 +27,15 @@ import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.Relationship;
 import org.contextmapper.dsl.contextMappingDSL.SharedKernel;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
-import org.contextmapper.dsl.generator.servicecutter.output.model.Service;
-import org.contextmapper.dsl.generator.servicecutter.output.model.ServiceCutterOutputModel;
-import org.contextmapper.dsl.generator.servicecutter.output.model.ServiceRelation;
 import org.contextmapper.tactic.dsl.tacticdsl.Attribute;
 import org.contextmapper.tactic.dsl.tacticdsl.Entity;
 import org.contextmapper.tactic.dsl.tacticdsl.TacticdslFactory;
 
 import com.google.common.collect.Lists;
+
+import ch.hsr.servicecutter.api.model.Service;
+import ch.hsr.servicecutter.api.model.ServiceRelation;
+import ch.hsr.servicecutter.api.model.SolverResult;
 
 /**
  * Converter to convert ServiceCutter Output to CML Model.
@@ -49,26 +50,24 @@ public class ServiceCutterOutputToContextMappingModelConverter {
 	private Map<String, Entity> entityMap;
 	private Map<String, BoundedContext> boundedContextMap;
 
-	public ServiceCutterOutputToContextMappingModelConverter() {
+	public ContextMappingModel convert(SolverResult serviceCutterResult) {
 		this.entityMap = new HashMap<>();
 		this.boundedContextMap = new HashMap<>();
-	}
-
-	public ContextMappingModel convert(ServiceCutterOutputModel serviceCutterModel) {
-		initializeEntityMap(serviceCutterModel);
+		initializeEntityMap(serviceCutterResult);
 		ContextMappingModel contextMappingModel = contextMappingFactory.createContextMappingModel();
 		ContextMap contextMap = contextMappingFactory.createContextMap();
-		for (Service service : serviceCutterModel.getServices()) {
+		for (Service service : serviceCutterResult.getServices()) {
 			BoundedContext bc = createOrGetBoundedContext(service.getName());
-			contextMappingModel.getBoundedContexts().add(bc);
-			contextMap.getBoundedContexts().add(bc);
 
 			Aggregate aggregate = contextMappingFactory.createAggregate();
 			aggregate.setName("Aggregate_" + service.getId());
 			aggregate.getDomainObjects().addAll(convertEntities(service.getId(), service.getNanoentities()));
 			bc.getAggregates().add(aggregate);
+
+			contextMappingModel.getBoundedContexts().add(bc);
+			contextMap.getBoundedContexts().add(bc);
 		}
-		contextMap.getRelationships().addAll(convertRelationships(serviceCutterModel.getRelations()));
+		contextMap.getRelationships().addAll(convertRelationships(serviceCutterResult.getRelations()));
 		contextMappingModel.setMap(contextMap);
 		return contextMappingModel;
 	}
@@ -91,15 +90,15 @@ public class ServiceCutterOutputToContextMappingModelConverter {
 	private List<Relationship> convertRelationships(List<ServiceRelation> serviceRelations) {
 		List<Relationship> relationships = Lists.newArrayList();
 		for (ServiceRelation relation : serviceRelations) {
-			if ("OUTGOING".equals(relation.getDirection())) {
+			if ("OUTGOING".equals(relation.getDirection().toString())) {
 				relationships
 						.add(createUpstreamDownstreamRelationship(createOrGetBoundedContext(relation.getServiceA()),
 								createOrGetBoundedContext(relation.getServiceB())));
-			} else if ("INCOMING".equals(relation.getDirection())) {
+			} else if ("INCOMING".equals(relation.getDirection().toString())) {
 				relationships
 						.add(createUpstreamDownstreamRelationship(createOrGetBoundedContext(relation.getServiceB()),
 								createOrGetBoundedContext(relation.getServiceA())));
-			} else if ("BIDIRECTIONAL".equals(relation.getDirection())) {
+			} else if ("BIDIRECTIONAL".equals(relation.getDirection().toString())) {
 				relationships.add(createSharedKernelRelationship(createOrGetBoundedContext(relation.getServiceA()),
 						createOrGetBoundedContext(relation.getServiceB())));
 			}
@@ -122,8 +121,8 @@ public class ServiceCutterOutputToContextMappingModelConverter {
 		return sharedKernel;
 	}
 
-	private void initializeEntityMap(ServiceCutterOutputModel serviceCutterModel) {
-		for (Service service : serviceCutterModel.getServices()) {
+	private void initializeEntityMap(SolverResult serviceCutterResult) {
+		for (Service service : serviceCutterResult.getServices()) {
 			initializeEntityMap(service);
 		}
 	}

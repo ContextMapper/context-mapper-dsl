@@ -18,7 +18,6 @@ package org.contextmapper.dsl.ui.handler;
 import org.contextmapper.dsl.generator.CMLByServiceCutterOutputGenerator;
 import org.contextmapper.dsl.generator.servicecutter.output.factory.ServiceCutterOutputModelFactory;
 import org.contextmapper.dsl.generator.servicecutter.output.factory.ServiceCutterOutputModelReadingException;
-import org.contextmapper.dsl.generator.servicecutter.output.model.ServiceCutterOutputModel;
 import org.contextmapper.dsl.ui.internal.DslActivator;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -45,6 +44,8 @@ import org.eclipse.xtext.ui.resource.IResourceSetProvider;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+
+import ch.hsr.servicecutter.api.model.SolverResult;
 
 public class CMLByServiceCutterOutputGenerationHandler extends AbstractHandler implements IHandler {
 
@@ -79,8 +80,8 @@ public class CMLByServiceCutterOutputGenerationHandler extends AbstractHandler i
 
 				try {
 					ServiceCutterOutputModelFactory modelFactory = new ServiceCutterOutputModelFactory();
-					ServiceCutterOutputModel model = modelFactory.createFromJsonFile(jsonFile.getFullPath().toFile());
-					generator.doGenerate(uri, model);
+					SolverResult solverResult = modelFactory.createFromJsonFile(jsonFile.getFullPath().toFile());
+					generator.doGenerate(resourceSetProvider.get(project), uri, solverResult);
 				} catch (ServiceCutterOutputModelReadingException e) {
 					MessageDialog.openError(HandlerUtil.getActiveShell(event), "Input Error", e.getMessage());
 				} catch (Exception e) {

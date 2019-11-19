@@ -37,6 +37,7 @@ public class ContextMappingModelResourceMock implements Resource {
 	private String filename;
 	private String extension;
 	private URI uri;
+	private ResourceSet resourceSet;
 
 	public ContextMappingModelResourceMock(ContextMappingModel contextMappingModel, String filename, String extension) {
 		this.contextMappingModel = contextMappingModel;
@@ -70,7 +71,12 @@ public class ContextMappingModelResourceMock implements Resource {
 
 	@Override
 	public ResourceSet getResourceSet() {
-		return null;
+		return resourceSet;
+	}
+	
+	public ContextMappingModelResourceMock setResourceSet(ResourceSet resourceSet) {
+		this.resourceSet = resourceSet;
+		return this;
 	}
 
 	@Override
