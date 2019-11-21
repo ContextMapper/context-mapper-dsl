@@ -172,11 +172,11 @@ Parameter :
   parameterType=ComplexType name=ID;
 
 ComplexType :
-  (collectionType=CollectionType"<"(("@"domainObjectType=[SimpleDomainObject]) | (type=Type) | (type=Type"<""@"domainObjectType=[SimpleDomainObject]">"))">") |
-  (mapCollectionType=MAP_COLLECTION_TYPE"<"(mapKeyType=Type | "@"mapKeyDomainObjectType=[SimpleDomainObject])","(("@"domainObjectType=[SimpleDomainObject]) | (type=Type) | (type=Type"<""@"domainObjectType=[SimpleDomainObject]">"))">") |
-  ("@"domainObjectType=[SimpleDomainObject]) |
   (type=Type) |
-  (type=Type"<""@"domainObjectType=[SimpleDomainObject]">");
+  (type=Type"<""@"domainObjectType=[SimpleDomainObject]">") |
+  ("@"domainObjectType=[SimpleDomainObject]) |
+  (collectionType=CollectionType"<"(("@"domainObjectType=[SimpleDomainObject]) | (type=Type) | (type=Type"<""@"domainObjectType=[SimpleDomainObject]">"))">") |
+  (mapCollectionType=MAP_COLLECTION_TYPE"<"(mapKeyType=Type | "@"mapKeyDomainObjectType=[SimpleDomainObject])","(("@"domainObjectType=[SimpleDomainObject]) | (type=Type) | (type=Type"<""@"domainObjectType=[SimpleDomainObject]">"))">");
 
 SimpleDomainObject :
   BasicType | Enum | DomainObject | DataTransferObject | Trait;
@@ -212,6 +212,7 @@ Entity :
   "}")?;
 
 ValueObject :
+  (comment=SL_COMMENT)?
   (doc=STRING)?
   (abstract?="abstract")? "ValueObject" name=ID ("extends" (("@"extends=[ValueObject]) | (extendsName=JavaIdentifier)))?
   ("with" ("@")?traits+=[Trait])* "{"
@@ -239,6 +240,7 @@ ValueObject :
   "}";
 
 DomainEvent :
+  (comment=SL_COMMENT)?
   (doc=STRING)?
   (abstract?="abstract")? "DomainEvent" name=ID ("extends" (("@"extends=[DomainEvent]) | (extendsName=JavaIdentifier)))?
   ("with" ("@")?traits+=[Trait])* "{"
@@ -266,6 +268,7 @@ DomainEvent :
   "}";
 
 CommandEvent :
+  (comment=SL_COMMENT)?
   (doc=STRING)?
   (abstract?="abstract")? "CommandEvent" name=ID ("extends" (("@"extends=[CommandEvent]) | (extendsName=JavaIdentifier)))?
   ("with" ("@")?traits+=[Trait])* "{"
@@ -305,7 +308,7 @@ Trait :
 
 DomainObjectOperation :
   (doc=STRING)?
-  ('*'|"def") (abstract?="abstract")? (visibility=Visibility)?
+  ("def"|'*') (abstract?="abstract")? (visibility=Visibility)?
   (returnType=ComplexType|"void")?
   name=ID ("(" (parameters+=Parameter)?("," parameters+=Parameter)* ")")?
     (
@@ -315,6 +318,7 @@ DomainObjectOperation :
     ";";
 
 DataTransferObject :
+  (comment=SL_COMMENT)?
   (doc=STRING)?
   (abstract?="abstract")? "DataTransferObject" name=ID ("extends" (("@"extends=[DataTransferObject]) | (extendsName=JavaIdentifier)))? "{"
     ("package" "=" package=JavaIdentifier )?

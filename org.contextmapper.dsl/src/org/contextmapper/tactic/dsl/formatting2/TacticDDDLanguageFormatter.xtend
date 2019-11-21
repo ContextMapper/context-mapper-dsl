@@ -18,10 +18,15 @@ package org.contextmapper.tactic.dsl.formatting2
 import com.google.inject.Inject
 import org.contextmapper.tactic.dsl.services.TacticDDDLanguageGrammarAccess
 import org.contextmapper.tactic.dsl.tacticdsl.Attribute
+import org.contextmapper.tactic.dsl.tacticdsl.CommandEvent
+import org.contextmapper.tactic.dsl.tacticdsl.ComplexType
 import org.contextmapper.tactic.dsl.tacticdsl.DomainEvent
+import org.contextmapper.tactic.dsl.tacticdsl.DomainObjectOperation
 import org.contextmapper.tactic.dsl.tacticdsl.Entity
+import org.contextmapper.tactic.dsl.tacticdsl.Parameter
 import org.contextmapper.tactic.dsl.tacticdsl.Reference
 import org.contextmapper.tactic.dsl.tacticdsl.TacticDDDModel
+import org.contextmapper.tactic.dsl.tacticdsl.ValueObject
 import org.eclipse.xtext.formatting2.AbstractFormatter2
 import org.eclipse.xtext.formatting2.IFormattableDocument
 
@@ -53,6 +58,9 @@ class TacticDDDLanguageFormatter extends AbstractFormatter2 {
 		for (reference : entity.references) {
 			reference.format
 		}
+		for (operation : entity.operations) {
+			operation.format
+		}
 	}
 	
 	def dispatch void format(DomainEvent domainEvent, extension IFormattableDocument document) {
@@ -62,6 +70,8 @@ class TacticDDDLanguageFormatter extends AbstractFormatter2 {
 		)[indent]
 
 		domainEvent.regionFor.keyword('aggregateRoot').append[newLine]
+		domainEvent.prepend[newLines = 1]
+		domainEvent.regionFor.keyword('DomainEvent').prepend[newLine]
 
 		for (attribute : domainEvent.attributes) {
 			attribute.format
@@ -69,6 +79,52 @@ class TacticDDDLanguageFormatter extends AbstractFormatter2 {
 		}
 		for (reference : domainEvent.references) {
 			reference.format
+		}
+		for (operation : domainEvent.operations) {
+			operation.format
+		}
+	}
+	
+	def dispatch void format(CommandEvent commandEvent, extension IFormattableDocument document) {
+		interior(
+			commandEvent.regionFor.keyword('{').append[newLine],
+			commandEvent.regionFor.keyword('}').prepend[newLine].append[newLine]
+		)[indent]
+
+		commandEvent.regionFor.keyword('aggregateRoot').append[newLine]
+		commandEvent.prepend[newLines = 1]
+		commandEvent.regionFor.keyword('CommandEvent').prepend[newLine]
+
+		for (attribute : commandEvent.attributes) {
+			attribute.format
+			attribute.append[newLine]
+		}
+		for (reference : commandEvent.references) {
+			reference.format
+		}
+		for (operation : commandEvent.operations) {
+			operation.format
+		}
+	}
+	
+	def dispatch void format(ValueObject valueObject, extension IFormattableDocument document) {
+		interior(
+			valueObject.regionFor.keyword('{').append[newLine],
+			valueObject.regionFor.keyword('}').prepend[newLine].append[newLine]
+		)[indent]
+
+		valueObject.prepend[newLines = 1]
+		valueObject.regionFor.keyword('ValueObject').prepend[newLine]
+
+		for (attribute : valueObject.attributes) {
+			attribute.format
+			attribute.append[newLine]
+		}
+		for (reference : valueObject.references) {
+			reference.format
+		}
+		for (operation : valueObject.operations) {
+			operation.format
 		}
 	}
 
@@ -82,4 +138,36 @@ class TacticDDDLanguageFormatter extends AbstractFormatter2 {
 		reference.regionFor.keyword('>').prepend[noSpace]
 	}
 
+	def dispatch void format(DomainObjectOperation operation, extension IFormattableDocument document) {
+		operation.prepend[newLines = 1]
+		
+		operation.regionFor.keyword(';').prepend[noSpace]
+		operation.regionFor.keyword('(').append[noSpace]
+		operation.regionFor.keyword(')').prepend[noSpace]
+		operation.regionFor.keywords(',').forEach[
+			prepend[noSpace]
+		]
+		
+		operation.returnType.format
+		
+		for(parameter : operation.parameters) {
+			parameter.format
+		}
+	}
+	
+	def dispatch void format(ComplexType complexType, extension IFormattableDocument document) {
+		complexType.regionFor.keywords('<').forEach[
+			surround[noSpace]
+		]
+		complexType.regionFor.keywords('>').forEach[
+			prepend[noSpace]
+		]
+		complexType.regionFor.keywords('@').forEach[
+			append[noSpace]
+		]
+	}
+	
+	def dispatch void format(Parameter parameter, extension IFormattableDocument document) {
+		parameter.parameterType.format
+	}
 }
