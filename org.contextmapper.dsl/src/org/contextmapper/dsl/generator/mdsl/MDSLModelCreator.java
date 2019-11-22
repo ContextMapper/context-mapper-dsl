@@ -16,9 +16,12 @@
 package org.contextmapper.dsl.generator.mdsl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.Stack;
 import java.util.stream.Collectors;
 
@@ -71,14 +74,19 @@ public class MDSLModelCreator {
 	private static final String PROTOCOL_STRING_IF_NOT_DEFINED = "tbd";
 	private static final String PROTOCOL_NOT_DEFINED_COMMENT = "The protocol is generated if you specify the implementation technology in CML";
 
+	private static final String[] MDSL_KEYWORDS = { "API", "description", "data", "type", "P", "endpoint", "type", "exposes", "operation", "expecting", "delivering", "payload",
+			"Link", "provider", "client", "consumes", "offers", "at", "location", "via", "protocol", "IPA" };
+
 	private ContextMap contextMap;
 	private Map<String, DataType> dataTypeMapping;
 	private int initialPort = 8000;
 	private Stack<String> recursiveAttributeResolutionStack;
+	private Set<String> mdslKeywords;
 
 	public MDSLModelCreator(ContextMap contextMap) {
 		this.contextMap = contextMap;
 		this.recursiveAttributeResolutionStack = new Stack<>();
+		this.mdslKeywords = new HashSet<>(Arrays.asList(MDSL_KEYWORDS));
 	}
 
 	public List<ServiceSpecification> createServiceSpecifications() {
@@ -96,7 +104,7 @@ public class MDSLModelCreator {
 
 	private ServiceSpecification createServiceSpecification(String apiName, UpstreamAPIContext context) {
 		ServiceSpecification specification = new ServiceSpecification();
-		specification.setName(apiName);
+		specification.setName(encodeName(apiName));
 
 		if (context.getUpstreamRoles().contains(UpstreamRole.OPEN_HOST_SERVICE) && context.getUpstreamRoles().contains(UpstreamRole.PUBLISHED_LANGUAGE)) {
 			specification.setUsageContext(APIUsageContext.PUBLIC_API);
@@ -120,7 +128,7 @@ public class MDSLModelCreator {
 
 	private EndpointContract createEndpoint(Aggregate aggregate, ServiceSpecification specification) {
 		EndpointContract endpoint = new EndpointContract();
-		String endpointName = aggregate.getName().endsWith(AGGREGATE_NAME_EXTENSION) ? aggregate.getName() : aggregate.getName() + AGGREGATE_NAME_EXTENSION;
+		String endpointName = encodeName(aggregate.getName().endsWith(AGGREGATE_NAME_EXTENSION) ? aggregate.getName() : aggregate.getName() + AGGREGATE_NAME_EXTENSION);
 		endpoint.setName(endpointName);
 		Optional<DomainObject> aggregateRoot = aggregate.getDomainObjects().stream().filter(o -> o instanceof DomainObject).map(o -> (DomainObject) o)
 				.filter(o -> o.isAggregateRoot()).findFirst();
@@ -162,7 +170,7 @@ public class MDSLModelCreator {
 
 	private EndpointOperation createOperation(String operationName, List<Parameter> parameters, ComplexType returnType, ServiceSpecification specification, String docString) {
 		EndpointOperation operation = new EndpointOperation();
-		operation.setName(operationName);
+		operation.setName(encodeName(operationName));
 
 		if (parameters.isEmpty()) {
 			operation.setExpectingPayload(createVoidReturnType());
@@ -201,7 +209,7 @@ public class MDSLModelCreator {
 	}
 
 	private DataType constructDataType4ParameterList(String methodName, List<Parameter> parameters) {
-		String dataTypeName = methodName + PARAMETER_NAME_EXTENSION;
+		String dataTypeName = encodeName(methodName + PARAMETER_NAME_EXTENSION);
 		if (dataTypeMapping.containsKey(dataTypeName)) {
 			return dataTypeMapping.get(dataTypeName);
 		} else {
@@ -241,6 +249,7 @@ public class MDSLModelCreator {
 		}
 
 		// create complex data type
+		dataTypeName = encodeName(dataTypeName);
 		if (dataTypeMapping.containsKey(dataTypeName)) {
 			return dataTypeMapping.get(dataTypeName);
 		} else {
@@ -269,8 +278,8 @@ public class MDSLModelCreator {
 		List<DataTypeAttribute> attributes = new ArrayList<>();
 		for (EnumValue value : enumm.getValues()) {
 			DataTypeAttribute attribute = new DataTypeAttribute();
-			attribute.setName(value.getName());
-			attribute.setType(enumm.getName());
+			attribute.setName(encodeName(value.getName()));
+			attribute.setType(encodeName(enumm.getName()));
 			attributes.add(attribute);
 		}
 		return attributes;
@@ -280,7 +289,7 @@ public class MDSLModelCreator {
 		if (dataTypeMapping.containsKey(enumm.getName()))
 			return dataTypeMapping.get(enumm.getName());
 		DataType dataType = new DataType();
-		dataType.setName(enumm.getName());
+		dataType.setName(encodeName(enumm.getName()));
 		dataType.setIsEnumType(true);
 		dataType.addAttributes(createAttributesForEnum(enumm));
 		dataTypeMapping.put(enumm.getName(), dataType);
@@ -291,7 +300,7 @@ public class MDSLModelCreator {
 			boolean isNullable) {
 		this.recursiveAttributeResolutionStack.push(simpleDomainObject.getName());
 		DataTypeAttribute mdslAttribute = new DataTypeAttribute();
-		mdslAttribute.setName(attributeName);
+		mdslAttribute.setName(encodeName(attributeName));
 		mdslAttribute.setIsCollection(isCollection);
 		mdslAttribute.setIsNullable(isNullable);
 		if (simpleDomainObject instanceof DomainObject) {
@@ -370,8 +379,8 @@ public class MDSLModelCreator {
 
 	private DataTypeAttribute createSimpleDataTypeAttributeWithoutChildren(String attributeName, String attributeType, boolean isCollection, boolean isNullable) {
 		DataTypeAttribute attribute = new DataTypeAttribute();
-		attribute.setName(attributeName);
-		attribute.setType(attributeType);
+		attribute.setName(encodeName(attributeName));
+		attribute.setType(encodeName(attributeType));
 		attribute.setIsCollection(isCollection);
 		attribute.setIsNullable(isNullable);
 		return attribute;
@@ -383,12 +392,13 @@ public class MDSLModelCreator {
 			return primitiveType;
 
 		// create data type, since it's not a primitive type
-		if (dataTypeMapping.containsKey(dataTypeName))
-			return dataTypeMapping.get(dataTypeName).getName();
+		String encodedDataTypeName = encodeName(dataTypeName);
+		if (dataTypeMapping.containsKey(encodedDataTypeName))
+			return dataTypeMapping.get(encodedDataTypeName).getName();
 		DataType newDataType = new DataType();
-		newDataType.setName(dataTypeName);
-		dataTypeMapping.put(dataTypeName, newDataType);
-		return dataTypeName;
+		newDataType.setName(encodeName(encodedDataTypeName));
+		dataTypeMapping.put(encodedDataTypeName, newDataType);
+		return encodedDataTypeName;
 	}
 
 	private String getMDSLPrimitiveType(String dataTypeName) {
@@ -413,7 +423,7 @@ public class MDSLModelCreator {
 	private EndpointProvider createProvider(UpstreamAPIContext context, List<EndpointContract> endpointContracts) {
 		EndpointProvider provider = new EndpointProvider();
 		String implementationTechnology = context.getJoinedImplementationTechnologies();
-		provider.setName(context.getUpstreamContext().getName() + PROVIDER_NAME_EXTENSION);
+		provider.setName(encodeName(context.getUpstreamContext().getName() + PROVIDER_NAME_EXTENSION));
 		for (EndpointContract contract : endpointContracts) {
 			EndpointOffer offer = new EndpointOffer();
 			offer.setOfferedEndpoint(contract);
@@ -433,7 +443,7 @@ public class MDSLModelCreator {
 
 	private EndpointClient createClient(DownstreamContext downstreamContext) {
 		EndpointClient client = new EndpointClient();
-		client.setName(downstreamContext.getDownstreamName() + CLIENT_NAME_EXTENSION);
+		client.setName(encodeName(downstreamContext.getDownstreamName() + CLIENT_NAME_EXTENSION));
 		List<String> endpoints = downstreamContext.getConsumedAggregates().stream().map(agg -> agg.getName() + AGGREGATE_NAME_EXTENSION).collect(Collectors.toList());
 		for (String offer : endpoints) {
 			client.addConsumedOffer(offer);
@@ -446,6 +456,12 @@ public class MDSLModelCreator {
 		if (downstreamContext.getDomainVisionStatement() != null && !"".equals(downstreamContext.getDomainVisionStatement()))
 			client.setDomainVisionStatement(downstreamContext.getDomainVisionStatement());
 		return client;
+	}
+
+	private String encodeName(String name) {
+		if (this.mdslKeywords.contains(name))
+			return "^" + name;
+		return name;
 	}
 
 	private Map<String, UpstreamAPIContext> collectUpstreamContexts() {
@@ -462,7 +478,7 @@ public class MDSLModelCreator {
 				context = upstreamContextMap.get(upstreamAPIName);
 			} else {
 				context = new UpstreamAPIContext();
-				context.setApiName(upstreamAPIName);
+				context.setApiName(encodeName(upstreamAPIName));
 				context.setUpstreamContext(relationship.getUpstream());
 				upstreamContextMap.put(upstreamAPIName, context);
 			}
