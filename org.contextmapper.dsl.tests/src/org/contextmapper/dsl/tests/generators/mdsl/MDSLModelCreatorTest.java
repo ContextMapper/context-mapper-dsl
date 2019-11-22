@@ -156,6 +156,27 @@ public class MDSLModelCreatorTest extends AbstractCMLInputFileTest {
 	}
 
 	@Test
+	void canHandleMDSLKeywords() throws IOException {
+		// given
+		String inputModelName = "mdsl-can-handle-keyword-clashes.cml";
+		Resource input = getResourceCopyOfTestCML(inputModelName);
+		List<ContextMappingModel> models = IteratorExtensions.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(input.getAllContents(), ContextMappingModel.class));
+		MDSLModelCreator mdslCreator = new MDSLModelCreator(models.get(0).getMap());
+
+		// when
+		List<ServiceSpecification> serviceSpecifications = mdslCreator.createServiceSpecifications();
+
+		// then
+		assertEquals(1, serviceSpecifications.size());
+		ServiceSpecification spec = serviceSpecifications.get(0);
+		assertEquals(2, spec.getDataTypes().size());
+		DataType dataType1 = spec.getDataTypes().get(0);
+		DataType dataType2 = spec.getDataTypes().get(1);
+		assertEquals("ReturnType", dataType1.getName());
+		assertEquals("^Link", dataType2.getName());
+	}
+
+	@Test
 	void throwExceptionIfThereIsNoUpstreamDownstreamRelationship() throws IOException {
 		// given
 		String inputModelName = "no-upstream-downstream-relationship.cml";
