@@ -17,6 +17,7 @@ package org.contextmapper.dsl.ui.handler;
 
 import java.util.Map;
 
+import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.generator.NewServiceCutContextMapGenerator;
 import org.contextmapper.dsl.generator.exception.GeneratorInputException;
 import org.contextmapper.dsl.generator.servicecutter.input.converter.SCLToUserRepresentationsConverter;
@@ -72,6 +73,7 @@ public class NewServiceCutContextMapGenerationHandler extends AbstractGeneration
 
 	@Override
 	protected void runGeneration(Resource resource, ExecutionEvent event, IFileSystemAccess2 fsa) {
+		checkPreconditions(resource);
 		cmlFile = getSelectedFile(event);
 		GenerateNewServiceCutContextMapContext context = new GenerateNewServiceCutContextMapContext();
 		context.setSolverConfiguration(createSolverConfiguration());
@@ -95,6 +97,11 @@ public class NewServiceCutContextMapGenerationHandler extends AbstractGeneration
 			});
 			return true;
 		})).open();
+	}
+
+	private void checkPreconditions(Resource resource) {
+		ContextMappingModel model = (ContextMappingModel) resource.getContents().get(0);
+		generator.checkPreconditions(model);
 	}
 
 	@Override

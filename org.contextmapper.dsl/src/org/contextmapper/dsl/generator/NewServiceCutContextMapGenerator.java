@@ -19,13 +19,17 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
+import org.contextmapper.dsl.generator.exception.GeneratorInputException;
 import org.contextmapper.dsl.generator.servicecutter.input.converter.ContextMappingModelToServiceCutterERDConverter;
 import org.contextmapper.dsl.generator.servicecutter.output.converter.ServiceCutterOutputToContextMappingModelConverter;
+import org.contextmapper.tactic.dsl.tacticdsl.Attribute;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.xtext.EcoreUtil2;
 import org.eclipse.xtext.generator.IFileSystemAccess2;
 
 import ch.hsr.servicecutter.api.ServiceCutter;
@@ -73,6 +77,7 @@ public class NewServiceCutContextMapGenerator extends AbstractContextMapGenerato
 
 	@Override
 	protected void generateFromContextMap(ContextMap contextMap, IFileSystemAccess2 fsa, URI inputFileURI) {
+		checkPreconditions(contextMappingModel);
 		String fileBaseName = inputFileURI.trimFileExtension().lastSegment();
 
 		// prepare service cutter input
@@ -108,6 +113,16 @@ public class NewServiceCutContextMapGenerator extends AbstractContextMapGenerato
 		} catch (IOException e) {
 			throw new RuntimeException("Saving CML model was not possible.", e);
 		}
+	}
+
+	public void checkPreconditions(ContextMappingModel model) {
+		if (collectAttributes(model).isEmpty())
+			throw new GeneratorInputException(
+					"Your model should at least contain one Bounded Context with entities and some attributes. Without attributes (Service Cutter nanoentities) we cannot calculate service cuts.");
+	}
+
+	private List<Attribute> collectAttributes(ContextMappingModel model) {
+		return EcoreUtil2.getAllContentsOfType(model, Attribute.class);
 	}
 
 }

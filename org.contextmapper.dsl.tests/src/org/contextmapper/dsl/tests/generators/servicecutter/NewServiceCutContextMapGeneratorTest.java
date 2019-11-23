@@ -1,5 +1,6 @@
 package org.contextmapper.dsl.tests.generators.servicecutter;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
@@ -9,6 +10,8 @@ import java.util.List;
 
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.generator.NewServiceCutContextMapGenerator;
+import org.contextmapper.dsl.generator.exception.GeneratorInputException;
+import org.contextmapper.dsl.generator.exception.NoContextMapDefinedException;
 import org.contextmapper.dsl.generator.servicecutter.input.converter.SCLToUserRepresentationsConverter;
 import org.contextmapper.dsl.tests.AbstractCMLInputFileTest;
 import org.contextmapper.dsl.tests.generators.mocks.ContextMappingModelResourceMock;
@@ -33,6 +36,21 @@ public class NewServiceCutContextMapGeneratorTest extends AbstractCMLInputFileTe
 	public void prepare() {
 		super.prepare();
 		this.generator = new NewServiceCutContextMapGenerator();
+	}
+
+	@Test
+	void throwsExceptionIfModelIsEmpty() throws IOException {
+		// given
+		Resource input = getResourceCopyOfTestCML("CML_Model_without_attributes.cml");
+		List<ContextMappingModel> models = IteratorExtensions.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(input.getAllContents(), ContextMappingModel.class));
+		ContextMappingModel model = models.get(0);
+		IFileSystemAccess2Mock filesystem = new IFileSystemAccess2Mock();
+
+		// when, then
+		assertThrows(GeneratorInputException.class, () -> {
+			this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml").setResourceSet(input.getResourceSet()), filesystem,
+					new IGeneratorContextMock());
+		});
 	}
 
 	@Test
