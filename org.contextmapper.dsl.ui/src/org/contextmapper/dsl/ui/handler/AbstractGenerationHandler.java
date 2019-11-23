@@ -81,6 +81,8 @@ public abstract class AbstractGenerationHandler extends AbstractHandler implemen
 				fsa.setOutputPath(getGenFolder(file).toString());
 				fsa.setMonitor(new NullProgressMonitor());
 				runGeneration(resource, event, fsa);
+			} catch (GeneratorInputException e) {
+				MessageDialog.openInformation(HandlerUtil.getActiveShell(event), "Model Input", e.getMessage());
 			} catch (Exception e) {
 				String message = e.getMessage() != null && !"".equals(e.getMessage()) ? e.getMessage() : e.getClass().getName() + " occurred in " + this.getClass().getName();
 				Status status = new Status(IStatus.ERROR, DslActivator.PLUGIN_ID, message, e);

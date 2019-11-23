@@ -1,0 +1,5 @@
+ContextMap myMap {
+	contains context1
+}
+
+BoundedContext context1
