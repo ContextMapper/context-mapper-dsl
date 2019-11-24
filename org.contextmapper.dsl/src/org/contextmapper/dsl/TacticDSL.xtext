@@ -51,7 +51,7 @@ Application :
 
 Service :
   (doc=STRING)?
-  "Service" name=ID "{"
+  "Service" name=ID ("{"
   	(
   	 ((gapClass?="gap") | (noGapClass?="nogap"))? &
      ("hint" "=" hint=STRING)? &
@@ -60,11 +60,11 @@ Service :
   	)
     (dependencies+=Dependency)*
     (operations+=ServiceOperation)*
-  "}";
+  "}")?;
 
 Resource :
   (doc=STRING)?
-  "Resource" name=ID "{"
+  "Resource" name=ID ("{"
   	(
   	 ((gapClass?="gap") | (noGapClass?="nogap"))? &
      ("hint" "=" hint=STRING)? &
@@ -73,7 +73,7 @@ Resource :
   	)
     (dependencies+=ServiceDependency)*
     (operations+=ResourceOperation)*
-  "}";
+  "}")?;
 
 Consumer :
   (doc=STRING)?
@@ -454,7 +454,7 @@ OppositeHolder :
 
 Repository :
   (doc=STRING)?
-  "Repository" name=ID "{"
+  "Repository" name=ID ("{"
     (
       ((gapClass?="gap") | (noGapClass?="nogap"))? &
       ("hint" "=" hint=STRING)? &
@@ -462,7 +462,7 @@ Repository :
     )
     (dependencies+=Dependency)*
     (operations+=RepositoryOperation)*
-  "}";
+  "}")?;
 
 ServiceDependency :
   ('>'|'inject') ("@"dependency=[Service]);
