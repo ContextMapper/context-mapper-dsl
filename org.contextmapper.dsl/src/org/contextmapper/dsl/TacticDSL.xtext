@@ -215,7 +215,7 @@ ValueObject :
   (comment=SL_COMMENT)?
   (doc=STRING)?
   (abstract?="abstract")? "ValueObject" name=ID ("extends" (("@"extends=[ValueObject]) | (extendsName=JavaIdentifier)))?
-  ("with" ("@")?traits+=[Trait])* "{"
+  ("with" ("@")?traits+=[Trait])* ("{"
     ("package" "=" package=JavaIdentifier )?
     (((notOptimisticLocking?=NOT "optimisticLocking") | ("optimisticLocking"))? &
      ((notImmutable?=NOT "immutable") | ("immutable"))? &
@@ -237,13 +237,13 @@ ValueObject :
      (references+=Reference) |
      (operations+=DomainObjectOperation))*
     (repository=Repository)?
-  "}";
+  "}")?;
 
 DomainEvent :
   (comment=SL_COMMENT)?
   (doc=STRING)?
   (abstract?="abstract")? "DomainEvent" name=ID ("extends" (("@"extends=[DomainEvent]) | (extendsName=JavaIdentifier)))?
-  ("with" ("@")?traits+=[Trait])* "{"
+  ("with" ("@")?traits+=[Trait])* ("{"
     ("package" "=" package=JavaIdentifier )?
     (
      ((cache?="cache") | (NOT "cache"))? &
@@ -265,13 +265,13 @@ DomainEvent :
      (references+=Reference) |
      (operations+=DomainObjectOperation))*
     (repository=Repository)?
-  "}";
+  "}")?;
 
 CommandEvent :
   (comment=SL_COMMENT)?
   (doc=STRING)?
   (abstract?="abstract")? "CommandEvent" name=ID ("extends" (("@"extends=[CommandEvent]) | (extendsName=JavaIdentifier)))?
-  ("with" ("@")?traits+=[Trait])* "{"
+  ("with" ("@")?traits+=[Trait])* ("{"
     ("package" "=" package=JavaIdentifier )?
     (
      ((cache?="cache") | (NOT "cache"))? &
@@ -293,18 +293,18 @@ CommandEvent :
      (references+=Reference) |
      (operations+=DomainObjectOperation))*
     (repository=Repository)?
-  "}";
+  "}")?;
 
 Trait :
   (doc=STRING)?
-  "Trait" name=ID "{"
+  "Trait" name=ID ("{"
     ("package" "=" package=JavaIdentifier )?
     ("hint" "=" hint=STRING)?
     ((attributes+=Attribute) |
      (references+=Reference) |
      (operations+=DomainObjectOperation))*
 
-  "}";
+  "}")?;
 
 DomainObjectOperation :
   (doc=STRING)?
@@ -320,7 +320,7 @@ DomainObjectOperation :
 DataTransferObject :
   (comment=SL_COMMENT)?
   (doc=STRING)?
-  (abstract?="abstract")? "DataTransferObject" name=ID ("extends" (("@"extends=[DataTransferObject]) | (extendsName=JavaIdentifier)))? "{"
+  (abstract?="abstract")? "DataTransferObject" name=ID ("extends" (("@"extends=[DataTransferObject]) | (extendsName=JavaIdentifier)))? ("{"
     ("package" "=" package=JavaIdentifier )?
     (
      ((gapClass?="gap") | (noGapClass?="nogap"))? &
@@ -329,12 +329,12 @@ DataTransferObject :
     )
     ((attributes+=DtoAttribute) |
      (references+=DtoReference))*
-  "}";
+  "}")?;
 
 BasicType :
   (doc=STRING)?
   "BasicType" name=ID
-  ("with" ("@")?traits+=[Trait])* "{"
+  ("with" ("@")?traits+=[Trait])* ("{"
     ("package" "=" package=JavaIdentifier )?
     (((notImmutable?=NOT "immutable") | ("immutable"))? &
      ((gapClass?="gap") | (noGapClass?="nogap"))? &
@@ -343,7 +343,7 @@ BasicType :
     ((attributes+=Attribute) |
      (references+=Reference) |
      (operations+=DomainObjectOperation))*
-  "}";
+  "}")?;
 
 Attribute :
   (doc=STRING)?
