@@ -141,7 +141,23 @@ class DomainDSLParsingTest {
 	}
 
 	@Test
-	def void canDefineVisionStatement() {
+	def void canDefineVisionStatementOnDomain() {
+		// given
+		val String dslSnippet = '''
+			Domain Insurance {
+				domainVisionStatement = "my domain vision for this domain"
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		assertEquals("my domain vision for this domain", result.domains.get(0).domainVisionStatement);
+	}
+
+	@Test
+	def void canDefineVisionStatementOnSubdomain() {
 		// given
 		val String dslSnippet = '''
 			Domain Insurance {
