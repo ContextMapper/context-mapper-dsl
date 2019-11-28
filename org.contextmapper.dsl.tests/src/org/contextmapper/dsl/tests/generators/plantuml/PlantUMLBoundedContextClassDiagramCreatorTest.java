@@ -314,24 +314,24 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 		Aggregate aggregate = ContextMappingDSLFactory.eINSTANCE.createAggregate();
 		aggregate.setName("testAggregate");
 		boundedContext.getAggregates().add(aggregate);
-		Entity entity1 = TacticdslFactory.eINSTANCE.createEntity();
-		entity1.setName("Customer");
-		Entity entity2 = TacticdslFactory.eINSTANCE.createEntity();
-		entity2.setName("Address");
-		Entity entity3 = TacticdslFactory.eINSTANCE.createEntity();
-		entity3.setName("AnotherObject");
+		Entity customer = TacticdslFactory.eINSTANCE.createEntity();
+		customer.setName("Customer");
+		Entity address = TacticdslFactory.eINSTANCE.createEntity();
+		address.setName("Address");
+		Entity anotherObject = TacticdslFactory.eINSTANCE.createEntity();
+		anotherObject.setName("AnotherObject");
 		Reference reference = TacticdslFactory.eINSTANCE.createReference();
-		reference.setDomainObjectType(entity2);
+		reference.setDomainObjectType(address);
 		reference.setName("entity2Ref");
 		Reference listReference = TacticdslFactory.eINSTANCE.createReference();
 		listReference.setCollectionType(CollectionType.LIST);
 		listReference.setName("myListReference");
-		listReference.setDomainObjectType(entity3);
-		entity1.getReferences().add(reference);
-		entity1.getReferences().add(listReference);
-		aggregate.getDomainObjects().add(entity1);
-		aggregate.getDomainObjects().add(entity2);
-		aggregate.getDomainObjects().add(entity3);
+		listReference.setDomainObjectType(anotherObject);
+		customer.getReferences().add(reference);
+		customer.getReferences().add(listReference);
+		aggregate.getDomainObjects().add(customer);
+		aggregate.getDomainObjects().add(address);
+		aggregate.getDomainObjects().add(anotherObject);
 
 		// when
 		String plantUML = this.creator.createDiagram(boundedContext);
@@ -340,8 +340,8 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 		assertTrue(plantUML.contains("	class Address <<Entity>> {" + System.lineSeparator() + "	}" + System.lineSeparator()));
 		assertTrue(plantUML.contains("	class Customer <<Entity>> {" + System.lineSeparator() + "		Address entity2Ref" + System.lineSeparator()
 				+ "		List<AnotherObject> myListReference" + System.lineSeparator() + "	}" + System.lineSeparator()));
-		assertTrue(plantUML.contains("Customer --> Address" + System.lineSeparator()));
-		assertTrue(plantUML.contains("Customer --> AnotherObject" + System.lineSeparator()));
+		assertTrue(plantUML.contains("Customer --> Address : entity2Ref" + System.lineSeparator()));
+		assertTrue(plantUML.contains("Customer --> AnotherObject : myListReference" + System.lineSeparator()));
 	}
 
 	@Test

@@ -18,10 +18,12 @@ package org.contextmapper.dsl.generator.plantuml;
 class UMLRelationship {
 	private String source;
 	private String target;
+	private String label;
 
-	public UMLRelationship(String source, String target) {
+	public UMLRelationship(String source, String target, String label) {
 		this.source = source;
 		this.target = target;
+		this.label = label;
 	}
 
 	public String getSource() {
@@ -30,6 +32,10 @@ class UMLRelationship {
 
 	public String getTarget() {
 		return target;
+	}
+	
+	public String getLabel() {
+		return label;
 	}
 
 	@Override
