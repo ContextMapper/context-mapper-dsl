@@ -93,11 +93,13 @@ abstract public class AbstractPlantUMLClassDiagramCreator<T extends EObject> ext
 		linebreak();
 		printAttributes(object.getAttributes(), indentation + 1);
 		printReferenceAttributes(object.getReferences(), indentation + 1);
+		
+		addReferences2List(object, object.getReferences());
+		
 		printDomainObjectOperations(object.getName(), object.getOperations(), indentation + 1);
 		printIndentation(indentation);
 		sb.append("}");
 		linebreak();
-		addReferences2List(object, object.getReferences());
 		if (object instanceof Entity && ((Entity) object).getExtends() != null)
 			addExtensionToList(object.getName(), ((Entity) object).getExtends());
 		if (object instanceof CommandEvent && ((CommandEvent) object).getExtends() != null)
@@ -110,13 +112,13 @@ abstract public class AbstractPlantUMLClassDiagramCreator<T extends EObject> ext
 
 	private void addReferences2List(SimpleDomainObject sourceDomainObject, List<Reference> references) {
 		for (Reference reference : references) {
-			addDomainObjectReference2List(sourceDomainObject.getName(), reference.getDomainObjectType());
+			addDomainObjectReference2List(sourceDomainObject.getName(), reference.getDomainObjectType(), reference.getName());
 		}
 	}
 
-	private void addDomainObjectReference2List(String sourceDomainObject, SimpleDomainObject targetDomainObject) {
+	private void addDomainObjectReference2List(String sourceDomainObject, SimpleDomainObject targetDomainObject, String label) {
 		if (this.domainObjects.contains(targetDomainObject)) {
-			UMLRelationship relationship = new UMLRelationship(sourceDomainObject, targetDomainObject.getName());
+			UMLRelationship relationship = new UMLRelationship(sourceDomainObject, targetDomainObject.getName(), label);
 			if (!this.relationships.contains(relationship))
 				this.relationships.add(relationship);
 		}
@@ -124,7 +126,7 @@ abstract public class AbstractPlantUMLClassDiagramCreator<T extends EObject> ext
 
 	private void addExtensionToList(String sourceDomainObject, SimpleDomainObject extendedDomainObject) {
 		if (this.domainObjects.contains(extendedDomainObject)) {
-			UMLRelationship relationship = new UMLRelationship(sourceDomainObject, extendedDomainObject.getName());
+			UMLRelationship relationship = new UMLRelationship(sourceDomainObject, extendedDomainObject.getName(), "");
 			if (!this.extensions.contains(relationship))
 				this.extensions.add(relationship);
 		}
@@ -171,11 +173,11 @@ abstract public class AbstractPlantUMLClassDiagramCreator<T extends EObject> ext
 		if (returnType == null)
 			returnTypeAsString = "void";
 		else
-			returnTypeAsString = getComplexTypeAsString(returnType, objectName);
+			returnTypeAsString = getComplexMethodTypeAsString(returnType, objectName, operationName);
 		sb.append(returnTypeAsString).append(" ").append(operationName).append("(");
 		List<String> parameterStrings = Lists.newArrayList();
 		for (Parameter parameter : parameters) {
-			String parameterType = getComplexTypeAsString(parameter.getParameterType(), objectName);
+			String parameterType = getComplexMethodTypeAsString(parameter.getParameterType(), objectName, operationName);
 			parameterStrings.add(parameterType + " " + parameter.getName());
 		}
 		if (!parameterStrings.isEmpty())
@@ -184,11 +186,11 @@ abstract public class AbstractPlantUMLClassDiagramCreator<T extends EObject> ext
 		linebreak();
 	}
 
-	private String getComplexTypeAsString(ComplexType type, String containingObjectName4References) {
+	private String getComplexMethodTypeAsString(ComplexType type, String containingObjectName4References, String methodName) {
 		String genericType = "Object";
 		if (type.getDomainObjectType() != null) {
 			genericType = type.getDomainObjectType().getName();
-			addDomainObjectReference2List(containingObjectName4References, type.getDomainObjectType());
+			addDomainObjectReference2List(containingObjectName4References, type.getDomainObjectType(), methodName);
 		} else {
 			genericType = type.getType();
 		}
@@ -208,6 +210,8 @@ abstract public class AbstractPlantUMLClassDiagramCreator<T extends EObject> ext
 		for (UMLRelationship reference : relationships) {
 			printIndentation(indentation);
 			sb.append(reference.getSource()).append(" --> ").append(reference.getTarget());
+			if (!"".equals(reference.getLabel()))
+				sb.append(" : ").append(reference.getLabel());
 			linebreak();
 		}
 		for (UMLRelationship extension : extensions) {
