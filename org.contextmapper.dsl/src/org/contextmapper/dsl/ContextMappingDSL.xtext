@@ -67,7 +67,8 @@ Domain:
 	'Domain' name=ID
 	(
 		OPEN
-			(subdomains += Subdomain)*
+			(('domainVisionStatement' ('=')? domainVisionStatement=STRING)? &
+			(subdomains += Subdomain)*)
 		CLOSE
 	)?
 ;
