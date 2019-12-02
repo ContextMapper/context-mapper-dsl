@@ -96,7 +96,7 @@ public class MDSLAPIDescriptionCreatorTest extends AbstractCMLInputFileTest {
 	void canHandleMethodsWithoutParameters() throws IOException {
 		testCMLInputAndMDSLOutputFiles("mdsl-no-parameters");
 	}
-	
+
 	@Test
 	void canHandleNullableAttributes() throws IOException {
 		testCMLInputAndMDSLOutputFiles("mdsl-nullable-attributes");
@@ -122,72 +122,82 @@ public class MDSLAPIDescriptionCreatorTest extends AbstractCMLInputFileTest {
 		String expectedResult = FileUtils.readFileToString(expectedResultFile);
 		assertEquals(expectedResult, dslText);
 	}
-	
+
 	@Test
 	void canUseServiceOperations() throws IOException {
 		testCMLInputAndMDSLOutputFiles("mdsl-use-service-operations");
 	}
-	
+
 	@Test
 	void onlyUsePublicOperations() throws IOException {
 		testCMLInputAndMDSLOutputFiles("mdsl-only-use-public-operations");
 	}
-	
+
 	@Test
 	void canCreateUpstreamDownstreamRoleComments() throws IOException {
 		testCMLInputAndMDSLOutputFiles("mdsl-upstream-downstream-role-comments");
 	}
-	
+
 	@Test
 	void canCreateDomainVisionStatementComments() throws IOException {
 		testCMLInputAndMDSLOutputFiles("mdsl-domain-vision-statements-test");
 	}
-	
+
 	@Test
 	void canCreateUsageContextCommunityAPI() throws IOException {
 		testCMLInputAndMDSLOutputFiles("mdsl-usage-context-community-api");
 	}
-	
+
 	@Test
 	void canCreateUsageContextPublicAPI() throws IOException {
 		testCMLInputAndMDSLOutputFiles("mdsl-usage-context-public-api");
 	}
-	
+
 	@Test
 	void canOverwriteOnlyUnprotectedParts() throws IOException {
 		testCMLInputAndMDSLOutputFiles("mdsl-protected-regions", true);
 	}
-	
+
 	@Test
 	void canMatchMDSLPatterns() throws IOException {
 		testCMLInputAndMDSLOutputFiles("mdsl-serves-as-test-1");
 		testCMLInputAndMDSLOutputFiles("mdsl-serves-as-test-2");
 	}
-	
+
 	@Test
 	void canIgnoreCommentedTypesInProtectedRegion() throws IOException {
 		testCMLInputAndMDSLOutputFiles("mdsl-protected-regions-do-not-match-commented-types", true);
 	}
-	
+
 	@Test
 	void canHandleEntitiesWithoutAttributes() throws IOException {
 		testCMLInputAndMDSLOutputFiles("mdsl-entity-without-attributes");
 	}
-	
+
 	@Test
 	void canResolveSuperTypeAttributes() throws IOException {
 		testCMLInputAndMDSLOutputFiles("mdsl-entity-extending-other-entity");
 	}
-	
+
 	@Test
 	void canHandleEnums() throws IOException {
 		testCMLInputAndMDSLOutputFiles("mdsl-enum-support");
 	}
 
+	@Test
+	void canHandleReferencesToEmptyDomainObjects() throws IOException {
+		testCMLInputAndMDSLOutputFiles("mdsl-reference-to-empty-domain-object-1");
+	}
+	
+	@Test
+	void canHandleDeepReferencesToEmptyDomainObjects() throws IOException {
+		testCMLInputAndMDSLOutputFiles("mdsl-reference-to-empty-domain-object-2");
+	}
+
 	private void testCMLInputAndMDSLOutputFiles(String baseFilename) throws IOException {
 		testCMLInputAndMDSLOutputFiles(baseFilename, false);
 	}
-	
+
 	private void testCMLInputAndMDSLOutputFiles(String baseFilename, boolean overwriteExistingFile) throws IOException {
 		// given
 		String inputModelName = baseFilename + ".cml";
