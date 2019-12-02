@@ -261,8 +261,15 @@ public class MDSLModelCreator {
 				dataType.addAttributes(getMDSLAttributesForAttributeList(getDomainObjectAttributes(object)));
 				List<DataTypeAttribute> refAttributes = Lists.newArrayList();
 				for (Reference reference : getDomainObjectReferences(object)) {
-					refAttributes.add(getDataTypeAttribute4DomainObject(dataType, reference.getName(), reference.getDomainObjectType(),
-							reference.getCollectionType() != CollectionType.NONE, reference.isNullable()));
+					SimpleDomainObject referencedType = reference.getDomainObjectType();
+
+					// don't resolve references to objects without attributes or references
+					if (referencedType instanceof DomainObject && ((DomainObject) referencedType).getAttributes().isEmpty()
+							&& ((DomainObject) referencedType).getReferences().isEmpty())
+						continue;
+
+					refAttributes.add(getDataTypeAttribute4DomainObject(dataType, reference.getName(), referencedType, reference.getCollectionType() != CollectionType.NONE,
+							reference.isNullable()));
 				}
 				dataType.addAttributes(refAttributes);
 			} else if (type.getDomainObjectType() != null && type.getDomainObjectType() instanceof Enum) {
@@ -308,13 +315,20 @@ public class MDSLModelCreator {
 			mdslAttribute.addChildren(getMDSLAttributesForAttributeList(getDomainObjectAttributes(object)));
 			List<DataTypeAttribute> refAttributes = Lists.newArrayList();
 			for (Reference reference : getDomainObjectReferences(object)) {
+				SimpleDomainObject referencedType = reference.getDomainObjectType();
+
+				// don't resolve references to objects without attributes or references
+				if (referencedType instanceof DomainObject && ((DomainObject) referencedType).getAttributes().isEmpty()
+						&& ((DomainObject) referencedType).getReferences().isEmpty())
+					continue;
+
 				// recursive attribute resolution, if it is no cyclic reference
-				if (!this.recursiveAttributeResolutionStack.contains(reference.getDomainObjectType().getName())) {
-					refAttributes.add(getDataTypeAttribute4DomainObject(dataType, reference.getName(), reference.getDomainObjectType(),
-							reference.getCollectionType() != CollectionType.NONE, reference.isNullable()));
+				if (!this.recursiveAttributeResolutionStack.contains(referencedType.getName())) {
+					refAttributes.add(getDataTypeAttribute4DomainObject(dataType, reference.getName(), referencedType, reference.getCollectionType() != CollectionType.NONE,
+							reference.isNullable()));
 				} else {
 					dataType.addComment("You declared a cyclic reference! We had to break the cycle at " + reference.getDomainObjectType().getName());
-					refAttributes.add(createSimpleDataTypeAttributeWithoutChildren(reference.getName(), mapAbstractDataType(reference.getDomainObjectType().getName()),
+					refAttributes.add(createSimpleDataTypeAttributeWithoutChildren(reference.getName(), mapAbstractDataType(referencedType.getName()),
 							reference.getCollectionType() != CollectionType.NONE, reference.isNullable()));
 				}
 			}
