@@ -15,6 +15,22 @@
  */
 package org.contextmapper.dsl.ui.handler;
 
+import static ch.hsr.servicecutter.model.criteria.CouplingCriterion.AVAILABILITY;
+import static ch.hsr.servicecutter.model.criteria.CouplingCriterion.CONSISTENCY;
+import static ch.hsr.servicecutter.model.criteria.CouplingCriterion.CONSISTENCY_CONSTRAINT;
+import static ch.hsr.servicecutter.model.criteria.CouplingCriterion.CONTENT_VOLATILITY;
+import static ch.hsr.servicecutter.model.criteria.CouplingCriterion.IDENTITY_LIFECYCLE;
+import static ch.hsr.servicecutter.model.criteria.CouplingCriterion.LATENCY;
+import static ch.hsr.servicecutter.model.criteria.CouplingCriterion.PREDEFINED_SERVICE;
+import static ch.hsr.servicecutter.model.criteria.CouplingCriterion.SECURITY_CONSTRAINT;
+import static ch.hsr.servicecutter.model.criteria.CouplingCriterion.SECURITY_CONTEXUALITY;
+import static ch.hsr.servicecutter.model.criteria.CouplingCriterion.SECURITY_CRITICALITY;
+import static ch.hsr.servicecutter.model.criteria.CouplingCriterion.SEMANTIC_PROXIMITY;
+import static ch.hsr.servicecutter.model.criteria.CouplingCriterion.SHARED_OWNER;
+import static ch.hsr.servicecutter.model.criteria.CouplingCriterion.STORAGE_SIMILARITY;
+import static ch.hsr.servicecutter.model.criteria.CouplingCriterion.STRUCTURAL_VOLATILITY;
+import static ch.hsr.servicecutter.solver.SolverPriority.M;
+
 import java.util.Map;
 
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
@@ -151,6 +167,22 @@ public class NewServiceCutContextMapGenerationHandler extends AbstractGeneration
 
 	private SolverConfiguration createSolverConfiguration() {
 		SolverConfiguration solverConfiguration = new SolverConfigurationFactory().createDefaultConfiguration();
+		solverConfiguration.setPriority(IDENTITY_LIFECYCLE, M);
+        solverConfiguration.setPriority(SEMANTIC_PROXIMITY, M);
+        solverConfiguration.setPriority(SHARED_OWNER, M);
+        solverConfiguration.setPriority(STRUCTURAL_VOLATILITY, M);
+        solverConfiguration.setPriority(IDENTITY_LIFECYCLE, M);
+        solverConfiguration.setPriority(LATENCY, M);
+        solverConfiguration.setPriority(CONSISTENCY, M);
+        solverConfiguration.setPriority(AVAILABILITY, M);
+        solverConfiguration.setPriority(CONTENT_VOLATILITY, M);
+        solverConfiguration.setPriority(CONSISTENCY_CONSTRAINT, M);
+        solverConfiguration.setPriority(STORAGE_SIMILARITY, M);
+        solverConfiguration.setPriority(PREDEFINED_SERVICE, M);
+        solverConfiguration.setPriority(SECURITY_CONTEXUALITY, M);
+        solverConfiguration.setPriority(SECURITY_CRITICALITY, M);
+        solverConfiguration.setPriority(SECURITY_CONSTRAINT, M);
+		
 		IEclipsePreferences preferencesRoot = InstanceScope.INSTANCE.getNode(PREFERENCES_QUALIFIER);
 		Preferences filePreferences = preferencesRoot.node(cmlFile.getProjectRelativePath().toString());
 		solverConfiguration.setAlgorithm(SolverAlgorithm.valueOf(filePreferences.get("algorithm", solverConfiguration.getAlgorithm().name())));
