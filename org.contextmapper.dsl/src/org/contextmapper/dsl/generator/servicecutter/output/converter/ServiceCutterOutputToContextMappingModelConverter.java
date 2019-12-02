@@ -80,7 +80,7 @@ public class ServiceCutterOutputToContextMappingModelConverter {
 			Entity entity = this.entityMap.get(entityName);
 			entities.add(entity);
 			Attribute attribute = tacticDDDFactory.createAttribute();
-			attribute.setType("Nanoentity");
+			attribute.setType("UnknownType");
 			attribute.setName(nanoEntityName);
 			entity.getAttributes().add(attribute);
 		}
