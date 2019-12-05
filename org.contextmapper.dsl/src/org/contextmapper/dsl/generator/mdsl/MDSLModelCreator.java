@@ -333,6 +333,10 @@ public class MDSLModelCreator {
 				}
 			}
 			mdslAttribute.addChildren(refAttributes);
+			
+			// in case there are no attributes or refs, we need an abstract data type:
+			if (!mdslAttribute.hasChildren())
+				mdslAttribute.setType(mapAbstractDataType(simpleDomainObject.getName()));
 		} else if (simpleDomainObject instanceof Enum) {
 			mdslAttribute.setType(createEnumDataType((Enum) simpleDomainObject).getName());
 		} else {
