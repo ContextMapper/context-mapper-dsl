@@ -1,0 +1,29 @@
+// Generated from DDD Context Map.
+API description CustomerManagementContextAPI
+
+
+data type Param1 P // the type Param1 has not been specified or does not contain any attributes in CML
+data type Param2 P // the type Param2 has not been specified or does not contain any attributes in CML
+data type ReturnType P // the type ReturnType has not been specified or does not contain any attributes in CML
+data type updateCustomerParameter { "param1":Param1, "param2":Param2 }
+
+
+endpoint type CustomersAggregate
+	exposes
+		operation updateCustomer
+			expecting
+				payload updateCustomerParameter
+			delivering
+				payload ReturnType
+
+
+API provider CustomerManagementContextProvider
+	offers CustomersAggregate
+	at endpoint location "http://localhost:8000"
+		via protocol "RESTful HTTP"
+
+
+API client ContractManagementContextClient
+	consumes CustomersAggregate
+
+IPA

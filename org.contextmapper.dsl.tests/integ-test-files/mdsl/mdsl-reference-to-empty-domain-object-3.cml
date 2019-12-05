@@ -1,0 +1,34 @@
+ContextMap {
+	contains CustomerManagementContext, ContractManagementContext, JustAnotherContext
+	
+	CustomerManagementContext -> ContractManagementContext {
+		exposedAggregates = Customers
+		implementationTechnology = "RESTful HTTP"
+	}
+	
+	// this relationship must be ignored, because it has no exposedAggregates
+	CustomerManagementContext -> JustAnotherContext
+
+	// duplicate relationship should not change the result	
+	CustomerManagementContext -> ContractManagementContext {
+		exposedAggregates = Customers
+	}
+	
+}
+
+BoundedContext ContractManagementContext
+
+BoundedContext CustomerManagementContext {
+
+	Aggregate Customers {
+		Entity Customer {
+			aggregateRoot
+			
+			def ReturnType updateCustomer(@Param1 param1, @Param2 param2);
+		}
+		Entity Param1
+		Entity Param2
+	}
+}
+
+BoundedContext JustAnotherContext

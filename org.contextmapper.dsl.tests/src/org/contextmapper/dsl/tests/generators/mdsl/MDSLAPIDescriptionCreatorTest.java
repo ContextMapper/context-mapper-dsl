@@ -193,6 +193,11 @@ public class MDSLAPIDescriptionCreatorTest extends AbstractCMLInputFileTest {
 	void canHandleDeepReferencesToEmptyDomainObjects() throws IOException {
 		testCMLInputAndMDSLOutputFiles("mdsl-reference-to-empty-domain-object-2");
 	}
+	
+	@Test
+	void canHandleMultipleParameterReferencesToEmptyDomainObjects() throws IOException {
+		testCMLInputAndMDSLOutputFiles("mdsl-reference-to-empty-domain-object-3");
+	}
 
 	private void testCMLInputAndMDSLOutputFiles(String baseFilename) throws IOException {
 		testCMLInputAndMDSLOutputFiles(baseFilename, false);
