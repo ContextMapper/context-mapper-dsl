@@ -135,7 +135,7 @@ public class GenerateNewServiceCutContextMapWizardPage extends ContextMapperWiza
 		GridData functionalCriteriaGroupGridData = new GridData(GridData.FILL_HORIZONTAL);
 		functionalCriteriaGroupGridData.horizontalSpan = 2;
 		functionalCriteriaGroup.setLayoutData(functionalCriteriaGroupGridData);
-		functionalCriteriaGroup.setText("Functional / Domain Model - Criteria Priorities");
+		functionalCriteriaGroup.setText("Functional / Domain Model Criteria");
 
 		createCriteriaPrioritySelectionCombo(functionalCriteriaGroup, IDENTITY_LIFECYCLE);
 		createCriteriaPrioritySelectionCombo(functionalCriteriaGroup, SEMANTIC_PROXIMITY);
@@ -144,7 +144,7 @@ public class GenerateNewServiceCutContextMapWizardPage extends ContextMapperWiza
 
 		new Label(functionalCriteriaGroup, SWT.NONE);
 		Button prioritizeFunctionalGroupButton = new Button(functionalCriteriaGroup, SWT.NONE);
-		prioritizeFunctionalGroupButton.setText("Prioritize criteria of this group");
+		prioritizeFunctionalGroupButton.setText("Prioritize functional / domain model criteria");
 		prioritizeFunctionalGroupButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		prioritizeFunctionalGroupButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
@@ -167,7 +167,7 @@ public class GenerateNewServiceCutContextMapWizardPage extends ContextMapperWiza
 		GridData runtimeQualityCriteriaGroupGridData = new GridData(GridData.FILL_HORIZONTAL);
 		runtimeQualityCriteriaGroupGridData.horizontalSpan = 2;
 		runtimeQualityCriteriaGroup.setLayoutData(runtimeQualityCriteriaGroupGridData);
-		runtimeQualityCriteriaGroup.setText("Runtime Quality - Criteria Priorities");
+		runtimeQualityCriteriaGroup.setText("Runtime Quality Criteria");
 
 		createCriteriaPrioritySelectionCombo(runtimeQualityCriteriaGroup, LATENCY);
 		createCriteriaPrioritySelectionCombo(runtimeQualityCriteriaGroup, AVAILABILITY);
@@ -177,7 +177,7 @@ public class GenerateNewServiceCutContextMapWizardPage extends ContextMapperWiza
 
 		new Label(runtimeQualityCriteriaGroup, SWT.NONE);
 		Button prioritizeRuntimeQualityGroupButton = new Button(runtimeQualityCriteriaGroup, SWT.NONE);
-		prioritizeRuntimeQualityGroupButton.setText("Prioritize criteria of this group");
+		prioritizeRuntimeQualityGroupButton.setText("Prioritize runtime quality criteria");
 		prioritizeRuntimeQualityGroupButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		prioritizeRuntimeQualityGroupButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
@@ -201,7 +201,7 @@ public class GenerateNewServiceCutContextMapWizardPage extends ContextMapperWiza
 		GridData dataCriteriaGroupGridData = new GridData(GridData.FILL_HORIZONTAL);
 		dataCriteriaGroupGridData.horizontalSpan = 2;
 		dataCriteriaGroup.setLayoutData(dataCriteriaGroupGridData);
-		dataCriteriaGroup.setText("Data - Criteria Priorities");
+		dataCriteriaGroup.setText("Data Criteria");
 
 		createCriteriaPrioritySelectionCombo(dataCriteriaGroup, CONSISTENCY);
 		createCriteriaPrioritySelectionCombo(dataCriteriaGroup, CONSISTENCY_CONSTRAINT);
@@ -209,7 +209,7 @@ public class GenerateNewServiceCutContextMapWizardPage extends ContextMapperWiza
 		
 		new Label(dataCriteriaGroup, SWT.NONE);
 		Button prioritizeDataGroupButton = new Button(dataCriteriaGroup, SWT.NONE);
-		prioritizeDataGroupButton.setText("Prioritize criteria of this group");
+		prioritizeDataGroupButton.setText("Prioritize data criteria");
 		prioritizeDataGroupButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		prioritizeDataGroupButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
@@ -231,14 +231,14 @@ public class GenerateNewServiceCutContextMapWizardPage extends ContextMapperWiza
 		GridData organizationalCriteriaGroupGridData = new GridData(GridData.FILL_HORIZONTAL);
 		organizationalCriteriaGroupGridData.horizontalSpan = 2;
 		organizationalCriteriaGroup.setLayoutData(organizationalCriteriaGroupGridData);
-		organizationalCriteriaGroup.setText("Organizational - Criteria Priorities");
+		organizationalCriteriaGroup.setText("Organizational Criteria");
 
 		createCriteriaPrioritySelectionCombo(organizationalCriteriaGroup, SHARED_OWNER);
 		createCriteriaPrioritySelectionCombo(organizationalCriteriaGroup, PREDEFINED_SERVICE);
 		
 		new Label(organizationalCriteriaGroup, SWT.NONE);
 		Button prioritizeOrganizationalGroupButton = new Button(organizationalCriteriaGroup, SWT.NONE);
-		prioritizeOrganizationalGroupButton.setText("Prioritize criteria of this group");
+		prioritizeOrganizationalGroupButton.setText("Prioritize organizational criteria");
 		prioritizeOrganizationalGroupButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		prioritizeOrganizationalGroupButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
@@ -251,7 +251,7 @@ public class GenerateNewServiceCutContextMapWizardPage extends ContextMapperWiza
 		});
 
 		Button restoreDefaultPrioritiesButton = new Button(container, SWT.NONE);
-		restoreDefaultPrioritiesButton.setText("Restore Default Priorities");
+		restoreDefaultPrioritiesButton.setText("Restore default priorities");
 		restoreDefaultPrioritiesButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				for (Map.Entry<String, Combo> priorityComboEntry : allPriorityCombos.entrySet()) {
@@ -260,8 +260,6 @@ public class GenerateNewServiceCutContextMapWizardPage extends ContextMapperWiza
 			}
 		});
 
-		container.setLayout(new GridLayout(1, false));
-		container.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		scrollComp.setMinSize(container.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 
 		setControl(mainComposite);
