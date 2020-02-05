@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
-import org.contextmapper.dsl.contextMappingDSL.Module;
+import org.contextmapper.dsl.contextMappingDSL.SculptorModule;
 import org.contextmapper.dsl.refactoring.MergeAggregatesRefactoring;
 import org.contextmapper.dsl.ui.handler.wizard.MergeAggregatesContext;
 import org.contextmapper.dsl.ui.handler.wizard.MergeAggregatesRefactoringWizard;
@@ -52,15 +52,15 @@ public class MergeAggregatesRefactoringHandler extends AbstractRefactoringWithUs
 		BoundedContext parentBC = null;
 		if (aggregate.eContainer() instanceof BoundedContext) {
 			parentBC = (BoundedContext) aggregate.eContainer();
-		} else if (aggregate.eContainer() instanceof Module) {
-			Module module = (Module) aggregate.eContainer();
+		} else if (aggregate.eContainer() instanceof SculptorModule) {
+			SculptorModule module = (SculptorModule) aggregate.eContainer();
 			parentBC = (BoundedContext) module.eContainer();
 		} else {
 			throw new RuntimeException("Unexpected change in model: Aggregate must be part of a Bounded Context or a Module!");
 		}
 
 		List<String> allAggregates = parentBC.getAggregates().stream().map(agg -> agg.getName()).collect(Collectors.toList());
-		for (Module module : parentBC.getModules()) {
+		for (SculptorModule module : parentBC.getModules()) {
 			allAggregates.addAll(module.getAggregates().stream().map(agg -> agg.getName()).collect(Collectors.toList()));
 		}
 

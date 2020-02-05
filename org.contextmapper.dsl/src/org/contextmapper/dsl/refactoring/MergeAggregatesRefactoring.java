@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
-import org.contextmapper.dsl.contextMappingDSL.Module;
+import org.contextmapper.dsl.contextMappingDSL.SculptorModule;
 import org.contextmapper.dsl.contextMappingDSL.Relationship;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
 import org.contextmapper.dsl.refactoring.exception.RefactoringInputException;
@@ -92,8 +92,8 @@ public class MergeAggregatesRefactoring extends AbstractRefactoring implements R
 		if (agg2.eContainer() instanceof BoundedContext) {
 			BoundedContext container = (BoundedContext) agg2.eContainer();
 			container.getAggregates().remove(agg2);
-		} else if (agg2.eContainer() instanceof Module) {
-			Module container = (Module) agg2.eContainer();
+		} else if (agg2.eContainer() instanceof SculptorModule) {
+			SculptorModule container = (SculptorModule) agg2.eContainer();
 			container.getAggregates().remove(agg2);
 		}
 		this.model.eAllContents();

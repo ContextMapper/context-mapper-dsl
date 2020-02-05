@@ -36,7 +36,7 @@
         <type href="http://www.contextmapper.org/dsl/ContextMappingDSL#//BoundedContext"/>
       </nodes>
       <nodes xmi:id="_SQu0gF6WEemPGsmX1edTug" description="" incoming="_JLG3UF6XEemPGsmX1edTug" outgoing="_77LSUF6WEemPGsmX1edTug">
-        <type href="http://www.contextmapper.org/dsl/ContextMappingDSL#//Module"/>
+        <type href="http://www.contextmapper.org/dsl/ContextMappingDSL#//SculptorModule"/>
       </nodes>
       <edges xmi:id="_KQoqcOTREeiIWbYp2Hltow" source="_2tIggOTOEeiIWbYp2Hltow" target="_vpZGEOTQEeiIWbYp2Hltow">
         <type href="http://www.contextmapper.org/dsl/ContextMappingDSL#//Aggregate/domainObjects"/>
@@ -45,7 +45,7 @@
         <type href="http://www.contextmapper.org/dsl/ContextMappingDSL#//Aggregate/domainObjects"/>
       </edges>
       <edges xmi:id="_77LSUF6WEemPGsmX1edTug" source="_SQu0gF6WEemPGsmX1edTug" target="_2tIggOTOEeiIWbYp2Hltow">
-        <type href="http://www.contextmapper.org/dsl/ContextMappingDSL#//Module/aggregates"/>
+        <type href="http://www.contextmapper.org/dsl/ContextMappingDSL#//SculptorModule/aggregates"/>
       </edges>
       <edges xmi:id="_JLG3UF6XEemPGsmX1edTug" source="_liEaEFqrEem8VdfNmAnpAA" target="_SQu0gF6WEemPGsmX1edTug">
         <type href="http://www.contextmapper.org/dsl/ContextMappingDSL#//BoundedContext/modules"/>
@@ -74,7 +74,7 @@
         <type href="http://www.contextmapper.org/dsl/ContextMappingDSL#//BoundedContext"/>
       </nodes>
       <nodes xmi:id="_VPQbIF6WEemPGsmX1edTug" description="" incoming="_LRGTcF6XEemPGsmX1edTug" outgoing="_nXImgF6WEemPGsmX1edTug _AdMsAF6XEemPGsmX1edTug">
-        <type href="http://www.contextmapper.org/dsl/ContextMappingDSL#//Module"/>
+        <type href="http://www.contextmapper.org/dsl/ContextMappingDSL#//SculptorModule"/>
       </nodes>
       <edges xmi:id="_OvATMOTREeiIWbYp2Hltow" source="_4qF8cOTOEeiIWbYp2Hltow" target="_6lBtMOTQEeiIWbYp2Hltow">
         <type href="http://www.contextmapper.org/dsl/ContextMappingDSL#//Aggregate/domainObjects"/>
@@ -83,10 +83,10 @@
         <type href="http://www.contextmapper.org/dsl/ContextMappingDSL#//Aggregate/domainObjects"/>
       </edges>
       <edges xmi:id="_nXImgF6WEemPGsmX1edTug" source="_VPQbIF6WEemPGsmX1edTug" target="_OfoP4OTQEeiIWbYp2Hltow">
-        <type href="http://www.contextmapper.org/dsl/ContextMappingDSL#//Module/aggregates"/>
+        <type href="http://www.contextmapper.org/dsl/ContextMappingDSL#//SculptorModule/aggregates"/>
       </edges>
       <edges xmi:id="_AdMsAF6XEemPGsmX1edTug" source="_VPQbIF6WEemPGsmX1edTug" target="_4qF8cOTOEeiIWbYp2Hltow">
-        <type href="http://www.contextmapper.org/dsl/ContextMappingDSL#//Module/aggregates"/>
+        <type href="http://www.contextmapper.org/dsl/ContextMappingDSL#//SculptorModule/aggregates"/>
       </edges>
       <edges xmi:id="_LRGTcF6XEemPGsmX1edTug" source="_ptiU8FqrEem8VdfNmAnpAA" target="_VPQbIF6WEemPGsmX1edTug">
         <type href="http://www.contextmapper.org/dsl/ContextMappingDSL#//BoundedContext/modules"/>

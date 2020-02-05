@@ -21,7 +21,7 @@ import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.Domain;
 import org.contextmapper.dsl.contextMappingDSL.DomainPart;
-import org.contextmapper.dsl.contextMappingDSL.Module;
+import org.contextmapper.dsl.contextMappingDSL.SculptorModule;
 import org.contextmapper.dsl.contextMappingDSL.Subdomain;
 import org.contextmapper.dsl.validation.ValidationMessages;
 import org.contextmapper.tactic.dsl.tacticdsl.Entity;
@@ -43,7 +43,7 @@ public class PlantUMLBoundedContextClassDiagramCreator extends AbstractPlantUMLC
 			printEmptyDiagramNote();
 			return;
 		}
-		for (Module module : boundedContext.getModules()) {
+		for (SculptorModule module : boundedContext.getModules()) {
 			printModule(module);
 		}
 		for (Aggregate aggregate : boundedContext.getAggregates()) {
@@ -85,7 +85,7 @@ public class PlantUMLBoundedContextClassDiagramCreator extends AbstractPlantUMLC
 		linebreak();
 	}
 
-	private void printModule(Module module) {
+	private void printModule(SculptorModule module) {
 		sb.append("package ");
 		if (module.getBasePackage() != null && !"".equals(module.getBasePackage()))
 			sb.append(module.getBasePackage()).append(".").append(module.getName());

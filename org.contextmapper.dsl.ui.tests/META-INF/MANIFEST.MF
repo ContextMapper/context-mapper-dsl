@@ -13,9 +13,9 @@ Require-Bundle: org.contextmapper.dsl.ui,
  org.eclipse.xtext.junit4,
  org.eclipse.xtext.xbase.junit,
  org.eclipse.core.runtime,
- org.eclipse.ui.workbench;resolution:=optional
+ org.eclipse.ui.workbench;resolution:=optional,
+ org.eclipse.xtext.ui.testing
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.contextmapper.dsl.ui.tests;x-internal=true,
  org.contextmapper.tactic.dsl.ui.tests;x-internal=true,
  org.contextmapper.servicecutter.dsl.ui.tests;x-internal=true
-

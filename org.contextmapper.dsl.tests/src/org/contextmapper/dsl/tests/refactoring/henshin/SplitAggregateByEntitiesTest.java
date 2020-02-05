@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
-import org.contextmapper.dsl.contextMappingDSL.Module;
+import org.contextmapper.dsl.contextMappingDSL.SculptorModule;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
 import org.contextmapper.dsl.refactoring.henshin.SplitAggregateByEntitiesRefactoring;
 import org.contextmapper.dsl.tests.refactoring.AbstractRefactoringTest;
@@ -90,7 +90,7 @@ public class SplitAggregateByEntitiesTest extends AbstractRefactoringTest {
 				.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(reloadResource(input).getAllContents(), ContextMappingModel.class));
 		BoundedContext bc = contextMappingModels.get(0).getBoundedContexts().get(0);
 
-		Module testModule = bc.getModules().get(0);
+		SculptorModule testModule = bc.getModules().get(0);
 
 		assertEquals(2, testModule.getAggregates().size());
 

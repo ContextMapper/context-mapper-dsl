@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
-import org.contextmapper.dsl.contextMappingDSL.Module;
+import org.contextmapper.dsl.contextMappingDSL.SculptorModule;
 import org.contextmapper.dsl.contextMappingDSL.Relationship;
 import org.contextmapper.dsl.contextMappingDSL.SymmetricRelationship;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
@@ -86,7 +86,7 @@ public class ContextMapSemanticsValidator extends AbstractDeclarativeValidator {
 				int aggregateRefIndex = 0;
 				for (Aggregate aggregate : relationship.getUpstreamExposedAggregates()) {
 					List<String> aggregates = upstreamContext.getAggregates().stream().map(a -> a.getName()).collect(Collectors.toList());
-					for (Module module : upstreamContext.getModules()) {
+					for (SculptorModule module : upstreamContext.getModules()) {
 						aggregates.addAll(module.getAggregates().stream().map(b -> b.getName()).collect(Collectors.toList()));
 					}
 					if (!aggregates.contains(aggregate.getName()))

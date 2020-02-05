@@ -6,13 +6,14 @@
 	<packaging>pom</packaging>
 
 	<properties>
-		<xtextVersion>2.15.0</xtextVersion>
+		<xtextVersion>2.20.0</xtextVersion>
+		<mwe2Version>2.11.1</mwe2Version>
 		<jacoco-version>0.8.2</jacoco-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.source>11</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<!-- Tycho settings -->
-		<tycho-version>1.4.0</tycho-version>
+		<tycho-version>1.5.1</tycho-version>
 		<!-- Define overridable properties for tycho-surefire-plugin -->
 		<platformSystemProperties />
 		<moduleProperties />

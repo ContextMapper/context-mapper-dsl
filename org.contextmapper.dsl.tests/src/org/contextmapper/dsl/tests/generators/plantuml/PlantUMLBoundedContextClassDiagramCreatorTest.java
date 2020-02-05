@@ -25,7 +25,7 @@ import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.Domain;
-import org.contextmapper.dsl.contextMappingDSL.Module;
+import org.contextmapper.dsl.contextMappingDSL.SculptorModule;
 import org.contextmapper.dsl.contextMappingDSL.Subdomain;
 import org.contextmapper.dsl.generator.plantuml.PlantUMLBoundedContextClassDiagramCreator;
 import org.contextmapper.dsl.tests.AbstractCMLInputFileTest;
@@ -64,7 +64,7 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 	public void canCreatePackageFromModule() {
 		// given
 		BoundedContext boundedContext = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
-		Module testModule = ContextMappingDSLFactory.eINSTANCE.createModule();
+		SculptorModule testModule = ContextMappingDSLFactory.eINSTANCE.createSculptorModule();
 		testModule.setName("mySuperModule");
 		boundedContext.getModules().add(testModule);
 		testModule.getDomainObjects().add(TacticdslFactory.eINSTANCE.createSimpleDomainObject());
@@ -80,7 +80,7 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 	public void canCreatePackageFromModuleWithBasePackage() {
 		// given
 		BoundedContext boundedContext = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
-		Module testModule = ContextMappingDSLFactory.eINSTANCE.createModule();
+		SculptorModule testModule = ContextMappingDSLFactory.eINSTANCE.createSculptorModule();
 		testModule.setName("mySuperModule");
 		testModule.setBasePackage("org.contextmapper");
 		boundedContext.getModules().add(testModule);
@@ -99,7 +99,7 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 	public void canCreateAggregatePackageInModule() {
 		// given
 		BoundedContext boundedContext = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
-		Module testModule = ContextMappingDSLFactory.eINSTANCE.createModule();
+		SculptorModule testModule = ContextMappingDSLFactory.eINSTANCE.createSculptorModule();
 		testModule.setName("mySuperModule");
 		boundedContext.getModules().add(testModule);
 		Aggregate aggregate = ContextMappingDSLFactory.eINSTANCE.createAggregate();
