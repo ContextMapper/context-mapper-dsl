@@ -9,10 +9,10 @@
    <feature id="org.contextmapper.servicecutter.feature">
       <category name="main"/>
    </feature>
-   <bundle id="org.eclipse.emf.henshin.interpreter" version="1.4.0.201611301251">
+   <bundle id="org.eclipse.emf.henshin.interpreter" version="1.6.0.202001092039">
       <category name="main"/>
    </bundle>
-   <bundle id="org.eclipse.emf.henshin.model" version="1.4.0.201611301251">
+   <bundle id="org.eclipse.emf.henshin.model" version="1.6.0.202001092039">
       <category name="main"/>
    </bundle>
    <feature id="org.contextmapper.contextmap.generator.feature" version="0.0.0">
