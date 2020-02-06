@@ -20,7 +20,7 @@ import org.contextmapper.dsl.contextMappingDSL.Aggregate
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext
 import org.contextmapper.dsl.contextMappingDSL.ContextMap
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel
-import org.contextmapper.dsl.contextMappingDSL.Module
+import org.contextmapper.dsl.contextMappingDSL.SculptorModule
 import org.contextmapper.dsl.contextMappingDSL.Relationship
 import org.contextmapper.dsl.services.ContextMappingDSLGrammarAccess
 import org.contextmapper.tactic.dsl.formatting2.TacticDDDLanguageFormatter
@@ -126,7 +126,7 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 		}
 	}
 	
-	def dispatch void format(Module module, extension IFormattableDocument document) {
+	def dispatch void format(SculptorModule module, extension IFormattableDocument document) {
 		interior(
 			module.regionFor.ruleCallTo(OPENRule).append[newLine],
 			module.regionFor.ruleCallTo(CLOSERule).prepend[newLine].append[newLine]

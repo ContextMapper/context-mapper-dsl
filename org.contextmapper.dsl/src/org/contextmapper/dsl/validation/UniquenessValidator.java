@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLPackage;
-import org.contextmapper.dsl.contextMappingDSL.Module;
+import org.contextmapper.dsl.contextMappingDSL.SculptorModule;
 import org.contextmapper.dsl.contextMappingDSL.Subdomain;
 import org.contextmapper.dsl.contextMappingDSL.UseCase;
 import org.contextmapper.tactic.dsl.tacticdsl.SimpleDomainObject;
@@ -64,14 +64,14 @@ public class UniquenessValidator extends AbstractDeclarativeValidator {
 	}
 
 	@Check
-	public void validateThatModuleNameIsUnique(final Module module) {
+	public void validateThatModuleNameIsUnique(final SculptorModule module) {
 		if (module != null) {
-			Iterator<Module> allModules = IteratorExtensions.filter(EcoreUtil2.eAll(EcoreUtil.getRootContainer(module)), Module.class);
-			Iterator<Module> duplicateModules = IteratorExtensions.filter(allModules, ((Function1<Module, Boolean>) (Module m) -> {
+			Iterator<SculptorModule> allModules = IteratorExtensions.filter(EcoreUtil2.eAll(EcoreUtil.getRootContainer(module)), SculptorModule.class);
+			Iterator<SculptorModule> duplicateModules = IteratorExtensions.filter(allModules, ((Function1<SculptorModule, Boolean>) (SculptorModule m) -> {
 				return m.getName().equals(module.getName());
 			}));
 			if (IteratorExtensions.size(duplicateModules) > 1)
-				error(String.format(MODULE_NAME_NOT_UNIQUE, module.getName()), module, ContextMappingDSLPackage.Literals.MODULE__NAME);
+				error(String.format(MODULE_NAME_NOT_UNIQUE, module.getName()), module, ContextMappingDSLPackage.Literals.SCULPTOR_MODULE__NAME);
 		}
 	}
 
@@ -107,7 +107,7 @@ public class UniquenessValidator extends AbstractDeclarativeValidator {
 	}
 
 	@Check
-	public void validateThatDomainObjectsAreUniqueInModule(final Module module) {
+	public void validateThatDomainObjectsAreUniqueInModule(final SculptorModule module) {
 		if (module == null)
 			return;
 		checkDomainObjectUnique(module.getDomainObjects());

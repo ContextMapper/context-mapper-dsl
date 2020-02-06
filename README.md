@@ -97,7 +97,7 @@ To build the standalone projects only, you can use the Gradle Wrapper:
 `./gradlew clean publishToMavenLocal -Psigning.keyId=<your-gpg-key-id> -Psigning.password=<gpg-passphrase> -Psigning.secretKeyRingFile=<path-to-gpg-keyring-file>` 
 
 ### Setup Eclipse IDE
-Since this is an Xtext project you need an Eclipse IDE to work on it. Download the **Eclipse IDE for Java and DSL Developers** from [here](https://www.eclipse.org/downloads/packages/). The latest version of eclipse we worked with is [2019-06](https://www.eclipse.org/downloads/packages/release/2019-06/r/eclipse-ide-java-and-dsl-developers).
+Since this is an Xtext project you need an Eclipse IDE to work on it. Download the **Eclipse IDE for Java and DSL Developers** from [here](https://www.eclipse.org/downloads/packages/). The latest version of Eclipse we worked with is [2019-12](https://www.eclipse.org/downloads/packages/release/2019-12/r/eclipse-ide-java-and-dsl-developers).
 
 #### Additional requirements
 Before importing the project you need to install the **Tycho Configurator** m2e connector. This can be done by following these steps:

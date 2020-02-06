@@ -14,7 +14,7 @@ import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.KnowledgeLevel;
 import org.contextmapper.dsl.contextMappingDSL.LikelihoodForChange;
-import org.contextmapper.dsl.contextMappingDSL.Module;
+import org.contextmapper.dsl.contextMappingDSL.SculptorModule;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
 import org.contextmapper.dsl.refactoring.MergeAggregatesRefactoring;
 import org.contextmapper.dsl.refactoring.exception.RefactoringInputException;
@@ -76,7 +76,7 @@ public class MergeAggregatesTest extends AbstractRefactoringTest {
 		BoundedContext bc = contextMappingModels.get(0).getBoundedContexts().get(0);
 		assertEquals("CustomerManagement", bc.getName());
 
-		Module module = bc.getModules().get(0);
+		SculptorModule module = bc.getModules().get(0);
 		List<String> aggregateNames = module.getAggregates().stream().map(a -> a.getName()).collect(Collectors.toList());
 		assertEquals(1, aggregateNames.size());
 		assertTrue(aggregateNames.contains("Customers"));

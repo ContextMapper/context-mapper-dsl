@@ -22,7 +22,7 @@ import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
-import org.contextmapper.dsl.contextMappingDSL.Module;
+import org.contextmapper.dsl.contextMappingDSL.SculptorModule;
 import org.contextmapper.dsl.contextMappingDSL.Relationship;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
 import org.contextmapper.tactic.dsl.tacticdsl.DomainObject;
@@ -49,7 +49,7 @@ public class SplitAggregateByEntitiesRefactoring extends AbstractHenshinRefactor
 	@Override
 	protected String getHenshinTransformationFilename() {
 		Aggregate selectedAggregate = getSelectedAggregate(model);
-		if (selectedAggregate != null && selectedAggregate.eContainer() instanceof Module)
+		if (selectedAggregate != null && selectedAggregate.eContainer() instanceof SculptorModule)
 			return HenshinTransformationFileProvider.SPLIT_AGGREGATE_BY_ENTITIES_IN_MODULE;
 		return HenshinTransformationFileProvider.SPLIT_AGGREGATE_BY_ENTITIES;
 	}
@@ -82,8 +82,8 @@ public class SplitAggregateByEntitiesRefactoring extends AbstractHenshinRefactor
 			if (inputAggregate.eContainer() instanceof BoundedContext) {
 				BoundedContext bc = (BoundedContext) inputAggregate.eContainer();
 				fixNewAggregateNamesAndSetRoot(bc.getAggregates());
-			} else if (inputAggregate.eContainer() instanceof Module) {
-				Module m = (Module) inputAggregate.eContainer();
+			} else if (inputAggregate.eContainer() instanceof SculptorModule) {
+				SculptorModule m = (SculptorModule) inputAggregate.eContainer();
 				fixNewAggregateNamesAndSetRoot(m.getAggregates());
 			}
 

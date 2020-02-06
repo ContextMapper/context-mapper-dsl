@@ -6,13 +6,14 @@
 	<packaging>pom</packaging>
 
 	<properties>
-		<xtextVersion>2.15.0</xtextVersion>
-		<jacoco-version>0.8.2</jacoco-version>
+		<xtextVersion>2.20.0</xtextVersion>
+		<mwe2Version>2.11.1</mwe2Version>
+		<jacoco-version>0.8.5</jacoco-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<!-- Tycho settings -->
-		<tycho-version>1.4.0</tycho-version>
+		<tycho-version>1.5.1</tycho-version>
 		<!-- Define overridable properties for tycho-surefire-plugin -->
 		<platformSystemProperties />
 		<moduleProperties />
@@ -35,8 +36,8 @@
 	<scm>
 		<connection>scm:git:https://${env.GITHUB_USERNAME}:${env.GITHUB_PASSWORD}@github.com/ContextMapper/context-mapper-dsl.git</connection>
 		<developerConnection>scm:git:https://${env.GITHUB_USERNAME}:${env.GITHUB_PASSWORD}@github.com/ContextMapper/context-mapper-dsl.git</developerConnection>
-	  <tag>HEAD</tag>
-  </scm>
+		<tag>HEAD</tag>
+	</scm>
 
 	<build>
 		<plugins>
@@ -314,7 +315,7 @@
 					<version>${tycho-version}</version>
 					<configuration>
 						<!-- THE FOLLOWING LINE MUST NOT BE BROKEN BY AUTOFORMATTING -->
-						<argLine>${tycho.testArgLine} ${platformSystemProperties} ${systemProperties} ${moduleProperties}</argLine>
+						<argLine>${jacoco.argLine} ${platformSystemProperties} ${systemProperties} ${moduleProperties}</argLine>
 						<failIfNoTests>false</failIfNoTests>
 						<useUIHarness>false</useUIHarness>
 					</configuration>
@@ -323,6 +324,17 @@
 					<groupId>org.jacoco</groupId>
 					<artifactId>jacoco-maven-plugin</artifactId>
 					<version>${jacoco-version}</version>
+					<executions>
+						<execution>
+							<id>prepare-agent</id>
+							<goals>
+								<goal>prepare-agent</goal>
+							</goals>
+							<configuration>
+								<propertyName>jacoco.argLine</propertyName>
+							</configuration>
+						</execution>
+					</executions>
 					<configuration>
 						<excludes>
 							<!-- Exclude ANTRL internals -->

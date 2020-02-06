@@ -53,7 +53,7 @@ BoundedContext:
 			(('responsibilities' ('=')? responsibilities+=STRING) ("," responsibilities+=STRING)*)? &
 			('implementationTechnology' ('=')? implementationTechnology=STRING)? &
 			('knowledgeLevel' ('=')? knowledgeLevel=KnowledgeLevel)?)
-			modules += Module*
+			modules += SculptorModule*
 			aggregates += Aggregate*
 		CLOSE
 	)?
@@ -184,7 +184,7 @@ UseCase:
 	CLOSE)?
 ;
 
-Module :
+SculptorModule :
   (doc=STRING)?
   "Module" name=ID (OPEN
     (external?="external")?

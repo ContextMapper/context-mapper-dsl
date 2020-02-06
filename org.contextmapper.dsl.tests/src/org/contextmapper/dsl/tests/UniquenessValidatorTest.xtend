@@ -67,7 +67,7 @@ class UniquenessValidatorTest {
 		val ContextMappingModel result = parseHelper.parse(dslSnippet);
 		// then
 		assertThatNoParsingErrorsOccurred(result);
-		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.MODULE, "",
+		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.SCULPTOR_MODULE, "",
 			String.format(MODULE_NAME_NOT_UNIQUE, "Mod"));
 	}
 	

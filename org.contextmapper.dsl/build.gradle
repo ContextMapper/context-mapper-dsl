@@ -10,7 +10,7 @@ dependencies {
 	compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.9.9'
 	compile group: 'org.contextmapper', name: 'henshin-interpreter', version: '1.4.0'
 	compile group: 'org.contextmapper', name: 'context-map-generator', version: '1.0.1'
-	compile group: 'org.contextmapper', name: 'service-cutter-library', version: '1.1.3'
+	compile group: 'org.contextmapper', name: 'service-cutter-library', version: '1.1.4'
 }
 configurations {
 	mwe2 {
@@ -19,7 +19,7 @@ configurations {
 }
 
 dependencies {
-	mwe2 "org.eclipse.emf:org.eclipse.emf.mwe2.launch:2.9.1.201705291010"
+	mwe2 "org.eclipse.emf:org.eclipse.emf.mwe2.launch:2.11.1"
 	mwe2 "org.eclipse.xtext:org.eclipse.xtext.common.types:${xtextVersion}"
 	mwe2 "org.eclipse.xtext:org.eclipse.xtext.xtext.generator:${xtextVersion}"
 	mwe2 "org.eclipse.xtext:xtext-antlr-generator:[2.1.1, 3)"
@@ -46,6 +46,15 @@ cleanEclipseClasspath.enabled=false
 task sourcesJar(type: Jar) {
     from sourceSets.main.allJava
     archiveClassifier = 'sources'
+}
+
+javadoc {
+    options.tags = [ "model", "generated", "ordered", "Inject" ]
+    exclude 'org/contextmapper/dsl/contextMappingDSL/impl/**'
+    exclude 'org/contextmapper/servicecutter/dsl/serviceCutterConfigurationDSL/impl/**'
+    exclude 'org/contextmapper/tactic/dsl/tacticdsl/impl/**'
+    exclude 'org/contextmapper/tactic/dsl/serializer/**'
+    exclude 'org/contextmapper/dsl/serializer/**'
 }
 
 task javadocJar(type: Jar) {
