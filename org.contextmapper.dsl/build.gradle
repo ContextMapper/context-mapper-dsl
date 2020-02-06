@@ -48,6 +48,15 @@ task sourcesJar(type: Jar) {
     archiveClassifier = 'sources'
 }
 
+javadoc {
+    options.tags = [ "model", "generated", "ordered", "Inject" ]
+    exclude 'org/contextmapper/dsl/contextMappingDSL/impl/**'
+    exclude 'org/contextmapper/servicecutter/dsl/serviceCutterConfigurationDSL/impl/**'
+    exclude 'org/contextmapper/tactic/dsl/tacticdsl/impl/**'
+    exclude 'org/contextmapper/tactic/dsl/serializer/**'
+    exclude 'org/contextmapper/dsl/serializer/**'
+}
+
 task javadocJar(type: Jar) {
     from javadoc
     archiveClassifier = 'javadoc'
