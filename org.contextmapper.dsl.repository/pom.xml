@@ -67,6 +67,15 @@
 		</pluginManagement>
 	</build>
 
+	<dependencies>
+		<dependency>
+			<groupId>org.codehaus.groovy</groupId>
+			<artifactId>groovy-all</artifactId>
+			<version>2.5.9</version>
+			<type>pom</type>
+		</dependency>
+	</dependencies>
+
 	<profiles>
 		<profile>
 			<id>release-composite</id>
@@ -86,6 +95,7 @@
 								<configuration>
 									<target>
 										<ant antfile="${basedir}/bintray.ant" target="get-composite-metadata">
+											<reference torefid="maven.runtime.classpath" refid="maven.runtime.classpath"/>
 										</ant>
 									</target>
 								</configuration>
@@ -100,6 +110,7 @@
 								<configuration>
 									<target>
 										<ant antfile="${basedir}/bintray.ant" target="push-to-bintray">
+											<reference torefid="maven.runtime.classpath" refid="maven.runtime.classpath"/>
 										</ant>
 									</target>
 								</configuration>

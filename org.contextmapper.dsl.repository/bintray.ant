@@ -25,18 +25,15 @@
 	<property name="compositeContent" value="compositeContent.xml" />
 
 	<property name="local.p2.repository" value="target/repository" />
-
+	
 	<target name="getMajorMinorVersion">
-		<script language="javascript">
-			<![CDATA[
-
-	                // getting the value
-	                buildnumber = project.getProperty("unqualifiedVersion");
-	                index = buildnumber.lastIndexOf(".");
-	                counter = buildnumber.substring(0, index);
-	    			project.setProperty("majorMinorVersion",counter);
-
-	            ]]>
+		<property name="runtime_classpath" refid="maven.runtime.classpath"/>
+		
+		<script language="groovy" classpath="${runtime_classpath}">
+			def fullVersion = project.getProperty("unqualifiedVersion");
+			def index = fullVersion.lastIndexOf(".")
+			def majorMinorVersion = fullVersion.substring(0, index)
+			project.setProperty("majorMinorVersion",majorMinorVersion);
 		</script>
 	</target>
 
@@ -101,7 +98,7 @@
 		<antcall target="postprocess-metadata" />
 		<antcall target="push-p2-repo-to-bintray" />
 		<antcall target="push-p2-repo-zipped-to-bintray" />
-		<antcall target="push-composite-to-bintray" />
+		<antcall target="push-composite-to-bintray" inheritRefs="true" />
 		<antcall target="push-main-composite-to-bintray" />
 	</target>
 
