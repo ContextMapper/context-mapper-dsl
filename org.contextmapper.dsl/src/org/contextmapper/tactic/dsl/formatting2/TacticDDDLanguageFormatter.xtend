@@ -34,13 +34,6 @@ class TacticDDDLanguageFormatter extends AbstractFormatter2 {
 
 	@Inject extension TacticDDDLanguageGrammarAccess
 
-	def dispatch void format(TacticDDDModel tacticDDDModel, extension IFormattableDocument document) {
-		for (_import : tacticDDDModel.imports) {
-			_import.format
-		}
-		tacticDDDModel.app.format
-	}
-	
 	def dispatch void format(Entity entity, extension IFormattableDocument document) {
 		interior(
 			entity.regionFor.keyword('{').append[newLine],

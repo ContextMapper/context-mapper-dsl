@@ -22,12 +22,16 @@ generate contextMappingDSL "http://www.contextmapper.org/dsl/ContextMappingDSL"
 
 ContextMappingModel:
 	(
+		(imports+=Import)* &
 		(map = ContextMap)? &
 		(boundedContexts += BoundedContext)* &
 		(domains += Domain)* &
 		(useCases += UseCase)* 
 	)
 ;
+
+Import :
+'import' importURI=STRING;
 
 ContextMap:
 	{ContextMap} // make sure there is always a context map
