@@ -63,6 +63,14 @@
 				"Location.name"
 			],
 			"direction": "OUTGOING"
+		},
+		{
+			"serviceA": "Service A",
+			"serviceB": "Service C",
+			"sharedEntities": [
+				"Location.name"
+			],
+			"direction": "INCOMING"
 		}
 	],
 	"useCaseResponsibility": {

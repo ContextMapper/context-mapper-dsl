@@ -51,7 +51,7 @@ class ServiceCutterOutputModelFactoryTest {
 		// then
 		assertNotNull(solverResult);
 		assertEquals(3, solverResult.getServices().size());
-		assertEquals(2, solverResult.getRelations().size());
+		assertEquals(3, solverResult.getRelations().size());
 		assertEquals(2, solverResult.getUseCaseResponsibility().size());
 	}
 

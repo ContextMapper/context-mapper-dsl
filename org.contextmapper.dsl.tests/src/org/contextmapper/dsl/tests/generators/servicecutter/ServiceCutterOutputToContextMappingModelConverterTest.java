@@ -51,7 +51,7 @@ class ServiceCutterOutputToContextMappingModelConverterTest {
 		
 		// then
 		assertEquals(3, contextMap.getBoundedContexts().size());
-		assertEquals(2, contextMap.getRelationships().size());
+		assertEquals(3, contextMap.getRelationships().size());
 	}
 
 }
