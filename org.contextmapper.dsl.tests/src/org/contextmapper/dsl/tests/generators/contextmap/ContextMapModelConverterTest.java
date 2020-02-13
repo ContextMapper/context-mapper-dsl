@@ -15,13 +15,12 @@
  */
 package org.contextmapper.dsl.tests.generators.contextmap;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
-import java.util.List;
 
 import org.contextmapper.contextmap.generator.model.BoundedContext;
 import org.contextmapper.contextmap.generator.model.ContextMap;
@@ -30,14 +29,11 @@ import org.contextmapper.contextmap.generator.model.Partnership;
 import org.contextmapper.contextmap.generator.model.SharedKernel;
 import org.contextmapper.contextmap.generator.model.UpstreamDownstreamRelationship;
 import org.contextmapper.contextmap.generator.model.UpstreamPatterns;
+import org.contextmapper.dsl.cml.CMLResourceContainer;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.generator.contextmap.ContextMapModelConverter;
 import org.contextmapper.dsl.tests.AbstractCMLInputFileTest;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.xtext.xbase.lib.IteratorExtensions;
 import org.junit.jupiter.api.Test;
-
-import com.google.common.collect.Iterators;
 
 public class ContextMapModelConverterTest extends AbstractCMLInputFileTest {
 
@@ -45,9 +41,8 @@ public class ContextMapModelConverterTest extends AbstractCMLInputFileTest {
 	public void canConvertContextMap() throws IOException {
 		// given
 		String inputModelName = "test-context-map-1.cml";
-		Resource input = getResourceCopyOfTestCML(inputModelName);
-		List<ContextMappingModel> models = IteratorExtensions.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(input.getAllContents(), ContextMappingModel.class));
-		ContextMappingModel model = models.get(0);
+		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		ContextMappingModel model = input.getContextMappingModel();
 
 		// when
 		ContextMap contextMap = new ContextMapModelConverter().convert(model.getMap());

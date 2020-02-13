@@ -21,10 +21,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.io.IOException;
 import java.util.List;
 
-import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
+import org.contextmapper.dsl.cml.CMLResourceContainer;
 import org.contextmapper.dsl.generator.exception.GeneratorInputException;
 import org.contextmapper.dsl.generator.mdsl.MDSLModelCreator;
-import org.contextmapper.dsl.generator.mdsl.ProtectedRegionContextFactory;
 import org.contextmapper.dsl.generator.mdsl.model.DataType;
 import org.contextmapper.dsl.generator.mdsl.model.EndpointClient;
 import org.contextmapper.dsl.generator.mdsl.model.EndpointContract;
@@ -33,11 +32,7 @@ import org.contextmapper.dsl.generator.mdsl.model.EndpointOperation;
 import org.contextmapper.dsl.generator.mdsl.model.EndpointProvider;
 import org.contextmapper.dsl.generator.mdsl.model.ServiceSpecification;
 import org.contextmapper.dsl.tests.AbstractCMLInputFileTest;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.xtext.xbase.lib.IteratorExtensions;
 import org.junit.jupiter.api.Test;
-
-import com.google.common.collect.Iterators;
 
 public class MDSLModelCreatorTest extends AbstractCMLInputFileTest {
 
@@ -45,9 +40,8 @@ public class MDSLModelCreatorTest extends AbstractCMLInputFileTest {
 	void canCreateMDSLModel() throws IOException {
 		// given
 		String inputModelName = "basic-mdsl-model-test.cml";
-		Resource input = getResourceCopyOfTestCML(inputModelName);
-		List<ContextMappingModel> models = IteratorExtensions.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(input.getAllContents(), ContextMappingModel.class));
-		MDSLModelCreator mdslCreator = new MDSLModelCreator(models.get(0).getMap());
+		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		MDSLModelCreator mdslCreator = new MDSLModelCreator(input.getContextMappingModel().getMap());
 
 		// when
 		List<ServiceSpecification> serviceSpecifications = mdslCreator.createServiceSpecifications();
@@ -105,9 +99,8 @@ public class MDSLModelCreatorTest extends AbstractCMLInputFileTest {
 	void doesOnlyCreateOneDataTypeIfSameNameApearsMultipleTimes() throws IOException {
 		// given
 		String inputModelName = "same-data-type-in-multiple-methods.cml";
-		Resource input = getResourceCopyOfTestCML(inputModelName);
-		List<ContextMappingModel> models = IteratorExtensions.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(input.getAllContents(), ContextMappingModel.class));
-		MDSLModelCreator mdslCreator = new MDSLModelCreator(models.get(0).getMap());
+		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		MDSLModelCreator mdslCreator = new MDSLModelCreator(input.getContextMappingModel().getMap());
 
 		// when
 		List<ServiceSpecification> serviceSpecifications = mdslCreator.createServiceSpecifications();
@@ -122,9 +115,8 @@ public class MDSLModelCreatorTest extends AbstractCMLInputFileTest {
 	void createsOnlyOneAPIForUpstreamContextWhichOccursInMultipleRelationships() throws IOException {
 		// given
 		String inputModelName = "context-is-upstream-in-multiple-relationships.cml";
-		Resource input = getResourceCopyOfTestCML(inputModelName);
-		List<ContextMappingModel> models = IteratorExtensions.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(input.getAllContents(), ContextMappingModel.class));
-		MDSLModelCreator mdslCreator = new MDSLModelCreator(models.get(0).getMap());
+		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		MDSLModelCreator mdslCreator = new MDSLModelCreator(input.getContextMappingModel().getMap());
 
 		// when
 		List<ServiceSpecification> serviceSpecifications = mdslCreator.createServiceSpecifications();
@@ -138,9 +130,8 @@ public class MDSLModelCreatorTest extends AbstractCMLInputFileTest {
 	void canHandleReferencesInMethodTypes() throws IOException {
 		// given
 		String inputModelName = "use-references-in-methods.cml";
-		Resource input = getResourceCopyOfTestCML(inputModelName);
-		List<ContextMappingModel> models = IteratorExtensions.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(input.getAllContents(), ContextMappingModel.class));
-		MDSLModelCreator mdslCreator = new MDSLModelCreator(models.get(0).getMap());
+		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		MDSLModelCreator mdslCreator = new MDSLModelCreator(input.getContextMappingModel().getMap());
 
 		// when
 		List<ServiceSpecification> serviceSpecifications = mdslCreator.createServiceSpecifications();
@@ -159,9 +150,8 @@ public class MDSLModelCreatorTest extends AbstractCMLInputFileTest {
 	void canHandleMDSLKeywords() throws IOException {
 		// given
 		String inputModelName = "mdsl-can-handle-keyword-clashes.cml";
-		Resource input = getResourceCopyOfTestCML(inputModelName);
-		List<ContextMappingModel> models = IteratorExtensions.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(input.getAllContents(), ContextMappingModel.class));
-		MDSLModelCreator mdslCreator = new MDSLModelCreator(models.get(0).getMap());
+		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		MDSLModelCreator mdslCreator = new MDSLModelCreator(input.getContextMappingModel().getMap());
 
 		// when
 		List<ServiceSpecification> serviceSpecifications = mdslCreator.createServiceSpecifications();
@@ -180,9 +170,8 @@ public class MDSLModelCreatorTest extends AbstractCMLInputFileTest {
 	void throwExceptionIfThereIsNoUpstreamDownstreamRelationship() throws IOException {
 		// given
 		String inputModelName = "no-upstream-downstream-relationship.cml";
-		Resource input = getResourceCopyOfTestCML(inputModelName);
-		List<ContextMappingModel> models = IteratorExtensions.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(input.getAllContents(), ContextMappingModel.class));
-		MDSLModelCreator mdslCreator = new MDSLModelCreator(models.get(0).getMap());
+		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		MDSLModelCreator mdslCreator = new MDSLModelCreator(input.getContextMappingModel().getMap());
 
 		// when -> then throw exception
 		assertThrows(GeneratorInputException.class, () -> {
@@ -194,9 +183,8 @@ public class MDSLModelCreatorTest extends AbstractCMLInputFileTest {
 	void throwExceptionIfThereAreNoExposedAggregates() throws IOException {
 		// given
 		String inputModelName = "no-exposed-aggregates.cml";
-		Resource input = getResourceCopyOfTestCML(inputModelName);
-		List<ContextMappingModel> models = IteratorExtensions.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(input.getAllContents(), ContextMappingModel.class));
-		MDSLModelCreator mdslCreator = new MDSLModelCreator(models.get(0).getMap());
+		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		MDSLModelCreator mdslCreator = new MDSLModelCreator(input.getContextMappingModel().getMap());
 
 		// when -> then throw exception
 		assertThrows(GeneratorInputException.class, () -> {
@@ -208,9 +196,8 @@ public class MDSLModelCreatorTest extends AbstractCMLInputFileTest {
 	void throwExceptionIfThereAreNoOperations() throws IOException {
 		// given
 		String inputModelName = "no-operation.cml";
-		Resource input = getResourceCopyOfTestCML(inputModelName);
-		List<ContextMappingModel> models = IteratorExtensions.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(input.getAllContents(), ContextMappingModel.class));
-		MDSLModelCreator mdslCreator = new MDSLModelCreator(models.get(0).getMap());
+		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		MDSLModelCreator mdslCreator = new MDSLModelCreator(input.getContextMappingModel().getMap());
 
 		// when -> then throw exception
 		assertThrows(GeneratorInputException.class, () -> {

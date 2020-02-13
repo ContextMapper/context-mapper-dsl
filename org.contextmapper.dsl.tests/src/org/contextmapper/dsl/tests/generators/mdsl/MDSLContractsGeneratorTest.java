@@ -19,11 +19,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
+import org.contextmapper.dsl.cml.CMLResourceContainer;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.generator.MDSLContractsGenerator;
 import org.contextmapper.dsl.generator.mdsl.ProtectedRegionIdentifier;
@@ -32,11 +33,7 @@ import org.contextmapper.dsl.tests.AbstractCMLInputFileTest;
 import org.contextmapper.dsl.tests.generators.mocks.ContextMappingModelResourceMock;
 import org.contextmapper.dsl.tests.generators.mocks.IFileSystemAccess2Mock;
 import org.contextmapper.dsl.tests.generators.mocks.IGeneratorContextMock;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.xtext.xbase.lib.IteratorExtensions;
 import org.junit.jupiter.api.Test;
-
-import com.google.common.collect.Iterators;
 
 class MDSLContractsGeneratorTest extends AbstractCMLInputFileTest {
 
@@ -44,9 +41,8 @@ class MDSLContractsGeneratorTest extends AbstractCMLInputFileTest {
 	void canCreateMDSLFiles() throws IOException {
 		// given
 		String inputModelName = "basic-mdsl-model-test.cml";
-		Resource input = getResourceCopyOfTestCML(inputModelName);
-		List<ContextMappingModel> models = IteratorExtensions.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(input.getAllContents(), ContextMappingModel.class));
-		ContextMappingModel model = models.get(0);
+		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		ContextMappingModel model = input.getContextMappingModel();
 
 		// when
 		IFileSystemAccess2Mock filesystem = new IFileSystemAccess2Mock();
@@ -60,11 +56,10 @@ class MDSLContractsGeneratorTest extends AbstractCMLInputFileTest {
 	void canOverWriteFileAndPreserveProtectedRegion() throws IOException {
 		// given
 		String inputModelName = "overwrite-with-preserving-protected-region-test.cml";
-		Resource input = getResourceCopyOfTestCML(inputModelName);
-		List<ContextMappingModel> models = IteratorExtensions.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(input.getAllContents(), ContextMappingModel.class));
-		ContextMappingModel model = models.get(0);
+		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		ContextMappingModel model = input.getContextMappingModel();
 		File existingMDSLFile = new File(Paths.get("").toAbsolutePath().toString(), "/integ-test-files/mdsl/overwrite-with-preserving-protected-region-test.mdsl");
-		String existingMDSLContent = FileUtils.readFileToString(existingMDSLFile);
+		String existingMDSLContent = FileUtils.readFileToString(existingMDSLFile, Charset.forName("UTF-8"));
 
 		// when
 		IFileSystemAccess2Mock filesystem = new IFileSystemAccess2Mock();

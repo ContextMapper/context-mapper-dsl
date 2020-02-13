@@ -15,7 +15,8 @@
  */
 package org.contextmapper.dsl.refactoring;
 
-import org.eclipse.emf.ecore.resource.Resource;
+import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 
 import com.google.common.collect.Sets;
 
@@ -33,8 +34,13 @@ public class SplitBoundedContextByOwner implements Refactoring {
 	}
 
 	@Override
-	public void doRefactor(Resource resource) {
+	public void doRefactor(CMLResourceContainer resource) {
 		this.coreAR.doRefactor(resource);
+	}
+
+	@Override
+	public void doRefactor(CMLResourceContainer resource, ResourceSet consistencyCheckResources) {
+		this.coreAR.doRefactor(resource, consistencyCheckResources);
 	}
 
 }

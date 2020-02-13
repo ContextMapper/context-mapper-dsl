@@ -15,15 +15,15 @@
  */
 package org.contextmapper.dsl.ui.handler;
 
+import org.contextmapper.dsl.cml.CMLResourceContainer;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.refactoring.henshin.SplitBoundedContextByDuplicateEntityInAggregatesRefactoring;
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.emf.ecore.resource.Resource;
 
 public class SplitBoundedContextRefactoringHandler extends AbstractRefactoringHandler {
 
 	@Override
-	protected void executeRefactoring(Resource resource, ExecutionEvent event) {
+	protected void executeRefactoring(CMLResourceContainer resource, ExecutionEvent event) {
 		BoundedContext bc = (BoundedContext) getSelectedElement();
 		new SplitBoundedContextByDuplicateEntityInAggregatesRefactoring(bc.getName()).doRefactor(resource);
 	}

@@ -97,7 +97,7 @@ public class MergeAggregatesRefactoring extends AbstractRefactoring implements R
 			container.getAggregates().remove(agg2);
 		}
 		this.model.eAllContents();
-		saveResource();
+		saveResources();
 	}
 
 	private void checkForPossibleDomainObjectNameClashes(Aggregate aggregate1, Aggregate aggregate2) {

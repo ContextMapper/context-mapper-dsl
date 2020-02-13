@@ -55,7 +55,7 @@ public class ExtractAggregatesByVolatility extends AbstractRefactoring implement
 		}
 		this.model.getBoundedContexts().add(newBC);
 		new ContextMappingModelHelper(model).moveExposedAggregatesToNewRelationshipsIfNeeded(aggregates.stream().map(a -> a.getName()).collect(Collectors.toList()), newBC);
-		saveResource();
+		saveResources();
 	}
 
 	private BoundedContext createNewBoundedContext() {

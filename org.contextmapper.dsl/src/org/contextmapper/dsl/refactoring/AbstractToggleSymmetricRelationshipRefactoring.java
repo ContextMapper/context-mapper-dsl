@@ -63,7 +63,7 @@ public abstract class AbstractToggleSymmetricRelationshipRefactoring extends Abs
 		contextMap.getRelationships().add(newRelationship);
 
 		// save model
-		saveResource();
+		saveResources();
 	}
 
 	abstract String getRelationshipType();

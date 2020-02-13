@@ -18,12 +18,17 @@ package org.contextmapper.dsl.refactoring;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+import org.contextmapper.dsl.cml.CMLResourceContainer;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContextType;
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
+import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
+import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
+import org.contextmapper.dsl.contextMappingDSL.Import;
 import org.contextmapper.dsl.contextMappingDSL.Relationship;
-import org.eclipse.xtext.EcoreUtil2;
+import org.eclipse.emf.common.util.URI;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -77,9 +82,14 @@ public class MergeBoundedContextsRefactoring extends AbstractRefactoring impleme
 
 		// remove BC2
 		handleContextMapChanges(bc1, bc2);
-		this.model.getBoundedContexts().remove(bc2);
-		this.model.eAllContents();
-		saveResource();
+		handleImportsToRemovedBC(bc1, bc2);
+		ContextMappingModel bc2Model = getResource(bc2).getContextMappingModel();
+		bc2Model.getBoundedContexts().remove(bc2);
+		bc2Model.eAllContents();
+
+		markResourceChanged(bc1);
+		markResourceChanged(bc2);
+		saveResources();
 	}
 
 	private String mergeImplementationTechnologies(String implementationTechnology1, String implementationTechnology2) {
@@ -94,29 +104,51 @@ public class MergeBoundedContextsRefactoring extends AbstractRefactoring impleme
 		return String.join(", ", implementationTechnologies);
 	}
 
-	private List<BoundedContext> getAllBoundedContexts() {
-		return EcoreUtil2.<BoundedContext>getAllContentsOfType(model, BoundedContext.class);
+	private void handleContextMapChanges(BoundedContext mergedBC, BoundedContext removedBC) {
+		for (ContextMap map : getAllContextMaps()) {
+			ContextMappingModelHelper helper = new ContextMappingModelHelper(getResource(map).getContextMappingModel());
+			List<Relationship> relationshipsToRemove = helper.findAnyRelationshipsBetweenTwoContexts(mergedBC, removedBC);
+			map.getRelationships().removeAll(relationshipsToRemove);
+			helper.replaceBCInAllRelationships(removedBC, mergedBC);
+
+			if (map.getBoundedContexts().stream().map(bc -> bc.getName()).collect(Collectors.toSet()).contains(removedBC.getName())) {
+				BoundedContext bcToRemove = map.getBoundedContexts().stream().filter(bc -> bc.getName().equals(removedBC.getName())).findFirst().get();
+				map.getBoundedContexts().remove(bcToRemove);
+
+				// ugly workaround (clear list and add all again); otherwise list is not
+				// properly updated when saving ecore model :(
+				List<BoundedContext> list = Lists.newArrayList(map.getBoundedContexts());
+				map.getBoundedContexts().clear();
+				map.getBoundedContexts().addAll(list);
+			}
+			markResourceChanged(map);
+		}
 	}
 
-	private void handleContextMapChanges(BoundedContext bc1, BoundedContext bc2) {
-		ContextMap map = model.getMap();
+	private void handleImportsToRemovedBC(BoundedContext mergedBC, BoundedContext removedBC) {
+		CMLResourceContainer mergedBCResource = getResource(mergedBC);
+		CMLResourceContainer removedBCResource = getResource(removedBC);
+		URI mergedBCURI = mergedBCResource.getResource().getURI();
+		URI removedBCURI = removedBCResource.getResource().getURI();
 
-		// maybe there is no context map
-		if (map == null)
+		// precondition: if BCs are specified in same resource, imports are okay
+		if (mergedBCResource.getResource().getURI().toString().equals(removedBCResource.getResource().getURI().toString()))
 			return;
 
-		ContextMappingModelHelper helper = new ContextMappingModelHelper(model);
-		List<Relationship> relationshipsToRemove = helper.findAnyRelationshipsBetweenTwoContexts(bc1, bc2);
-		map.getRelationships().removeAll(relationshipsToRemove);
-		helper.replaceBCInAllRelationships(bc2, bc1);
+		for (CMLResourceContainer resource : additionalResourcesToCheck) {
+			Set<URI> importedURIs = resource.getContextMappingModel().getImports().stream().map(i -> URI.createURI(i.getImportURI()).resolve(rootResource.getResource().getURI()))
+					.collect(Collectors.toSet());
 
-		map.getBoundedContexts().remove(bc2);
+			if (mergedBCURI.toString().equals(resource.getResource().getURI().toString()))
+				continue;
 
-		// ugly workaround (clear list and add all again); otherwise list is not
-		// properly updated when saving ecore model :(
-		List<BoundedContext> list = Lists.newArrayList(map.getBoundedContexts());
-		map.getBoundedContexts().clear();
-		map.getBoundedContexts().addAll(list);
+			if (importedURIs.contains(removedBCURI) && !importedURIs.contains(mergedBCURI)) {
+				Import importToAdd = ContextMappingDSLFactory.eINSTANCE.createImport();
+				importToAdd.setImportURI(mergedBCURI.toString());
+				resource.getContextMappingModel().getImports().add(importToAdd);
+				markResourceChanged(resource);
+			}
+		}
 	}
 
 }

@@ -65,7 +65,7 @@ public class ChangePartnershipToUpstreamDownstreamRefactoring extends AbstractRe
 		contextMap.getRelationships().add(relationship);
 
 		// save model
-		saveResource();
+		saveResources();
 	}
 
 	List<SymmetricRelationship> getMatchingRelationships() {

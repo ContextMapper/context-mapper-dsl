@@ -59,7 +59,7 @@ public class ExtractAggregatesByCohesion extends AbstractRefactoring implements 
 
 		this.model.getBoundedContexts().add(newBC);
 		new ContextMappingModelHelper(model).moveExposedAggregatesToNewRelationshipsIfNeeded(aggregatesToExtract, newBC);
-		saveResource();
+		saveResources();
 	}
 
 	private BoundedContext createNewBoundedContext() {

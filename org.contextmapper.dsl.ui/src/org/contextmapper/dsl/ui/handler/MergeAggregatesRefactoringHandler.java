@@ -18,6 +18,7 @@ package org.contextmapper.dsl.ui.handler;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.contextmapper.dsl.cml.CMLResourceContainer;
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.SculptorModule;
@@ -26,7 +27,6 @@ import org.contextmapper.dsl.ui.handler.wizard.MergeAggregatesContext;
 import org.contextmapper.dsl.ui.handler.wizard.MergeAggregatesRefactoringWizard;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.handlers.HandlerUtil;
 
@@ -47,7 +47,7 @@ public class MergeAggregatesRefactoringHandler extends AbstractRefactoringWithUs
 	}
 
 	@Override
-	protected void executeRefactoring(Resource resource, ExecutionEvent event) {
+	protected void executeRefactoring(CMLResourceContainer resource, ExecutionEvent event) {
 		Aggregate aggregate = (Aggregate) getSelectedElement();
 		BoundedContext parentBC = null;
 		if (aggregate.eContainer() instanceof BoundedContext) {

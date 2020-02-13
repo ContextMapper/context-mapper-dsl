@@ -22,14 +22,11 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.contextmapper.dsl.cml.CMLResourceContainer;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
 import org.contextmapper.dsl.refactoring.SplitBoundedContextByUseCases;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.xtext.xbase.lib.IteratorExtensions;
 import org.junit.jupiter.api.Test;
-
-import com.google.common.collect.Iterators;
 
 public class SplitBoundedContextByUseCasesTest extends AbstractRefactoringTest {
 
@@ -37,17 +34,16 @@ public class SplitBoundedContextByUseCasesTest extends AbstractRefactoringTest {
 	void canSplitWithSingleUseCases() throws IOException {
 		// given
 		String inputModelName = "split-bc-by-use-cases-test-1-input.cml";
-		Resource input = getResourceCopyOfTestCML(inputModelName);
+		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
 
 		// when
 		SplitBoundedContextByUseCases ar = new SplitBoundedContextByUseCases("CustomerManagement");
 		ar.doRefactor(input);
 
 		// then
-		List<ContextMappingModel> contextMappingModels = IteratorExtensions
-				.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(reloadResource(input).getAllContents(), ContextMappingModel.class));
-		assertEquals(2, contextMappingModels.get(0).getBoundedContexts().size());
-		List<String> boundedContextNames = contextMappingModels.get(0).getBoundedContexts().stream().map(bc -> bc.getName()).collect(Collectors.toList());
+		ContextMappingModel model = input.getContextMappingModel();
+		assertEquals(2, model.getBoundedContexts().size());
+		List<String> boundedContextNames = model.getBoundedContexts().stream().map(bc -> bc.getName()).collect(Collectors.toList());
 		assertTrue(boundedContextNames.contains("CustomerManagement"));
 		assertTrue(boundedContextNames.contains("NewBoundedContext1"));
 	}
@@ -56,17 +52,16 @@ public class SplitBoundedContextByUseCasesTest extends AbstractRefactoringTest {
 	void canSplitWithMultipleAggregatesPerUseCase() throws IOException {
 		// given
 		String inputModelName = "split-bc-by-use-cases-test-2-input.cml";
-		Resource input = getResourceCopyOfTestCML(inputModelName);
+		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
 
 		// when
 		SplitBoundedContextByUseCases ar = new SplitBoundedContextByUseCases("CustomerManagement");
 		ar.doRefactor(input);
 
 		// then
-		List<ContextMappingModel> contextMappingModels = IteratorExtensions
-				.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(reloadResource(input).getAllContents(), ContextMappingModel.class));
-		assertEquals(2, contextMappingModels.get(0).getBoundedContexts().size());
-		List<String> boundedContextNames = contextMappingModels.get(0).getBoundedContexts().stream().map(bc -> bc.getName()).collect(Collectors.toList());
+		ContextMappingModel model = input.getContextMappingModel();
+		assertEquals(2, model.getBoundedContexts().size());
+		List<String> boundedContextNames = model.getBoundedContexts().stream().map(bc -> bc.getName()).collect(Collectors.toList());
 		assertTrue(boundedContextNames.contains("CustomerManagement"));
 		assertTrue(boundedContextNames.contains("NewBoundedContext1"));
 	}
@@ -75,37 +70,34 @@ public class SplitBoundedContextByUseCasesTest extends AbstractRefactoringTest {
 	void canSplitIfThereIsNothingToSplit() throws IOException {
 		// given
 		String inputModelName = "split-bc-by-use-cases-test-3-input.cml";
-		Resource input = getResourceCopyOfTestCML(inputModelName);
+		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
 
 		// when
 		SplitBoundedContextByUseCases ar = new SplitBoundedContextByUseCases("CustomerManagement");
 		ar.doRefactor(input);
 
 		// then
-		List<ContextMappingModel> contextMappingModels = IteratorExtensions
-				.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(reloadResource(input).getAllContents(), ContextMappingModel.class));
-		assertEquals(1, contextMappingModels.get(0).getBoundedContexts().size());
+		assertEquals(1, input.getContextMappingModel().getBoundedContexts().size());
 	}
 
 	@Test
 	void canSplitAndFixExposedAggregatesInContextMapRelationships() throws IOException {
 		// given
 		String inputModelName = "split-bc-by-use-cases-test-4-input.cml";
-		Resource input = getResourceCopyOfTestCML(inputModelName);
+		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
 
 		// when
 		SplitBoundedContextByUseCases ar = new SplitBoundedContextByUseCases("CustomerManagement");
 		ar.doRefactor(input);
 
 		// then
-		List<ContextMappingModel> contextMappingModels = IteratorExtensions
-				.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(reloadResource(input).getAllContents(), ContextMappingModel.class));
-		assertEquals(3, contextMappingModels.get(0).getBoundedContexts().size());
-		List<String> boundedContextNames = contextMappingModels.get(0).getBoundedContexts().stream().map(bc -> bc.getName()).collect(Collectors.toList());
+		ContextMappingModel model = input.getContextMappingModel();
+		assertEquals(3, model.getBoundedContexts().size());
+		List<String> boundedContextNames = model.getBoundedContexts().stream().map(bc -> bc.getName()).collect(Collectors.toList());
 		assertTrue(boundedContextNames.contains("CustomerManagement"));
 		assertTrue(boundedContextNames.contains("NewBoundedContext1"));
 
-		List<UpstreamDownstreamRelationship> relationships = contextMappingModels.get(0).getMap().getRelationships().stream()
+		List<UpstreamDownstreamRelationship> relationships = model.getMap().getRelationships().stream()
 				.filter(rel -> rel instanceof UpstreamDownstreamRelationship).map(rel -> (UpstreamDownstreamRelationship) rel).collect(Collectors.toList());
 		assertEquals(2, relationships.size());
 		assertEquals(1, relationships.get(0).getUpstreamExposedAggregates().size());

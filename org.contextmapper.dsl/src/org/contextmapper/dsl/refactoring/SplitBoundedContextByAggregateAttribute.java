@@ -48,7 +48,7 @@ public class SplitBoundedContextByAggregateAttribute extends AbstractRefactoring
 		initOriginalBC();
 		createAggregateMapping();
 		splitOriginalBC();
-		saveResource();
+		saveResources();
 	}
 
 	private void createAggregateMapping() {

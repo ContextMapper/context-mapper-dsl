@@ -15,8 +15,6 @@
  */
 package org.contextmapper.dsl.refactoring.henshin;
 
-import java.io.IOException;
-
 import org.contextmapper.dsl.refactoring.AbstractRefactoring;
 import org.contextmapper.dsl.refactoring.Refactoring;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -28,13 +26,12 @@ import org.eclipse.emf.henshin.interpreter.impl.EngineImpl;
 import org.eclipse.emf.henshin.interpreter.impl.UnitApplicationImpl;
 import org.eclipse.emf.henshin.model.Module;
 import org.eclipse.emf.henshin.model.resource.HenshinResourceSet;
-import org.eclipse.xtext.resource.SaveOptions;
 
 public abstract class AbstractHenshinRefactoring extends AbstractRefactoring implements Refactoring {
 
 	@Override
 	protected void doRefactor() {
-		executeHenshinTransformation(originalResource);
+		executeHenshinTransformation(rootResource.getResource());
 	}
 
 	private void executeHenshinTransformation(Resource resource) {

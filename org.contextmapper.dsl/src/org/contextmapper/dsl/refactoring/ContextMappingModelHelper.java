@@ -50,13 +50,13 @@ public class ContextMappingModelHelper {
 		for (Relationship relationship : model.getMap().getRelationships()) {
 			if (relationship instanceof SymmetricRelationship) {
 				SymmetricRelationship symRelationship = (SymmetricRelationship) relationship;
-				if ((symRelationship.getParticipant1().equals(bc1) && symRelationship.getParticipant2().equals(bc2))
-						|| (symRelationship.getParticipant1().equals(bc2) && symRelationship.getParticipant2().equals(bc1)))
+				if ((symRelationship.getParticipant1().getName().equals(bc1.getName()) && symRelationship.getParticipant2().getName().equals(bc2.getName()))
+						|| (symRelationship.getParticipant1().getName().equals(bc2.getName()) && symRelationship.getParticipant2().getName().equals(bc1.getName())))
 					relationships.add(symRelationship);
 			} else if (relationship instanceof UpstreamDownstreamRelationship) {
 				UpstreamDownstreamRelationship upDownRelationship = (UpstreamDownstreamRelationship) relationship;
-				if ((upDownRelationship.getUpstream().equals(bc1) && upDownRelationship.getDownstream().equals(bc2))
-						|| (upDownRelationship.getUpstream().equals(bc2) && upDownRelationship.getDownstream().equals(bc1)))
+				if ((upDownRelationship.getUpstream().getName().equals(bc1.getName()) && upDownRelationship.getDownstream().getName().equals(bc2.getName()))
+						|| (upDownRelationship.getUpstream().getName().equals(bc2.getName()) && upDownRelationship.getDownstream().getName().equals(bc1.getName())))
 					relationships.add(upDownRelationship);
 			}
 		}
@@ -73,27 +73,27 @@ public class ContextMappingModelHelper {
 		for (Relationship relationship : model.getMap().getRelationships()) {
 			if (relationship instanceof SymmetricRelationship) {
 				SymmetricRelationship symRelationship = (SymmetricRelationship) relationship;
-				if (symRelationship.getParticipant1().equals(originalBC)) {
+				if (symRelationship.getParticipant1().getName().equals(originalBC.getName())) {
 					symRelationship.setParticipant1(replacementBC);
 					replacedAtLeastInOneRelationship = true;
 				}
-				if (symRelationship.getParticipant2().equals(originalBC)) {
+				if (symRelationship.getParticipant2().getName().equals(originalBC.getName())) {
 					symRelationship.setParticipant2(replacementBC);
 					replacedAtLeastInOneRelationship = true;
 				}
 			} else if (relationship instanceof UpstreamDownstreamRelationship) {
 				UpstreamDownstreamRelationship upDownRelationship = (UpstreamDownstreamRelationship) relationship;
-				if (upDownRelationship.getDownstream().equals(originalBC)) {
+				if (upDownRelationship.getDownstream().getName().equals(originalBC.getName())) {
 					upDownRelationship.setDownstream(replacementBC);
 					replacedAtLeastInOneRelationship = true;
 				}
-				if (upDownRelationship.getUpstream().equals(originalBC)) {
+				if (upDownRelationship.getUpstream().getName().equals(originalBC.getName())) {
 					upDownRelationship.setUpstream(replacementBC);
 					replacedAtLeastInOneRelationship = true;
 				}
 			}
 		}
-		if (replacedAtLeastInOneRelationship && !model.getMap().getBoundedContexts().contains(replacementBC))
+		if (replacedAtLeastInOneRelationship && !model.getMap().getBoundedContexts().stream().map(bc -> bc.getName()).collect(Collectors.toSet()).contains(replacementBC.getName()))
 			model.getMap().getBoundedContexts().add(replacementBC);
 		return replacedAtLeastInOneRelationship;
 	}

@@ -1,6 +1,8 @@
 package org.contextmapper.dsl.refactoring.exception;
 
-public class RefactoringInputException extends RuntimeException {
+import org.contextmapper.dsl.exception.ContextMapperApplicationException;
+
+public class RefactoringInputException extends ContextMapperApplicationException {
 
 	public RefactoringInputException(String message) {
 		super(message);

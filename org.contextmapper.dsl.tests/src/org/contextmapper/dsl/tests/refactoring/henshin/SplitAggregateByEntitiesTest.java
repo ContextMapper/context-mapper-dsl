@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.contextmapper.dsl.cml.CMLResourceContainer;
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
@@ -17,11 +18,7 @@ import org.contextmapper.dsl.refactoring.henshin.SplitAggregateByEntitiesRefacto
 import org.contextmapper.dsl.tests.refactoring.AbstractRefactoringTest;
 import org.contextmapper.tactic.dsl.tacticdsl.DomainObject;
 import org.contextmapper.tactic.dsl.tacticdsl.SimpleDomainObject;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.xtext.xbase.lib.IteratorExtensions;
 import org.junit.jupiter.api.Test;
-
-import com.google.common.collect.Iterators;
 
 public class SplitAggregateByEntitiesTest extends AbstractRefactoringTest {
 
@@ -29,16 +26,14 @@ public class SplitAggregateByEntitiesTest extends AbstractRefactoringTest {
 	void canSplitWithTwoAggregates() throws IOException {
 		// given
 		String inputModelName = "split-agg-by-entities-test-1-input.cml";
-		Resource input = getResourceCopyOfTestCML(inputModelName);
+		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
 		SplitAggregateByEntitiesRefactoring refactoring = new SplitAggregateByEntitiesRefactoring("Customers");
 
 		// when
 		refactoring.doRefactor(input);
 
 		// then
-		List<ContextMappingModel> contextMappingModels = IteratorExtensions
-				.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(reloadResource(input).getAllContents(), ContextMappingModel.class));
-		BoundedContext bc = contextMappingModels.get(0).getBoundedContexts().get(0);
+		BoundedContext bc = reloadResource(input).getContextMappingModel().getBoundedContexts().get(0);
 		assertEquals(2, bc.getAggregates().size());
 
 		for (Aggregate aggregate : bc.getAggregates()) {
@@ -60,16 +55,14 @@ public class SplitAggregateByEntitiesTest extends AbstractRefactoringTest {
 	void canRefactorIfAggregateDoesNotExist() throws IOException {
 		// given
 		String inputModelName = "split-agg-by-entities-test-1-input.cml";
-		Resource input = getResourceCopyOfTestCML(inputModelName);
+		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
 		SplitAggregateByEntitiesRefactoring refactoring = new SplitAggregateByEntitiesRefactoring("ThisAggregateDoesNotExist");
 
 		// when
 		refactoring.doRefactor(input);
 
 		// then
-		List<ContextMappingModel> contextMappingModels = IteratorExtensions
-				.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(reloadResource(input).getAllContents(), ContextMappingModel.class));
-		BoundedContext bc = contextMappingModels.get(0).getBoundedContexts().get(0);
+		BoundedContext bc = reloadResource(input).getContextMappingModel().getBoundedContexts().get(0);
 		assertEquals(1, bc.getAggregates().size());
 		List<String> aggregateNames = bc.getAggregates().stream().map(a -> a.getName()).collect(Collectors.toList());
 		assertTrue(aggregateNames.contains("Customers"));
@@ -79,16 +72,14 @@ public class SplitAggregateByEntitiesTest extends AbstractRefactoringTest {
 	void canSplitInModule() throws IOException {
 		// given
 		String inputModelName = "split-agg-by-entities-test-2-input.cml";
-		Resource input = getResourceCopyOfTestCML(inputModelName);
+		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
 		SplitAggregateByEntitiesRefactoring refactoring = new SplitAggregateByEntitiesRefactoring("Customers");
 
 		// when
 		refactoring.doRefactor(input);
 
 		// then
-		List<ContextMappingModel> contextMappingModels = IteratorExtensions
-				.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(reloadResource(input).getAllContents(), ContextMappingModel.class));
-		BoundedContext bc = contextMappingModels.get(0).getBoundedContexts().get(0);
+		BoundedContext bc = reloadResource(input).getContextMappingModel().getBoundedContexts().get(0);
 
 		SculptorModule testModule = bc.getModules().get(0);
 
@@ -107,16 +98,15 @@ public class SplitAggregateByEntitiesTest extends AbstractRefactoringTest {
 	void canFixExposedAggregatesInContextMap() throws IOException {
 		// given
 		String inputModelName = "split-agg-by-entities-test-3-input.cml";
-		Resource input = getResourceCopyOfTestCML(inputModelName);
+		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
 		SplitAggregateByEntitiesRefactoring refactoring = new SplitAggregateByEntitiesRefactoring("Customers");
 
 		// when
 		refactoring.doRefactor(input);
 
 		// then
-		List<ContextMappingModel> contextMappingModels = IteratorExtensions
-				.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(reloadResource(input).getAllContents(), ContextMappingModel.class));
-		Optional<BoundedContext> optionalCustomerBC = contextMappingModels.get(0).getBoundedContexts().stream().filter(bc -> bc.getName().equals("CustomerManagement")).findFirst();
+		ContextMappingModel model = reloadResource(input).getContextMappingModel();
+		Optional<BoundedContext> optionalCustomerBC = model.getBoundedContexts().stream().filter(bc -> bc.getName().equals("CustomerManagement")).findFirst();
 
 		assertTrue(optionalCustomerBC.isPresent());
 		BoundedContext customerBC = optionalCustomerBC.get();
@@ -126,7 +116,7 @@ public class SplitAggregateByEntitiesTest extends AbstractRefactoringTest {
 		assertTrue(aggregateNames.contains("Customers"));
 		assertTrue(aggregateNames.contains("NewAggregate1"));
 
-		UpstreamDownstreamRelationship relationship = (UpstreamDownstreamRelationship) contextMappingModels.get(0).getMap().getRelationships().get(0);
+		UpstreamDownstreamRelationship relationship = (UpstreamDownstreamRelationship) model.getMap().getRelationships().get(0);
 		List<String> upstreamExposedAggregates = relationship.getUpstreamExposedAggregates().stream().map(a -> a.getName()).collect(Collectors.toList());
 		assertTrue(upstreamExposedAggregates.contains("Customers"));
 		assertTrue(upstreamExposedAggregates.contains("NewAggregate1"));

@@ -18,12 +18,11 @@ package org.contextmapper.dsl.tests.generators.plantuml;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
-import java.util.List;
 
+import org.contextmapper.dsl.cml.CMLResourceContainer;
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
-import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.Domain;
 import org.contextmapper.dsl.contextMappingDSL.SculptorModule;
 import org.contextmapper.dsl.contextMappingDSL.Subdomain;
@@ -43,12 +42,8 @@ import org.contextmapper.tactic.dsl.tacticdsl.Parameter;
 import org.contextmapper.tactic.dsl.tacticdsl.Reference;
 import org.contextmapper.tactic.dsl.tacticdsl.TacticdslFactory;
 import org.contextmapper.tactic.dsl.tacticdsl.ValueObject;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.xtext.xbase.lib.IteratorExtensions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import com.google.common.collect.Iterators;
 
 class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFileTest {
 
@@ -182,7 +177,7 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 		// then
 		assertTrue(plantUML.contains("	class Test <<Entity>> {" + System.lineSeparator() + "		int[0..1] amount" + System.lineSeparator() + "	}" + System.lineSeparator()));
 	}
-	
+
 	@Test
 	public void respectNullableOnReferences() {
 		// given
@@ -206,7 +201,8 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 		String plantUML = this.creator.createDiagram(boundedContext);
 
 		// then
-		assertTrue(plantUML.contains("	class Test <<Entity>> {" + System.lineSeparator() + "		ReferencedEntity[0..1] otherEntity" + System.lineSeparator() + "	}" + System.lineSeparator()));
+		assertTrue(plantUML.contains(
+				"	class Test <<Entity>> {" + System.lineSeparator() + "		ReferencedEntity[0..1] otherEntity" + System.lineSeparator() + "	}" + System.lineSeparator()));
 	}
 
 	@Test
@@ -461,7 +457,7 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 		assertTrue(plantUML.contains("  This Bounded Context 'myBoundedContext' refines the 'superContext' Bounded Context." + System.lineSeparator()));
 		assertTrue(plantUML.contains("end legend"));
 	}
-	
+
 	@Test
 	public void canCreateMethodForDomainObjectOperations() {
 		// given
@@ -497,9 +493,8 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 	public void canCreateMethodForDomainObjectOperationsWithDomainObjectType() throws IOException {
 		// given
 		String inputModelName = "operations-domain-object-types-test.cml";
-		Resource input = getResourceCopyOfTestCML(inputModelName);
-		List<ContextMappingModel> models = IteratorExtensions.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(input.getAllContents(), ContextMappingModel.class));
-		BoundedContext bc = models.get(0).getBoundedContexts().get(0);
+		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		BoundedContext bc = input.getContextMappingModel().getBoundedContexts().get(0);
 
 		// when
 		String plantUML = this.creator.createDiagram(bc);
@@ -513,9 +508,8 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 	public void canCreateMethodForOperationsWithCollectionTypes() throws IOException {
 		// given
 		String inputModelName = "operations-with-list-types-test.cml";
-		Resource input = getResourceCopyOfTestCML(inputModelName);
-		List<ContextMappingModel> models = IteratorExtensions.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(input.getAllContents(), ContextMappingModel.class));
-		BoundedContext bc = models.get(0).getBoundedContexts().get(0);
+		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		BoundedContext bc = input.getContextMappingModel().getBoundedContexts().get(0);
 
 		// when
 		String plantUML = this.creator.createDiagram(bc);
@@ -529,9 +523,8 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 	public void canCreateMethodForOperationsWithoutReturnTypes() throws IOException {
 		// given
 		String inputModelName = "operations-with-no-return-value.cml";
-		Resource input = getResourceCopyOfTestCML(inputModelName);
-		List<ContextMappingModel> models = IteratorExtensions.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(input.getAllContents(), ContextMappingModel.class));
-		BoundedContext bc = models.get(0).getBoundedContexts().get(0);
+		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		BoundedContext bc = input.getContextMappingModel().getBoundedContexts().get(0);
 
 		// when
 		String plantUML = this.creator.createDiagram(bc);
@@ -545,9 +538,8 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 	public void canCreateService() throws IOException {
 		// given
 		String inputModelName = "services-test.cml";
-		Resource input = getResourceCopyOfTestCML(inputModelName);
-		List<ContextMappingModel> models = IteratorExtensions.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(input.getAllContents(), ContextMappingModel.class));
-		BoundedContext bc = models.get(0).getBoundedContexts().get(0);
+		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		BoundedContext bc = input.getContextMappingModel().getBoundedContexts().get(0);
 
 		// when
 		String plantUML = this.creator.createDiagram(bc);
@@ -558,7 +550,7 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 		assertTrue(plantUML.contains("	class MyModuleService <<Service>> {" + System.lineSeparator() + "		void myModuleServiceMethod()" + System.lineSeparator() + "	}"
 				+ System.lineSeparator()));
 	}
-	
+
 	@Test
 	public void canCreateInheritance() {
 		// given

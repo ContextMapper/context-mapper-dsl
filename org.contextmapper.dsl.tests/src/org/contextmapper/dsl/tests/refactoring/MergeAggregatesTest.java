@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.contextmapper.dsl.cml.CMLResourceContainer;
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
@@ -32,18 +33,17 @@ public class MergeAggregatesTest extends AbstractRefactoringTest {
 	void canMergeAggregates() throws IOException {
 		// given
 		String inputModelName = "merge-aggregates-test-1-input.cml";
-		Resource input = getResourceCopyOfTestCML(inputModelName);
+		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
 		MergeAggregatesRefactoring refactoring = new MergeAggregatesRefactoring("Customers", "Addresses");
 
 		// when
 		refactoring.doRefactor(input);
 
 		// then
-		List<ContextMappingModel> contextMappingModels = IteratorExtensions
-				.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(reloadResource(input).getAllContents(), ContextMappingModel.class));
-		assertEquals(1, contextMappingModels.get(0).getBoundedContexts().size());
+		ContextMappingModel model = input.getContextMappingModel();
+		assertEquals(1, model.getBoundedContexts().size());
 
-		BoundedContext bc = contextMappingModels.get(0).getBoundedContexts().get(0);
+		BoundedContext bc = model.getBoundedContexts().get(0);
 		assertEquals("CustomerManagement", bc.getName());
 
 		List<String> aggregateNames = bc.getAggregates().stream().map(a -> a.getName()).collect(Collectors.toList());
@@ -62,18 +62,17 @@ public class MergeAggregatesTest extends AbstractRefactoringTest {
 	void canMergeAggregatesInModule() throws IOException {
 		// given
 		String inputModelName = "merge-aggregates-test-2-input.cml";
-		Resource input = getResourceCopyOfTestCML(inputModelName);
+		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
 		MergeAggregatesRefactoring refactoring = new MergeAggregatesRefactoring("Customers", "Addresses");
 
 		// when
 		refactoring.doRefactor(input);
 
 		// then
-		List<ContextMappingModel> contextMappingModels = IteratorExtensions
-				.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(reloadResource(input).getAllContents(), ContextMappingModel.class));
-		assertEquals(1, contextMappingModels.get(0).getBoundedContexts().size());
+		ContextMappingModel model = input.getContextMappingModel();
+		assertEquals(1, model.getBoundedContexts().size());
 
-		BoundedContext bc = contextMappingModels.get(0).getBoundedContexts().get(0);
+		BoundedContext bc = model.getBoundedContexts().get(0);
 		assertEquals("CustomerManagement", bc.getName());
 
 		SculptorModule module = bc.getModules().get(0);
@@ -93,69 +92,65 @@ public class MergeAggregatesTest extends AbstractRefactoringTest {
 	void doesNotThrowExceptionIfAggregatesAreTheSame() throws IOException {
 		// given
 		String inputModelName = "merge-aggregates-test-1-input.cml";
-		Resource input = getResourceCopyOfTestCML(inputModelName);
+		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
 		MergeAggregatesRefactoring refactoring = new MergeAggregatesRefactoring("Customers", "Customers");
 
 		// when
 		refactoring.doRefactor(input);
 
 		// then
-		List<ContextMappingModel> contextMappingModels = IteratorExtensions
-				.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(reloadResource(input).getAllContents(), ContextMappingModel.class));
-		assertEquals(1, contextMappingModels.get(0).getBoundedContexts().size());
-		assertEquals(2, contextMappingModels.get(0).getBoundedContexts().get(0).getAggregates().size());
+		ContextMappingModel model = input.getContextMappingModel();
+		assertEquals(1, model.getBoundedContexts().size());
+		assertEquals(2, model.getBoundedContexts().get(0).getAggregates().size());
 	}
 
 	@Test
 	void doesNotThrowExceptionIfFirstAggregateDoesNotExist() throws IOException {
 		// given
 		String inputModelName = "merge-aggregates-test-1-input.cml";
-		Resource input = getResourceCopyOfTestCML(inputModelName);
+		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
 		MergeAggregatesRefactoring refactoring = new MergeAggregatesRefactoring("ThisAggregateDoesNotExist", "Customers");
 
 		// when
 		refactoring.doRefactor(input);
 
 		// then
-		List<ContextMappingModel> contextMappingModels = IteratorExtensions
-				.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(reloadResource(input).getAllContents(), ContextMappingModel.class));
-		assertEquals(1, contextMappingModels.get(0).getBoundedContexts().size());
-		assertEquals(2, contextMappingModels.get(0).getBoundedContexts().get(0).getAggregates().size());
+		ContextMappingModel model = input.getContextMappingModel();
+		assertEquals(1, model.getBoundedContexts().size());
+		assertEquals(2, model.getBoundedContexts().get(0).getAggregates().size());
 	}
 
 	@Test
 	void doesNotThrowExceptionIfSecondAggregateDoesNotExist() throws IOException {
 		// given
 		String inputModelName = "merge-aggregates-test-1-input.cml";
-		Resource input = getResourceCopyOfTestCML(inputModelName);
+		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
 		MergeAggregatesRefactoring refactoring = new MergeAggregatesRefactoring("Customers", "ThisAggregateDoesNotExist");
 
 		// when
 		refactoring.doRefactor(input);
 
 		// then
-		List<ContextMappingModel> contextMappingModels = IteratorExtensions
-				.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(reloadResource(input).getAllContents(), ContextMappingModel.class));
-		assertEquals(1, contextMappingModels.get(0).getBoundedContexts().size());
-		assertEquals(2, contextMappingModels.get(0).getBoundedContexts().get(0).getAggregates().size());
+		ContextMappingModel model = input.getContextMappingModel();
+		assertEquals(1, model.getBoundedContexts().size());
+		assertEquals(2, model.getBoundedContexts().get(0).getAggregates().size());
 	}
 
 	@Test
 	void canMergeAndUpdateContextMap() throws IOException {
 		// given
 		String inputModelName = "merge-aggregates-test-3-input.cml";
-		Resource input = getResourceCopyOfTestCML(inputModelName);
+		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
 		MergeAggregatesRefactoring refactoring = new MergeAggregatesRefactoring("Customers", "Addresses");
 
 		// when
 		refactoring.doRefactor(input);
 
 		// then
-		List<ContextMappingModel> contextMappingModels = IteratorExtensions
-				.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(reloadResource(input).getAllContents(), ContextMappingModel.class));
-		assertEquals(2, contextMappingModels.get(0).getBoundedContexts().size());
+		ContextMappingModel model = input.getContextMappingModel();
+		assertEquals(2, model.getBoundedContexts().size());
 
-		BoundedContext bc = contextMappingModels.get(0).getBoundedContexts().get(0);
+		BoundedContext bc = model.getBoundedContexts().get(0);
 		assertEquals("CustomerManagement", bc.getName());
 
 		List<String> aggregateNames = bc.getAggregates().stream().map(a -> a.getName()).collect(Collectors.toList());
@@ -169,7 +164,7 @@ public class MergeAggregatesTest extends AbstractRefactoringTest {
 		assertTrue(domainObjectNames.contains("Account"));
 		assertTrue(domainObjectNames.contains("Address"));
 
-		ContextMap map = contextMappingModels.get(0).getMap();
+		ContextMap map = model.getMap();
 		assertEquals(2, map.getRelationships().size());
 		Optional<UpstreamDownstreamRelationship> relationshipOpt = map.getRelationships().stream().filter(rel -> rel instanceof UpstreamDownstreamRelationship)
 				.map(rel -> (UpstreamDownstreamRelationship) rel).findFirst();
@@ -184,7 +179,7 @@ public class MergeAggregatesTest extends AbstractRefactoringTest {
 	void expectExceptionIfThereAreDuplicateEntityNames() throws IOException {
 		// given
 		String inputModelName = "merge-aggregates-test-4-input.cml";
-		Resource input = getResourceCopyOfTestCML(inputModelName);
+		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
 		MergeAggregatesRefactoring refactoring = new MergeAggregatesRefactoring("Customers", "Addresses");
 
 		// when / then
@@ -197,17 +192,16 @@ public class MergeAggregatesTest extends AbstractRefactoringTest {
 	void canTakeAttributesFromFirstAggregateByDefault() throws IOException {
 		// given
 		String inputModelName = "merge-aggregates-test-5-input.cml";
-		Resource input = getResourceCopyOfTestCML(inputModelName);
+		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
 		MergeAggregatesRefactoring refactoring = new MergeAggregatesRefactoring("agg1", "agg2");
 
 		// when
 		refactoring.doRefactor(input);
 
 		// then
-		List<ContextMappingModel> contextMappingModels = IteratorExtensions
-				.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(reloadResource(input).getAllContents(), ContextMappingModel.class));
-		assertEquals(3, contextMappingModels.get(0).getBoundedContexts().size());
-		BoundedContext bc = contextMappingModels.get(0).getBoundedContexts().stream().filter(b -> b.getName().equals("AnotherContext")).findFirst().get();
+		ContextMappingModel model = input.getContextMappingModel();
+		assertEquals(3, model.getBoundedContexts().size());
+		BoundedContext bc = model.getBoundedContexts().stream().filter(b -> b.getName().equals("AnotherContext")).findFirst().get();
 		assertEquals(1, bc.getAggregates().size());
 		Aggregate aggregate = bc.getAggregates().get(0);
 		assertEquals(KnowledgeLevel.CONCRETE, aggregate.getKnowledgeLevel());
@@ -220,17 +214,16 @@ public class MergeAggregatesTest extends AbstractRefactoringTest {
 	void canTakeAttributesFromSecondAggregate() throws IOException {
 		// given
 		String inputModelName = "merge-aggregates-test-5-input.cml";
-		Resource input = getResourceCopyOfTestCML(inputModelName);
+		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
 		MergeAggregatesRefactoring refactoring = new MergeAggregatesRefactoring("agg1", "agg2", true);
 
 		// when
 		refactoring.doRefactor(input);
 
 		// then
-		List<ContextMappingModel> contextMappingModels = IteratorExtensions
-				.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(reloadResource(input).getAllContents(), ContextMappingModel.class));
-		assertEquals(3, contextMappingModels.get(0).getBoundedContexts().size());
-		BoundedContext bc = contextMappingModels.get(0).getBoundedContexts().stream().filter(b -> b.getName().equals("AnotherContext")).findFirst().get();
+		ContextMappingModel model = input.getContextMappingModel();
+		assertEquals(3, model.getBoundedContexts().size());
+		BoundedContext bc = model.getBoundedContexts().stream().filter(b -> b.getName().equals("AnotherContext")).findFirst().get();
 		assertEquals(1, bc.getAggregates().size());
 		Aggregate aggregate = bc.getAggregates().get(0);
 		assertEquals(KnowledgeLevel.META, aggregate.getKnowledgeLevel());
@@ -243,17 +236,16 @@ public class MergeAggregatesTest extends AbstractRefactoringTest {
 	void canHandleAggregateRoots() throws IOException {
 		// given
 		String inputModelName = "merge-aggregates-test-6-input.cml";
-		Resource input = getResourceCopyOfTestCML(inputModelName);
+		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
 		MergeAggregatesRefactoring refactoring = new MergeAggregatesRefactoring("agg1", "agg2", true);
 
 		// when
 		refactoring.doRefactor(input);
 
 		// then
-		List<ContextMappingModel> contextMappingModels = IteratorExtensions
-				.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(reloadResource(input).getAllContents(), ContextMappingModel.class));
-		assertEquals(1, contextMappingModels.get(0).getBoundedContexts().size());
-		BoundedContext bc = contextMappingModels.get(0).getBoundedContexts().get(0);
+		ContextMappingModel model = input.getContextMappingModel();
+		assertEquals(1, model.getBoundedContexts().size());
+		BoundedContext bc = model.getBoundedContexts().get(0);
 		assertEquals(1, bc.getAggregates().size());
 		Aggregate aggregate = bc.getAggregates().get(0);
 		List<DomainObject> aggregateRoots = aggregate.getDomainObjects().stream().filter(o -> o instanceof DomainObject).map(o -> (DomainObject) o).filter(o -> o.isAggregateRoot())

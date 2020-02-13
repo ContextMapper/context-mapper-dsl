@@ -17,32 +17,63 @@ package org.contextmapper.dsl.refactoring;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+import org.contextmapper.dsl.cml.CMLImportResolver;
+import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
+import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
+import org.contextmapper.dsl.contextMappingDSL.Import;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.xtext.resource.SaveOptions;
-import org.eclipse.xtext.xbase.lib.IteratorExtensions;
 
-import com.google.common.collect.Iterators;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 public abstract class AbstractRefactoring implements Refactoring {
 
 	protected ContextMappingModel model;
-	protected Resource originalResource;
+	protected CMLResourceContainer rootResource;
+	protected Set<CMLResourceContainer> importedResources;
+	private Map<BoundedContext, CMLResourceContainer> boundedContextsMap = Maps.newHashMap();
+	private Map<ContextMap, CMLResourceContainer> contextMapMap = Maps.newHashMap();
+	private Set<CMLResourceContainer> changedResources = Sets.newHashSet();
+
+	protected List<CMLResourceContainer> additionalResourcesToCheck = Lists.newArrayList();
 
 	@Override
-	public void doRefactor(Resource resource) {
-		this.originalResource = resource;
-		List<ContextMappingModel> contextMappingModels = IteratorExtensions
-				.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(resource.getAllContents(), ContextMappingModel.class));
+	public void doRefactor(CMLResourceContainer resource) {
+		this.rootResource = resource;
+		this.importedResources = new CMLImportResolver().resolveImportedResources(rootResource);
+		this.model = resource.getContextMappingModel();
+		resolveRootElements();
+		doRefactor();
+	}
 
-		if (contextMappingModels.size() > 0) {
-			this.model = contextMappingModels.get(0);
-			doRefactor();
+	@Override
+	public void doRefactor(CMLResourceContainer resource, ResourceSet consistencyCheckResources) {
+		for (Resource resourceToCheck : consistencyCheckResources.getResources()) {
+			if (resourceToCheck.getContents().isEmpty() || !(resourceToCheck.getContents().get(0) instanceof ContextMappingModel))
+				continue;
+			this.additionalResourcesToCheck.add(new CMLResourceContainer(resourceToCheck));
 		}
+		doRefactor(resource);
 	}
 
 	protected abstract void doRefactor();
+
+	protected Set<BoundedContext> getAllBoundedContexts() {
+		return Sets.newHashSet(this.boundedContextsMap.keySet());
+	}
+
+	protected Set<ContextMap> getAllContextMaps() {
+		return Sets.newHashSet(this.contextMapMap.keySet());
+	}
 
 	protected void saveResource(Resource resource) {
 		try {
@@ -52,8 +83,66 @@ public abstract class AbstractRefactoring implements Refactoring {
 		}
 	}
 
-	protected void saveResource() {
-		saveResource(originalResource);
+	protected void saveResources() {
+		saveResource(rootResource.getResource());
+		for (CMLResourceContainer changedResource : changedResources) {
+			saveResource(changedResource.getResource());
+		}
+	}
+
+	protected void markResourceChanged(BoundedContext changedBoundedContext) {
+		markResourceChanged(getResource(changedBoundedContext));
+	}
+
+	protected void markResourceChanged(ContextMap changedContextMap) {
+		markResourceChanged(getResource(changedContextMap));
+	}
+
+	protected void markResourceChanged(CMLResourceContainer resource) {
+		this.changedResources.add(resource);
+	}
+
+	protected CMLResourceContainer getResource(BoundedContext bc) {
+		return this.boundedContextsMap.get(bc);
+	}
+
+	protected CMLResourceContainer getResource(ContextMap contextMap) {
+		return this.contextMapMap.get(contextMap);
+	}
+
+	private void resolveRootElements() {
+		resolveBoundedContexts(rootResource);
+		resolveContextMaps(rootResource);
+		for (CMLResourceContainer importedResource : importedResources) {
+			resolveBoundedContexts(importedResource);
+			resolveContextMaps(importedResource);
+		}
+	}
+
+	private void resolveBoundedContexts(CMLResourceContainer resource) {
+		for (BoundedContext bc : resource.getContextMappingModel().getBoundedContexts()) {
+			this.boundedContextsMap.put(bc, resource);
+		}
+	}
+
+	private void resolveContextMaps(CMLResourceContainer resource) {
+		if (resource.getContextMappingModel().getMap() != null)
+			this.contextMapMap.put(resource.getContextMappingModel().getMap(), resource);
+		for (CMLResourceContainer extResourceToCheck : this.additionalResourcesToCheck) {
+			if (extResourceToCheck.getContextMappingModel().getMap() != null && containsImport(extResourceToCheck, resource))
+				this.contextMapMap.put(extResourceToCheck.getContextMappingModel().getMap(), extResourceToCheck);
+		}
+	}
+
+	/**
+	 * Checks whether source contains an import statement to target.
+	 */
+	private boolean containsImport(CMLResourceContainer source, CMLResourceContainer target) {
+		for (Import cmlImport : source.getContextMappingModel().getImports()) {
+			if (URI.createURI(cmlImport.getImportURI()).resolve(source.getResource().getURI()).toString().equals(target.getResource().getURI().toString()))
+				return true;
+		}
+		return false;
 	}
 
 }

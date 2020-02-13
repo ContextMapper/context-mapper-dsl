@@ -18,6 +18,7 @@ package org.contextmapper.dsl.tests
 import com.google.inject.Inject
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLPackage
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel
+import org.contextmapper.tactic.dsl.tacticdsl.TacticdslPackage
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.extensions.InjectionExtension
 import org.eclipse.xtext.testing.util.ParseHelper
@@ -27,7 +28,6 @@ import org.junit.jupiter.api.^extension.ExtendWith
 
 import static org.contextmapper.dsl.tests.util.ParsingErrorAssertions.*
 import static org.contextmapper.dsl.validation.ValidationMessages.*
-import org.contextmapper.tactic.dsl.tacticdsl.TacticdslPackage
 
 @ExtendWith(InjectionExtension)
 @InjectWith(ContextMappingDSLInjectorProvider)
@@ -36,7 +36,7 @@ class UniquenessValidatorTest {
 	ParseHelper<ContextMappingModel> parseHelper
 
 	ValidationTestHelper validationTestHelper = new ValidationTestHelper();
-
+	
 	@Test
 	def void cannotDefineDuplicateBC() {
 		// given
@@ -53,7 +53,7 @@ class UniquenessValidatorTest {
 		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.BOUNDED_CONTEXT, "",
 			String.format(BOUNDED_CONTEXT_NAME_NOT_UNIQUE, "ContextA"));
 	}
-
+	
 	@Test
 	def void cannotDefineDuplicateModule() {
 		// given

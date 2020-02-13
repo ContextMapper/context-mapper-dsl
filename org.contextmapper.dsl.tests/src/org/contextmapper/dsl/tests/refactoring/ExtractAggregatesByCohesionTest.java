@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.contextmapper.dsl.cml.CMLResourceContainer;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
@@ -41,7 +42,7 @@ public class ExtractAggregatesByCohesionTest extends AbstractRefactoringTest {
 	void canExtractAggregatesByGivenInputList() throws IOException {
 		// given
 		String inputModelName = "extract-aggregates-by-nfr-test-1-input.cml";
-		Resource input = getResourceCopyOfTestCML(inputModelName);
+		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
 
 		// when
 		List<String> aggregatesToExtract = Arrays.asList(new String[] { "Customers", "Addresses" });
@@ -49,11 +50,10 @@ public class ExtractAggregatesByCohesionTest extends AbstractRefactoringTest {
 		ar.doRefactor(input);
 
 		// then
-		List<ContextMappingModel> contextMappingModels = IteratorExtensions
-				.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(reloadResource(input).getAllContents(), ContextMappingModel.class));
-		assertEquals(3, contextMappingModels.get(0).getBoundedContexts().size());
-		Optional<BoundedContext> bc = contextMappingModels.get(0).getBoundedContexts().stream().filter(b -> b.getName().equals("CustomerManagement")).findFirst();
-		Optional<BoundedContext> newBC = contextMappingModels.get(0).getBoundedContexts().stream().filter(b -> b.getName().equals("CustomerManagement_Extracted")).findFirst();
+		ContextMappingModel model = input.getContextMappingModel();
+		assertEquals(3, model.getBoundedContexts().size());
+		Optional<BoundedContext> bc = model.getBoundedContexts().stream().filter(b -> b.getName().equals("CustomerManagement")).findFirst();
+		Optional<BoundedContext> newBC = model.getBoundedContexts().stream().filter(b -> b.getName().equals("CustomerManagement_Extracted")).findFirst();
 
 		assertTrue(bc.isPresent());
 		assertTrue(newBC.isPresent());
@@ -65,7 +65,7 @@ public class ExtractAggregatesByCohesionTest extends AbstractRefactoringTest {
 	void canExtractAggregatesAndFixExposedReferencesInContextMap() throws IOException {
 		// given
 		String inputModelName = "extract-aggregates-by-nfr-test-2-input.cml";
-		Resource input = getResourceCopyOfTestCML(inputModelName);
+		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
 
 		// when
 		List<String> aggregatesToExtract = Arrays.asList(new String[] { "Addresses" });
@@ -73,20 +73,19 @@ public class ExtractAggregatesByCohesionTest extends AbstractRefactoringTest {
 		ar.doRefactor(input);
 
 		// then
-		List<ContextMappingModel> contextMappingModels = IteratorExtensions
-				.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(reloadResource(input).getAllContents(), ContextMappingModel.class));
-		assertEquals(3, contextMappingModels.get(0).getBoundedContexts().size());
-		assertEquals(3, contextMappingModels.get(0).getMap().getRelationships().size());
+		ContextMappingModel model = input.getContextMappingModel();
+		assertEquals(3, model.getBoundedContexts().size());
+		assertEquals(3, model.getMap().getRelationships().size());
 
-		Optional<BoundedContext> bc = contextMappingModels.get(0).getBoundedContexts().stream().filter(b -> b.getName().equals("CustomerManagement")).findFirst();
-		Optional<BoundedContext> newBC = contextMappingModels.get(0).getBoundedContexts().stream().filter(b -> b.getName().equals("CustomerManagement_Extracted")).findFirst();
+		Optional<BoundedContext> bc = model.getBoundedContexts().stream().filter(b -> b.getName().equals("CustomerManagement")).findFirst();
+		Optional<BoundedContext> newBC = model.getBoundedContexts().stream().filter(b -> b.getName().equals("CustomerManagement_Extracted")).findFirst();
 
 		assertTrue(bc.isPresent());
 		assertTrue(newBC.isPresent());
 		assertEquals(2, bc.get().getAggregates().size());
 		assertEquals(1, newBC.get().getAggregates().size());
 
-		List<UpstreamDownstreamRelationship> relationships = contextMappingModels.get(0).getMap().getRelationships().stream()
+		List<UpstreamDownstreamRelationship> relationships = model.getMap().getRelationships().stream()
 				.filter(rel -> rel instanceof UpstreamDownstreamRelationship).map(rel -> (UpstreamDownstreamRelationship) rel).collect(Collectors.toList());
 		UpstreamDownstreamRelationship rel1 = relationships.get(0);
 		UpstreamDownstreamRelationship rel2 = relationships.get(1);
@@ -104,7 +103,7 @@ public class ExtractAggregatesByCohesionTest extends AbstractRefactoringTest {
 	void noErrorIfNoAggregatesGivenAsParameter() throws IOException {
 		// given
 		String inputModelName = "extract-aggregates-by-nfr-test-1-input.cml";
-		Resource input = getResourceCopyOfTestCML(inputModelName);
+		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
 
 		// when
 		List<String> aggregatesToExtract = Lists.newArrayList();
@@ -112,20 +111,19 @@ public class ExtractAggregatesByCohesionTest extends AbstractRefactoringTest {
 		ar.doRefactor(input);
 
 		// then
-		List<ContextMappingModel> contextMappingModels = IteratorExtensions
-				.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(reloadResource(input).getAllContents(), ContextMappingModel.class));
-		assertEquals(2, contextMappingModels.get(0).getBoundedContexts().size());
-		Optional<BoundedContext> bc = contextMappingModels.get(0).getBoundedContexts().stream().filter(b -> b.getName().equals("CustomerManagement")).findFirst();
+		ContextMappingModel model = input.getContextMappingModel();
+		assertEquals(2, model.getBoundedContexts().size());
+		Optional<BoundedContext> bc = model.getBoundedContexts().stream().filter(b -> b.getName().equals("CustomerManagement")).findFirst();
 
 		assertTrue(bc.isPresent());
 		assertEquals(3, bc.get().getAggregates().size());
 	}
-	
+
 	@Test
 	void noErrorIfContextMapIsNull() throws IOException {
 		// given
 		String inputModelName = "extract-aggregates-by-nfr-test-3-input.cml";
-		Resource input = getResourceCopyOfTestCML(inputModelName);
+		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
 
 		// when
 		List<String> aggregatesToExtract = Arrays.asList(new String[] { "Customers", "Addresses" });
@@ -133,11 +131,10 @@ public class ExtractAggregatesByCohesionTest extends AbstractRefactoringTest {
 		ar.doRefactor(input);
 
 		// then
-		List<ContextMappingModel> contextMappingModels = IteratorExtensions
-				.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(reloadResource(input).getAllContents(), ContextMappingModel.class));
-		assertEquals(2, contextMappingModels.get(0).getBoundedContexts().size());
-		Optional<BoundedContext> bc = contextMappingModels.get(0).getBoundedContexts().stream().filter(b -> b.getName().equals("CustomerManagement")).findFirst();
-		Optional<BoundedContext> newBC = contextMappingModels.get(0).getBoundedContexts().stream().filter(b -> b.getName().equals("CustomerManagement_Extracted")).findFirst();
+		ContextMappingModel model = input.getContextMappingModel();
+		assertEquals(2, model.getBoundedContexts().size());
+		Optional<BoundedContext> bc = model.getBoundedContexts().stream().filter(b -> b.getName().equals("CustomerManagement")).findFirst();
+		Optional<BoundedContext> newBC = model.getBoundedContexts().stream().filter(b -> b.getName().equals("CustomerManagement_Extracted")).findFirst();
 
 		assertTrue(bc.isPresent());
 		assertTrue(newBC.isPresent());
@@ -149,7 +146,7 @@ public class ExtractAggregatesByCohesionTest extends AbstractRefactoringTest {
 	void noErrorIfAggregateIsGivenWhichDoesNotExist() throws IOException {
 		// given
 		String inputModelName = "extract-aggregates-by-nfr-test-1-input.cml";
-		Resource input = getResourceCopyOfTestCML(inputModelName);
+		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
 
 		// when
 		List<String> aggregatesToExtract = Arrays.asList(new String[] { "Customers", "Addresses", "ThisAggregateDoesNotExist" });
@@ -157,11 +154,10 @@ public class ExtractAggregatesByCohesionTest extends AbstractRefactoringTest {
 		ar.doRefactor(input);
 
 		// then
-		List<ContextMappingModel> contextMappingModels = IteratorExtensions
-				.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(reloadResource(input).getAllContents(), ContextMappingModel.class));
-		assertEquals(3, contextMappingModels.get(0).getBoundedContexts().size());
-		Optional<BoundedContext> bc = contextMappingModels.get(0).getBoundedContexts().stream().filter(b -> b.getName().equals("CustomerManagement")).findFirst();
-		Optional<BoundedContext> newBC = contextMappingModels.get(0).getBoundedContexts().stream().filter(b -> b.getName().equals("CustomerManagement_Extracted")).findFirst();
+		ContextMappingModel model = input.getContextMappingModel();
+		assertEquals(3, model.getBoundedContexts().size());
+		Optional<BoundedContext> bc = model.getBoundedContexts().stream().filter(b -> b.getName().equals("CustomerManagement")).findFirst();
+		Optional<BoundedContext> newBC = model.getBoundedContexts().stream().filter(b -> b.getName().equals("CustomerManagement_Extracted")).findFirst();
 
 		assertTrue(bc.isPresent());
 		assertTrue(newBC.isPresent());

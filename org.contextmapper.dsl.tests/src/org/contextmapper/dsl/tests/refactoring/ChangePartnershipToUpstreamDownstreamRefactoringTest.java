@@ -21,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
 import java.util.List;
 
+import org.contextmapper.dsl.cml.CMLResourceContainer;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
@@ -40,14 +41,14 @@ public class ChangePartnershipToUpstreamDownstreamRefactoringTest extends Abstra
 	@Test
 	void canChangePartnershipToUpstreamDownstream() throws IOException {
 		// given
-		Resource input = getResourceCopyOfTestCML("change-partnership-to-upstream-downstream-test-1-input.cml");
+		CMLResourceContainer input = getResourceCopyOfTestCML("change-partnership-to-upstream-downstream-test-1-input.cml");
 
 		// when
 		new ChangePartnershipToUpstreamDownstreamRefactoring("CustomerManagement", "AnotherContext").doRefactor(input);
 
 		// then
 		List<ContextMappingModel> contextMappingModels = IteratorExtensions
-				.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(reloadResource(input).getAllContents(), ContextMappingModel.class));
+				.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(reloadResource(input).getResource().getAllContents(), ContextMappingModel.class));
 		ContextMap map = contextMappingModels.get(0).getMap();
 		BoundedContext upstreamContext = map.getBoundedContexts().stream().filter(bc -> bc.getName().equals("CustomerManagement")).findFirst().get();
 		BoundedContext downstreamContext = map.getBoundedContexts().stream().filter(bc -> bc.getName().equals("AnotherContext")).findFirst().get();
@@ -66,7 +67,7 @@ public class ChangePartnershipToUpstreamDownstreamRefactoringTest extends Abstra
 		// given
 		String boundedContext1 = "TestContext";
 		String boundedContext2 = null;
-		Resource input = getResourceCopyOfTestCML("change-partnership-to-upstream-downstream-precondition-checks-input.cml");
+		CMLResourceContainer input = getResourceCopyOfTestCML("change-partnership-to-upstream-downstream-precondition-checks-input.cml");
 
 		// when, then
 		Assertions.assertThrows(RefactoringInputException.class, () -> {
@@ -79,7 +80,7 @@ public class ChangePartnershipToUpstreamDownstreamRefactoringTest extends Abstra
 		// given
 		String boundedContext1 = null;
 		String boundedContext2 = "TestContext";
-		Resource input = getResourceCopyOfTestCML("change-partnership-to-upstream-downstream-precondition-checks-input.cml");
+		CMLResourceContainer input = getResourceCopyOfTestCML("change-partnership-to-upstream-downstream-precondition-checks-input.cml");
 
 		// when, then
 		Assertions.assertThrows(RefactoringInputException.class, () -> {
@@ -92,7 +93,7 @@ public class ChangePartnershipToUpstreamDownstreamRefactoringTest extends Abstra
 		// given
 		String boundedContext1 = "TestContext";
 		String boundedContext2 = "TestContext";
-		Resource input = getResourceCopyOfTestCML("change-partnership-to-upstream-downstream-precondition-checks-input.cml");
+		CMLResourceContainer input = getResourceCopyOfTestCML("change-partnership-to-upstream-downstream-precondition-checks-input.cml");
 
 		// when, then
 		Assertions.assertThrows(RefactoringInputException.class, () -> {
@@ -105,7 +106,7 @@ public class ChangePartnershipToUpstreamDownstreamRefactoringTest extends Abstra
 		// given
 		String boundedContext1 = "CustomerManagement";
 		String boundedContext2 = "AnotherContext";
-		Resource input = getResourceCopyOfTestCML("change-partnership-to-upstream-downstream-precondition-checks-multiple-rels-input.cml");
+		CMLResourceContainer input = getResourceCopyOfTestCML("change-partnership-to-upstream-downstream-precondition-checks-multiple-rels-input.cml");
 
 		// when, then
 		Assertions.assertThrows(RefactoringInputException.class, () -> {
@@ -118,7 +119,7 @@ public class ChangePartnershipToUpstreamDownstreamRefactoringTest extends Abstra
 		// given
 		String boundedContext1 = "TestContext1";
 		String boundedContext2 = "TestContext2";
-		Resource input = getResourceCopyOfTestCML("change-partnership-to-upstream-downstream-precondition-checks-no-rel-input.cml");
+		CMLResourceContainer input = getResourceCopyOfTestCML("change-partnership-to-upstream-downstream-precondition-checks-no-rel-input.cml");
 
 		// when, then
 		Assertions.assertThrows(RefactoringInputException.class, () -> {

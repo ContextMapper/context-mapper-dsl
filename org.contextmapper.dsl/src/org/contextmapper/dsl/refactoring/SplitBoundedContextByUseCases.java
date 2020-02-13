@@ -17,7 +17,8 @@ package org.contextmapper.dsl.refactoring;
 
 import java.util.stream.Collectors;
 
-import org.eclipse.emf.ecore.resource.Resource;
+import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 
 public class SplitBoundedContextByUseCases implements Refactoring {
 
@@ -29,8 +30,13 @@ public class SplitBoundedContextByUseCases implements Refactoring {
 	}
 
 	@Override
-	public void doRefactor(Resource resource) {
+	public void doRefactor(CMLResourceContainer resource) {
 		this.coreAR.doRefactor(resource);
+	}
+
+	@Override
+	public void doRefactor(CMLResourceContainer resource, ResourceSet consistencyCheckResources) {
+		this.coreAR.doRefactor(resource, consistencyCheckResources);
 	}
 
 }

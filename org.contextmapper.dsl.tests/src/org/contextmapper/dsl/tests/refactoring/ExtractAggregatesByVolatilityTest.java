@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.contextmapper.dsl.cml.CMLResourceContainer;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.LikelihoodForChange;
@@ -40,18 +41,17 @@ public class ExtractAggregatesByVolatilityTest extends AbstractRefactoringTest {
 	void canExtractAggregatesWhichAreLikelyToChange() throws IOException {
 		// given
 		String inputModelName = "extract-aggregates-likely-to-change-test-1-input.cml";
-		Resource input = getResourceCopyOfTestCML(inputModelName);
+		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
 
 		// when
 		ExtractAggregatesByVolatility ar = new ExtractAggregatesByVolatility("CustomerManagement", LikelihoodForChange.OFTEN);
 		ar.doRefactor(input);
 
 		// then
-		List<ContextMappingModel> contextMappingModels = IteratorExtensions
-				.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(reloadResource(input).getAllContents(), ContextMappingModel.class));
-		assertEquals(2, contextMappingModels.get(0).getBoundedContexts().size());
-		Optional<BoundedContext> bc = contextMappingModels.get(0).getBoundedContexts().stream().filter(b -> b.getName().equals("CustomerManagement")).findFirst();
-		Optional<BoundedContext> newBC = contextMappingModels.get(0).getBoundedContexts().stream().filter(b -> b.getName().equals("CustomerManagement_Volatility_OFTEN")).findFirst();
+		ContextMappingModel model = input.getContextMappingModel();
+		assertEquals(2, model.getBoundedContexts().size());
+		Optional<BoundedContext> bc = model.getBoundedContexts().stream().filter(b -> b.getName().equals("CustomerManagement")).findFirst();
+		Optional<BoundedContext> newBC = model.getBoundedContexts().stream().filter(b -> b.getName().equals("CustomerManagement_Volatility_OFTEN")).findFirst();
 
 		assertTrue(bc.isPresent());
 		assertTrue(newBC.isPresent());
@@ -63,26 +63,25 @@ public class ExtractAggregatesByVolatilityTest extends AbstractRefactoringTest {
 	void canFixExposedAggregates() throws IOException {
 		// given
 		String inputModelName = "extract-aggregates-likely-to-change-test-5-input.cml";
-		Resource input = getResourceCopyOfTestCML(inputModelName);
+		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
 
 		// when
 		ExtractAggregatesByVolatility ar = new ExtractAggregatesByVolatility("CustomerManagement", LikelihoodForChange.OFTEN);
 		ar.doRefactor(input);
 
 		// then
-		List<ContextMappingModel> contextMappingModels = IteratorExtensions
-				.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(reloadResource(input).getAllContents(), ContextMappingModel.class));
-		assertEquals(3, contextMappingModels.get(0).getBoundedContexts().size());
-		Optional<BoundedContext> bc = contextMappingModels.get(0).getBoundedContexts().stream().filter(b -> b.getName().equals("CustomerManagement")).findFirst();
-		Optional<BoundedContext> newBC = contextMappingModels.get(0).getBoundedContexts().stream().filter(b -> b.getName().equals("CustomerManagement_Volatility_OFTEN")).findFirst();
+		ContextMappingModel model = input.getContextMappingModel();
+		assertEquals(3, model.getBoundedContexts().size());
+		Optional<BoundedContext> bc = model.getBoundedContexts().stream().filter(b -> b.getName().equals("CustomerManagement")).findFirst();
+		Optional<BoundedContext> newBC = model.getBoundedContexts().stream().filter(b -> b.getName().equals("CustomerManagement_Volatility_OFTEN")).findFirst();
 
 		assertTrue(bc.isPresent());
 		assertTrue(newBC.isPresent());
 		assertEquals(1, bc.get().getAggregates().size());
 		assertEquals(2, newBC.get().getAggregates().size());
 
-		List<UpstreamDownstreamRelationship> upDownRels = contextMappingModels.get(0).getMap().getRelationships().stream()
-				.filter(rel -> rel instanceof UpstreamDownstreamRelationship).map(rel -> (UpstreamDownstreamRelationship) rel).collect(Collectors.toList());
+		List<UpstreamDownstreamRelationship> upDownRels = model.getMap().getRelationships().stream().filter(rel -> rel instanceof UpstreamDownstreamRelationship)
+				.map(rel -> (UpstreamDownstreamRelationship) rel).collect(Collectors.toList());
 		assertEquals(2, upDownRels.size());
 		assertEquals(0, upDownRels.get(0).getUpstreamExposedAggregates().size());
 		assertEquals(1, upDownRels.get(1).getUpstreamExposedAggregates().size());
@@ -92,48 +91,42 @@ public class ExtractAggregatesByVolatilityTest extends AbstractRefactoringTest {
 	void noErrorsIfThereAreNoAggregates() throws IOException {
 		// given
 		String inputModelName = "extract-aggregates-likely-to-change-test-2-input.cml";
-		Resource input = getResourceCopyOfTestCML(inputModelName);
+		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
 
 		// when
 		ExtractAggregatesByVolatility ar = new ExtractAggregatesByVolatility("CustomerManagement", LikelihoodForChange.OFTEN);
 		ar.doRefactor(input);
 
 		// then
-		List<ContextMappingModel> contextMappingModels = IteratorExtensions
-				.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(reloadResource(input).getAllContents(), ContextMappingModel.class));
-		assertEquals(1, contextMappingModels.get(0).getBoundedContexts().size());
+		assertEquals(1, input.getContextMappingModel().getBoundedContexts().size());
 	}
 
 	@Test
 	void doNotCreateNewBCIfThereIsOnlyOneAggregate() throws IOException {
 		// given
 		String inputModelName = "extract-aggregates-likely-to-change-test-3-input.cml";
-		Resource input = getResourceCopyOfTestCML(inputModelName);
+		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
 
 		// when
 		ExtractAggregatesByVolatility ar = new ExtractAggregatesByVolatility("CustomerManagement", LikelihoodForChange.OFTEN);
 		ar.doRefactor(input);
 
 		// then
-		List<ContextMappingModel> contextMappingModels = IteratorExtensions
-				.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(reloadResource(input).getAllContents(), ContextMappingModel.class));
-		assertEquals(1, contextMappingModels.get(0).getBoundedContexts().size());
+		assertEquals(1, input.getContextMappingModel().getBoundedContexts().size());
 	}
 
 	@Test
 	void noErrorsIfThereAreNoAggregatesToExtract() throws IOException {
 		// given
 		String inputModelName = "extract-aggregates-likely-to-change-test-4-input.cml";
-		Resource input = getResourceCopyOfTestCML(inputModelName);
+		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
 
 		// when
 		ExtractAggregatesByVolatility ar = new ExtractAggregatesByVolatility("CustomerManagement", LikelihoodForChange.OFTEN);
 		ar.doRefactor(input);
 
 		// then
-		List<ContextMappingModel> contextMappingModels = IteratorExtensions
-				.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(reloadResource(input).getAllContents(), ContextMappingModel.class));
-		assertEquals(1, contextMappingModels.get(0).getBoundedContexts().size());
+		assertEquals(1, input.getContextMappingModel().getBoundedContexts().size());
 	}
 
 }

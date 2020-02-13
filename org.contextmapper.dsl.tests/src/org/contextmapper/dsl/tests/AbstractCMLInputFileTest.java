@@ -27,6 +27,7 @@ import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
 import org.contextmapper.dsl.ContextMappingDSLStandaloneSetup;
+import org.contextmapper.dsl.cml.CMLResourceContainer;
 import org.contextmapper.servicecutter.dsl.ServiceCutterConfigurationDSLStandaloneSetup;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -45,14 +46,24 @@ public abstract class AbstractCMLInputFileTest {
 		this.testDir.mkdir();
 	}
 
-	protected Resource getResourceCopyOfTestCML(String testCMLName) throws IOException {
+	protected CMLResourceContainer getResourceCopyOfTestCML(String testCMLName) throws IOException {
 		File testFile = new File(testDir, testCMLName);
 		FileUtils.copyFile(getTestFile(testCMLName), testFile);
 		new ContextMappingDSLStandaloneSetup().createInjectorAndDoEMFRegistration();
 		ResourceSet rs = new ResourceSetImpl();
-		return rs.getResource(URI.createFileURI(testFile.getAbsolutePath()), true);
+		return new CMLResourceContainer(rs.getResource(URI.createFileURI(testFile.getAbsolutePath()), true));
 	}
-	
+
+	/**
+	 * Only use this method if model is not changed!!
+	 */
+	protected CMLResourceContainer getOriginalResourceOfTestCML(String testCMLName) throws IOException {
+		File testFile = getTestFile(testCMLName);
+		new ContextMappingDSLStandaloneSetup().createInjectorAndDoEMFRegistration();
+		ResourceSet rs = new ResourceSetImpl();
+		return new CMLResourceContainer(rs.getResource(URI.createFileURI(testFile.getAbsolutePath()), true));
+	}
+
 	protected Resource getResourceCopyOfTestSCL(String testSCLName) throws IOException {
 		File testFile = new File(testDir, testSCLName);
 		FileUtils.copyFile(getTestFile(testSCLName), testFile);
@@ -61,9 +72,9 @@ public abstract class AbstractCMLInputFileTest {
 		return rs.getResource(URI.createFileURI(testFile.getAbsolutePath()), true);
 	}
 
-	protected Resource reloadResource(Resource resource) {
+	protected CMLResourceContainer reloadResource(CMLResourceContainer resource) {
 		ResourceSet rs = new ResourceSetImpl();
-		return rs.getResource(URI.createFileURI(resource.getURI().devicePath()), true);
+		return new CMLResourceContainer(rs.getResource(URI.createFileURI(resource.getResource().getURI().devicePath()), true));
 	}
 
 	protected File getTestFile(String testCMLName) {

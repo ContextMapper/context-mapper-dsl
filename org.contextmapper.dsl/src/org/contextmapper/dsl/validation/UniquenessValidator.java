@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.contextmapper.dsl.cml.CMLModelObjectsResolvingHelper;
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLPackage;
@@ -35,16 +36,15 @@ import org.contextmapper.dsl.contextMappingDSL.Subdomain;
 import org.contextmapper.dsl.contextMappingDSL.UseCase;
 import org.contextmapper.tactic.dsl.tacticdsl.SimpleDomainObject;
 import org.contextmapper.tactic.dsl.tacticdsl.TacticdslPackage;
-import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.eclipse.xtext.EcoreUtil2;
-import org.eclipse.xtext.validation.AbstractDeclarativeValidator;
 import org.eclipse.xtext.validation.Check;
 import org.eclipse.xtext.validation.EValidatorRegistrar;
 import org.eclipse.xtext.xbase.lib.Functions.Function1;
 import org.eclipse.xtext.xbase.lib.IteratorExtensions;
 
-public class UniquenessValidator extends AbstractDeclarativeValidator {
+public class UniquenessValidator extends AbstractCMLValidator {
 
+	private CMLModelObjectsResolvingHelper resolvingHelper = new CMLModelObjectsResolvingHelper();
+	
 	@Override
 	public void register(EValidatorRegistrar registrar) {
 		// not needed for classes used as ComposedCheck
@@ -53,7 +53,7 @@ public class UniquenessValidator extends AbstractDeclarativeValidator {
 	@Check
 	public void validateThatBoundedContextNameIsUnique(final BoundedContext bc) {
 		if (bc != null) {
-			Iterator<BoundedContext> allBoundedContexts = IteratorExtensions.filter(EcoreUtil2.eAll(EcoreUtil.getRootContainer(bc)), BoundedContext.class);
+			Iterator<BoundedContext> allBoundedContexts = resolvingHelper.resolveAllObjectsOfType(getRootCMLModel(bc), BoundedContext.class).iterator();
 			Iterator<BoundedContext> duplicateBoundedContexts = IteratorExtensions.filter(allBoundedContexts,
 					((Function1<BoundedContext, Boolean>) (BoundedContext boundedcontext) -> {
 						return boundedcontext.getName().equals(bc.getName());
@@ -66,7 +66,7 @@ public class UniquenessValidator extends AbstractDeclarativeValidator {
 	@Check
 	public void validateThatModuleNameIsUnique(final SculptorModule module) {
 		if (module != null) {
-			Iterator<SculptorModule> allModules = IteratorExtensions.filter(EcoreUtil2.eAll(EcoreUtil.getRootContainer(module)), SculptorModule.class);
+			Iterator<SculptorModule> allModules = resolvingHelper.resolveAllObjectsOfType(getRootCMLModel(module), SculptorModule.class).iterator();
 			Iterator<SculptorModule> duplicateModules = IteratorExtensions.filter(allModules, ((Function1<SculptorModule, Boolean>) (SculptorModule m) -> {
 				return m.getName().equals(module.getName());
 			}));
@@ -78,7 +78,7 @@ public class UniquenessValidator extends AbstractDeclarativeValidator {
 	@Check
 	public void validateThatAggregateNameIsUnique(final Aggregate aggregate) {
 		if (aggregate != null) {
-			Iterator<Aggregate> allAggregates = IteratorExtensions.filter(EcoreUtil2.eAll(EcoreUtil.getRootContainer(aggregate)), Aggregate.class);
+			Iterator<Aggregate> allAggregates = resolvingHelper.resolveAllObjectsOfType(getRootCMLModel(aggregate), Aggregate.class).iterator();
 			Iterator<Aggregate> duplicateAggregates = IteratorExtensions.filter(allAggregates, ((Function1<Aggregate, Boolean>) (Aggregate a) -> {
 				return a.getName().equals(aggregate.getName());
 			}));
@@ -90,7 +90,7 @@ public class UniquenessValidator extends AbstractDeclarativeValidator {
 	@Check
 	public void validateThatUseCaseNameIsUnique(final UseCase uc) {
 		if (uc != null) {
-			Iterator<UseCase> allUseCases = IteratorExtensions.filter(EcoreUtil2.eAll(EcoreUtil.getRootContainer(uc)), UseCase.class);
+			Iterator<UseCase> allUseCases = resolvingHelper.resolveAllObjectsOfType(getRootCMLModel(uc), UseCase.class).iterator();
 			Iterator<UseCase> duplicateUseCases = IteratorExtensions.filter(allUseCases, ((Function1<UseCase, Boolean>) (UseCase u) -> {
 				return u.getName().equals(uc.getName());
 			}));
