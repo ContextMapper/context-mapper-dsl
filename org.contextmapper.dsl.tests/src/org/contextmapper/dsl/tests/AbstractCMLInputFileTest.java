@@ -38,32 +38,32 @@ import org.junit.jupiter.api.BeforeEach;
 
 public abstract class AbstractCMLInputFileTest {
 	protected File testDir;
+	protected ResourceSet resourceSet;
 
 	@BeforeEach
 	public void prepare() {
 		String dirName = UUID.randomUUID().toString();
 		this.testDir = new File(new File(System.getProperty("java.io.tmpdir")), dirName);
 		this.testDir.mkdir();
+		this.resourceSet = new ResourceSetImpl();
 	}
 
 	protected CMLResourceContainer getResourceCopyOfTestCML(String testCMLName) throws IOException {
 		File testFile = new File(testDir, testCMLName);
 		FileUtils.copyFile(getTestFile(testCMLName), testFile);
 		new ContextMappingDSLStandaloneSetup().createInjectorAndDoEMFRegistration();
-		ResourceSet rs = new ResourceSetImpl();
-		return new CMLResourceContainer(rs.getResource(URI.createFileURI(testFile.getAbsolutePath()), true));
+		return new CMLResourceContainer(resourceSet.getResource(URI.createFileURI(testFile.getAbsolutePath()), true));
 	}
 	
 	/**
 	 * In case multiple files are needed for the test (are copied to same directory)
 	 */
 	protected ResourceSet getResourceSetOfTestCMLFiles(String... testCMLFileNames) throws IOException {
-		ResourceSet rs = new ResourceSetImpl();
 		for(String testFileName : testCMLFileNames) {
 			CMLResourceContainer cmlResource = this.getResourceCopyOfTestCML(testFileName);
-			rs.getResource(cmlResource.getResource().getURI(), true);
+			resourceSet.getResource(cmlResource.getResource().getURI(), true);
 		}
-		return rs;
+		return resourceSet;
 	}
 
 	/**
@@ -72,8 +72,7 @@ public abstract class AbstractCMLInputFileTest {
 	protected CMLResourceContainer getOriginalResourceOfTestCML(String testCMLName) throws IOException {
 		File testFile = getTestFile(testCMLName);
 		new ContextMappingDSLStandaloneSetup().createInjectorAndDoEMFRegistration();
-		ResourceSet rs = new ResourceSetImpl();
-		return new CMLResourceContainer(rs.getResource(URI.createFileURI(testFile.getAbsolutePath()), true));
+		return new CMLResourceContainer(resourceSet.getResource(URI.createFileURI(testFile.getAbsolutePath()), true));
 	}
 
 	protected Resource getResourceCopyOfTestSCL(String testSCLName) throws IOException {

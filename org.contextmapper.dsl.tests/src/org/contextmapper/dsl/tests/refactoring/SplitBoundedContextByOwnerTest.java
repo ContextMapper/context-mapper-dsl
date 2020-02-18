@@ -26,6 +26,7 @@ import org.contextmapper.dsl.cml.CMLResourceContainer;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
 import org.contextmapper.dsl.refactoring.SplitBoundedContextByOwner;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.junit.jupiter.api.Test;
 
 public class SplitBoundedContextByOwnerTest extends AbstractRefactoringTest {
@@ -97,11 +98,33 @@ public class SplitBoundedContextByOwnerTest extends AbstractRefactoringTest {
 		assertTrue(boundedContextNames.contains("CustomerManagement"));
 		assertTrue(boundedContextNames.contains("NewBoundedContext1"));
 
-		List<UpstreamDownstreamRelationship> relationships = model.getMap().getRelationships().stream()
-				.filter(rel -> rel instanceof UpstreamDownstreamRelationship).map(rel -> (UpstreamDownstreamRelationship) rel).collect(Collectors.toList());
+		List<UpstreamDownstreamRelationship> relationships = model.getMap().getRelationships().stream().filter(rel -> rel instanceof UpstreamDownstreamRelationship)
+				.map(rel -> (UpstreamDownstreamRelationship) rel).collect(Collectors.toList());
 		assertEquals(2, relationships.size());
 		assertEquals(1, relationships.get(0).getUpstreamExposedAggregates().size());
 		assertEquals(1, relationships.get(1).getUpstreamExposedAggregates().size());
+	}
+
+	@Test
+	void canUpdateContextMapInDifferentFile() throws IOException {
+		// given
+		CMLResourceContainer mainResource = getResourceCopyOfTestCML("split-bc-by-owner-test-5-input-2.cml");
+		ResourceSet additionalResources = getResourceSetOfTestCMLFiles("split-bc-by-owner-test-5-input-1.cml");
+
+		// when
+		SplitBoundedContextByOwner ar = new SplitBoundedContextByOwner("CustomerManagement");
+		ar.doRefactor(mainResource, additionalResources);
+		CMLResourceContainer contextMapResource = new CMLResourceContainer(
+				additionalResources.getResources().stream().filter(r -> r.getURI().toString().endsWith("split-bc-by-owner-test-5-input-1.cml")).findFirst().get());
+		contextMapResource = reloadResource(contextMapResource);
+
+		// then
+		ContextMappingModel model = contextMapResource.getContextMappingModel();
+		assertEquals(2, model.getMap().getRelationships().size());
+		UpstreamDownstreamRelationship rel1 = (UpstreamDownstreamRelationship) model.getMap().getRelationships().get(0);
+		UpstreamDownstreamRelationship rel2 = (UpstreamDownstreamRelationship) model.getMap().getRelationships().get(1);
+		assertEquals(1, rel1.getUpstreamExposedAggregates().size());
+		assertEquals(1, rel2.getUpstreamExposedAggregates().size());
 	}
 
 }

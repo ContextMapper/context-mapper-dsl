@@ -51,10 +51,14 @@ public abstract class AbstractRefactoringHandler extends AbstractHandler impleme
 	private ResourceDescriptionsProvider resourceDescriptionsProvider;
 
 	protected Resource currentResource;
+	protected ResourceSet currentResourceSet;
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		try {
+			XtextEditor xEditor = EditorUtils.getActiveXtextEditor();
+			IResource xResource = xEditor.getResource();
+			currentResourceSet = resourceSetProvider.get(xResource.getProject());
 			currentResource = getCurrentResource();
 			executeRefactoring(new CMLResourceContainer(currentResource), event);
 		} catch (ContextMapperApplicationException e) {
@@ -74,8 +78,7 @@ public abstract class AbstractRefactoringHandler extends AbstractHandler impleme
 
 		URI uri = URI.createPlatformResourceURI(xResource.getFullPath().toString(), true);
 
-		ResourceSet rs = resourceSetProvider.get(xResource.getProject());
-		return rs.getResource(uri, true);
+		return currentResourceSet.getResource(uri, true);
 	}
 
 	protected ContextMappingModel getCurrentContextMappingModel() {
@@ -90,17 +93,12 @@ public abstract class AbstractRefactoringHandler extends AbstractHandler impleme
 		return null;
 	}
 
-	protected ResourceSet getOtherProjectResources() {
+	protected ResourceSet getAllResources() {
 		IResourceDescriptions index = resourceDescriptionsProvider.createResourceDescriptions();
-		XtextEditor xEditor = EditorUtils.getActiveXtextEditor();
-		IResource xResource = xEditor.getResource();
-		ResourceSet rs = resourceSetProvider.get(xResource.getProject());
-
 		for (IResourceDescription resDesc : index.getAllResourceDescriptions()) {
-			rs.getResource(resDesc.getURI(), true);
+			currentResourceSet.getResource(resDesc.getURI(), true);
 		}
-		rs.getResources().remove(getCurrentResource());
-		return rs;
+		return currentResourceSet;
 	}
 
 	protected Set<ContextMappingModel> getReferencedContextMappingModels(ContextMappingModel rootModel) {

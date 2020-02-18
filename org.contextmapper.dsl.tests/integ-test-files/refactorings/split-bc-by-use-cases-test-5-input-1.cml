@@ -1,0 +1,9 @@
+import "split-bc-by-use-cases-test-5-input-2.cml"
+
+ContextMap {
+	contains CustomerManagement, ContractManagement
+	
+	CustomerManagement -> ContractManagement {
+		exposedAggregates = Customers, Addresses
+	}
+}

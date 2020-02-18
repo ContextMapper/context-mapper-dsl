@@ -61,4 +61,18 @@ public class CMLResourceContainer {
 			throw new ResourceIsNoCMLModelException();
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if(!(obj instanceof CMLResourceContainer))
+			return false;
+		
+		CMLResourceContainer otherResource = (CMLResourceContainer) obj;
+		return resource.getURI().equals(otherResource.resource.getURI());
+	}
+	
+	@Override
+	public int hashCode() {
+		return resource.getURI().hashCode();
+	}
+	
 }

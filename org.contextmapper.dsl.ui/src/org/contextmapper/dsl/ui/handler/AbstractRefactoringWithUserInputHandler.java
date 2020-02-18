@@ -18,7 +18,7 @@ public abstract class AbstractRefactoringWithUserInputHandler extends AbstractRe
 			@Override
 			public void run() {
 				try {
-					ar.doRefactor(resource, getOtherProjectResources());
+					ar.doRefactor(resource, getAllResources());
 				} catch (ContextMapperApplicationException e) {
 					MessageDialog.openInformation(HandlerUtil.getActiveShell(event), "Model Input", e.getMessage());
 				}

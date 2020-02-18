@@ -29,7 +29,7 @@ public class SplitBoundedContextByUseCasesRefactoringHandler extends AbstractRef
 	@Override
 	protected void executeRefactoring(CMLResourceContainer resource, ExecutionEvent event) {
 		BoundedContext bc = (BoundedContext) getSelectedElement();
-		new SplitBoundedContextByUseCases(bc.getName()).doRefactor(resource);
+		new SplitBoundedContextByUseCases(bc.getName()).doRefactor(resource, getAllResources());
 	}
 
 	@Override

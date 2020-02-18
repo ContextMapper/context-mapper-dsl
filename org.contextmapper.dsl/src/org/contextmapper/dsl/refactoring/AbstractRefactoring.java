@@ -45,7 +45,7 @@ public abstract class AbstractRefactoring implements Refactoring {
 	private Map<ContextMap, CMLResourceContainer> contextMapMap = Maps.newHashMap();
 	private List<CMLResourceContainer> changedResources = Lists.newArrayList();
 
-	protected List<CMLResourceContainer> additionalResourcesToCheck = Lists.newArrayList();
+	protected Set<CMLResourceContainer> additionalResourcesToCheck = Sets.newHashSet();
 
 	@Override
 	public void doRefactor(CMLResourceContainer resource) {
@@ -157,6 +157,15 @@ public abstract class AbstractRefactoring implements Refactoring {
 		list.clear();
 		list.addAll(tempList);
 		list.addAll(elementsToAdd);
+	}
+	
+	protected <T> void addElementToEList(EList<T> list, T elementToAdd) {
+		// ugly workaround (clear list and add all again); otherwise list is not
+		// properly updated when saving ecore model :(
+		List<T> tempList = Lists.newArrayList(list);
+		list.clear();
+		list.addAll(tempList);
+		list.add(elementToAdd);
 	}
 
 	protected <T> void removeElementFromEList(EList<T> list, T object) {

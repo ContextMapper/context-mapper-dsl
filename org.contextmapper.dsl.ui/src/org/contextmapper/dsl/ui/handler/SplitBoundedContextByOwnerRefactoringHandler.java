@@ -29,7 +29,7 @@ public class SplitBoundedContextByOwnerRefactoringHandler extends AbstractRefact
 	@Override
 	protected void executeRefactoring(CMLResourceContainer resource, ExecutionEvent event) {
 		BoundedContext bc = (BoundedContext) getSelectedElement();
-		new SplitBoundedContextByOwner(bc.getName()).doRefactor(resource);
+		new SplitBoundedContextByOwner(bc.getName()).doRefactor(resource, getAllResources());
 	}
 
 	@Override
