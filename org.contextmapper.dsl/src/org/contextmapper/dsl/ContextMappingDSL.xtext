@@ -22,6 +22,7 @@ generate contextMappingDSL "http://www.contextmapper.org/dsl/ContextMappingDSL"
 
 ContextMappingModel:
 	(
+		(firstLineComment=SL_COMMENT)? &
 		(imports+=Import)* &
 		(map = ContextMap)? &
 		(boundedContexts += BoundedContext)* &

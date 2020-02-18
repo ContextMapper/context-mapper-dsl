@@ -1,26 +1,26 @@
 package org.contextmapper.dsl.tests.refactoring;
 
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.cml.CMLResourceContainer;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContextType;
+import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
+import org.contextmapper.dsl.contextMappingDSL.Import;
 import org.contextmapper.dsl.contextMappingDSL.KnowledgeLevel;
 import org.contextmapper.dsl.contextMappingDSL.SymmetricRelationship;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
 import org.contextmapper.dsl.refactoring.MergeBoundedContextsRefactoring;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.xtext.xbase.lib.IteratorExtensions;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.junit.jupiter.api.Test;
-
-import com.google.common.collect.Iterators;
 
 public class MergeBoundedContextsTest extends AbstractRefactoringTest {
 
@@ -270,7 +270,6 @@ public class MergeBoundedContextsTest extends AbstractRefactoringTest {
 		assertEquals(BoundedContextType.SYSTEM, bc.getType());
 	}
 
-	
 	@Test
 	void canTakeAttributesFromSecondBoundedContext() throws IOException {
 		// given
@@ -289,6 +288,53 @@ public class MergeBoundedContextsTest extends AbstractRefactoringTest {
 		assertEquals(KnowledgeLevel.CONCRETE, bc.getKnowledgeLevel());
 		assertEquals("AnotherContext", bc.getName());
 		assertEquals(BoundedContextType.FEATURE, bc.getType());
+	}
+
+	@Test
+	void canMergeBoundedContextsInDifferentFiles() throws IOException {
+		// given
+		CMLResourceContainer mainResource = getResourceCopyOfTestCML("merge-bounded-contexts-multiple-files-test-3.cml");
+		ResourceSet additionalResources = getResourceSetOfTestCMLFiles("merge-bounded-contexts-multiple-files-test-1.cml", "merge-bounded-contexts-multiple-files-test-2.cml");
+
+		// when
+		MergeBoundedContextsRefactoring ar = new MergeBoundedContextsRefactoring("CustomerManagement", "AnotherContext");
+		ar.doRefactor(mainResource, additionalResources);
+		mainResource = reloadResource(mainResource);
+
+		// then
+		ContextMap map = mainResource.getContextMappingModel().getMap();
+		CMLResourceContainer updatedResource = new CMLResourceContainer(
+				additionalResources.getResources().stream().filter(r -> r.getURI().toString().endsWith("merge-bounded-contexts-multiple-files-test-1.cml")).findFirst().get());
+		updatedResource = reloadResource(updatedResource);
+
+		assertEquals(1, map.getBoundedContexts().size());
+		assertTrue(map.getRelationships().isEmpty());
+		assertEquals(1, updatedResource.getContextMappingModel().getBoundedContexts().size());
+		BoundedContext updatedContext = updatedResource.getContextMappingModel().getBoundedContexts().get(0);
+		assertEquals(3, updatedContext.getAggregates().size());
+	}
+
+	@Test
+	void canFixImportsWhenMergingAcrossFiles() throws IOException {
+		// given
+		CMLResourceContainer mainResource = getResourceCopyOfTestCML("merge-bounded-contexts-fix-import-test-1.cml");
+		ResourceSet additionalResources = getResourceSetOfTestCMLFiles("merge-bounded-contexts-fix-import-test-2.cml", "merge-bounded-contexts-fix-import-test-3.cml",
+				"merge-bounded-contexts-fix-import-test-4.cml");
+
+		// when
+		MergeBoundedContextsRefactoring ar = new MergeBoundedContextsRefactoring("CustomerManagement", "AnotherContext");
+		ar.doRefactor(mainResource, additionalResources);
+		mainResource = reloadResource(mainResource);
+
+		// then
+		CMLResourceContainer updatedImportResource = new CMLResourceContainer(
+				additionalResources.getResources().stream().filter(r -> r.getURI().toString().endsWith("merge-bounded-contexts-fix-import-test-4.cml")).findFirst().get());
+		updatedImportResource = reloadResource(updatedImportResource);
+
+		Optional<Import> neededImport = updatedImportResource.getContextMappingModel().getImports().stream()
+				.filter(i -> i.getImportURI().endsWith("merge-bounded-contexts-fix-import-test-3.cml")).findFirst();
+		
+		assertTrue(neededImport.isPresent());
 	}
 
 }

@@ -1,0 +1,9 @@
+import "merge-bounded-contexts-fix-import-test-2.cml"
+
+BoundedContext ContextWithRef2MovedAggregate {
+	Aggregate JustAnAggregate {
+		Entity JustAnEntity {
+			- JustAnEntity ref
+		}
+	} 
+}

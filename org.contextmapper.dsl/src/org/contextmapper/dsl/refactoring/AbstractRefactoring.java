@@ -26,6 +26,7 @@ import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.Import;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -42,7 +43,7 @@ public abstract class AbstractRefactoring implements Refactoring {
 	protected Set<CMLResourceContainer> importedResources;
 	private Map<BoundedContext, CMLResourceContainer> boundedContextsMap = Maps.newHashMap();
 	private Map<ContextMap, CMLResourceContainer> contextMapMap = Maps.newHashMap();
-	private Set<CMLResourceContainer> changedResources = Sets.newHashSet();
+	private List<CMLResourceContainer> changedResources = Lists.newArrayList();
 
 	protected List<CMLResourceContainer> additionalResourcesToCheck = Lists.newArrayList();
 
@@ -84,14 +85,17 @@ public abstract class AbstractRefactoring implements Refactoring {
 	}
 
 	protected void saveResources() {
+		rootResource.getContextMappingModel().eAllContents();
 		saveResource(rootResource.getResource());
 		for (CMLResourceContainer changedResource : changedResources) {
+			changedResource.getContextMappingModel().eAllContents();
 			saveResource(changedResource.getResource());
 		}
 	}
 
 	protected void markResourceChanged(BoundedContext changedBoundedContext) {
-		markResourceChanged(getResource(changedBoundedContext));
+		CMLResourceContainer resource = getResource(changedBoundedContext);
+		markResourceChanged(resource);
 	}
 
 	protected void markResourceChanged(ContextMap changedContextMap) {
@@ -103,7 +107,8 @@ public abstract class AbstractRefactoring implements Refactoring {
 	}
 
 	protected CMLResourceContainer getResource(BoundedContext bc) {
-		return this.boundedContextsMap.get(bc);
+		CMLResourceContainer result = this.boundedContextsMap.get(bc);
+		return result;
 	}
 
 	protected CMLResourceContainer getResource(ContextMap contextMap) {
@@ -144,5 +149,22 @@ public abstract class AbstractRefactoring implements Refactoring {
 		}
 		return false;
 	}
+	
+	protected <T> void addElementsToEList(EList<T> list, List<T> elementsToAdd) {
+		// ugly workaround (clear list and add all again); otherwise list is not
+		// properly updated when saving ecore model :(
+		List<T> tempList = Lists.newArrayList(list);
+		list.clear();
+		list.addAll(tempList);
+		list.addAll(elementsToAdd);
+	}
 
+	protected <T> void removeElementFromEList(EList<T> list, T object) {
+		// ugly workaround (clear list and add all again); otherwise list is not
+		// properly updated when saving ecore model :(
+		list.remove(object);
+		List<T> tempList = Lists.newArrayList(list);
+		list.clear();
+		list.addAll(tempList);
+	}
 }

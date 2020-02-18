@@ -30,7 +30,6 @@ import org.contextmapper.dsl.contextMappingDSL.Import;
 import org.contextmapper.dsl.contextMappingDSL.Relationship;
 import org.eclipse.emf.common.util.URI;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 public class MergeBoundedContextsRefactoring extends AbstractRefactoring implements Refactoring {
@@ -72,8 +71,8 @@ public class MergeBoundedContextsRefactoring extends AbstractRefactoring impleme
 		}
 
 		// move content from BC2 to BC1
-		bc1.getAggregates().addAll(bc2.getAggregates());
-		bc1.getModules().addAll(bc2.getModules());
+		addElementsToEList(bc1.getAggregates(), bc2.getAggregates());
+		addElementsToEList(bc1.getModules(), bc2.getModules());
 		bc1.getImplementedDomainParts().addAll(bc2.getImplementedDomainParts());
 		if (bc1.getType().equals(BoundedContextType.TEAM))
 			bc1.getRealizedBoundedContexts().addAll(bc2.getRealizedBoundedContexts());
@@ -84,8 +83,12 @@ public class MergeBoundedContextsRefactoring extends AbstractRefactoring impleme
 		handleContextMapChanges(bc1, bc2);
 		handleImportsToRemovedBC(bc1, bc2);
 		ContextMappingModel bc2Model = getResource(bc2).getContextMappingModel();
-		bc2Model.getBoundedContexts().remove(bc2);
+		removeElementFromEList(bc2Model.getBoundedContexts(), bc2);
 		bc2Model.eAllContents();
+		
+		// create comment if BC2 file is empty
+		if(bc2Model.getMap() == null && bc2Model.getBoundedContexts().isEmpty())
+			bc2Model.setFirstLineComment("// Due to the application of 'Merge Bounded Contexts' this file no longer contains any Bounded Contexts.");
 
 		markResourceChanged(bc1);
 		markResourceChanged(bc2);
@@ -113,13 +116,7 @@ public class MergeBoundedContextsRefactoring extends AbstractRefactoring impleme
 
 			if (map.getBoundedContexts().stream().map(bc -> bc.getName()).collect(Collectors.toSet()).contains(removedBC.getName())) {
 				BoundedContext bcToRemove = map.getBoundedContexts().stream().filter(bc -> bc.getName().equals(removedBC.getName())).findFirst().get();
-				map.getBoundedContexts().remove(bcToRemove);
-
-				// ugly workaround (clear list and add all again); otherwise list is not
-				// properly updated when saving ecore model :(
-				List<BoundedContext> list = Lists.newArrayList(map.getBoundedContexts());
-				map.getBoundedContexts().clear();
-				map.getBoundedContexts().addAll(list);
+				removeElementFromEList(map.getBoundedContexts(), bcToRemove);
 			}
 			markResourceChanged(map);
 		}

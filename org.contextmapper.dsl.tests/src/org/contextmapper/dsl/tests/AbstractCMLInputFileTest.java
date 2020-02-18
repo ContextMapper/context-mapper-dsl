@@ -53,6 +53,18 @@ public abstract class AbstractCMLInputFileTest {
 		ResourceSet rs = new ResourceSetImpl();
 		return new CMLResourceContainer(rs.getResource(URI.createFileURI(testFile.getAbsolutePath()), true));
 	}
+	
+	/**
+	 * In case multiple files are needed for the test (are copied to same directory)
+	 */
+	protected ResourceSet getResourceSetOfTestCMLFiles(String... testCMLFileNames) throws IOException {
+		ResourceSet rs = new ResourceSetImpl();
+		for(String testFileName : testCMLFileNames) {
+			CMLResourceContainer cmlResource = this.getResourceCopyOfTestCML(testFileName);
+			rs.getResource(cmlResource.getResource().getURI(), true);
+		}
+		return rs;
+	}
 
 	/**
 	 * Only use this method if model is not changed!!

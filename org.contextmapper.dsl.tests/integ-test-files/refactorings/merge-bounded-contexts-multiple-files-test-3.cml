@@ -1,0 +1,8 @@
+import "merge-bounded-contexts-multiple-files-test-1.cml"
+import "merge-bounded-contexts-multiple-files-test-2.cml"
+
+ContextMap testMap {
+	contains CustomerManagement, AnotherContext
+	
+	CustomerManagement -> AnotherContext
+}
