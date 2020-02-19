@@ -25,15 +25,13 @@ import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.cml.CMLResourceContainer;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
+import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.LikelihoodForChange;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
 import org.contextmapper.dsl.refactoring.ExtractAggregatesByVolatility;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.xtext.xbase.lib.IteratorExtensions;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.junit.jupiter.api.Test;
-
-import com.google.common.collect.Iterators;
 
 public class ExtractAggregatesByVolatilityTest extends AbstractRefactoringTest {
 
@@ -127,6 +125,28 @@ public class ExtractAggregatesByVolatilityTest extends AbstractRefactoringTest {
 
 		// then
 		assertEquals(1, input.getContextMappingModel().getBoundedContexts().size());
+	}
+
+	@Test
+	void canHandleContextMapInDifferentFile() throws IOException {
+		// given
+		CMLResourceContainer mainResource = getResourceCopyOfTestCML("extract-aggregates-likely-to-change-test-6-input-2.cml");
+		ResourceSet additionalResources = getResourceSetOfTestCMLFiles("extract-aggregates-likely-to-change-test-6-input-1.cml");
+
+		// when
+		ExtractAggregatesByVolatility ar = new ExtractAggregatesByVolatility("CustomerManagement", LikelihoodForChange.OFTEN);
+		ar.doRefactor(mainResource, additionalResources);
+		CMLResourceContainer contextMapResource = new CMLResourceContainer(additionalResources.getResources().stream()
+				.filter(r -> r.getURI().toString().endsWith("extract-aggregates-likely-to-change-test-6-input-1.cml")).findFirst().get());
+		contextMapResource = reloadResource(contextMapResource);
+
+		// then
+		ContextMap contextMap = contextMapResource.getContextMappingModel().getMap();
+		List<UpstreamDownstreamRelationship> upDownRels = contextMap.getRelationships().stream().filter(rel -> rel instanceof UpstreamDownstreamRelationship)
+				.map(rel -> (UpstreamDownstreamRelationship) rel).collect(Collectors.toList());
+		assertEquals(2, upDownRels.size());
+		assertEquals(0, upDownRels.get(0).getUpstreamExposedAggregates().size());
+		assertEquals(1, upDownRels.get(1).getUpstreamExposedAggregates().size());
 	}
 
 }

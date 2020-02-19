@@ -20,9 +20,10 @@ import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
+import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
+import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.LikelihoodForChange;
-import org.eclipse.xtext.EcoreUtil2;
 
 public class ExtractAggregatesByVolatility extends AbstractRefactoring implements Refactoring {
 
@@ -50,11 +51,17 @@ public class ExtractAggregatesByVolatility extends AbstractRefactoring implement
 		BoundedContext newBC = createNewBoundedContext();
 		for (Aggregate aggregate : aggregates) {
 			// move the matching aggregates to the new Bounded Context
-			newBC.getAggregates().add(aggregate);
-			this.originalBC.getAggregates().remove(aggregate);
+			addElementToEList(newBC.getAggregates(), aggregate);
+			removeElementFromEList(originalBC.getAggregates(), aggregate);
+			markResourceChanged(originalBC);
 		}
-		this.model.getBoundedContexts().add(newBC);
-		new ContextMappingModelHelper(model).moveExposedAggregatesToNewRelationshipsIfNeeded(aggregates.stream().map(a -> a.getName()).collect(Collectors.toList()), newBC);
+		addElementToEList(getResource(originalBC).getContextMappingModel().getBoundedContexts(), newBC);
+		for (ContextMap contextMap : getAllContextMaps()) {
+			ContextMappingModel contextMapModel = getResource(contextMap).getContextMappingModel();
+			new ContextMappingModelHelper(contextMapModel).moveExposedAggregatesToNewRelationshipsIfNeeded(aggregates.stream().map(a -> a.getName()).collect(Collectors.toList()),
+					newBC);
+			markResourceChanged(contextMap);
+		}
 		saveResources();
 	}
 
@@ -69,8 +76,7 @@ public class ExtractAggregatesByVolatility extends AbstractRefactoring implement
 	}
 
 	private void initOriginalBC() {
-		List<BoundedContext> allBCs = EcoreUtil2.<BoundedContext>getAllContentsOfType(model, BoundedContext.class);
-		List<BoundedContext> bcsWithGivenInputName = allBCs.stream().filter(bc -> bc.getName().equals(boundedContextName)).collect(Collectors.toList());
+		List<BoundedContext> bcsWithGivenInputName = getAllBoundedContexts().stream().filter(bc -> bc.getName().equals(boundedContextName)).collect(Collectors.toList());
 		this.originalBC = bcsWithGivenInputName.get(0);
 	}
 
