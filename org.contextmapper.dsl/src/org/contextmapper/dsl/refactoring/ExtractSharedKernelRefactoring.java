@@ -61,8 +61,8 @@ public class ExtractSharedKernelRefactoring extends AbstractExtractSymmetricRela
 		Entity entity = TacticdslFactory.eINSTANCE.createEntity();
 		entity.setAggregateRoot(true);
 		entity.setName("SharedKernelRoot");
-		aggregate.getDomainObjects().add(entity);
-		newBC.getAggregates().add(aggregate);
+		addElementToEList(aggregate.getDomainObjects(), entity);
+		addElementToEList(newBC.getAggregates(), aggregate);
 		return newBC;
 	}
 
