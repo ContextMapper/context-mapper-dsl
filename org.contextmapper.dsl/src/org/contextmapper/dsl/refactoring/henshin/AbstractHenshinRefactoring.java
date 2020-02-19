@@ -15,9 +15,9 @@
  */
 package org.contextmapper.dsl.refactoring.henshin;
 
+import org.contextmapper.dsl.cml.CMLResourceContainer;
 import org.contextmapper.dsl.refactoring.AbstractRefactoring;
 import org.contextmapper.dsl.refactoring.Refactoring;
-import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.henshin.interpreter.EGraph;
 import org.eclipse.emf.henshin.interpreter.Engine;
 import org.eclipse.emf.henshin.interpreter.UnitApplication;
@@ -31,10 +31,10 @@ public abstract class AbstractHenshinRefactoring extends AbstractRefactoring imp
 
 	@Override
 	protected void doRefactor() {
-		executeHenshinTransformation(rootResource.getResource());
+		executeHenshinTransformation();
 	}
 
-	private void executeHenshinTransformation(Resource resource) {
+	private void executeHenshinTransformation() {
 		// Create a resource set with a base directory:
 		HenshinResourceSet resourceSet = new HenshinResourceSet();
 
@@ -43,7 +43,8 @@ public abstract class AbstractHenshinRefactoring extends AbstractRefactoring imp
 		Module module = resourceSet.getModule(transformationFile, false);
 
 		// Load the example model into an EGraph
-		EGraph graph = new EGraphImpl(resource);
+		CMLResourceContainer transformationResource = getTransformationResource();
+		EGraph graph = new EGraphImpl(transformationResource.getResource());
 
 		// Create an engine and a rule application
 		Engine engine = new EngineImpl();
@@ -56,15 +57,26 @@ public abstract class AbstractHenshinRefactoring extends AbstractRefactoring imp
 		if (!refactoringUnit.execute(null))
 			throwTransformationError();
 
-		// Saving the result
-		resourceSet.saveEObject(graph.getRoots().get(0), resource.getURI());
+		// replace transformed model in resource
+		transformationResource.getResource().getContents().clear();
+		transformationResource.getResource().getContents().add(graph.getRoots().get(0));
 
 		// post-processing
-		Resource newResource = resourceSet.getResource(resource.getURI(), false);
-		postProcessing(newResource);
+		postProcessing(transformationResource);
 
-		saveResource(newResource);
+		// save all changed resources
+		markResourceChanged(transformationResource);
+		saveResources();
 	}
+
+	/**
+	 * The root resource on which the refactoring has been started might not be the
+	 * resource that has to be transformed (reference). Implement this method to
+	 * resolve the resource that has to be transformed by Henshin.
+	 * 
+	 * @return the CML resource that shall be transformed
+	 */
+	protected abstract CMLResourceContainer getTransformationResource();
 
 	/**
 	 * Method has to be implemented to provide the name of the Henshin
@@ -98,7 +110,7 @@ public abstract class AbstractHenshinRefactoring extends AbstractRefactoring imp
 	 * 
 	 * @param resource The resource already transformed by Henshin.
 	 */
-	protected void postProcessing(Resource resource) {
+	protected void postProcessing(CMLResourceContainer resource) {
 		// nothing to do
 	}
 

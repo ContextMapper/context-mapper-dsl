@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import org.contextmapper.dsl.cml.CMLResourceContainer;
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
+import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.SculptorModule;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
@@ -18,6 +19,7 @@ import org.contextmapper.dsl.refactoring.henshin.SplitAggregateByEntitiesRefacto
 import org.contextmapper.dsl.tests.refactoring.AbstractRefactoringTest;
 import org.contextmapper.tactic.dsl.tacticdsl.DomainObject;
 import org.contextmapper.tactic.dsl.tacticdsl.SimpleDomainObject;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.junit.jupiter.api.Test;
 
 public class SplitAggregateByEntitiesTest extends AbstractRefactoringTest {
@@ -120,6 +122,26 @@ public class SplitAggregateByEntitiesTest extends AbstractRefactoringTest {
 		List<String> upstreamExposedAggregates = relationship.getUpstreamExposedAggregates().stream().map(a -> a.getName()).collect(Collectors.toList());
 		assertTrue(upstreamExposedAggregates.contains("Customers"));
 		assertTrue(upstreamExposedAggregates.contains("NewAggregate1"));
+	}
+
+	@Test
+	void canHandleContextMapInDifferentFile() throws IOException {
+		// given
+		CMLResourceContainer mainResource = getResourceCopyOfTestCML("split-agg-by-entities-test-4-input-2.cml");
+		ResourceSet additionalResources = getResourceSetOfTestCMLFiles("split-agg-by-entities-test-4-input-1.cml");
+
+		// when
+		SplitAggregateByEntitiesRefactoring ar = new SplitAggregateByEntitiesRefactoring("Customers");
+		ar.doRefactor(mainResource, additionalResources);
+		CMLResourceContainer contextMapResource = new CMLResourceContainer(
+				additionalResources.getResources().stream().filter(r -> r.getURI().toString().endsWith("split-agg-by-entities-test-4-input-1.cml")).findFirst().get());
+		contextMapResource = reloadResource(contextMapResource);
+
+		// then
+		ContextMap contextMap = contextMapResource.getContextMappingModel().getMap();
+		assertEquals(2, contextMap.getBoundedContexts().size());
+		UpstreamDownstreamRelationship rel = (UpstreamDownstreamRelationship) contextMap.getRelationships().get(0);
+		assertEquals(2, rel.getUpstreamExposedAggregates().size());
 	}
 
 }

@@ -45,6 +45,7 @@ public abstract class AbstractRefactoring implements Refactoring {
 	private Map<ContextMap, CMLResourceContainer> contextMapMap = Maps.newHashMap();
 	private List<CMLResourceContainer> changedResources = Lists.newArrayList();
 
+	protected ResourceSet consistencyCheckResources;
 	protected Set<CMLResourceContainer> additionalResourcesToCheck = Sets.newHashSet();
 
 	@Override
@@ -58,6 +59,7 @@ public abstract class AbstractRefactoring implements Refactoring {
 
 	@Override
 	public void doRefactor(CMLResourceContainer resource, ResourceSet consistencyCheckResources) {
+		this.consistencyCheckResources = consistencyCheckResources;
 		for (Resource resourceToCheck : consistencyCheckResources.getResources()) {
 			if (resourceToCheck.getContents().isEmpty() || !(resourceToCheck.getContents().get(0) instanceof ContextMappingModel))
 				continue;

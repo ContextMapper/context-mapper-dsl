@@ -1,0 +1,10 @@
+import "split-agg-by-entities-test-4-input-2.cml"
+
+ContextMap testMap {
+	contains CustomerManagement, AnotherContext
+
+	CustomerManagement -> AnotherContext {
+		exposedAggregates = Customers
+	}
+
+}

@@ -17,6 +17,7 @@ package org.contextmapper.dsl.refactoring.henshin;
 
 import java.util.List;
 
+import org.contextmapper.dsl.cml.CMLResourceContainer;
 import org.contextmapper.dsl.refactoring.ContextMappingModelHelper;
 import org.eclipse.emf.henshin.interpreter.UnitApplication;
 
@@ -60,6 +61,11 @@ public class SplitBoundedContextByDuplicateEntityInAggregatesRefactoring extends
 		public NoDuplicateEntityFoundException() {
 			super("No duplicate entity found on this context map!");
 		}
+	}
+
+	@Override
+	protected CMLResourceContainer getTransformationResource() {
+		return rootResource;
 	}
 
 }
