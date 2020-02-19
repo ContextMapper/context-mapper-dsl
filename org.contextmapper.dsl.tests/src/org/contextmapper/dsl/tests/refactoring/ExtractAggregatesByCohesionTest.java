@@ -26,14 +26,13 @@ import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.cml.CMLResourceContainer;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
+import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
 import org.contextmapper.dsl.refactoring.ExtractAggregatesByCohesion;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.xtext.xbase.lib.IteratorExtensions;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.junit.jupiter.api.Test;
 
-import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 
 public class ExtractAggregatesByCohesionTest extends AbstractRefactoringTest {
@@ -85,8 +84,8 @@ public class ExtractAggregatesByCohesionTest extends AbstractRefactoringTest {
 		assertEquals(2, bc.get().getAggregates().size());
 		assertEquals(1, newBC.get().getAggregates().size());
 
-		List<UpstreamDownstreamRelationship> relationships = model.getMap().getRelationships().stream()
-				.filter(rel -> rel instanceof UpstreamDownstreamRelationship).map(rel -> (UpstreamDownstreamRelationship) rel).collect(Collectors.toList());
+		List<UpstreamDownstreamRelationship> relationships = model.getMap().getRelationships().stream().filter(rel -> rel instanceof UpstreamDownstreamRelationship)
+				.map(rel -> (UpstreamDownstreamRelationship) rel).collect(Collectors.toList());
 		UpstreamDownstreamRelationship rel1 = relationships.get(0);
 		UpstreamDownstreamRelationship rel2 = relationships.get(1);
 		assertEquals("CustomerManagement", rel1.getUpstream().getName());
@@ -163,6 +162,25 @@ public class ExtractAggregatesByCohesionTest extends AbstractRefactoringTest {
 		assertTrue(newBC.isPresent());
 		assertEquals(1, bc.get().getAggregates().size());
 		assertEquals(2, newBC.get().getAggregates().size());
+	}
+
+	@Test
+	void canHandleContextMapInDifferentFile() throws IOException {
+		// given
+		CMLResourceContainer mainResource = getResourceCopyOfTestCML("extract-aggregates-by-nfr-test-4-input-2.cml");
+		ResourceSet additionalResources = getResourceSetOfTestCMLFiles("extract-aggregates-by-nfr-test-4-input-1.cml");
+
+		// when
+		List<String> aggregatesToExtract = Arrays.asList(new String[] { "Addresses" });
+		ExtractAggregatesByCohesion ar = new ExtractAggregatesByCohesion("CustomerManagement", "CustomerManagement_Extracted", aggregatesToExtract);
+		ar.doRefactor(mainResource, additionalResources);
+		CMLResourceContainer contextMapResource = new CMLResourceContainer(
+				additionalResources.getResources().stream().filter(r -> r.getURI().toString().endsWith("extract-aggregates-by-nfr-test-4-input-1.cml")).findFirst().get());
+		contextMapResource = reloadResource(contextMapResource);
+
+		// then
+		ContextMap contextMap = contextMapResource.getContextMappingModel().getMap();
+		assertEquals(2, contextMap.getRelationships().size());
 	}
 
 }

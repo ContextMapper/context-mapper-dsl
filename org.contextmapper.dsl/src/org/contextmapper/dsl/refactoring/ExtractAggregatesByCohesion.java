@@ -21,8 +21,8 @@ import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
+import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
-import org.eclipse.xtext.EcoreUtil2;
 
 public class ExtractAggregatesByCohesion extends AbstractRefactoring implements Refactoring {
 
@@ -53,12 +53,16 @@ public class ExtractAggregatesByCohesion extends AbstractRefactoring implements 
 			if (!aggregate.isPresent())
 				continue;
 
-			originalBC.getAggregates().remove(aggregate.get());
-			newBC.getAggregates().add(aggregate.get());
+			removeElementFromEList(originalBC.getAggregates(), aggregate.get());
+			addElementToEList(newBC.getAggregates(), aggregate.get());
+			markResourceChanged(originalBC);
 		}
 
-		this.model.getBoundedContexts().add(newBC);
-		new ContextMappingModelHelper(model).moveExposedAggregatesToNewRelationshipsIfNeeded(aggregatesToExtract, newBC);
+		getResource(originalBC).getContextMappingModel().getBoundedContexts().add(newBC);
+		for (ContextMap contextMap : getAllContextMaps()) {
+			new ContextMappingModelHelper(getResource(contextMap).getContextMappingModel()).moveExposedAggregatesToNewRelationshipsIfNeeded(aggregatesToExtract, newBC);
+			markResourceChanged(contextMap);
+		}
 		saveResources();
 	}
 
@@ -69,8 +73,7 @@ public class ExtractAggregatesByCohesion extends AbstractRefactoring implements 
 	}
 
 	private void initOriginalBC() {
-		List<BoundedContext> allBCs = EcoreUtil2.<BoundedContext>getAllContentsOfType(model, BoundedContext.class);
-		List<BoundedContext> bcsWithGivenInputName = allBCs.stream().filter(bc -> bc.getName().equals(boundedContextName)).collect(Collectors.toList());
+		List<BoundedContext> bcsWithGivenInputName = getAllBoundedContexts().stream().filter(bc -> bc.getName().equals(boundedContextName)).collect(Collectors.toList());
 		this.originalBC = bcsWithGivenInputName.get(0);
 	}
 
