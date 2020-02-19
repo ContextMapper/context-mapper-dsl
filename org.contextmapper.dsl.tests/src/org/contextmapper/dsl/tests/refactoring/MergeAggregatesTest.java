@@ -20,12 +20,9 @@ import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
 import org.contextmapper.dsl.refactoring.MergeAggregatesRefactoring;
 import org.contextmapper.dsl.refactoring.exception.RefactoringInputException;
 import org.contextmapper.tactic.dsl.tacticdsl.DomainObject;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.xtext.xbase.lib.IteratorExtensions;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import com.google.common.collect.Iterators;
 
 public class MergeAggregatesTest extends AbstractRefactoringTest {
 
@@ -251,6 +248,26 @@ public class MergeAggregatesTest extends AbstractRefactoringTest {
 		List<DomainObject> aggregateRoots = aggregate.getDomainObjects().stream().filter(o -> o instanceof DomainObject).map(o -> (DomainObject) o).filter(o -> o.isAggregateRoot())
 				.collect(Collectors.toList());
 		assertEquals(1, aggregateRoots.size());
+	}
+
+	@Test
+	void canHandleContextMapInDifferentFile() throws IOException {
+		// given
+		CMLResourceContainer mainResource = getResourceCopyOfTestCML("merge-aggregates-test-7-input-2.cml");
+		ResourceSet additionalResources = getResourceSetOfTestCMLFiles("merge-aggregates-test-7-input-1.cml");
+
+		// when
+		MergeAggregatesRefactoring ar = new MergeAggregatesRefactoring("Customers", "Addresses");
+		ar.doRefactor(mainResource, additionalResources);
+		CMLResourceContainer contextMapResource = new CMLResourceContainer(
+				additionalResources.getResources().stream().filter(r -> r.getURI().toString().endsWith("merge-aggregates-test-7-input-1.cml")).findFirst().get());
+		contextMapResource = reloadResource(contextMapResource);
+
+		// then
+		ContextMap contextMap = contextMapResource.getContextMappingModel().getMap();
+		assertEquals(1, contextMap.getRelationships().size());
+		UpstreamDownstreamRelationship rel = (UpstreamDownstreamRelationship) contextMap.getRelationships().get(0);
+		assertEquals(1, rel.getUpstreamExposedAggregates().size());
 	}
 
 }

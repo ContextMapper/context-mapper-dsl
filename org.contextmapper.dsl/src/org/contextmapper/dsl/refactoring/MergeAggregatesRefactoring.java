@@ -78,25 +78,29 @@ public class MergeAggregatesRefactoring extends AbstractRefactoring implements R
 			changeAggregateRootsToNormalObjects(agg2);
 
 		// move content from agg2 to agg1
-		agg1.getConsumers().addAll(agg2.getConsumers());
-		agg1.getDomainObjects().addAll(agg2.getDomainObjects());
-		agg1.getResources().addAll(agg2.getResources());
-		agg1.getResponsibilities().addAll(agg2.getResponsibilities());
-		agg1.getServices().addAll(agg2.getServices());
-		agg1.getUseCases().addAll(agg2.getUseCases());
+		addElementsToEList(agg1.getConsumers(), agg2.getConsumers());
+		addElementsToEList(agg1.getDomainObjects(), agg2.getDomainObjects());
+		addElementsToEList(agg1.getResources(), agg2.getResources());
+		addElementsToEList(agg1.getResponsibilities(), agg2.getResponsibilities());
+		addElementsToEList(agg1.getServices(), agg2.getServices());
+		addElementsToEList(agg1.getUseCases(), agg2.getUseCases());
 
-		// update context map
-		handleContextMapChanges(agg1, agg2);
+		// update context maps
+		for (ContextMap contextMap : getAllContextMaps()) {
+			handleContextMapChanges(contextMap, agg1, agg2);
+			markResourceChanged(contextMap);
+		}
 
 		// remove agg2 from its container
 		if (agg2.eContainer() instanceof BoundedContext) {
 			BoundedContext container = (BoundedContext) agg2.eContainer();
-			container.getAggregates().remove(agg2);
+			removeElementFromEList(container.getAggregates(), agg2);
+			markResourceChanged(container);
 		} else if (agg2.eContainer() instanceof SculptorModule) {
-			SculptorModule container = (SculptorModule) agg2.eContainer();
-			container.getAggregates().remove(agg2);
+			BoundedContext container = (BoundedContext) ((SculptorModule) agg2.eContainer()).eContainer();
+			removeElementFromEList(((SculptorModule) agg2.eContainer()).getAggregates(), agg2);
+			markResourceChanged(container);
 		}
-		this.model.eAllContents();
 		saveResources();
 	}
 
@@ -127,16 +131,14 @@ public class MergeAggregatesRefactoring extends AbstractRefactoring implements R
 	}
 
 	private List<Aggregate> getAllAggregates() {
-		return EcoreUtil2.<Aggregate>getAllContentsOfType(model, Aggregate.class);
+		List<Aggregate> aggregates = Lists.newArrayList();
+		for (BoundedContext bc : getAllBoundedContexts()) {
+			aggregates.addAll(EcoreUtil2.<Aggregate>getAllContentsOfType(bc, Aggregate.class));
+		}
+		return aggregates;
 	}
 
-	private void handleContextMapChanges(Aggregate agg1, Aggregate agg2) {
-		ContextMap map = model.getMap();
-
-		// maybe there is no context map
-		if (map == null)
-			return;
-
+	private void handleContextMapChanges(ContextMap map, Aggregate agg1, Aggregate agg2) {
 		for (Relationship relationship : map.getRelationships()) {
 			if (!(relationship instanceof UpstreamDownstreamRelationship))
 				continue;
