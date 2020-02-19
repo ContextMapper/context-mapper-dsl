@@ -101,8 +101,7 @@ public class SplitBoundedContextByAggregateAttribute extends AbstractRefactoring
 
 	private void adjustContextMaps(BoundedContext newBC, List<Aggregate> extractedAggregates) {
 		for (ContextMap contextMap : getAllContextMaps()) {
-			ContextMappingModel contextMapModel = getResource(contextMap).getContextMappingModel();
-			new ContextMappingModelHelper(contextMapModel)
+			new ContextMappingModelHelper(contextMap)
 					.moveExposedAggregatesToNewRelationshipsIfNeeded(extractedAggregates.stream().map(agg -> agg.getName()).collect(Collectors.toList()), newBC);
 			markResourceChanged(contextMap);
 		}

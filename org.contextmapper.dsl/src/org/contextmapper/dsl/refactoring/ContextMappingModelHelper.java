@@ -17,29 +17,24 @@ package org.contextmapper.dsl.refactoring;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
-import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.Relationship;
 import org.contextmapper.dsl.contextMappingDSL.SymmetricRelationship;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
-import org.contextmapper.tactic.dsl.tacticdsl.Entity;
-import org.eclipse.xtext.EcoreUtil2;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 
 public class ContextMappingModelHelper {
 
-	private ContextMappingModel model;
+	private ContextMap contextMap;
 
-	public ContextMappingModelHelper(ContextMappingModel model) {
-		this.model = model;
+	public ContextMappingModelHelper(ContextMap contextMap) {
+		this.contextMap = contextMap;
 	}
 
 	/**
@@ -47,7 +42,7 @@ public class ContextMappingModelHelper {
 	 */
 	public List<Relationship> findAnyRelationshipsBetweenTwoContexts(BoundedContext bc1, BoundedContext bc2) {
 		List<Relationship> relationships = Lists.newArrayList();
-		for (Relationship relationship : model.getMap().getRelationships()) {
+		for (Relationship relationship : contextMap.getRelationships()) {
 			if (relationship instanceof SymmetricRelationship) {
 				SymmetricRelationship symRelationship = (SymmetricRelationship) relationship;
 				if ((symRelationship.getParticipant1().getName().equals(bc1.getName()) && symRelationship.getParticipant2().getName().equals(bc2.getName()))
@@ -70,7 +65,7 @@ public class ContextMappingModelHelper {
 	 */
 	public boolean replaceBCInAllRelationships(BoundedContext originalBC, BoundedContext replacementBC) {
 		boolean replacedAtLeastInOneRelationship = false;
-		for (Relationship relationship : model.getMap().getRelationships()) {
+		for (Relationship relationship : contextMap.getRelationships()) {
 			if (relationship instanceof SymmetricRelationship) {
 				SymmetricRelationship symRelationship = (SymmetricRelationship) relationship;
 				if (symRelationship.getParticipant1().getName().equals(originalBC.getName())) {
@@ -93,27 +88,9 @@ public class ContextMappingModelHelper {
 				}
 			}
 		}
-		if (replacedAtLeastInOneRelationship && !model.getMap().getBoundedContexts().stream().map(bc -> bc.getName()).collect(Collectors.toSet()).contains(replacementBC.getName()))
-			model.getMap().getBoundedContexts().add(replacementBC);
+		if (replacedAtLeastInOneRelationship && !contextMap.getBoundedContexts().stream().map(bc -> bc.getName()).collect(Collectors.toSet()).contains(replacementBC.getName()))
+			contextMap.getBoundedContexts().add(replacementBC);
 		return replacedAtLeastInOneRelationship;
-	}
-
-	/**
-	 * Finds duplicate entities within a bounded context.
-	 */
-	public List<String> findDuplicateEntities(String boundedContextName) {
-		List<String> duplicates = Lists.newArrayList();
-		Set<String> uniqueNameCheckSet = Sets.newHashSet();
-		List<Entity> entities = EcoreUtil2.<Entity>eAllOfType(model.getBoundedContexts().stream().filter(b -> b.getName().equals(boundedContextName)).findFirst().get(),
-				Entity.class);
-		for (Entity entity : entities) {
-			if (!uniqueNameCheckSet.contains(entity.getName())) {
-				uniqueNameCheckSet.add(entity.getName());
-			} else {
-				duplicates.add(entity.getName());
-			}
-		}
-		return duplicates;
 	}
 
 	/**
@@ -121,11 +98,7 @@ public class ContextMappingModelHelper {
 	 * some aggregates have been moved to a new bounded context.
 	 */
 	public void moveExposedAggregatesToNewRelationshipsIfNeeded(List<String> movedAggregates, BoundedContext newBoundedContext) {
-		ContextMap map = model.getMap();
-		if (map == null)
-			return;
-
-		for (Relationship relationship : new LinkedList<>(map.getRelationships())) {
+		for (Relationship relationship : new LinkedList<>(contextMap.getRelationships())) {
 			if (!(relationship instanceof UpstreamDownstreamRelationship))
 				continue;
 			moveExposedAggregates4RelationshipIfNeeded((UpstreamDownstreamRelationship) relationship, movedAggregates, newBoundedContext);
@@ -153,9 +126,9 @@ public class ContextMappingModelHelper {
 			relationship.getUpstreamExposedAggregates().remove(aggregate);
 			newRelationship.getUpstreamExposedAggregates().add(aggregate);
 		}
-		if (!model.getMap().getBoundedContexts().contains(newBoundedContext))
-			model.getMap().getBoundedContexts().add(newBoundedContext);
-		model.getMap().getRelationships().add(newRelationship);
+		if (!contextMap.getBoundedContexts().contains(newBoundedContext))
+			contextMap.getBoundedContexts().add(newBoundedContext);
+		contextMap.getRelationships().add(newRelationship);
 	}
 
 }

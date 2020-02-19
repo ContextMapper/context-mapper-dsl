@@ -57,8 +57,7 @@ public class ExtractAggregatesByVolatility extends AbstractRefactoring implement
 		}
 		addElementToEList(getResource(originalBC).getContextMappingModel().getBoundedContexts(), newBC);
 		for (ContextMap contextMap : getAllContextMaps()) {
-			ContextMappingModel contextMapModel = getResource(contextMap).getContextMappingModel();
-			new ContextMappingModelHelper(contextMapModel).moveExposedAggregatesToNewRelationshipsIfNeeded(aggregates.stream().map(a -> a.getName()).collect(Collectors.toList()),
+			new ContextMappingModelHelper(contextMap).moveExposedAggregatesToNewRelationshipsIfNeeded(aggregates.stream().map(a -> a.getName()).collect(Collectors.toList()),
 					newBC);
 			markResourceChanged(contextMap);
 		}

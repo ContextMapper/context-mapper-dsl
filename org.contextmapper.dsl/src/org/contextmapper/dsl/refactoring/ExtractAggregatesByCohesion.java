@@ -60,7 +60,7 @@ public class ExtractAggregatesByCohesion extends AbstractRefactoring implements 
 
 		getResource(originalBC).getContextMappingModel().getBoundedContexts().add(newBC);
 		for (ContextMap contextMap : getAllContextMaps()) {
-			new ContextMappingModelHelper(getResource(contextMap).getContextMappingModel()).moveExposedAggregatesToNewRelationshipsIfNeeded(aggregatesToExtract, newBC);
+			new ContextMappingModelHelper(contextMap).moveExposedAggregatesToNewRelationshipsIfNeeded(aggregatesToExtract, newBC);
 			markResourceChanged(contextMap);
 		}
 		saveResources();

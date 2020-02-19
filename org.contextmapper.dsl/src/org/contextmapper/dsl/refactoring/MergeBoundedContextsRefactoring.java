@@ -109,7 +109,7 @@ public class MergeBoundedContextsRefactoring extends AbstractRefactoring impleme
 
 	private void handleContextMapChanges(BoundedContext mergedBC, BoundedContext removedBC) {
 		for (ContextMap map : getAllContextMaps()) {
-			ContextMappingModelHelper helper = new ContextMappingModelHelper(getResource(map).getContextMappingModel());
+			ContextMappingModelHelper helper = new ContextMappingModelHelper(map);
 			List<Relationship> relationshipsToRemove = helper.findAnyRelationshipsBetweenTwoContexts(mergedBC, removedBC);
 			map.getRelationships().removeAll(relationshipsToRemove);
 			helper.replaceBCInAllRelationships(removedBC, mergedBC);

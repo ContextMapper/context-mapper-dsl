@@ -8,7 +8,6 @@ import org.apache.commons.io.FileUtils;
 
 public class HenshinTransformationFileProvider {
 
-	public static final String SPLIT_BC_BY_DUPLICATE_ENTITY_NAME = "SplitByDuplicateEntityName.henshin";
 	public static final String SPLIT_AGGREGATE_BY_ENTITIES = "SplitAggregateByEntities.henshin";
 	public static final String SPLIT_AGGREGATE_BY_ENTITIES_IN_MODULE = "SplitAggregateByEntities_WithModule.henshin";
 
@@ -29,7 +28,8 @@ public class HenshinTransformationFileProvider {
 		try {
 			if (henshinDirectory.exists())
 				FileUtils.cleanDirectory(henshinDirectory);
-			copyFileToTempDirectory(SPLIT_BC_BY_DUPLICATE_ENTITY_NAME);
+			copyFileToTempDirectory(SPLIT_AGGREGATE_BY_ENTITIES);
+			copyFileToTempDirectory(SPLIT_AGGREGATE_BY_ENTITIES_IN_MODULE);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
