@@ -85,9 +85,9 @@ public class MergeBoundedContextsRefactoring extends AbstractRefactoring impleme
 		ContextMappingModel bc2Model = getResource(bc2).getContextMappingModel();
 		removeElementFromEList(bc2Model.getBoundedContexts(), bc2);
 		bc2Model.eAllContents();
-		
+
 		// create comment if BC2 file is empty
-		if(bc2Model.getMap() == null && bc2Model.getBoundedContexts().isEmpty())
+		if (bc2Model.getMap() == null && bc2Model.getBoundedContexts().isEmpty())
 			bc2Model.setFirstLineComment("// Due to the application of 'Merge Bounded Contexts' this file no longer contains any Bounded Contexts.");
 
 		markResourceChanged(bc1);
@@ -132,8 +132,13 @@ public class MergeBoundedContextsRefactoring extends AbstractRefactoring impleme
 		if (mergedBCResource.getResource().getURI().toString().equals(removedBCResource.getResource().getURI().toString()))
 			return;
 
+		// create import to removed BC resource
+		Import importToRemovedBCResource = ContextMappingDSLFactory.eINSTANCE.createImport();
+		importToRemovedBCResource.setImportURI(removedBCURI.toString());
+		mergedBCResource.getContextMappingModel().getImports().add(importToRemovedBCResource);
+		
 		for (CMLResourceContainer resource : additionalResourcesToCheck) {
-			Set<URI> importedURIs = resource.getContextMappingModel().getImports().stream().map(i -> URI.createURI(i.getImportURI()).resolve(rootResource.getResource().getURI()))
+			Set<URI> importedURIs = resource.getContextMappingModel().getImports().stream().map(i -> URI.createURI(i.getImportURI()).resolve(resource.getResource().getURI()))
 					.collect(Collectors.toSet());
 
 			if (mergedBCURI.toString().equals(resource.getResource().getURI().toString()))

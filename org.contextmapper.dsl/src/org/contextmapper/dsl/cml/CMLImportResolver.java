@@ -40,9 +40,19 @@ public class CMLImportResolver {
 		ContextMappingModel cmlModel = (ContextMappingModel) resource.getContents().get(0);
 		for (Import cmlImport : cmlModel.getImports()) {
 			URI importURI = URI.createURI(cmlImport.getImportURI()).resolve(resource.getURI());
-			importedResources.add(new CMLResourceContainer(rs.getResource(importURI, true)));
+			Resource importedResource = rs.getResource(importURI, true);
+			if(isResourceCMLModel(importedResource))
+				importedResources.add(new CMLResourceContainer(importedResource));
 		}
 		return importedResources;
 	}
 
+	private boolean isResourceCMLModel(Resource resource) {
+		if (resource.getContents().isEmpty())
+			return false;
+		if (!(resource.getContents().get(0) instanceof ContextMappingModel))
+			return false;
+		return true;
+	}
+	
 }

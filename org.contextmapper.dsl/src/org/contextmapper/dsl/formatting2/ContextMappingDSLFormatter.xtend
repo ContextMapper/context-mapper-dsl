@@ -32,7 +32,7 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 	@Inject extension ContextMappingDSLGrammarAccess
 
 	def dispatch void format(ContextMappingModel contextMappingModel, extension IFormattableDocument document) {
-		var ignoredFirst = false
+		var ignoredFirst = contextMappingModel.firstLineComment != null && !"".equals(contextMappingModel.firstLineComment)
 		for(cmlImport : contextMappingModel.imports) {
 			if(ignoredFirst) {
 				cmlImport.prepend[newLine]
