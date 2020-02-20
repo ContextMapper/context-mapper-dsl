@@ -14,10 +14,10 @@ endpoint type CustomersAggregate
 	exposes
 		operation myMethod
 			expecting
-				payload V<string>
+				payload D<string>
 		operation myMethod2
 			expecting
-				payload V<string>
+				payload D<string>
 
 // ** BEGIN PROTECTED REGION for API providers
 

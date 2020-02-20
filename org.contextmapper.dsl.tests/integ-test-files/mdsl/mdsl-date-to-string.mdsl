@@ -8,7 +8,7 @@ endpoint type CustomersAggregate
 	exposes
 		operation dateMethod
 			expecting
-				payload V<string>
+				payload D<string>
 
 
 API provider CustomerManagementContextProvider

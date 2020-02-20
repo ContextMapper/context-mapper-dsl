@@ -69,7 +69,7 @@ public class MDSLModelCreator {
 	private static final String PROVIDER_NAME_EXTENSION = "Provider";
 	private static final String CLIENT_NAME_EXTENSION = "Client";
 	private static final String BASE_TYPE = "Object";
-	private static final String MDSL_VOID_RETURN_TYPE = "V<void>";
+	private static final String MDSL_VOID_RETURN_TYPE = "D<void>";
 	private static final String ENDPOINT_LOCATION = "http://localhost:";
 	private static final String PROTOCOL_STRING_IF_NOT_DEFINED = "tbd";
 	private static final String PROTOCOL_NOT_DEFINED_COMMENT = "The protocol is generated if you specify the implementation technology in CML";
@@ -421,19 +421,19 @@ public class MDSLModelCreator {
 
 	private String getMDSLPrimitiveType(String dataTypeName) {
 		if ("boolean".equals(dataTypeName.toLowerCase())) {
-			return "V<bool>";
+			return "D<bool>";
 		} else if ("String".equals(dataTypeName)) {
-			return "V<string>";
+			return "D<string>";
 		} else if ("int".equals(dataTypeName) || "Integer".equals(dataTypeName)) {
-			return "V<int>";
+			return "D<int>";
 		} else if ("long".equals(dataTypeName.toLowerCase())) {
-			return "V<long>";
+			return "D<long>";
 		} else if ("double".equals(dataTypeName.toLowerCase())) {
-			return "V<double>";
+			return "D<double>";
 		} else if ("Blob".equals(dataTypeName)) {
-			return "V<blob>";
+			return "D<blob>";
 		} else if ("Date".equals(dataTypeName)) {
-			return "V<string>";
+			return "D<string>";
 		}
 		return BASE_TYPE; // default case: we have to define a data type
 	}

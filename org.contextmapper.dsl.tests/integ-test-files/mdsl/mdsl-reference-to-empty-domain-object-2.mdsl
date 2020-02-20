@@ -2,7 +2,7 @@
 API description CustomerManagementContextAPI
 
 
-data type Address { "street":V<string>, "houseNumber":V<int>, "refAttr":{ "attr1":V<string> } }
+data type Address { "street":D<string>, "houseNumber":D<int>, "refAttr":{ "attr1":D<string> } }
 data type ReturnType P // the type ReturnType has not been specified or does not contain any attributes in CML
 
 

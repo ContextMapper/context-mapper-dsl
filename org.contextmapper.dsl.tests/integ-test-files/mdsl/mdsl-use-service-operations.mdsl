@@ -2,18 +2,18 @@
 API description CustomerManagementContextAPI
 
 
-data type Address { "street":V<string>, "houseNumber":V<int>, "city":V<string> }
+data type Address { "street":D<string>, "houseNumber":D<int>, "city":D<string> }
 data type AnyReturnType P // the type AnyReturnType has not been specified or does not contain any attributes in CML
-data type yetAnotherMethodParameter { "param1":V<int>, "param2":V<bool> }
+data type yetAnotherMethodParameter { "param1":D<int>, "param2":D<bool> }
 
 
 endpoint type CustomersAggregate
 	exposes
 		operation anotherMethod
 			expecting
-				payload V<int>
+				payload D<int>
 			delivering
-				payload V<string>
+				payload D<string>
 		operation yetAnotherMethod
 			expecting
 				payload yetAnotherMethodParameter

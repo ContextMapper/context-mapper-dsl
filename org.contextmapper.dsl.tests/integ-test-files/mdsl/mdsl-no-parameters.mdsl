@@ -8,9 +8,9 @@ endpoint type CustomersAggregate
 	exposes
 		operation myMethod
 			expecting
-				payload V<void>
+				payload D<void>
 			delivering
-				payload V<string>
+				payload D<string>
 
 
 API provider CustomerManagementContextProvider
