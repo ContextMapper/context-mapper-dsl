@@ -1,0 +1,9 @@
+import "extract-aggregates-likely-to-change-test-6-input-2.cml"
+
+ContextMap {
+	contains CustomerManagement, AnotherContext
+	
+	CustomerManagement -> AnotherContext {
+		exposedAggregates = Customers
+	}
+}

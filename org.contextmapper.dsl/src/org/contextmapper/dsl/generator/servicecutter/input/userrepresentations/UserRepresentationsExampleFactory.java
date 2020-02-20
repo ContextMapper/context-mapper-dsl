@@ -302,6 +302,18 @@ public class UserRepresentationsExampleFactory {
 		return list;
 	}
 
+	private List<Attribute> collectAttributes(ContextMappingModel rootModel) {
+		List<Attribute> attributes = Lists.newArrayList();
+		
+		if(rootModel.getMap() == null)
+			return attributes;
+		
+		for(BoundedContext bc : rootModel.getMap().getBoundedContexts()) {
+			attributes.addAll(EcoreUtil2.getAllContentsOfType(bc, Attribute.class));
+		}
+		return attributes;
+	}
+	
 	private List<Attribute> collectAttributes(EObject root) {
 		return EcoreUtil2.getAllContentsOfType(root, Attribute.class);
 	}

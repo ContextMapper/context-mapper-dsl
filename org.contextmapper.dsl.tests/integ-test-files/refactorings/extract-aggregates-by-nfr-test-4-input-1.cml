@@ -1,0 +1,9 @@
+import "extract-aggregates-by-nfr-test-4-input-2.cml"
+
+ContextMap {
+	contains CustomerManagement, AnotherContext
+	
+	CustomerManagement -> AnotherContext {
+		exposedAggregates = Customers, Addresses
+	}
+}

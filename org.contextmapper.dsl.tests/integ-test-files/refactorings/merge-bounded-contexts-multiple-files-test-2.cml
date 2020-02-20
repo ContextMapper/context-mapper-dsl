@@ -1,0 +1,5 @@
+BoundedContext AnotherContext {
+	Aggregate AnotherAggregate {
+		Entity JustAnEntity
+	}
+}

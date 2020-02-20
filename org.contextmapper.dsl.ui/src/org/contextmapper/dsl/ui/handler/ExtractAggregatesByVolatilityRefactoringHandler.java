@@ -18,6 +18,7 @@ package org.contextmapper.dsl.ui.handler;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.contextmapper.dsl.cml.CMLResourceContainer;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.LikelihoodForChange;
 import org.contextmapper.dsl.refactoring.ExtractAggregatesByVolatility;
@@ -25,14 +26,13 @@ import org.contextmapper.dsl.ui.handler.wizard.ExtractAggregatesByVolatilityCont
 import org.contextmapper.dsl.ui.handler.wizard.ExtractAggregatesByVolatilityRefactoringWizard;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 public class ExtractAggregatesByVolatilityRefactoringHandler extends AbstractRefactoringWithUserInputHandler {
 
 	@Override
-	protected void executeRefactoring(Resource resource, ExecutionEvent event) {
+	protected void executeRefactoring(CMLResourceContainer resource, ExecutionEvent event) {
 		BoundedContext bc = (BoundedContext) getSelectedElement();
 
 		ExtractAggregatesByVolatilityContext refactoringContext = new ExtractAggregatesByVolatilityContext(

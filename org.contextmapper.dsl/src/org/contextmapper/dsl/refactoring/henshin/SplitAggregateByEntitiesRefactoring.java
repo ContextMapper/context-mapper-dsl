@@ -18,21 +18,18 @@ package org.contextmapper.dsl.refactoring.henshin;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.contextmapper.dsl.cml.CMLResourceContainer;
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
-import org.contextmapper.dsl.contextMappingDSL.SculptorModule;
 import org.contextmapper.dsl.contextMappingDSL.Relationship;
+import org.contextmapper.dsl.contextMappingDSL.SculptorModule;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
 import org.contextmapper.tactic.dsl.tacticdsl.DomainObject;
 import org.contextmapper.tactic.dsl.tacticdsl.SimpleDomainObject;
-import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.henshin.interpreter.UnitApplication;
 import org.eclipse.xtext.EcoreUtil2;
-import org.eclipse.xtext.xbase.lib.IteratorExtensions;
-
-import com.google.common.collect.Iterators;
 
 public class SplitAggregateByEntitiesRefactoring extends AbstractHenshinRefactoring {
 
@@ -48,7 +45,7 @@ public class SplitAggregateByEntitiesRefactoring extends AbstractHenshinRefactor
 
 	@Override
 	protected String getHenshinTransformationFilename() {
-		Aggregate selectedAggregate = getSelectedAggregate(model);
+		Aggregate selectedAggregate = getSelectedAggregate(getTransformationResource().getContextMappingModel());
 		if (selectedAggregate != null && selectedAggregate.eContainer() instanceof SculptorModule)
 			return HenshinTransformationFileProvider.SPLIT_AGGREGATE_BY_ENTITIES_IN_MODULE;
 		return HenshinTransformationFileProvider.SPLIT_AGGREGATE_BY_ENTITIES;
@@ -71,25 +68,23 @@ public class SplitAggregateByEntitiesRefactoring extends AbstractHenshinRefactor
 	}
 
 	@Override
-	protected void postProcessing(Resource resource) {
-		List<ContextMappingModel> contextMappingModels = IteratorExtensions
-				.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(resource.getAllContents(), ContextMappingModel.class));
-		if (contextMappingModels.size() > 0) {
-			Aggregate inputAggregate = getSelectedAggregate(contextMappingModels.get(0));
-			if (inputAggregate == null)
-				return;
-			setAggregateRoot(inputAggregate);
-			if (inputAggregate.eContainer() instanceof BoundedContext) {
-				BoundedContext bc = (BoundedContext) inputAggregate.eContainer();
-				fixNewAggregateNamesAndSetRoot(bc.getAggregates());
-			} else if (inputAggregate.eContainer() instanceof SculptorModule) {
-				SculptorModule m = (SculptorModule) inputAggregate.eContainer();
-				fixNewAggregateNamesAndSetRoot(m.getAggregates());
-			}
-
-			addNewAggregatesToExposedAggregatesIfOriginalIsExposed(contextMappingModels.get(0).getMap());
+	protected void postProcessing(CMLResourceContainer resource) {
+		ContextMappingModel model = resource.getContextMappingModel();
+		Aggregate inputAggregate = getSelectedAggregate(model);
+		if (inputAggregate == null)
+			return;
+		setAggregateRoot(inputAggregate);
+		if (inputAggregate.eContainer() instanceof BoundedContext) {
+			BoundedContext bc = (BoundedContext) inputAggregate.eContainer();
+			fixNewAggregateNamesAndSetRoot(bc.getAggregates());
+		} else if (inputAggregate.eContainer() instanceof SculptorModule) {
+			SculptorModule m = (SculptorModule) inputAggregate.eContainer();
+			fixNewAggregateNamesAndSetRoot(m.getAggregates());
 		}
 
+		for (ContextMap contextMap : getAllContextMaps()) {
+			addNewAggregatesToExposedAggregatesIfOriginalIsExposed(contextMap);
+		}
 	}
 
 	private void fixNewAggregateNamesAndSetRoot(List<Aggregate> aggregates) {
@@ -121,18 +116,27 @@ public class SplitAggregateByEntitiesRefactoring extends AbstractHenshinRefactor
 	}
 
 	private void addNewAggregatesToExposedAggregatesIfOriginalIsExposed(ContextMap contextMap) {
-		if (contextMap == null)
-			return;
-
 		for (Relationship relationship : contextMap.getRelationships()) {
 			if (!(relationship instanceof UpstreamDownstreamRelationship))
 				continue;
 
 			UpstreamDownstreamRelationship upDownRelationship = (UpstreamDownstreamRelationship) relationship;
 			if (upDownRelationship.getUpstreamExposedAggregates().stream().map(a -> a.getName()).collect(Collectors.toList()).contains(aggregateName)) {
-				upDownRelationship.getUpstreamExposedAggregates().addAll(newAggregates);
+				addElementsToEList(upDownRelationship.getUpstreamExposedAggregates(), newAggregates);
 			}
 		}
+		markResourceChanged(contextMap);
+	}
+
+	@Override
+	protected CMLResourceContainer getTransformationResource() {
+		for (BoundedContext boundedContext : getAllBoundedContexts()) {
+			List<Aggregate> bcAggregates = EcoreUtil2.<Aggregate>getAllContentsOfType(boundedContext, Aggregate.class);
+			List<Aggregate> aggregatesWithInputName = bcAggregates.stream().filter(agg -> agg.getName().equals(aggregateName)).collect(Collectors.toList());
+			if (!aggregatesWithInputName.isEmpty())
+				return getResource(boundedContext);
+		}
+		return rootResource;
 	}
 
 }

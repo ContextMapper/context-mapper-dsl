@@ -15,7 +15,9 @@
  */
 package org.contextmapper.dsl.generator.exception;
 
-public class GeneratorInputException extends RuntimeException {
+import org.contextmapper.dsl.exception.ContextMapperApplicationException;
+
+public class GeneratorInputException extends ContextMapperApplicationException {
 
 	public GeneratorInputException(String message) {
 		super(message);

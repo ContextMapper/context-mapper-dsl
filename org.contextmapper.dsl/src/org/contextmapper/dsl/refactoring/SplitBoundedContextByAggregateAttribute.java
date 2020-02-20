@@ -20,13 +20,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
+import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
-import org.eclipse.xtext.EcoreUtil2;
+import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 
 import com.google.common.collect.Lists;
 
@@ -48,7 +50,7 @@ public class SplitBoundedContextByAggregateAttribute extends AbstractRefactoring
 		initOriginalBC();
 		createAggregateMapping();
 		splitOriginalBC();
-		saveResource();
+		saveResources();
 	}
 
 	private void createAggregateMapping() {
@@ -78,21 +80,31 @@ public class SplitBoundedContextByAggregateAttribute extends AbstractRefactoring
 		while (it.hasNext()) {
 			List<Aggregate> aggregates = it.next().getValue();
 			this.originalBC.getAggregates().removeAll(aggregates);
+			ContextMappingModel bcModel = getResource(originalBC).getContextMappingModel();
 
 			BoundedContext newBC = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
 			newBC.setName("NewBoundedContext" + i++);
-			newBC.getAggregates().addAll(aggregates);
-			this.model.getBoundedContexts().add(newBC);
-			new ContextMappingModelHelper(model).moveExposedAggregatesToNewRelationshipsIfNeeded(aggregates.stream().map(agg -> agg.getName()).collect(Collectors.toList()), newBC);
+			addElementsToEList(newBC.getAggregates(), aggregates);
+			addElementToEList(bcModel.getBoundedContexts(), newBC);
+			markResourceChanged(originalBC);
+			adjustContextMaps(newBC, aggregates);
 		}
 	}
 
 	private void initOriginalBC() {
-		List<BoundedContext> allBCs = EcoreUtil2.<BoundedContext>getAllContentsOfType(model, BoundedContext.class);
-		List<BoundedContext> bcsWithGivenInputName = allBCs.stream().filter(bc -> bc.getName().equals(boundedContextName)).collect(Collectors.toList());
+		Set<BoundedContext> allBCs = getAllBoundedContexts();
+		Set<BoundedContext> bcsWithGivenInputName = allBCs.stream().filter(bc -> bc.getName().equals(boundedContextName)).collect(Collectors.toSet());
 
 		// xtext validators must ensure that we get only one BC here:
-		this.originalBC = bcsWithGivenInputName.get(0);
+		this.originalBC = bcsWithGivenInputName.iterator().next();
+	}
+
+	private void adjustContextMaps(BoundedContext newBC, List<Aggregate> extractedAggregates) {
+		for (ContextMap contextMap : getAllContextMaps()) {
+			new ContextMappingModelHelper(contextMap)
+					.moveExposedAggregatesToNewRelationshipsIfNeeded(extractedAggregates.stream().map(agg -> agg.getName()).collect(Collectors.toList()), newBC);
+			markResourceChanged(contextMap);
+		}
 	}
 
 }

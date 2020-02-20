@@ -56,16 +56,16 @@ public class ChangePartnershipToUpstreamDownstreamRefactoring extends AbstractRe
 		ContextMap contextMap = model.getMap();
 
 		// remove existing relationship
-		contextMap.getRelationships().remove(getMatchingRelationship());
+		removeElementFromEList(contextMap.getRelationships(), getMatchingRelationship());
 
 		// create new upstream-downstream relationship
 		UpstreamDownstreamRelationship relationship = ContextMappingDSLFactory.eINSTANCE.createUpstreamDownstreamRelationship();
 		relationship.setUpstream(getBoundedContext(upstreamContext));
 		relationship.setDownstream(getBoundedContext(downstreamContext));
-		contextMap.getRelationships().add(relationship);
+		addElementToEList(contextMap.getRelationships(), relationship);
 
 		// save model
-		saveResource();
+		saveResources();
 	}
 
 	List<SymmetricRelationship> getMatchingRelationships() {
@@ -92,7 +92,7 @@ public class ChangePartnershipToUpstreamDownstreamRefactoring extends AbstractRe
 	}
 
 	private BoundedContext getBoundedContext(String name) {
-		return model.getBoundedContexts().stream().filter(bc -> bc.getName().equals(name)).findFirst().get();
+		return getAllBoundedContexts().stream().filter(bc -> bc.getName().equals(name)).findFirst().get();
 	}
 
 	private SymmetricRelationship getMatchingRelationship() {

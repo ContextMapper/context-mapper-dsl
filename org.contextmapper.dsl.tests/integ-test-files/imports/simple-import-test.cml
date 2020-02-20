@@ -1,0 +1,8 @@
+import "./other-contexts.cml"
+
+ContextMap testMap {
+
+}
+
+BoundedContext context1
+BoundedContext context2

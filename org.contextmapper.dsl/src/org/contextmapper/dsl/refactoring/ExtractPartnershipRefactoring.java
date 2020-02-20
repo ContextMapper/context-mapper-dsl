@@ -64,8 +64,8 @@ public class ExtractPartnershipRefactoring extends AbstractExtractSymmetricRelat
 		Entity entity = TacticdslFactory.eINSTANCE.createEntity();
 		entity.setAggregateRoot(true);
 		entity.setName("CommonModelPartRoot");
-		aggregate.getDomainObjects().add(entity);
-		newBC.getAggregates().add(aggregate);
+		addElementToEList(aggregate.getDomainObjects(), entity);
+		addElementToEList(newBC.getAggregates(), aggregate);
 		return newBC;
 	}
 

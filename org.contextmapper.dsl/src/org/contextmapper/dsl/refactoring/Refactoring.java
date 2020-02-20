@@ -15,10 +15,30 @@
  */
 package org.contextmapper.dsl.refactoring;
 
-import org.eclipse.emf.ecore.resource.Resource;
+import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 
 public interface Refactoring {
 
-	void doRefactor(Resource resource);
+	/**
+	 * Applies the refactoring to the CML model in the given resource.
+	 * 
+	 * @param resource the resource with the CML model that shall be refactored
+	 */
+	void doRefactor(CMLResourceContainer resource);
+
+	/**
+	 * 
+	 * Applies the refactoring to the CML model in the given resource. Additionally
+	 * ensures consistency in Context Maps in all resources of the additional
+	 * ResourceSet.
+	 * 
+	 * @param resource                  the resource with the CML model that shall
+	 *                                  be refactored.
+	 * @param consistencyCheckResources the resources that contain Context Maps
+	 *                                  which potentially have to be corrected after
+	 *                                  refactoring
+	 */
+	void doRefactor(CMLResourceContainer resource, ResourceSet consistencyCheckResources);
 
 }

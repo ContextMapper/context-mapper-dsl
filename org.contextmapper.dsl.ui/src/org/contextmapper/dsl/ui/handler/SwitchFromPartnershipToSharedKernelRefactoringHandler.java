@@ -15,16 +15,16 @@
  */
 package org.contextmapper.dsl.ui.handler;
 
+import org.contextmapper.dsl.cml.CMLResourceContainer;
 import org.contextmapper.dsl.contextMappingDSL.Partnership;
 import org.contextmapper.dsl.refactoring.SwitchFromPartnershipToSharedKernelRefactoring;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.resource.Resource;
 
 public class SwitchFromPartnershipToSharedKernelRefactoringHandler extends AbstractRefactoringHandler {
 
 	@Override
-	protected void executeRefactoring(Resource resource, ExecutionEvent event) {
+	protected void executeRefactoring(CMLResourceContainer resource, ExecutionEvent event) {
 		Partnership partnership = (Partnership) getSelectedElement();
 		new SwitchFromPartnershipToSharedKernelRefactoring(partnership.getParticipant1().getName(), partnership.getParticipant2().getName()).doRefactor(resource);
 	}

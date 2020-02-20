@@ -20,11 +20,11 @@ import org.contextmapper.dsl.contextMappingDSL.Aggregate
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext
 import org.contextmapper.dsl.contextMappingDSL.ContextMap
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel
-import org.contextmapper.dsl.contextMappingDSL.SculptorModule
+import org.contextmapper.dsl.contextMappingDSL.Import
 import org.contextmapper.dsl.contextMappingDSL.Relationship
+import org.contextmapper.dsl.contextMappingDSL.SculptorModule
 import org.contextmapper.dsl.services.ContextMappingDSLGrammarAccess
 import org.contextmapper.tactic.dsl.formatting2.TacticDDDLanguageFormatter
-import org.contextmapper.tactic.dsl.tacticdsl.Entity
 import org.eclipse.xtext.formatting2.IFormattableDocument
 
 class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
@@ -32,6 +32,15 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 	@Inject extension ContextMappingDSLGrammarAccess
 
 	def dispatch void format(ContextMappingModel contextMappingModel, extension IFormattableDocument document) {
+		var ignoredFirst = contextMappingModel.firstLineComment != null && !"".equals(contextMappingModel.firstLineComment)
+		for(cmlImport : contextMappingModel.imports) {
+			if(ignoredFirst) {
+				cmlImport.prepend[newLine]
+			} else {
+				ignoredFirst = true
+			}
+		}
+		
 		contextMappingModel.map.format
 
 		for (boundedContext : contextMappingModel.boundedContexts) {
@@ -69,6 +78,12 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 		boundedContext.prepend[newLines = 2]
 		if(boundedContext.comment !== null && !"".equals(boundedContext.comment))
 			boundedContext.regionFor.keyword('BoundedContext').prepend[newLine]
+
+		boundedContext.regionFor.keyword("domainVisionStatement").prepend[newLine]
+		boundedContext.regionFor.keyword("type").prepend[newLine]
+		boundedContext.regionFor.keyword("responsibilities").prepend[newLine]
+		boundedContext.regionFor.keyword("implementationTechnology").prepend[newLine]
+		boundedContext.regionFor.keyword("knowledgeLevel").prepend[newLine]
 
 		for (aggregate : boundedContext.aggregates) {
 			aggregate.format

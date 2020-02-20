@@ -32,11 +32,7 @@ generate tacticdsl "http://contextmapper.org/tactic/dsl/tacticdsl"
 
 
 TacticDDDModel :
-  (imports+=Import)*
   app=Application;
-
-Import :
-	'import' importURI=STRING;
 
 Application :
   (doc=STRING)?

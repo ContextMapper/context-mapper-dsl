@@ -15,8 +15,8 @@
  */
 package org.contextmapper.dsl
 
-import org.contextmapper.dsl.scoping.NullGlobalScopeProvider
 import org.eclipse.xtext.util.formallang.PdaUtil
+import org.eclipse.xtext.scoping.impl.ImportUriGlobalScopeProvider
 
 /**
  * Use this class to register components to be used at runtime / without the Equinox extension registry.
@@ -28,7 +28,7 @@ class ContextMappingDSLRuntimeModule extends AbstractContextMappingDSLRuntimeMod
 	}
 	
 	override bindIGlobalScopeProvider() {
-		return NullGlobalScopeProvider
+		return ImportUriGlobalScopeProvider
 	}
 	
 }

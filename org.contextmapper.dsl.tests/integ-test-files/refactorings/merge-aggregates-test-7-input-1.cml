@@ -1,0 +1,10 @@
+import "merge-aggregates-test-7-input-2.cml"
+
+ContextMap {
+	contains CustomerManagement, AnotherContext
+
+	CustomerManagement -> AnotherContext {
+		exposedAggregates = Customers, Addresses
+	}
+
+}

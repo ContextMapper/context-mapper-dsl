@@ -15,6 +15,7 @@
  */
 package org.contextmapper.dsl.ui.handler;
 
+import org.contextmapper.dsl.cml.CMLResourceContainer;
 import org.contextmapper.dsl.contextMappingDSL.Partnership;
 import org.contextmapper.dsl.refactoring.ChangePartnershipToUpstreamDownstreamRefactoring;
 import org.contextmapper.dsl.refactoring.ExtractPartnershipRefactoring;
@@ -24,7 +25,6 @@ import org.contextmapper.dsl.ui.handler.wizard.SuspendPartnershipMode;
 import org.contextmapper.dsl.ui.handler.wizard.SuspendPartnershipRefactoringWizard;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.handlers.HandlerUtil;
 
@@ -45,7 +45,7 @@ public class SuspendPartnershipRefactoringHandler extends AbstractRefactoringWit
 	}
 
 	@Override
-	protected void executeRefactoring(Resource resource, ExecutionEvent event) {
+	protected void executeRefactoring(CMLResourceContainer resource, ExecutionEvent event) {
 		Partnership partnership = (Partnership) getSelectedElement();
 
 		SuspendPartnershipContext refactoringContext = new SuspendPartnershipContext(partnership.getParticipant1().getName(), partnership.getParticipant2().getName());

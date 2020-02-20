@@ -38,6 +38,7 @@ public abstract class AbstractExtractSymmetricRelationshipRefactoring extends Ab
 
 	protected String boundedContext1;
 	protected String boundedContext2;
+	protected ContextMap contextMap;
 
 	public AbstractExtractSymmetricRelationshipRefactoring(String boundedContext1, String boundedContext2) {
 		this.boundedContext1 = boundedContext1;
@@ -48,7 +49,7 @@ public abstract class AbstractExtractSymmetricRelationshipRefactoring extends Ab
 	protected void doRefactor() {
 		checkPreconditions();
 
-		ContextMap contextMap = model.getMap();
+		this.contextMap = model.getMap();
 
 		// remove existing relationship
 		contextMap.getRelationships().remove(getMatchingRelationship());
@@ -69,7 +70,7 @@ public abstract class AbstractExtractSymmetricRelationshipRefactoring extends Ab
 		contextMap.getRelationships().add(relationship2);
 
 		// save model
-		saveResource();
+		saveResources();
 	}
 
 	abstract List<SymmetricRelationship> getMatchingRelationships();
@@ -83,6 +84,9 @@ public abstract class AbstractExtractSymmetricRelationshipRefactoring extends Ab
 	}
 
 	private void checkPreconditions() {
+		if (model.getMap() == null)
+			throw new RefactoringInputException("The selected model does not conain a Context Map. Please select a CML file containing a ContextMap element.");
+
 		if (boundedContext1 == null || boundedContext2 == null)
 			throw new RefactoringInputException("Please provide two bounded context names (input parameter was null).");
 
@@ -100,7 +104,7 @@ public abstract class AbstractExtractSymmetricRelationshipRefactoring extends Ab
 	}
 
 	private BoundedContext getBoundedContext(String name) {
-		return model.getBoundedContexts().stream().filter(bc -> bc.getName().equals(name)).findFirst().get();
+		return contextMap.getBoundedContexts().stream().filter(bc -> bc.getName().equals(name)).findFirst().get();
 	}
 
 	private SymmetricRelationship getMatchingRelationship() {
