@@ -27,7 +27,7 @@ import java.util.Set;
 public class CompoundKey {
 	Set<String> keyElements;
 
-	CompoundKey(Set<String> keyElements) {
+	public CompoundKey(Set<String> keyElements) {
 		this.keyElements = keyElements;
 	}
 
