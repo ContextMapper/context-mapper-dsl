@@ -46,6 +46,30 @@ public class CMLImportResolverTest extends AbstractCMLInputFileTest {
 		assertTrue(bcNames.contains("yetAnotherContext"));
 	}
 
+	@Test
+	public void canHandleImportToEmptyFile() throws IOException {
+		// given
+		CMLResourceContainer input = getOriginalResourceOfTestCML("import-to-empty-resource.cml");
+
+		// when
+		Set<CMLResourceContainer> importedResources = new CMLImportResolver().resolveImportedResources(input);
+
+		// then
+		assertTrue(importedResources.isEmpty());
+	}
+
+	@Test
+	public void canHandleImportToOtherType() throws IOException {
+		// given
+		CMLResourceContainer input = getOriginalResourceOfTestCML("import-to-other-type.cml", true);
+
+		// when
+		Set<CMLResourceContainer> importedResources = new CMLImportResolver().resolveImportedResources(input);
+
+		// then
+		assertTrue(importedResources.isEmpty());
+	}
+
 	@Override
 	protected String getTestFileDirectory() {
 		return "/integ-test-files/imports/";

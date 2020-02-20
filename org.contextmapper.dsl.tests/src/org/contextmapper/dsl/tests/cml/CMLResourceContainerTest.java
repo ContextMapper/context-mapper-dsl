@@ -17,6 +17,7 @@ package org.contextmapper.dsl.tests.cml;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import org.contextmapper.dsl.cml.CMLResourceContainer;
 import org.contextmapper.dsl.cml.exception.ResourceIsNoCMLModelException;
@@ -93,6 +94,56 @@ public class CMLResourceContainerTest {
 		Assertions.assertThrows(ResourceIsNoCMLModelException.class, () -> {
 			new CMLResourceContainer(resource);
 		});
+	}
+
+	@Test
+	public void isNotEqualToObjectOfOtherType() {
+		// given
+		Resource resource = new ResourceImpl(URI.createURI("testresource"));
+		resource.getContents().add(ContextMappingDSLFactory.eINSTANCE.createContextMappingModel());
+		CMLResourceContainer cmlRes = new CMLResourceContainer(resource);
+
+		// when
+		boolean isEqual = cmlRes.equals(new Object());
+
+		// then
+		assertFalse(isEqual);
+	}
+
+	@Test
+	public void isEqualIfResourceURIIsEqual() {
+		// given
+		Resource resource1 = new ResourceImpl(URI.createURI("testresource"));
+		resource1.getContents().add(ContextMappingDSLFactory.eINSTANCE.createContextMappingModel());
+		CMLResourceContainer cmlRes1 = new CMLResourceContainer(resource1);
+
+		Resource resource2 = new ResourceImpl(URI.createURI("testresource"));
+		resource2.getContents().add(ContextMappingDSLFactory.eINSTANCE.createContextMappingModel());
+		CMLResourceContainer cmlRes2 = new CMLResourceContainer(resource2);
+
+		// when
+		boolean isEqual = cmlRes1.equals(cmlRes2);
+
+		// then
+		assertTrue(isEqual);
+	}
+
+	@Test
+	public void isNotEqualIfResourceURIIsNotEqual() {
+		// given
+		Resource resource1 = new ResourceImpl(URI.createURI("testresource1"));
+		resource1.getContents().add(ContextMappingDSLFactory.eINSTANCE.createContextMappingModel());
+		CMLResourceContainer cmlRes1 = new CMLResourceContainer(resource1);
+
+		Resource resource2 = new ResourceImpl(URI.createURI("testresource2"));
+		resource2.getContents().add(ContextMappingDSLFactory.eINSTANCE.createContextMappingModel());
+		CMLResourceContainer cmlRes2 = new CMLResourceContainer(resource2);
+
+		// when
+		boolean isEqual = cmlRes1.equals(cmlRes2);
+
+		// then
+		assertFalse(isEqual);
 	}
 
 }

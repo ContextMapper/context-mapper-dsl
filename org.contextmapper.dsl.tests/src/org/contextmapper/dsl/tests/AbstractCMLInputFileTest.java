@@ -74,6 +74,12 @@ public abstract class AbstractCMLInputFileTest {
 		new ContextMappingDSLStandaloneSetup().createInjectorAndDoEMFRegistration();
 		return new CMLResourceContainer(resourceSet.getResource(URI.createFileURI(testFile.getAbsolutePath()), true));
 	}
+	
+	protected CMLResourceContainer getOriginalResourceOfTestCML(String testCMLName, boolean setupServiceCutterDSL) throws IOException {
+		if(setupServiceCutterDSL)
+			new ServiceCutterConfigurationDSLStandaloneSetup().createInjectorAndDoEMFRegistration();
+		return getOriginalResourceOfTestCML(testCMLName);
+	}
 
 	protected Resource getResourceCopyOfTestSCL(String testSCLName) throws IOException {
 		File testFile = new File(testDir, testSCLName);
