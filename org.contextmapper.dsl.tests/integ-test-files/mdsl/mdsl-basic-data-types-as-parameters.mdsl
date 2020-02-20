@@ -8,33 +8,33 @@ endpoint type CustomersAggregate
 	exposes
 		operation anotherMethod
 			expecting
-				payload V<int>
+				payload D<int>
 			delivering
-				payload V<string>
+				payload D<string>
 		operation intMethod
 			expecting
-				payload V<int>
+				payload D<int>
 		operation booleanMethod
 			expecting
-				payload V<bool>
+				payload D<bool>
 		operation longMethod
 			expecting
-				payload V<long>
+				payload D<long>
 		operation longlongMethod
 			expecting
-				payload V<long>
+				payload D<long>
 		operation doubleMethod
 			expecting
-				payload V<double>
+				payload D<double>
 		operation doubledoubleMethod
 			expecting
-				payload V<double>
+				payload D<double>
 		operation blobMethod
 			expecting
-				payload V<blob>
+				payload D<blob>
 		operation IntegerMethod
 			expecting
-				payload V<int>
+				payload D<int>
 
 
 API provider CustomerManagementContextProvider

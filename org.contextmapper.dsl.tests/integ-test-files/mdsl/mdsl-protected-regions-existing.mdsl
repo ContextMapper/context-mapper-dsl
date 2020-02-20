@@ -2,12 +2,12 @@
 API description CustomerManagementContextAPI
 
 // ** BEGIN PROTECTED REGION for data types
-data type Address { "street":V<string>, "city":V<string> }
+data type Address { "street":D<string>, "city":D<string> }
 // ** END PROTECTED REGION for data types
 
 data type Parameter1Type P
 data type Parameter2Type P
-data type ReturnType { "returnvalue1":V<string> }
+data type ReturnType { "returnvalue1":D<string> }
 data type anotherMethodParameter { "param1":Parameter1Type, "param2":Parameter2Type }
 
 // ** BEGIN PROTECTED REGION for endpoint types

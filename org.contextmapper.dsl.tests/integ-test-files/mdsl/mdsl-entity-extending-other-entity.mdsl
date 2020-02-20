@@ -2,7 +2,7 @@
 API description CustomerManagementContextAPI
 
 
-data type Address { "identifier":V<int>, "street":V<string>, "houseNumber":V<int> }
+data type Address { "identifier":D<int>, "street":D<string>, "houseNumber":D<int> }
 data type Parameter1Type P // the type Parameter1Type has not been specified or does not contain any attributes in CML
 data type Parameter2Type P // the type Parameter2Type has not been specified or does not contain any attributes in CML
 data type ReturnType P // the type ReturnType has not been specified or does not contain any attributes in CML

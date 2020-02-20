@@ -8,12 +8,12 @@ endpoint type CustomersAggregate
 	exposes
 		operation publicMethod
 			expecting
-				payload V<int>
+				payload D<int>
 			delivering
-				payload V<string>
+				payload D<string>
 		operation anotherPublicMethod
 			expecting
-				payload V<string>
+				payload D<string>
 
 
 API provider CustomerManagementContextProvider
