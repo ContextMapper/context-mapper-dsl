@@ -12,6 +12,7 @@ import org.contextmapper.dsl.cml.CMLResourceContainer;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.generator.NewServiceCutContextMapGenerator;
 import org.contextmapper.dsl.generator.exception.GeneratorInputException;
+import org.contextmapper.dsl.generator.exception.NoContextMapDefinedException;
 import org.contextmapper.dsl.generator.servicecutter.input.converter.SCLToUserRepresentationsConverter;
 import org.contextmapper.dsl.generators.mocks.ContextMappingModelResourceMock;
 import org.contextmapper.dsl.generators.mocks.IFileSystemAccess2Mock;
@@ -117,6 +118,17 @@ public class NewServiceCutContextMapGeneratorTest extends AbstractCMLInputFileTe
 
 		// then
 		assertTrue(filesystem.getGeneratedFilesSet().contains("testmodel_NewCut_1.cml"));
+	}
+
+	@Test
+	void canHandleModelWithoutContextMap() throws IOException {
+		// given
+		CMLResourceContainer input = getResourceCopyOfTestCML("CML_Model_without_ContextMap.cml");
+
+		// when, then
+		assertThrows(NoContextMapDefinedException.class, () -> {
+			this.generator.checkPreconditions(input.getContextMappingModel());
+		});
 	}
 
 	@Override
