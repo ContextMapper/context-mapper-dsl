@@ -2,7 +2,8 @@
 API description CustomerManagementContextAPI
 
 
-data type Address { "street":D<string>, "houseNumber":D<int> }
+data type Address { "street":D<string>, "houseNumber":D<int>, "empty":EmptyType }
+data type EmptyType P // the type EmptyType has not been specified or does not contain any attributes in CML
 data type ReturnType P // the type ReturnType has not been specified or does not contain any attributes in CML
 
 

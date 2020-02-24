@@ -2,10 +2,12 @@
 API description CustomerManagementContextAPI
 
 
+data type Address { "street":D<string>, "houseNumber":D<int> }
 data type BankAccount P // the type BankAccount has not been specified or does not contain any attributes in CML
+data type Customer { "firstName":D<string>, "lastName":D<string>, "account":BankAccount, "address":Address }
 data type JustSomeParameterType P // the type JustSomeParameterType has not been specified or does not contain any attributes in CML
 data type ReturnType P // the type ReturnType has not been specified or does not contain any attributes in CML
-data type updateCustomerParameter { "customer":{ "firstName":D<string>, "lastName":D<string>, "account":BankAccount, "address":{ "street":D<string>, "houseNumber":D<int> } }, "param2":JustSomeParameterType }
+data type updateCustomerParameter { "customer":Customer, "param2":JustSomeParameterType }
 
 
 endpoint type CustomersAggregate

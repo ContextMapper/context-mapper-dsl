@@ -42,8 +42,8 @@
 			<repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20180905201904/repository/"/>
 		</location>
 		<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-			<unit id="org.eclipse.emf.henshin.sdk.feature.group" version="1.6.0.202002131441"/>
-			<repository location="http://download.eclipse.org/modeling/emft/henshin/updates/release/"/>
+			<unit id="org.eclipse.emf.henshin.sdk.feature.group" version="1.6.0.202001052147"/>
+			<repository location="https://download.eclipse.org/modeling/emft/henshin/updates/1.6.0/"/>
 		</location>
 		<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 			<repository location="https://dl.bintray.com/contextmapper/context-map-generator-releases/"/>

@@ -15,15 +15,10 @@
  */
 package org.contextmapper.dsl.generator.mdsl.model;
 
-import java.util.List;
-
-import com.google.common.collect.Lists;
-
 public class DataTypeAttribute {
 
 	private String attributeName;
 	private String type;
-	private List<DataTypeAttribute> children = Lists.newArrayList();
 	private boolean isCollection = false;
 	private boolean isNullable = false;
 
@@ -41,18 +36,6 @@ public class DataTypeAttribute {
 
 	public String getType() {
 		return type;
-	}
-
-	public void addChildren(List<DataTypeAttribute> children) {
-		this.children.addAll(children);
-	}
-
-	public List<DataTypeAttribute> getChildren() {
-		return children;
-	}
-
-	public boolean hasChildren() {
-		return !this.children.isEmpty();
 	}
 
 	public void setIsCollection(boolean isCollection) {
