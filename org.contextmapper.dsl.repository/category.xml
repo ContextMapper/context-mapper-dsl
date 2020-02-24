@@ -9,19 +9,19 @@
    <feature id="org.contextmapper.servicecutter.feature">
       <category name="main"/>
    </feature>
-   <bundle id="org.eclipse.emf.henshin.interpreter" version="1.6.0.202002131441">
+   <bundle id="org.eclipse.emf.henshin.interpreter" version="1.6.0.202001052147">
       <category name="main"/>
    </bundle>
-   <bundle id="org.eclipse.emf.henshin.model" version="1.6.0.202002131441">
+   <bundle id="org.eclipse.emf.henshin.model" version="1.6.0.202001052147">
       <category name="main"/>
    </bundle>
-   <bundle id="org.eclipse.emf.henshin.diagram" version="1.6.0.202002131441">
+   <bundle id="org.eclipse.emf.henshin.diagram" version="1.6.0.202001052147">
       <category name="main"/>
    </bundle>
-   <bundle id="org.eclipse.emf.henshin.edit" version="1.6.0.202002131441">
+   <bundle id="org.eclipse.emf.henshin.edit" version="1.6.0.202001052147">
       <category name="main"/>
    </bundle>
-   <bundle id="org.eclipse.emf.henshin.editor" version="1.6.0.202002131441">
+   <bundle id="org.eclipse.emf.henshin.editor" version="1.6.0.202001052147">
       <category name="main"/>
    </bundle>
    <feature id="org.contextmapper.contextmap.generator.feature" version="0.0.0">
@@ -32,7 +32,7 @@
    </feature>
    <category-def name="main" label="ContextMappingDSL"/>
    <category-def name="main.source" label="ContextMappingDSL (Sources)"/>
-   <repository-reference location="http://download.eclipse.org/modeling/emft/henshin/updates/release/" enabled="true" />
+   <repository-reference location="https://download.eclipse.org/modeling/emft/henshin/updates/1.6.0/" enabled="true" />
    <repository-reference location="https://dl.bintray.com/contextmapper/context-map-generator-releases/" enabled="true" />
    <repository-reference location="https://dl.bintray.com/contextmapper/service-cutter-library-releases/" enabled="true" />
 </site>
