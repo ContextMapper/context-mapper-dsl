@@ -12,7 +12,6 @@ ${serviceSpecification.dataTypeProtectedRegion}
 // ** END PROTECTED REGION for data types
 </#if>
 
-<#macro renderDataTypeAttributesRecursive attributes>{ <#list attributes as attribute><#if attribute.hasChildren()>"${attribute.getName()}":<@renderDataTypeAttributesRecursive attribute.getChildren() /><#if attribute.isCollection()>*<#elseif attribute.isNullable()>?</#if><#else>"${attribute.getName()}":${attribute.getType()}<#if attribute.isCollection()>*<#elseif attribute.isNullable()>?</#if></#if><#if attribute_index < attributes?size - 1>, </#if></#list> }</#macro>
 <#list serviceSpecification.dataTypes as dataType>
 	<#if !dataType.isPrimitiveType()>
 		<#if dataType.hasComments()>
@@ -23,7 +22,7 @@ data type ${dataType.name} P // the type ${dataType.name} has not been specified
 		<#elseif dataType.isEnumType()>
 data type ${dataType.name} {${dataType.getEnumValuesString()}}
 		<#else>
-data type ${dataType.name} <@renderDataTypeAttributesRecursive dataType.getChildren() />
+data type ${dataType.name} { <#list dataType.attributes as attribute>"${attribute.getName()}":${attribute.getType()}<#if attribute.isCollection()>*<#elseif attribute.isNullable()>?</#if><#if attribute_index < dataType.attributes?size - 1>, </#if></#list> }
 		</#if>
 	</#if>
 </#list>

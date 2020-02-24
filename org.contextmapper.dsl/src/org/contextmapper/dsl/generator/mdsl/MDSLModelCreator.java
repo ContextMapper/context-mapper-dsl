@@ -15,14 +15,9 @@
  */
 package org.contextmapper.dsl.generator.mdsl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
-import java.util.Stack;
 import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
@@ -34,28 +29,18 @@ import org.contextmapper.dsl.generator.mdsl.generatorcontext.DownstreamContext;
 import org.contextmapper.dsl.generator.mdsl.generatorcontext.UpstreamAPIContext;
 import org.contextmapper.dsl.generator.mdsl.model.APIUsageContext;
 import org.contextmapper.dsl.generator.mdsl.model.DataType;
-import org.contextmapper.dsl.generator.mdsl.model.DataTypeAttribute;
 import org.contextmapper.dsl.generator.mdsl.model.EndpointClient;
 import org.contextmapper.dsl.generator.mdsl.model.EndpointContract;
 import org.contextmapper.dsl.generator.mdsl.model.EndpointOffer;
 import org.contextmapper.dsl.generator.mdsl.model.EndpointOperation;
 import org.contextmapper.dsl.generator.mdsl.model.EndpointProvider;
 import org.contextmapper.dsl.generator.mdsl.model.ServiceSpecification;
-import org.contextmapper.tactic.dsl.tacticdsl.Attribute;
 import org.contextmapper.tactic.dsl.tacticdsl.CollectionType;
-import org.contextmapper.tactic.dsl.tacticdsl.CommandEvent;
 import org.contextmapper.tactic.dsl.tacticdsl.ComplexType;
-import org.contextmapper.tactic.dsl.tacticdsl.DomainEvent;
 import org.contextmapper.tactic.dsl.tacticdsl.DomainObject;
 import org.contextmapper.tactic.dsl.tacticdsl.DomainObjectOperation;
-import org.contextmapper.tactic.dsl.tacticdsl.Entity;
-import org.contextmapper.tactic.dsl.tacticdsl.Enum;
-import org.contextmapper.tactic.dsl.tacticdsl.EnumValue;
 import org.contextmapper.tactic.dsl.tacticdsl.Parameter;
-import org.contextmapper.tactic.dsl.tacticdsl.Reference;
 import org.contextmapper.tactic.dsl.tacticdsl.ServiceOperation;
-import org.contextmapper.tactic.dsl.tacticdsl.SimpleDomainObject;
-import org.contextmapper.tactic.dsl.tacticdsl.ValueObject;
 import org.contextmapper.tactic.dsl.tacticdsl.Visibility;
 
 import com.google.common.collect.Lists;
@@ -64,29 +49,23 @@ import com.google.common.collect.Maps;
 public class MDSLModelCreator {
 
 	private static final String AGGREGATE_NAME_EXTENSION = "Aggregate";
-	private static final String PARAMETER_NAME_EXTENSION = "Parameter";
 	private static final String API_NAME_EXTENSION = "API";
 	private static final String PROVIDER_NAME_EXTENSION = "Provider";
 	private static final String CLIENT_NAME_EXTENSION = "Client";
-	private static final String BASE_TYPE = "Object";
 	private static final String MDSL_VOID_RETURN_TYPE = "D<void>";
 	private static final String ENDPOINT_LOCATION = "http://localhost:";
 	private static final String PROTOCOL_STRING_IF_NOT_DEFINED = "tbd";
 	private static final String PROTOCOL_NOT_DEFINED_COMMENT = "The protocol is generated if you specify the implementation technology in CML";
 
-	private static final String[] MDSL_KEYWORDS = { "API", "description", "data", "type", "P", "endpoint", "type", "exposes", "operation", "expecting", "delivering", "payload",
-			"Link", "provider", "client", "consumes", "offers", "at", "location", "via", "protocol", "IPA" };
-
 	private ContextMap contextMap;
-	private Map<String, DataType> dataTypeMapping;
 	private int initialPort = 8000;
-	private Stack<String> recursiveAttributeResolutionStack;
-	private Set<String> mdslKeywords;
+	private MDSLDataTypeCreator dataTypeCreator;
+	private MDSLNameEncoder mdslEncoder;
 
 	public MDSLModelCreator(ContextMap contextMap) {
 		this.contextMap = contextMap;
-		this.recursiveAttributeResolutionStack = new Stack<>();
-		this.mdslKeywords = new HashSet<>(Arrays.asList(MDSL_KEYWORDS));
+		this.dataTypeCreator = new MDSLDataTypeCreator();
+		this.mdslEncoder = new MDSLNameEncoder();
 	}
 
 	public List<ServiceSpecification> createServiceSpecifications() {
@@ -104,7 +83,7 @@ public class MDSLModelCreator {
 
 	private ServiceSpecification createServiceSpecification(String apiName, UpstreamAPIContext context) {
 		ServiceSpecification specification = new ServiceSpecification();
-		specification.setName(encodeName(apiName));
+		specification.setName(mdslEncoder.encodeName(apiName));
 
 		if (context.getUpstreamRoles().contains(UpstreamRole.OPEN_HOST_SERVICE) && context.getUpstreamRoles().contains(UpstreamRole.PUBLISHED_LANGUAGE)) {
 			specification.setUsageContext(APIUsageContext.PUBLIC_API);
@@ -112,11 +91,10 @@ public class MDSLModelCreator {
 			specification.setUsageContext(APIUsageContext.COMMUNITY_API);
 		}
 
-		dataTypeMapping = Maps.newTreeMap();
 		for (Aggregate aggregate : context.getExposedAggregates()) {
 			specification.addEndpoint(createEndpoint(aggregate, specification));
 		}
-		for (DataType dataType : dataTypeMapping.values()) {
+		for (DataType dataType : dataTypeCreator.getAllDataTypes()) {
 			specification.addDataType(dataType);
 		}
 		specification.addProvider(createProvider(context, specification.getEndpoints()));
@@ -128,7 +106,8 @@ public class MDSLModelCreator {
 
 	private EndpointContract createEndpoint(Aggregate aggregate, ServiceSpecification specification) {
 		EndpointContract endpoint = new EndpointContract();
-		String endpointName = encodeName(aggregate.getName().endsWith(AGGREGATE_NAME_EXTENSION) ? aggregate.getName() : aggregate.getName() + AGGREGATE_NAME_EXTENSION);
+		String endpointName = mdslEncoder
+				.encodeName(aggregate.getName().endsWith(AGGREGATE_NAME_EXTENSION) ? aggregate.getName() : aggregate.getName() + AGGREGATE_NAME_EXTENSION);
 		endpoint.setName(endpointName);
 		Optional<DomainObject> aggregateRoot = aggregate.getDomainObjects().stream().filter(o -> o instanceof DomainObject).map(o -> (DomainObject) o)
 				.filter(o -> o.isAggregateRoot()).findFirst();
@@ -170,19 +149,19 @@ public class MDSLModelCreator {
 
 	private EndpointOperation createOperation(String operationName, List<Parameter> parameters, ComplexType returnType, ServiceSpecification specification, String docString) {
 		EndpointOperation operation = new EndpointOperation();
-		operation.setName(encodeName(operationName));
+		operation.setName(mdslEncoder.encodeName(operationName));
 
 		if (parameters.isEmpty()) {
 			operation.setExpectingPayload(createVoidReturnType());
 		} else if (parameters.size() == 1) {
 			Parameter parameter = parameters.get(0);
-			operation.setExpectingPayload(getDataType4ComplexType(parameter.getParameterType()));
+			operation.setExpectingPayload(dataTypeCreator.createMDSLDataType(parameter.getParameterType()));
 			operation.setExpectingCollection(parameter.getParameterType().getCollectionType() != CollectionType.NONE);
 		} else {
-			operation.setExpectingPayload(constructDataType4ParameterList(operationName, parameters));
+			operation.setExpectingPayload(dataTypeCreator.createMDSLDataType4ParameterList(operationName, parameters));
 		}
 		if (returnType != null) {
-			operation.setDeliveringPayload(getDataType4ComplexType(returnType));
+			operation.setDeliveringPayload(dataTypeCreator.createMDSLDataType(returnType));
 			operation.setDeliveringCollection(returnType.getCollectionType() != CollectionType.NONE);
 		}
 		setOperationResponsibility(operation, docString);
@@ -208,240 +187,10 @@ public class MDSLModelCreator {
 		return voidType;
 	}
 
-	private DataType constructDataType4ParameterList(String methodName, List<Parameter> parameters) {
-		String dataTypeName = encodeName(methodName + PARAMETER_NAME_EXTENSION);
-		if (dataTypeMapping.containsKey(dataTypeName)) {
-			return dataTypeMapping.get(dataTypeName);
-		} else {
-			DataType dataType = new DataType();
-			dataType.setName(dataTypeName);
-			List<DataTypeAttribute> attributes = Lists.newArrayList();
-			for (Parameter parameter : parameters) {
-				ComplexType type = parameter.getParameterType();
-				if (type.getDomainObjectType() != null) {
-					attributes.add(
-							getDataTypeAttribute4DomainObject(dataType, parameter.getName(), type.getDomainObjectType(), type.getCollectionType() != CollectionType.NONE, false));
-				} else {
-					attributes.add(createSimpleDataTypeAttributeWithoutChildren(parameter.getName(), mapAbstractDataType(type.getType()),
-							type.getCollectionType() != CollectionType.NONE, false));
-				}
-			}
-			dataType.addAttributes(attributes);
-			dataTypeMapping.put(dataTypeName, dataType);
-			return dataType;
-		}
-	}
-
-	private DataType getDataType4ComplexType(ComplexType type) {
-		// get data type name
-		String dataTypeName = type.getType();
-		if (type.getDomainObjectType() != null) {
-			dataTypeName = type.getDomainObjectType().getName();
-		}
-
-		// check if its a primitive type and return it if its primitive
-		String primitiveType = getMDSLPrimitiveType(dataTypeName);
-		if (!BASE_TYPE.equals(primitiveType)) {
-			DataType primitiveDataType = new DataType();
-			primitiveDataType.setIsPrimitiveType(true);
-			primitiveDataType.setName(primitiveType);
-			return primitiveDataType;
-		}
-
-		// create complex data type
-		dataTypeName = encodeName(dataTypeName);
-		if (dataTypeMapping.containsKey(dataTypeName)) {
-			return dataTypeMapping.get(dataTypeName);
-		} else {
-			DataType dataType = new DataType();
-			dataType.setName(dataTypeName);
-			dataTypeMapping.put(dataTypeName, dataType);
-			if (type.getDomainObjectType() != null && type.getDomainObjectType() instanceof DomainObject) {
-				DomainObject object = (DomainObject) type.getDomainObjectType();
-				dataType.addAttributes(getMDSLAttributesForAttributeList(getDomainObjectAttributes(object)));
-				List<DataTypeAttribute> refAttributes = Lists.newArrayList();
-				for (Reference reference : getDomainObjectReferences(object)) {
-					SimpleDomainObject referencedType = reference.getDomainObjectType();
-
-					// don't resolve references to objects without attributes or references
-					if (referencedType instanceof DomainObject && ((DomainObject) referencedType).getAttributes().isEmpty()
-							&& ((DomainObject) referencedType).getReferences().isEmpty())
-						continue;
-
-					refAttributes.add(getDataTypeAttribute4DomainObject(dataType, reference.getName(), referencedType, reference.getCollectionType() != CollectionType.NONE,
-							reference.isNullable()));
-				}
-				dataType.addAttributes(refAttributes);
-			} else if (type.getDomainObjectType() != null && type.getDomainObjectType() instanceof Enum) {
-				Enum enumm = (Enum) type.getDomainObjectType();
-				dataType.setIsEnumType(true);
-				dataType.addAttributes(createAttributesForEnum(enumm));
-			}
-			return dataType;
-		}
-	}
-
-	private List<DataTypeAttribute> createAttributesForEnum(Enum enumm) {
-		List<DataTypeAttribute> attributes = new ArrayList<>();
-		for (EnumValue value : enumm.getValues()) {
-			DataTypeAttribute attribute = new DataTypeAttribute();
-			attribute.setName(encodeName(value.getName()));
-			attribute.setType(encodeName(enumm.getName()));
-			attributes.add(attribute);
-		}
-		return attributes;
-	}
-
-	private DataType createEnumDataType(Enum enumm) {
-		if (dataTypeMapping.containsKey(enumm.getName()))
-			return dataTypeMapping.get(enumm.getName());
-		DataType dataType = new DataType();
-		dataType.setName(encodeName(enumm.getName()));
-		dataType.setIsEnumType(true);
-		dataType.addAttributes(createAttributesForEnum(enumm));
-		dataTypeMapping.put(enumm.getName(), dataType);
-		return dataType;
-	}
-
-	private DataTypeAttribute getDataTypeAttribute4DomainObject(DataType dataType, String attributeName, SimpleDomainObject simpleDomainObject, boolean isCollection,
-			boolean isNullable) {
-		this.recursiveAttributeResolutionStack.push(simpleDomainObject.getName());
-		DataTypeAttribute mdslAttribute = new DataTypeAttribute();
-		mdslAttribute.setName(encodeName(attributeName));
-		mdslAttribute.setIsCollection(isCollection);
-		mdslAttribute.setIsNullable(isNullable);
-		if (simpleDomainObject instanceof DomainObject) {
-			DomainObject object = (DomainObject) simpleDomainObject;
-			mdslAttribute.addChildren(getMDSLAttributesForAttributeList(getDomainObjectAttributes(object)));
-			List<DataTypeAttribute> refAttributes = Lists.newArrayList();
-			for (Reference reference : getDomainObjectReferences(object)) {
-				SimpleDomainObject referencedType = reference.getDomainObjectType();
-
-				// don't resolve references to objects without attributes or references
-				if (referencedType instanceof DomainObject && ((DomainObject) referencedType).getAttributes().isEmpty()
-						&& ((DomainObject) referencedType).getReferences().isEmpty())
-					continue;
-
-				// recursive attribute resolution, if it is no cyclic reference
-				if (!this.recursiveAttributeResolutionStack.contains(referencedType.getName())) {
-					refAttributes.add(getDataTypeAttribute4DomainObject(dataType, reference.getName(), referencedType, reference.getCollectionType() != CollectionType.NONE,
-							reference.isNullable()));
-				} else {
-					dataType.addComment("You declared a cyclic reference! We had to break the cycle at " + reference.getDomainObjectType().getName());
-					refAttributes.add(createSimpleDataTypeAttributeWithoutChildren(reference.getName(), mapAbstractDataType(referencedType.getName()),
-							reference.getCollectionType() != CollectionType.NONE, reference.isNullable()));
-				}
-			}
-			mdslAttribute.addChildren(refAttributes);
-			
-			// in case there are no attributes or refs, we need an abstract data type:
-			if (!mdslAttribute.hasChildren())
-				mdslAttribute.setType(mapAbstractDataType(simpleDomainObject.getName()));
-		} else if (simpleDomainObject instanceof Enum) {
-			mdslAttribute.setType(createEnumDataType((Enum) simpleDomainObject).getName());
-		} else {
-			mdslAttribute.setType(mapAbstractDataType(simpleDomainObject.getName()));
-		}
-		this.recursiveAttributeResolutionStack.pop();
-		return mdslAttribute;
-	}
-
-	private List<Attribute> getDomainObjectAttributes(DomainObject domainObject) {
-		List<Attribute> attributes = new ArrayList<>();
-
-		DomainObject extendsType = getExtendsType(domainObject);
-		while (extendsType != null) {
-			attributes.addAll(extendsType.getAttributes());
-			extendsType = getExtendsType(extendsType);
-		}
-		attributes.addAll(domainObject.getAttributes());
-
-		return attributes;
-	}
-
-	private List<Reference> getDomainObjectReferences(DomainObject domainObject) {
-		List<Reference> references = new ArrayList<>();
-
-		DomainObject extendsType = getExtendsType(domainObject);
-		while (extendsType != null) {
-			references.addAll(extendsType.getReferences());
-			extendsType = getExtendsType(extendsType);
-		}
-		references.addAll(domainObject.getReferences());
-
-		return references;
-	}
-
-	private DomainObject getExtendsType(DomainObject domainObject) {
-		if (domainObject instanceof Entity) {
-			return ((Entity) domainObject).getExtends();
-		} else if (domainObject instanceof CommandEvent) {
-			return ((CommandEvent) domainObject).getExtends();
-		} else if (domainObject instanceof DomainEvent) {
-			return ((DomainEvent) domainObject).getExtends();
-		} else if (domainObject instanceof ValueObject) {
-			return ((ValueObject) domainObject).getExtends();
-		} else {
-			return null;
-		}
-	}
-
-	private List<DataTypeAttribute> getMDSLAttributesForAttributeList(List<Attribute> attributes) {
-		List<DataTypeAttribute> mdslAttributes = Lists.newArrayList();
-		for (Attribute attribute : attributes) {
-			mdslAttributes.add(createSimpleDataTypeAttributeWithoutChildren(attribute.getName(), mapAbstractDataType(attribute.getType()),
-					attribute.getCollectionType() != CollectionType.NONE, attribute.isNullable()));
-		}
-		return mdslAttributes;
-	}
-
-	private DataTypeAttribute createSimpleDataTypeAttributeWithoutChildren(String attributeName, String attributeType, boolean isCollection, boolean isNullable) {
-		DataTypeAttribute attribute = new DataTypeAttribute();
-		attribute.setName(encodeName(attributeName));
-		attribute.setType(encodeName(attributeType));
-		attribute.setIsCollection(isCollection);
-		attribute.setIsNullable(isNullable);
-		return attribute;
-	}
-
-	private String mapAbstractDataType(String dataTypeName) {
-		String primitiveType = getMDSLPrimitiveType(dataTypeName);
-		if (!BASE_TYPE.equals(primitiveType))
-			return primitiveType;
-
-		// create data type, since it's not a primitive type
-		String encodedDataTypeName = encodeName(dataTypeName);
-		if (dataTypeMapping.containsKey(encodedDataTypeName))
-			return dataTypeMapping.get(encodedDataTypeName).getName();
-		DataType newDataType = new DataType();
-		newDataType.setName(encodeName(encodedDataTypeName));
-		dataTypeMapping.put(encodedDataTypeName, newDataType);
-		return encodedDataTypeName;
-	}
-
-	private String getMDSLPrimitiveType(String dataTypeName) {
-		if ("boolean".equals(dataTypeName.toLowerCase())) {
-			return "D<bool>";
-		} else if ("String".equals(dataTypeName)) {
-			return "D<string>";
-		} else if ("int".equals(dataTypeName) || "Integer".equals(dataTypeName)) {
-			return "D<int>";
-		} else if ("long".equals(dataTypeName.toLowerCase())) {
-			return "D<long>";
-		} else if ("double".equals(dataTypeName.toLowerCase())) {
-			return "D<double>";
-		} else if ("Blob".equals(dataTypeName)) {
-			return "D<blob>";
-		} else if ("Date".equals(dataTypeName)) {
-			return "D<string>";
-		}
-		return BASE_TYPE; // default case: we have to define a data type
-	}
-
 	private EndpointProvider createProvider(UpstreamAPIContext context, List<EndpointContract> endpointContracts) {
 		EndpointProvider provider = new EndpointProvider();
 		String implementationTechnology = context.getJoinedImplementationTechnologies();
-		provider.setName(encodeName(context.getUpstreamContext().getName() + PROVIDER_NAME_EXTENSION));
+		provider.setName(mdslEncoder.encodeName(context.getUpstreamContext().getName() + PROVIDER_NAME_EXTENSION));
 		for (EndpointContract contract : endpointContracts) {
 			EndpointOffer offer = new EndpointOffer();
 			offer.setOfferedEndpoint(contract);
@@ -461,7 +210,7 @@ public class MDSLModelCreator {
 
 	private EndpointClient createClient(DownstreamContext downstreamContext) {
 		EndpointClient client = new EndpointClient();
-		client.setName(encodeName(downstreamContext.getDownstreamName() + CLIENT_NAME_EXTENSION));
+		client.setName(mdslEncoder.encodeName(downstreamContext.getDownstreamName() + CLIENT_NAME_EXTENSION));
 		List<String> endpoints = downstreamContext.getConsumedAggregates().stream().map(agg -> agg.getName() + AGGREGATE_NAME_EXTENSION).collect(Collectors.toList());
 		for (String offer : endpoints) {
 			client.addConsumedOffer(offer);
@@ -474,12 +223,6 @@ public class MDSLModelCreator {
 		if (downstreamContext.getDomainVisionStatement() != null && !"".equals(downstreamContext.getDomainVisionStatement()))
 			client.setDomainVisionStatement(downstreamContext.getDomainVisionStatement());
 		return client;
-	}
-
-	private String encodeName(String name) {
-		if (this.mdslKeywords.contains(name))
-			return "^" + name;
-		return name;
 	}
 
 	private Map<String, UpstreamAPIContext> collectUpstreamContexts() {
@@ -496,7 +239,7 @@ public class MDSLModelCreator {
 				context = upstreamContextMap.get(upstreamAPIName);
 			} else {
 				context = new UpstreamAPIContext();
-				context.setApiName(encodeName(upstreamAPIName));
+				context.setApiName(mdslEncoder.encodeName(upstreamAPIName));
 				context.setUpstreamContext(relationship.getUpstream());
 				upstreamContextMap.put(upstreamAPIName, context);
 			}

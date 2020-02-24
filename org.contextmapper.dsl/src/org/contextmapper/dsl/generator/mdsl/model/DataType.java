@@ -26,7 +26,7 @@ public class DataType {
 	private boolean isAbstractType = true;
 	private boolean isPrimitiveType = false;
 	private boolean isEnumType = false;
-	private List<DataTypeAttribute> children = Lists.newArrayList();
+	private List<DataTypeAttribute> attributes = Lists.newArrayList();
 	private List<String> comments = Lists.newArrayList();
 
 	public String getName() {
@@ -37,17 +37,17 @@ public class DataType {
 		this.name = name;
 	}
 
-	public void addAttributes(List<DataTypeAttribute> children) {
+	public void addAttributes(List<DataTypeAttribute> attributes) {
 		this.isAbstractType = false;
-		this.children.addAll(children);
+		this.attributes.addAll(attributes);
 	}
 
-	public List<DataTypeAttribute> getChildren() {
-		return children;
+	public List<DataTypeAttribute> getAttributes() {
+		return attributes;
 	}
 
 	public boolean isAbstractDataType() {
-		return isAbstractType || children.isEmpty();
+		return isAbstractType || attributes.isEmpty();
 	}
 
 	public boolean isPrimitiveType() {
@@ -81,6 +81,6 @@ public class DataType {
 	public String getEnumValuesString() {
 		if (!isEnumType)
 			throw new RuntimeException("getEnumValuesString() called on datatype which is not an enum!");
-		return String.join("|", this.children.stream().map(attr -> "\"" + attr.getName() + "\"").collect(Collectors.toList()));
+		return String.join("|", this.attributes.stream().map(attr -> "\"" + attr.getName() + "\"").collect(Collectors.toList()));
 	}
 }

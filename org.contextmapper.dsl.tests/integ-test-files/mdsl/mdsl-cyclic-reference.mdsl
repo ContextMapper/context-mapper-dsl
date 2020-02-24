@@ -2,10 +2,8 @@
 API description CustomerManagementContextAPI
 
 
-// You declared a cyclic reference! We had to break the cycle at CyclicVO
-data type CyclicVO { "name":D<string>, "refToMyself":{ "name":D<string>, "refToMyself":CyclicVO } }
-// You declared a cyclic reference! We had to break the cycle at CyclicVO2
-data type CyclicVO2 { "name":D<string>, "refToMyself":{ "name":D<string>, "refToMyself":CyclicVO2* }* }
+data type CyclicVO { "name":D<string>, "refToMyself":CyclicVO }
+data type CyclicVO2 { "name":D<string>, "refToMyself":CyclicVO2* }
 
 
 endpoint type CustomersAggregate
