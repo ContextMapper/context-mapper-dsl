@@ -18,23 +18,23 @@ package org.contextmapper.dsl.ui.handler.wizard.pages.components;
 import org.eclipse.swt.widgets.Composite;
 
 /**
- * Component to choose an SCL (Service Cutter user representations) file.
+ * Component to choose a Freemarker template file.
  * 
  * @author Stefan Kapferer
  */
-public class SCLFileChooser extends FileByExtensionChooser {
+public class FreemarkerFileChooser extends FileByExtensionChooser {
 
-	public SCLFileChooser(Composite parent) {
-		super(parent, "scl");
+	public FreemarkerFileChooser(Composite parent) {
+		super(parent, "ftl");
 	}
 
 	@Override
 	protected String getDialogTitle() {
-		return "Choose SCL file";
+		return "Choose Freemarker (*.ftl) file";
 	}
 
 	@Override
 	protected String getDialogMessage() {
-		return "Select the SCL file with your user representations:";
+		return "Select the *.ftl file you want to use for generation:";
 	}
 }

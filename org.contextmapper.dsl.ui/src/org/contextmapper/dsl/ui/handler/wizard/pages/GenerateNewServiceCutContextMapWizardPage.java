@@ -107,7 +107,7 @@ public class GenerateNewServiceCutContextMapWizardPage extends ContextMapperWiza
 		// SCL file selection
 		new Label(container, SWT.NONE).setText("User representations:");
 		sclFileChooser = new SCLFileChooser(container);
-		sclFileChooser.setSclFile(initialSCLFile);
+		sclFileChooser.setFile(initialSCLFile);
 
 		// algorithm label
 		new Label(container, SWT.NONE).setText("Algorithm:");
@@ -300,7 +300,7 @@ public class GenerateNewServiceCutContextMapWizardPage extends ContextMapperWiza
 	}
 
 	public IFile getSCLFile() {
-		return sclFileChooser.getSCLFile();
+		return sclFileChooser.getFile();
 	}
 
 	@Override

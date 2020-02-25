@@ -13,22 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.contextmapper.dsl.exception;
+package org.contextmapper.dsl.ui.handler.wizard;
 
-/**
- * Exception that is catched in Eclipse UI project to show message box.
- * 
- * @author Stefan Kapferer
- *
- */
-public class ContextMapperApplicationException extends RuntimeException {
+import org.eclipse.core.resources.IFile;
 
-	public ContextMapperApplicationException(String message) {
-		super(message);
+public class GenerateGenericTextFileContext {
+
+	private IFile freemarkerTemplateFile;
+	private String targetFileName;
+
+	public void setFreemarkerTemplateFile(IFile freemarkerTemplateFile) {
+		this.freemarkerTemplateFile = freemarkerTemplateFile;
 	}
 
-	public ContextMapperApplicationException(String message, Throwable throwable) {
-		super(message, throwable);
+	public IFile getFreemarkerTemplateFile() {
+		return freemarkerTemplateFile;
+	}
+
+	public void setTargetFileName(String targetFileName) {
+		this.targetFileName = targetFileName;
+	}
+
+	public String getTargetFileName() {
+		return targetFileName;
 	}
 
 }

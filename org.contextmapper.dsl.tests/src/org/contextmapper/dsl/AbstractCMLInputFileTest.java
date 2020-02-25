@@ -54,12 +54,18 @@ public abstract class AbstractCMLInputFileTest {
 		new ContextMappingDSLStandaloneSetup().createInjectorAndDoEMFRegistration();
 		return new CMLResourceContainer(resourceSet.getResource(URI.createFileURI(testFile.getAbsolutePath()), true));
 	}
-	
+
+	protected File getCopyOfTestInputFile(String testInputFileName) throws IOException {
+		File testInputFile = new File(testDir, testInputFileName);
+		FileUtils.copyFile(getTestFile(testInputFileName), testInputFile);
+		return testInputFile;
+	}
+
 	/**
 	 * In case multiple files are needed for the test (are copied to same directory)
 	 */
 	protected ResourceSet getResourceSetOfTestCMLFiles(String... testCMLFileNames) throws IOException {
-		for(String testFileName : testCMLFileNames) {
+		for (String testFileName : testCMLFileNames) {
 			CMLResourceContainer cmlResource = this.getResourceCopyOfTestCML(testFileName);
 			resourceSet.getResource(cmlResource.getResource().getURI(), true);
 		}
@@ -74,9 +80,9 @@ public abstract class AbstractCMLInputFileTest {
 		new ContextMappingDSLStandaloneSetup().createInjectorAndDoEMFRegistration();
 		return new CMLResourceContainer(resourceSet.getResource(URI.createFileURI(testFile.getAbsolutePath()), true));
 	}
-	
+
 	protected CMLResourceContainer getOriginalResourceOfTestCML(String testCMLName, boolean setupServiceCutterDSL) throws IOException {
-		if(setupServiceCutterDSL)
+		if (setupServiceCutterDSL)
 			new ServiceCutterConfigurationDSLStandaloneSetup().createInjectorAndDoEMFRegistration();
 		return getOriginalResourceOfTestCML(testCMLName);
 	}
