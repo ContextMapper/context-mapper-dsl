@@ -23,7 +23,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.contextmapper.dsl.contextMappingDSL.ContextMap;
+import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.exception.ContextMapperApplicationException;
 
 import freemarker.template.Configuration;
@@ -44,14 +44,14 @@ public class FreemarkerTextGenerator {
 		this.templateFile = templateFile;
 	}
 
-	public String generate(ContextMap contextMap) {
+	public String generate(ContextMappingModel contextMappingModel) {
 		String result = "";
 		try {
 			Configuration configuration = configureFreemarker();
 			Template template = configuration.getTemplate(templateFile.getName());
 
 			StringWriter writer = new StringWriter();
-			template.process(prepareModelData(contextMap), writer);
+			template.process(prepareModelData(contextMappingModel), writer);
 			result = writer.toString();
 		} catch (Exception e) {
 			throw new ContextMapperApplicationException("Freemarker template exception: " + e.getMessage(), e);
@@ -59,10 +59,15 @@ public class FreemarkerTextGenerator {
 		return result;
 	}
 
-	private Map<String, Object> prepareModelData(ContextMap contextMap) {
+	private Map<String, Object> prepareModelData(ContextMappingModel contextMappingModel) {
 		Map<String, Object> dataMap = new HashMap<>();
-		dataMap.put("contextMap", contextMap);
-		dataMap.put("timestampString", new SimpleDateFormat("dd.MM.YYYY HH:mm:ss z").format(new Date()));
+		dataMap.put("contextMap", contextMappingModel.getMap());
+		dataMap.put("boundedContexts", contextMappingModel.getBoundedContexts());
+		dataMap.put("domains", contextMappingModel.getDomains());
+		dataMap.put("imports", contextMappingModel.getImports());
+		dataMap.put("useCases", contextMappingModel.getUseCases());
+		dataMap.put("timestamp", new SimpleDateFormat("dd.MM.YYYY HH:mm:ss z").format(new Date()));
+		dataMap.put("filename", contextMappingModel.eResource().getURI().lastSegment().toString());
 		return dataMap;
 	}
 

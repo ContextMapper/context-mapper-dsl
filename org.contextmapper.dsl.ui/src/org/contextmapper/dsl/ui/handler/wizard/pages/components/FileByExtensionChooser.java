@@ -60,6 +60,8 @@ public class FileByExtensionChooser extends Composite {
 
 	private void createContent() {
 		GridLayout layout = new GridLayout(2, false);
+		layout.marginWidth = 0;
+		layout.marginHeight = 0;
 		setLayout(layout);
 
 		GridData gridData = new GridData(GridData.FILL_HORIZONTAL);

@@ -17,7 +17,7 @@ package org.contextmapper.dsl.generator;
 
 import java.io.File;
 
-import org.contextmapper.dsl.contextMappingDSL.ContextMap;
+import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.generator.exception.GeneratorInputException;
 import org.contextmapper.dsl.generator.freemarker.FreemarkerTextGenerator;
 import org.eclipse.emf.common.util.URI;
@@ -30,7 +30,7 @@ import org.eclipse.xtext.generator.IFileSystemAccess2;
  * @author Stefan Kapferer
  *
  */
-public class GenericContentGenerator extends AbstractContextMapGenerator {
+public class GenericContentGenerator extends AbstractContextMappingModelGenerator {
 
 	private File freemarkerTemplateFile;
 	private String targetFileName;
@@ -44,7 +44,7 @@ public class GenericContentGenerator extends AbstractContextMapGenerator {
 	}
 
 	@Override
-	protected void generateFromContextMap(ContextMap contextmap, IFileSystemAccess2 fsa, URI inputFileURI) {
+	protected void generateFromContextMappingModel(ContextMappingModel model, IFileSystemAccess2 fsa, URI inputFileURI) {
 		if (freemarkerTemplateFile == null)
 			throw new GeneratorInputException("The freemarker template has not been set!");
 		if (!freemarkerTemplateFile.exists())
@@ -52,7 +52,7 @@ public class GenericContentGenerator extends AbstractContextMapGenerator {
 		if (targetFileName == null || "".equals(targetFileName))
 			throw new GeneratorInputException("Please provide a name for the file that shall be generated.");
 
-		fsa.generateFile(targetFileName, new FreemarkerTextGenerator(freemarkerTemplateFile).generate(contextmap));
+		fsa.generateFile(targetFileName, new FreemarkerTextGenerator(freemarkerTemplateFile).generate(model));
 	}
 
 }

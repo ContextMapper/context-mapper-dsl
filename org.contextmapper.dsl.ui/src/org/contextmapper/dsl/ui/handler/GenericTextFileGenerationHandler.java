@@ -17,8 +17,8 @@ package org.contextmapper.dsl.ui.handler;
 
 import java.io.File;
 
+import org.contextmapper.dsl.exception.ContextMapperApplicationException;
 import org.contextmapper.dsl.generator.GenericContentGenerator;
-import org.contextmapper.dsl.generator.exception.GeneratorInputException;
 import org.contextmapper.dsl.ui.handler.wizard.GenerateGenericTextFileContext;
 import org.contextmapper.dsl.ui.handler.wizard.GenerateGenericTextFileWizard;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -54,7 +54,7 @@ public class GenericTextFileGenerationHandler extends AbstractGenerationHandler 
 				public void run() {
 					try {
 						getGenerator().doGenerate(resource, fsa, new GeneratorContext());
-					} catch (GeneratorInputException e) {
+					} catch (ContextMapperApplicationException e) {
 						MessageDialog.openInformation(HandlerUtil.getActiveShell(event), "Model Input", e.getMessage());
 					}
 				}

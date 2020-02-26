@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.contextmapper.dsl.exception.ContextMapperApplicationException;
-import org.contextmapper.dsl.generator.exception.GeneratorInputException;
 import org.contextmapper.dsl.ui.internal.DslActivator;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -97,7 +96,7 @@ public abstract class AbstractGenerationHandler extends AbstractHandler implemen
 	protected void runGeneration(Resource resource, ExecutionEvent event, IFileSystemAccess2 fsa) {
 		try {
 			getGenerator().doGenerate(resource, fsa, new GeneratorContext());
-		} catch (GeneratorInputException e) {
+		} catch (ContextMapperApplicationException e) {
 			MessageDialog.openInformation(HandlerUtil.getActiveShell(event), "Model Input", e.getMessage());
 		} catch (Exception e) {
 			String message = e.getMessage() != null && !"".equals(e.getMessage()) ? e.getMessage() : e.getClass().getName() + " occurred in " + this.getClass().getName();

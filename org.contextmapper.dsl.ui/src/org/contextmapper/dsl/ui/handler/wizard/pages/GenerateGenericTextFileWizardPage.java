@@ -52,17 +52,18 @@ public class GenerateGenericTextFileWizardPage extends ContextMapperWizardPage {
 		container = new Composite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 2;
+		layout.horizontalSpacing = 0;
 		layout.verticalSpacing = 10;
 		container.setLayout(layout);
 
 		// Freemarker template selection
 		Label fileSelectionLabel = new Label(container, SWT.NONE);
-		fileSelectionLabel.setText("Freemarker template:");
+		fileSelectionLabel.setText("Freemarker template: ");
 		fileChooser = new FreemarkerFileChooser(container);
 
 		// target filename
 		Label targetFileNameLabel = new Label(container, SWT.NONE);
-		targetFileNameLabel.setText("Target file name:");
+		targetFileNameLabel.setText("Target file name: ");
 		targetFileNameTextBox = new Text(container, SWT.BORDER | SWT.SINGLE);
 		targetFileNameTextBox.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		targetFileNameTextBox.addKeyListener(new KeyAdapter() {
