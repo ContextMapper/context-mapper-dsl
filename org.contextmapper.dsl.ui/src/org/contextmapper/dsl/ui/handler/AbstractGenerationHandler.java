@@ -24,6 +24,7 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
@@ -170,6 +171,13 @@ public abstract class AbstractGenerationHandler extends AbstractHandler implemen
 			childStatuses.add(status);
 		}
 		return new MultiStatus("org.contextmapper.dsl.ui", IStatus.ERROR, childStatuses.toArray(new Status[] {}), t.toString(), t);
+	}
+	
+	protected IFile findFileInContainer(IContainer container, String path) {
+		IResource resource = container.findMember(path);
+		if (resource != null && resource instanceof IFile)
+			return (IFile) resource;
+		return null;
 	}
 
 	@Override

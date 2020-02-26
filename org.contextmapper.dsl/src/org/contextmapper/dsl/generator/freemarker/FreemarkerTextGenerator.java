@@ -24,7 +24,24 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
+import org.contextmapper.dsl.contextMappingDSL.CustomerSupplierRelationship;
+import org.contextmapper.dsl.contextMappingDSL.Domain;
+import org.contextmapper.dsl.contextMappingDSL.Partnership;
+import org.contextmapper.dsl.contextMappingDSL.SharedKernel;
+import org.contextmapper.dsl.contextMappingDSL.Subdomain;
+import org.contextmapper.dsl.contextMappingDSL.SymmetricRelationship;
+import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
 import org.contextmapper.dsl.exception.ContextMapperApplicationException;
+import org.contextmapper.tactic.dsl.tacticdsl.BasicType;
+import org.contextmapper.tactic.dsl.tacticdsl.CommandEvent;
+import org.contextmapper.tactic.dsl.tacticdsl.DataTransferObject;
+import org.contextmapper.tactic.dsl.tacticdsl.DomainEvent;
+import org.contextmapper.tactic.dsl.tacticdsl.DomainObject;
+import org.contextmapper.tactic.dsl.tacticdsl.Entity;
+import org.contextmapper.tactic.dsl.tacticdsl.Enum;
+import org.contextmapper.tactic.dsl.tacticdsl.Event;
+import org.contextmapper.tactic.dsl.tacticdsl.Trait;
+import org.contextmapper.tactic.dsl.tacticdsl.ValueObject;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -68,7 +85,39 @@ public class FreemarkerTextGenerator {
 		dataMap.put("useCases", contextMappingModel.getUseCases());
 		dataMap.put("timestamp", new SimpleDateFormat("dd.MM.YYYY HH:mm:ss z").format(new Date()));
 		dataMap.put("filename", contextMappingModel.eResource().getURI().lastSegment().toString());
+
+		dataMap.putAll(createTemplatingHelperMethods());
+		dataMap.putAll(createClassMap());
+
 		return dataMap;
+	}
+
+	private Map<String, Object> createTemplatingHelperMethods() {
+		Map<String, Object> methodsMap = new HashMap<>();
+		methodsMap.put("instanceOf", new InstanceOfMethod());
+		return methodsMap;
+	}
+
+	private Map<String, Object> createClassMap() {
+		Map<String, Object> classMap = new HashMap<>();
+		classMap.put("SymmetricRelationship", SymmetricRelationship.class);
+		classMap.put("Partnership", Partnership.class);
+		classMap.put("SharedKernel", SharedKernel.class);
+		classMap.put("UpstreamDownstreamRelationship", UpstreamDownstreamRelationship.class);
+		classMap.put("CustomerSupplierRelationship", CustomerSupplierRelationship.class);
+		classMap.put("Domain", Domain.class);
+		classMap.put("Subdomain", Subdomain.class);
+		classMap.put("BasicType", BasicType.class);
+		classMap.put("DataTransferObject", DataTransferObject.class);
+		classMap.put("DomainObject", DomainObject.class);
+		classMap.put("Enum", Enum.class);
+		classMap.put("Trait", Trait.class);
+		classMap.put("Entity", Entity.class);
+		classMap.put("Event", Event.class);
+		classMap.put("CommandEvent", CommandEvent.class);
+		classMap.put("DomainEvent", DomainEvent.class);
+		classMap.put("ValueObject", ValueObject.class);
+		return classMap;
 	}
 
 	private Configuration configureFreemarker() throws IOException {

@@ -41,6 +41,8 @@ public class GenerateGenericTextFileWizard extends Wizard {
 	@Override
 	public void addPages() {
 		page = new GenerateGenericTextFileWizardPage();
+		page.setInitialTemplateFile(context.getFreemarkerTemplateFile());
+		page.setInitialFilename(context.getTargetFileName());
 		addPage(page);
 	}
 

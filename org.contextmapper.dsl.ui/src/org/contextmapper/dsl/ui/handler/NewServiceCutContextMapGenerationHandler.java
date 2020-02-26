@@ -42,9 +42,7 @@ import org.contextmapper.dsl.ui.handler.wizard.GenerateNewServiceCutContextMapWi
 import org.contextmapper.dsl.ui.internal.DslActivator;
 import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.ServiceCutterUserRepresentationsModel;
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
@@ -139,13 +137,6 @@ public class NewServiceCutContextMapGenerationHandler extends AbstractGeneration
 		// check if default file exists
 		String defaultSCLFileName = cmlFile.getName().replace(".cml", "") + "_User_Representations.scl";
 		return findFileInContainer(cmlFile.getParent(), defaultSCLFileName);
-	}
-
-	private IFile findFileInContainer(IContainer container, String path) {
-		IResource resource = container.findMember(path);
-		if (resource != null && resource instanceof IFile)
-			return (IFile) resource;
-		return null;
 	}
 
 	private UserRepresentationContainer getUserRepresentations(IFile sclFile) {
