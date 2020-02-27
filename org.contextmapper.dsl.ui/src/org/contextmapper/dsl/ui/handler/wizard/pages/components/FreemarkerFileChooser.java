@@ -37,4 +37,5 @@ public class FreemarkerFileChooser extends FileByExtensionChooser {
 	protected String getDialogMessage() {
 		return "Select the *.ftl file you want to use for generation:";
 	}
+	
 }

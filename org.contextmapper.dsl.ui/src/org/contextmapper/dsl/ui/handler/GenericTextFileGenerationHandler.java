@@ -83,7 +83,7 @@ public class GenericTextFileGenerationHandler extends AbstractGenerationHandler 
 		try {
 			Map<QualifiedName, String> properties = selectedCmlFile.getPersistentProperties();
 			if (!properties.containsKey(getQualifiedName4File(selectedCmlFile, LAST_SELECTED_TEMPLATE_PROPERTY)))
-				return null;
+				return context;
 			IFile templateFile = findFileInContainer(selectedCmlFile.getProject(), properties.get(getQualifiedName4File(selectedCmlFile, LAST_SELECTED_TEMPLATE_PROPERTY)));
 			context.setFreemarkerTemplateFile(templateFile);
 			if (properties.containsKey(getQualifiedName4File(selectedCmlFile, LAST_TARGET_FILE_NAME_PROPERTY)))

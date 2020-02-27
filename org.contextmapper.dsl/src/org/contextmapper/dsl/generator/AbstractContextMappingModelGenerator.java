@@ -18,7 +18,7 @@ package org.contextmapper.dsl.generator;
 import java.util.List;
 
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
-import org.contextmapper.dsl.generator.exception.NoContextMapDefinedException;
+import org.contextmapper.dsl.generator.exception.NoContextMappingModelDefinedException;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -42,7 +42,7 @@ public abstract class AbstractContextMappingModelGenerator extends AbstractGener
 				Iterators.<ContextMappingModel>filter(resource.getAllContents(), ContextMappingModel.class));
 
 		if (contextMappingModels.isEmpty())
-			throw new NoContextMapDefinedException();
+			throw new NoContextMappingModelDefinedException();
 
 		// cml file can only contain one model
 		contextMappingModel = contextMappingModels.get(0);

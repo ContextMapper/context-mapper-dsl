@@ -16,6 +16,7 @@
 package org.contextmapper.dsl.ui.handler.wizard.pages.components;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -51,6 +52,7 @@ public class FileByExtensionChooser extends Composite {
 	private Button chooseButton;
 	private IFile file;
 	private String fileExtension;
+	private Consumer<IFile> fileSelectedFunction;
 
 	public FileByExtensionChooser(Composite parent, String fileExtension) {
 		super(parent, SWT.NONE);
@@ -83,6 +85,8 @@ public class FileByExtensionChooser extends Composite {
 				IFile newFile = open();
 				if (newFile != null)
 					file = newFile;
+				if (fileSelectedFunction != null)
+					fileSelectedFunction.accept(newFile);
 				updateText();
 			}
 		});
@@ -169,6 +173,10 @@ public class FileByExtensionChooser extends Composite {
 
 	protected String getDialogMessage() {
 		return "Select a *." + fileExtension + " file:";
+	}
+
+	public void setFileSelectedFunction(Consumer<IFile> fileSelectedFunction) {
+		this.fileSelectedFunction = fileSelectedFunction;
 	}
 
 }

@@ -32,7 +32,7 @@ public class GenerateGenericTextFileWizardPage extends ContextMapperWizardPage {
 	private Composite container;
 	private FreemarkerFileChooser fileChooser;
 	private Text targetFileNameTextBox;
-	private IFile initialTemplateFile;
+	private IFile selectedFile;
 	private String initialFilename;
 
 	public GenerateGenericTextFileWizardPage() {
@@ -62,8 +62,12 @@ public class GenerateGenericTextFileWizardPage extends ContextMapperWizardPage {
 		Label fileSelectionLabel = new Label(container, SWT.NONE);
 		fileSelectionLabel.setText("Freemarker template: ");
 		fileChooser = new FreemarkerFileChooser(container);
-		if (initialTemplateFile != null)
-			fileChooser.setFile(initialTemplateFile);
+		if (selectedFile != null)
+			fileChooser.setFile(selectedFile);
+		fileChooser.setFileSelectedFunction(f -> {
+			selectedFile = f;
+			setPageComplete(isPageComplete());
+		});
 
 		// target filename
 		Label targetFileNameLabel = new Label(container, SWT.NONE);
@@ -84,7 +88,7 @@ public class GenerateGenericTextFileWizardPage extends ContextMapperWizardPage {
 	}
 
 	public IFile getFile() {
-		return fileChooser.getFile();
+		return selectedFile;
 	}
 
 	public String getTargetFileName() {
@@ -92,7 +96,7 @@ public class GenerateGenericTextFileWizardPage extends ContextMapperWizardPage {
 	}
 
 	public void setInitialTemplateFile(IFile initialTemplateFile) {
-		this.initialTemplateFile = initialTemplateFile;
+		this.selectedFile = initialTemplateFile;
 	}
 	
 	public void setInitialFilename(String initialFilename) {
@@ -101,7 +105,7 @@ public class GenerateGenericTextFileWizardPage extends ContextMapperWizardPage {
 
 	@Override
 	public boolean isPageComplete() {
-		return fileChooser.getFile() != null && fileChooser.getFile().exists() && !"".equals(targetFileNameTextBox.getText());
+		return selectedFile != null && fileChooser.getFile().exists() && !"".equals(targetFileNameTextBox.getText());
 	}
 
 	@Override
