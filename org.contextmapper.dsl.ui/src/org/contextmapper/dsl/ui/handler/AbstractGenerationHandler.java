@@ -19,12 +19,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.contextmapper.dsl.exception.ContextMapperApplicationException;
-import org.contextmapper.dsl.generator.exception.GeneratorInputException;
 import org.contextmapper.dsl.ui.internal.DslActivator;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
@@ -97,7 +97,7 @@ public abstract class AbstractGenerationHandler extends AbstractHandler implemen
 	protected void runGeneration(Resource resource, ExecutionEvent event, IFileSystemAccess2 fsa) {
 		try {
 			getGenerator().doGenerate(resource, fsa, new GeneratorContext());
-		} catch (GeneratorInputException e) {
+		} catch (ContextMapperApplicationException e) {
 			MessageDialog.openInformation(HandlerUtil.getActiveShell(event), "Model Input", e.getMessage());
 		} catch (Exception e) {
 			String message = e.getMessage() != null && !"".equals(e.getMessage()) ? e.getMessage() : e.getClass().getName() + " occurred in " + this.getClass().getName();
@@ -171,6 +171,13 @@ public abstract class AbstractGenerationHandler extends AbstractHandler implemen
 			childStatuses.add(status);
 		}
 		return new MultiStatus("org.contextmapper.dsl.ui", IStatus.ERROR, childStatuses.toArray(new Status[] {}), t.toString(), t);
+	}
+	
+	protected IFile findFileInContainer(IContainer container, String path) {
+		IResource resource = container.findMember(path);
+		if (resource != null && resource instanceof IFile)
+			return (IFile) resource;
+		return null;
 	}
 
 	@Override

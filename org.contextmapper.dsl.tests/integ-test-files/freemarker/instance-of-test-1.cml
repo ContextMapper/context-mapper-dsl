@@ -1,0 +1,8 @@
+ContextMap {
+	contains context1, context2
+	
+	context1 -> context2
+}
+
+BoundedContext context1
+BoundedContext context2

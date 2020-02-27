@@ -1,0 +1,1 @@
+<#list contextMap.relationships as rel><#if instanceOf(rel, UpstreamDownstreamRelationship)>true</#if></#list>

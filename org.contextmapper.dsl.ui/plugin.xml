@@ -670,6 +670,8 @@
 				</command>
 				<command defaultHandler="org.contextmapper.dsl.ui.handler.PlantUMLGenerationHandler" commandId="org.contextmapper.dsl.ui.handler.PlantUMLGenerationCommand" style="push">
 				</command>
+				<command defaultHandler="org.contextmapper.dsl.ui.handler.GenericTextFileGenerationHandler" commandId="org.contextmapper.dsl.ui.handler.GenericTextFileGenerationCommand" style="push">
+				</command>
 				<separator
 	         		name="org.contextmapper.dsl.ui.separator1" visible="true">
 				</separator>
@@ -789,6 +791,9 @@
 		<handler class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.contextmapper.dsl.ui.handler.NewServiceCutContextMapGenerationHandler"
 			commandId="org.contextmapper.dsl.ui.handler.NewServiceCutContextMapGenerationCommand">
 		</handler>
+		<handler class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.contextmapper.dsl.ui.handler.GenericTextFileGenerationHandler"
+			commandId="org.contextmapper.dsl.ui.handler.GenericTextFileGenerationCommand">
+		</handler>
 	</extension>
 	<extension point="org.eclipse.ui.commands">
 		<command name="ServiceCutter: Generate Input File (JSON)" id="org.contextmapper.dsl.ui.handler.ServiceCutterGenerationCommand"></command>
@@ -800,6 +805,7 @@
 		<command name="ServiceCutter: Initialize User Representations File (Exemplary)" id="org.contextmapper.dsl.ui.handler.ServiceCutterUserRepresentationsExampleGenerationCommand"></command>
 		<command name="MDSL: Generate Service Contracts" id="org.contextmapper.dsl.ui.handler.MDSLGenerationCommand"></command>
 		<command name="ServiceCutter: Generate New Service Cut" id="org.contextmapper.dsl.ui.handler.NewServiceCutContextMapGenerationCommand"></command>
+		<command name="Generate Text File with Freemarker Template" id="org.contextmapper.dsl.ui.handler.GenericTextFileGenerationCommand"></command>
 	</extension>
 	<extension point="org.eclipse.ui.menus">
 		<menuContribution locationURI="popup:org.eclipse.ui.popup.any?after=additions">
@@ -814,6 +820,15 @@
 					</visibleWhen>
 				</command>
 				<command defaultHandler="org.contextmapper.dsl.ui.handler.PlantUMLGenerationHandler" commandId="org.contextmapper.dsl.ui.handler.PlantUMLGenerationCommand" style="push">
+					<visibleWhen checkEnabled="false">
+						<iterate>
+							<adapt type="org.eclipse.core.resources.IResource">
+								<test property="org.eclipse.core.resources.name" value="*.cml"/>
+							</adapt>
+						</iterate>
+					</visibleWhen>
+				</command>
+				<command defaultHandler="org.contextmapper.dsl.ui.handler.GenericTextFileGenerationHandler" commandId="org.contextmapper.dsl.ui.handler.GenericTextFileGenerationCommand" style="push">
 					<visibleWhen checkEnabled="false">
 						<iterate>
 							<adapt type="org.eclipse.core.resources.IResource">
