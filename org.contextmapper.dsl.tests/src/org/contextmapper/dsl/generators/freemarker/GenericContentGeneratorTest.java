@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.contextmapper.dsl.AbstractCMLInputFileTest;
+import org.contextmapper.dsl.exception.ContextMapperApplicationException;
 import org.contextmapper.dsl.generator.GenericContentGenerator;
 import org.contextmapper.dsl.generator.exception.GeneratorInputException;
 import org.contextmapper.dsl.generators.mocks.IFileSystemAccess2Mock;
@@ -30,7 +31,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class GenericContextGeneratorTest extends AbstractCMLInputFileTest {
+public class GenericContentGeneratorTest extends AbstractCMLInputFileTest {
 
 	@Test
 	public void canHandleTemplateNotSet() {
@@ -98,6 +99,48 @@ public class GenericContextGeneratorTest extends AbstractCMLInputFileTest {
 		// then
 		assertTrue(filesystem.getGeneratedFilesSet().contains("output.txt"));
 		assertEquals("testMap", filesystem.readTextFile("output.txt"));
+	}
+
+	@Test
+	public void canUseInstanceOfMethod() throws IOException {
+		// given
+		GenericContentGenerator generator = new GenericContentGenerator();
+		generator.setFreemarkerTemplateFile(getCopyOfTestInputFile("instance-of-test-1.ftl"));
+		generator.setTargetFileName("output.txt");
+
+		// when
+		IFileSystemAccess2Mock filesystem = new IFileSystemAccess2Mock();
+		generator.doGenerate(getResourceCopyOfTestCML("instance-of-test-1.cml").getResource(), filesystem, new IGeneratorContextMock());
+
+		// then
+		assertTrue(filesystem.getGeneratedFilesSet().contains("output.txt"));
+		assertEquals("true", filesystem.readTextFile("output.txt"));
+	}
+
+	@Test
+	public void canCheckWrongParameterAmountInInstanceOfMethod() throws IOException {
+		// given
+		GenericContentGenerator generator = new GenericContentGenerator();
+		generator.setFreemarkerTemplateFile(getCopyOfTestInputFile("instance-of-wrong-parameters-test.ftl"));
+		generator.setTargetFileName("output.txt");
+
+		// when, then
+		Assertions.assertThrows(ContextMapperApplicationException.class, () -> {
+			generator.doGenerate(getResourceCopyOfTestCML("instance-of-test-1.cml").getResource(), new IFileSystemAccess2Mock(), new IGeneratorContextMock());
+		});
+	}
+
+	@Test
+	public void canCheckWrongSecondParameterTypeInInstanceOfMethod() throws IOException {
+		// given
+		GenericContentGenerator generator = new GenericContentGenerator();
+		generator.setFreemarkerTemplateFile(getCopyOfTestInputFile("instance-of-second-parameter-no-class.ftl"));
+		generator.setTargetFileName("output.txt");
+
+		// when, then
+		Assertions.assertThrows(ContextMapperApplicationException.class, () -> {
+			generator.doGenerate(getResourceCopyOfTestCML("instance-of-test-1.cml").getResource(), new IFileSystemAccess2Mock(), new IGeneratorContextMock());
+		});
 	}
 
 	private Resource getSimpleCMLResource() throws IOException {
