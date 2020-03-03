@@ -60,6 +60,7 @@ public class GenericTextFileGenerationHandler extends AbstractGenerationHandler 
 	protected void runGeneration(Resource resource, ExecutionEvent event, IFileSystemAccess2 fsa) {
 		selectedCmlFile = getSelectedFile(event);
 		GenerateGenericTextFileContext context = getLastStoredContext(event);
+		generator.registerCustomModelProperty("projectName", getSelectedFile(event).getProject().getName());
 		new WizardDialog(HandlerUtil.getActiveShell(event), new GenerateGenericTextFileWizard(context, executionContext -> {
 			generator.setFreemarkerTemplateFile(new File(context.getFreemarkerTemplateFile().getLocationURI()));
 			generator.setTargetFileName(context.getTargetFileName());

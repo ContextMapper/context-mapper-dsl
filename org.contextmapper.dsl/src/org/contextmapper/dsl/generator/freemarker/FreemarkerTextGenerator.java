@@ -56,9 +56,11 @@ import freemarker.template.TemplateExceptionHandler;
 public class FreemarkerTextGenerator {
 
 	private File templateFile;
+	private Map<String, Object> dataMap;
 
 	public FreemarkerTextGenerator(File templateFile) {
 		this.templateFile = templateFile;
+		dataMap = new HashMap<>();
 	}
 
 	public String generate(ContextMappingModel contextMappingModel) {
@@ -76,8 +78,11 @@ public class FreemarkerTextGenerator {
 		return result;
 	}
 
+	public void registerCustomModelProperty(String propertyName, Object object) {
+		dataMap.put(propertyName, object);
+	}
+
 	private Map<String, Object> prepareModelData(ContextMappingModel contextMappingModel) {
-		Map<String, Object> dataMap = new HashMap<>();
 		dataMap.put("contextMap", contextMappingModel.getMap());
 		dataMap.put("boundedContexts", contextMappingModel.getBoundedContexts());
 		dataMap.put("domains", contextMappingModel.getDomains());

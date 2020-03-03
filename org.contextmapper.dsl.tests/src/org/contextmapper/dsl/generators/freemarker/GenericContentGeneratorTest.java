@@ -143,6 +143,23 @@ public class GenericContentGeneratorTest extends AbstractCMLInputFileTest {
 		});
 	}
 
+	@Test
+	public void canUseCustomDataVariables() throws IOException {
+		// given
+		GenericContentGenerator generator = new GenericContentGenerator();
+		generator.setFreemarkerTemplateFile(getCopyOfTestInputFile("custom-variables-test-1.ftl"));
+		generator.registerCustomModelProperty("projectName", "ContextMapper-Testproject");
+		generator.setTargetFileName("output.txt");
+
+		// when
+		IFileSystemAccess2Mock filesystem = new IFileSystemAccess2Mock();
+		generator.doGenerate(getSimpleCMLResource(), filesystem, new IGeneratorContextMock());
+
+		// then
+		assertTrue(filesystem.getGeneratedFilesSet().contains("output.txt"));
+		assertEquals("ContextMapper-Testproject", filesystem.readTextFile("output.txt"));
+	}
+
 	private Resource getSimpleCMLResource() throws IOException {
 		return getResourceCopyOfTestCML("simple-context-map.cml").getResource();
 	}
