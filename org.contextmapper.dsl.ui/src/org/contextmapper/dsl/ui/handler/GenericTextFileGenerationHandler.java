@@ -27,6 +27,7 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -38,6 +39,7 @@ import org.eclipse.ui.statushandlers.StatusManager;
 import org.eclipse.xtext.generator.GeneratorContext;
 import org.eclipse.xtext.generator.IFileSystemAccess2;
 import org.eclipse.xtext.generator.IGenerator2;
+import org.osgi.framework.Bundle;
 
 import com.google.inject.Inject;
 
@@ -60,7 +62,7 @@ public class GenericTextFileGenerationHandler extends AbstractGenerationHandler 
 	protected void runGeneration(Resource resource, ExecutionEvent event, IFileSystemAccess2 fsa) {
 		selectedCmlFile = getSelectedFile(event);
 		GenerateGenericTextFileContext context = getLastStoredContext(event);
-		generator.registerCustomModelProperty("projectName", getSelectedFile(event).getProject().getName());
+		registerCustomGenerationVariables(event);
 		new WizardDialog(HandlerUtil.getActiveShell(event), new GenerateGenericTextFileWizard(context, executionContext -> {
 			generator.setFreemarkerTemplateFile(new File(context.getFreemarkerTemplateFile().getLocationURI()));
 			generator.setTargetFileName(context.getTargetFileName());
@@ -77,6 +79,13 @@ public class GenericTextFileGenerationHandler extends AbstractGenerationHandler 
 			});
 			return true;
 		})).open();
+	}
+
+	private void registerCustomGenerationVariables(ExecutionEvent event) {
+		generator.registerCustomModelProperty("projectName", getSelectedFile(event).getProject().getName());
+		Bundle contextMapperBundle = Platform.getBundle("org.contextmapper.dsl.ui");
+		if (contextMapperBundle != null)
+			generator.registerCustomModelProperty("contextMapperVersion", contextMapperBundle.getVersion().toString());
 	}
 
 	private GenerateGenericTextFileContext getLastStoredContext(ExecutionEvent event) {

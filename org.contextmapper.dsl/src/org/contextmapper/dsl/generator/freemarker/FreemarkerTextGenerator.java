@@ -90,6 +90,7 @@ public class FreemarkerTextGenerator {
 		dataMap.put("useCases", contextMappingModel.getUseCases());
 		dataMap.put("timestamp", new SimpleDateFormat("dd.MM.YYYY HH:mm:ss z").format(new Date()));
 		dataMap.put("filename", contextMappingModel.eResource().getURI().lastSegment().toString());
+		dataMap.put("username", System.getProperty("user.name"));
 
 		dataMap.putAll(createTemplatingHelperMethods());
 		dataMap.putAll(createClassMap());
