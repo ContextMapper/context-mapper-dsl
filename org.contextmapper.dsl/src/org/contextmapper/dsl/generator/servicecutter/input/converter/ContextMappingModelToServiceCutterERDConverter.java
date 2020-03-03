@@ -26,6 +26,7 @@ import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.tactic.dsl.tacticdsl.Attribute;
 import org.contextmapper.tactic.dsl.tacticdsl.DomainEvent;
 import org.contextmapper.tactic.dsl.tacticdsl.DomainObject;
+import org.contextmapper.tactic.dsl.tacticdsl.Event;
 import org.contextmapper.tactic.dsl.tacticdsl.Reference;
 import org.contextmapper.tactic.dsl.tacticdsl.SimpleDomainObject;
 import org.contextmapper.tactic.dsl.tacticdsl.ValueObject;
@@ -93,7 +94,7 @@ public class ContextMappingModelToServiceCutterERDConverter {
 
 	private boolean isDomainObjectUsed4ServiceCutter(SimpleDomainObject simpleDomainObject) {
 		return simpleDomainObject instanceof org.contextmapper.tactic.dsl.tacticdsl.Entity
-				|| simpleDomainObject instanceof DomainEvent || simpleDomainObject instanceof ValueObject;
+				|| simpleDomainObject instanceof Event || simpleDomainObject instanceof ValueObject;
 	}
 
 	private Entity mapDomainObject(DomainObject dslDomainObject) {
@@ -123,9 +124,6 @@ public class ContextMappingModelToServiceCutterERDConverter {
 	}
 
 	private void initializeEntityLookupTable(ContextMap contextMap) {
-		org.contextmapper.tactic.dsl.tacticdsl.Entity m = EcoreUtil2.getContainerOfType(contextMap,
-				org.contextmapper.tactic.dsl.tacticdsl.Entity.class);
-
 		// use Entities
 		addDomainObjectToLookupTable(EcoreUtil2.<org.contextmapper.tactic.dsl.tacticdsl.Entity>getAllContentsOfType(
 				EcoreUtil2.getRootContainer(contextMap), org.contextmapper.tactic.dsl.tacticdsl.Entity.class));
