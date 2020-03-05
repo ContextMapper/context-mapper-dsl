@@ -369,6 +369,12 @@
             categoryId="org.eclipse.xtext.ui.category.refactoring"
             id="org.contextmapper.ui.edit.cml.refactor.quickMenu">
 		</command>
+		<command
+            name="Generators Quick Menu"
+            description="Open the generators quick menu."
+            categoryId="org.eclipse.xtext.ui.category.refactoring"
+            id="org.contextmapper.ui.edit.cml.generator.quickMenu">
+		</command>
 	</extension>
 	<extension point="org.eclipse.ui.menus">
 		<menuContribution
@@ -605,35 +611,6 @@
 				</visibleWhen>
 			</command>
 		</menuContribution>
-		<menuContribution locationURI="popup:#TextEditorContext?after=additions">
-        	<menu id="org.contextmapper.dsl.ui.context.menu" label="Context Mapper" icon="icons/cml.png">
-				<command defaultHandler="org.contextmapper.dsl.ui.handler.ContextMapGenerationHandler" commandId="org.contextmapper.dsl.ui.handler.ContextMapGenerationCommand" style="push">
-				</command>
-				<command defaultHandler="org.contextmapper.dsl.ui.handler.PlantUMLGenerationHandler" commandId="org.contextmapper.dsl.ui.handler.PlantUMLGenerationCommand" style="push">
-				</command>
-				<command defaultHandler="org.contextmapper.dsl.ui.handler.GenericTextFileGenerationHandler" commandId="org.contextmapper.dsl.ui.handler.GenericTextFileGenerationCommand" style="push">
-				</command>
-				<separator
-	         		name="org.contextmapper.dsl.ui.separator1" visible="true">
-				</separator>
-				<command defaultHandler="org.contextmapper.dsl.ui.handler.MDSLGenerationHandler" commandId="org.contextmapper.dsl.ui.handler.MDSLGenerationCommand" style="push">
-				</command>
-				<separator
-	         		name="org.contextmapper.dsl.ui.separator2" visible="true">
-				</separator>
-				<command defaultHandler="org.contextmapper.dsl.ui.handler.NewServiceCutContextMapGenerationHandler" commandId="org.contextmapper.dsl.ui.handler.NewServiceCutContextMapGenerationCommand" style="push">
-				</command>
-				<command defaultHandler="org.contextmapper.dsl.ui.handler.ServiceCutterGenerationHandler" commandId="org.contextmapper.dsl.ui.handler.ServiceCutterGenerationCommand" style="push">
-				</command>
-				<command defaultHandler="org.contextmapper.dsl.ui.handler.ServiceCutterUserRepresentationsExampleGenerationHandler" commandId="org.contextmapper.dsl.ui.handler.ServiceCutterUserRepresentationsExampleGenerationCommand" style="push">
-				</command>
-				<separator
-	         		name="org.contextmapper.dsl.ui.separator3" visible="true">
-				</separator>
-				<command defaultHandler="org.contextmapper.dsl.ui.handler.XMIGenerationHandler" commandId="org.contextmapper.dsl.ui.handler.XMIGenerationCommand" style="push">
-				</command>
-        	</menu>
-        </menuContribution>
 	</extension>
 	<extension point="org.eclipse.ui.preferencePages">
 		<page
@@ -867,6 +844,17 @@
             platform="carbon"
             sequence="COMMAND+ALT+T"
             commandId="org.contextmapper.ui.edit.cml.refactor.quickMenu"
+            contextId="org.eclipse.xtext.ui.XtextEditorScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+         <key
+            sequence="M2+M3+G"
+            commandId="org.contextmapper.ui.edit.cml.generator.quickMenu"
+            contextId="org.eclipse.xtext.ui.XtextEditorScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+         <key
+            platform="carbon"
+            sequence="COMMAND+ALT+G"
+            commandId="org.contextmapper.ui.edit.cml.generator.quickMenu"
             contextId="org.eclipse.xtext.ui.XtextEditorScope"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
     </extension>

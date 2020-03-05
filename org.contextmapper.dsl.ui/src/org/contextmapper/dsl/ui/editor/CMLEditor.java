@@ -15,6 +15,7 @@
  */
 package org.contextmapper.dsl.ui.editor;
 
+import org.contextmapper.dsl.ui.actions.GeneratorsActionGroup;
 import org.contextmapper.dsl.ui.actions.RefactoringActionGroup;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.ui.actions.ActionContext;
@@ -24,12 +25,14 @@ import org.eclipse.xtext.ui.editor.XtextEditor;
 public class CMLEditor extends XtextEditor {
 
 	private ActionGroup refactoringGroup;
+	private ActionGroup generatorsGroup;
 
 	@Override
 	protected void createActions() {
 		super.createActions();
 
 		refactoringGroup = new RefactoringActionGroup(this);
+		generatorsGroup = new GeneratorsActionGroup(this);
 	}
 
 	@Override
@@ -40,6 +43,10 @@ public class CMLEditor extends XtextEditor {
 		refactoringGroup.setContext(context);
 		refactoringGroup.fillContextMenu(menu);
 		refactoringGroup.setContext(null);
+		
+		generatorsGroup.setContext(context);
+		generatorsGroup.fillContextMenu(menu);
+		generatorsGroup.setContext(null);
 	}
 
 }
