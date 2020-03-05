@@ -834,6 +834,21 @@
 		<startup class="org.contextmapper.dsl.ui.startup.ContextMapperPluginStartup"/>
 	</extension>
 	<extension
+         point="org.eclipse.ui.newWizards">
+    	<wizard
+        	icon="icons/cml-dialog-image.png"
+            class="org.contextmapper.dsl.ui.wizard.NewCMLFileWizard"
+            category="org.contextmapper.dsl"
+            name="New Context Mapper DSL (CML) File"
+            id="org.contextmapper.dsl.ui.wizard.NewCMLFileWizard">
+			<description>Add new CML file</description>
+    	</wizard>
+    	<category
+            name="Context Mapper"
+            id="org.contextmapper.dsl">
+		</category>
+    </extension>     
+	<extension
          point="org.eclipse.ui.bindings">
          <key
             sequence="M2+M3+T"

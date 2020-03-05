@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.exception.ContextMapperApplicationException;
 import org.contextmapper.dsl.ui.editor.CMLQuickMenuCreator;
+import org.contextmapper.dsl.ui.images.CMLImageDescriptionFactory;
 import org.contextmapper.dsl.ui.internal.DslActivator;
 import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.IHandler;
@@ -99,7 +100,7 @@ public class RefactoringActionGroup extends ActionGroup {
 	private void addRefactorSubmenu(IMenuManager menu) {
 		MenuManager contextMenu = new MenuManager("Context Mapper: Refactor", "org.contextmapper.dsl.ui.refactoring.menu");
 		contextMenu.setActionDefinitionId(QUICK_MENU_ID);
-		contextMenu.setImageDescriptor(createContextMapperIcon());
+		contextMenu.setImageDescriptor(CMLImageDescriptionFactory.createContextMapperLogoDescriptor());
 		if (fillRefactorMenu(contextMenu) > 0)
 			menu.insertAfter("group.edit", contextMenu);
 	}
@@ -110,12 +111,6 @@ public class RefactoringActionGroup extends ActionGroup {
 			return 1;
 		}
 		return 0;
-	}
-
-	private ImageDescriptor createContextMapperIcon() {
-		Bundle bundle = Platform.getBundle(DslActivator.PLUGIN_ID);
-		URL imageUrl = bundle.getEntry("icons/cml.png");
-		return ImageDescriptor.createFromURL(imageUrl);
 	}
 
 }

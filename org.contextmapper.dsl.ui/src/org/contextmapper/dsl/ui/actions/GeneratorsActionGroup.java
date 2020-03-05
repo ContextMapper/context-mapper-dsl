@@ -21,6 +21,7 @@ import java.util.Optional;
 
 import org.contextmapper.dsl.exception.ContextMapperApplicationException;
 import org.contextmapper.dsl.ui.editor.CMLQuickMenuCreator;
+import org.contextmapper.dsl.ui.images.CMLImageDescriptionFactory;
 import org.contextmapper.dsl.ui.internal.DslActivator;
 import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.IHandler;
@@ -116,7 +117,7 @@ public class GeneratorsActionGroup extends ActionGroup {
 	private void addGeneratorSubmenu(IMenuManager menu) {
 		MenuManager contextMenu = new MenuManager("Context Mapper", "org.contextmapper.dsl.ui.generator.menu");
 		contextMenu.setActionDefinitionId(QUICK_MENU_ID);
-		contextMenu.setImageDescriptor(createContextMapperIcon());
+		contextMenu.setImageDescriptor(CMLImageDescriptionFactory.createContextMapperLogoDescriptor());
 		if (fillRefactorMenu(contextMenu) > 0)
 			menu.insertAfter("additions", contextMenu);
 	}
@@ -127,12 +128,6 @@ public class GeneratorsActionGroup extends ActionGroup {
 			return 1;
 		}
 		return 0;
-	}
-
-	private ImageDescriptor createContextMapperIcon() {
-		Bundle bundle = Platform.getBundle(DslActivator.PLUGIN_ID);
-		URL imageUrl = bundle.getEntry("icons/cml.png");
-		return ImageDescriptor.createFromURL(imageUrl);
 	}
 
 }
