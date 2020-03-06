@@ -15,11 +15,19 @@
  */
 package org.contextmapper.dsl.ui.wizard;
 
+import org.contextmapper.dsl.exception.ContextMapperApplicationException;
 import org.contextmapper.dsl.ui.images.CMLImageDescriptionFactory;
 import org.contextmapper.dsl.ui.wizard.page.WizardNewCMLFileCreationPage;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.wizards.newresource.BasicNewFileResourceWizard;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.ide.IDE;
+import org.eclipse.ui.internal.ide.DialogUtil;
+import org.eclipse.ui.internal.wizards.newresource.ResourceMessages;
+import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
 
 /**
  * 
@@ -28,7 +36,7 @@ import org.eclipse.ui.wizards.newresource.BasicNewFileResourceWizard;
  * @author Stefan Kapferer
  *
  */
-public class NewCMLFileWizard extends BasicNewFileResourceWizard {
+public class NewCMLFileWizard extends BasicNewResourceWizard {
 
 	private WizardNewCMLFileCreationPage mainPage;
 
@@ -53,6 +61,30 @@ public class NewCMLFileWizard extends BasicNewFileResourceWizard {
 	@Override
 	protected void initializeDefaultPageImageDescriptor() {
 		setDefaultPageImageDescriptor(CMLImageDescriptionFactory.createContextMapperLogo4DialogDescriptor());
+	}
+
+	@Override
+	public boolean performFinish() {
+		IFile file = mainPage.createNewFile();
+		if (file == null) {
+			return false;
+		}
+
+		selectAndReveal(file);
+
+		// Open editor on new file.
+		IWorkbenchWindow dw = getWorkbench().getActiveWorkbenchWindow();
+		try {
+			if (dw != null) {
+				IWorkbenchPage page = dw.getActivePage();
+				if (page != null) {
+					IDE.openEditor(page, file, true);
+				}
+			}
+		} catch (PartInitException e) {
+			throw new ContextMapperApplicationException(e.getMessage(), e);
+		}
+		return true;
 	}
 
 }
