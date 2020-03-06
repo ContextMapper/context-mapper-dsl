@@ -9,7 +9,9 @@ With the ContextMapper DSL language you can express DDD context maps. Once you h
 Checkout our website [https://contextmapper.org/](https://contextmapper.org/) to get started.
 The Context Mapper project has been developed as part of research projects at [HSR](https://www.hsr.ch) and you can find the project reports and further background information [here](https://contextmapper.org/background-and-publications/).
 
- * **Eclipse Update Site: https://dl.bintray.com/contextmapper/context-mapping-dsl/updates/**
+ * **Installation:**
+    * [Eclipse Marketplace](https://marketplace.eclipse.org/content/context-mapper)
+    * Update Site: **https://dl.bintray.com/contextmapper/context-mapping-dsl/updates/**
  * [Release notes for latest releases](https://github.com/ContextMapper/context-mapper-dsl/releases)
 
 ## Features
@@ -31,7 +33,9 @@ To use the ContextMapper DSL (CML) you need the following tools:
 
 * [Java JDK](https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) (JDK 8 or newer)
 * [Eclipse](https://www.eclipse.org/downloads/packages/)
-* ContextMapper Eclipse Plugin (**Update Site**: **[https://dl.bintray.com/contextmapper/context-mapping-dsl/updates/](https://dl.bintray.com/contextmapper/context-mapping-dsl/updates/)**)
+* ContextMapper Eclipse Plugin
+  * [Eclipse Marketplace](https://marketplace.eclipse.org/content/context-mapper)
+  * Update Site: **https://dl.bintray.com/contextmapper/context-mapping-dsl/updates/**
 * If you want to use our [Context Map generator](https://contextmapper.org/docs/context-map-generator/) you need to have [Graphviz](https://www.graphviz.org/) installed on your system.
     * Ensure that the binaries are part of the _PATH_ environment variable and can be called from the terminal.
     * Especially on Windows this is not the case after the installation of [Graphviz](https://www.graphviz.org/). The default installation path is
@@ -44,7 +48,9 @@ To use the ContextMapper DSL (CML) you need the following tools:
 
 ## Getting Started (Eclipse)
 If you want to use our Context Mapper tool (Eclipse plugin), these are the steps to get started:
- 1. Install the Eclipse plugin for creating context maps with ContextMapper DSL by using the following update site: [https://dl.bintray.com/contextmapper/context-mapping-dsl/updates/](https://dl.bintray.com/contextmapper/context-mapping-dsl/updates/)
+ 1. Install the Eclipse plugin for creating context maps with ContextMapper DSL via Eclipse Marketspace or the following update site: 
+     * [Eclipse Marketplace](https://marketplace.eclipse.org/content/context-mapper) 
+     * Update Site: https://dl.bintray.com/contextmapper/context-mapping-dsl/updates/
  2. Find a detailed manual how to create your first CML project [here](https://contextmapper.org/docs/getting-started-create-project/).
  3. Examples which introduce the language (CML) capabilities can be found here: [https://github.com/ContextMapper/context-mapper-examples](https://github.com/ContextMapper/context-mapper-examples)
  4. Further instructions, user guides and documentation can be found on our website [https://contextmapper.org/](https://contextmapper.org/).
