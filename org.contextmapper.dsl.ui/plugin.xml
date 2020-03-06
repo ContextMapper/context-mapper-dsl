@@ -843,11 +843,30 @@
             id="org.contextmapper.dsl.ui.wizard.NewCMLFileWizard">
 			<description>Add new CML file</description>
     	</wizard>
+    	<wizard category="org.contextmapper.dsl.examples"
+            class="org.eclipse.emf.common.ui.wizard.ExampleInstallerWizard"
+            icon="icons/cml-dialog-image.png"
+            id="org.contextmapper.generator.template.samples.FreemarkerGenerationTemplateExamplesWizard"
+            name="Freemarker Generator Template Examples"
+            project="true">
+			<description>A few example templates for the Context Mapper generic generator based on Freemarker.</description>
+		</wizard>
     	<category
             name="Context Mapper"
             id="org.contextmapper.dsl">
 		</category>
+		<category
+            name="Context Mapper Examples"
+            id="org.contextmapper.dsl.examples">
+		</category>
     </extension>     
+    <extension point="org.eclipse.emf.common.ui.examples">
+    	<example wizardID="org.contextmapper.generator.template.samples.FreemarkerGenerationTemplateExamplesWizard">
+    		<projectDescriptor name="context-mapper-freemarker-template-examples"
+            	contentURI="samples/freemarker/"
+            	description="A project containing Freemarker example templates for Context Mapper's generic generator."/>
+    	</example>
+    </extension>
 	<extension
          point="org.eclipse.ui.bindings">
          <key
