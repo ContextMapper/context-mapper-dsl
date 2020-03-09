@@ -1,0 +1,7 @@
+BoundedContext bc1 {
+	Aggregate agg1 {
+		Entity e1 {
+			def ReturnType aMethod();
+		}
+	}
+}

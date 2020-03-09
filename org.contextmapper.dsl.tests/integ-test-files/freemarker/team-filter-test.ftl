@@ -1,0 +1,1 @@
+<#list filterTeams(boundedContexts) as bc>${bc.name}</#list>
