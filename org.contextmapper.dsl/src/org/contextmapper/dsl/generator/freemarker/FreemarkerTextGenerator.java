@@ -101,6 +101,9 @@ public class FreemarkerTextGenerator {
 	private Map<String, Object> createTemplatingHelperMethods() {
 		Map<String, Object> methodsMap = new HashMap<>();
 		methodsMap.put("instanceOf", new InstanceOfMethod());
+		methodsMap.put("getType", new GetTypeOfComplexTypeMethod());
+		methodsMap.put("filterBoundedContexts", new BoundedContextsFilterMethod());
+		methodsMap.put("filterTeams", new TeamsFilterMethod());
 		return methodsMap;
 	}
 
