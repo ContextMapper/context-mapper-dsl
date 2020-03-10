@@ -56,9 +56,11 @@ import freemarker.template.TemplateExceptionHandler;
 public class FreemarkerTextGenerator {
 
 	private File templateFile;
+	private Map<String, Object> dataMap;
 
 	public FreemarkerTextGenerator(File templateFile) {
 		this.templateFile = templateFile;
+		dataMap = new HashMap<>();
 	}
 
 	public String generate(ContextMappingModel contextMappingModel) {
@@ -76,8 +78,11 @@ public class FreemarkerTextGenerator {
 		return result;
 	}
 
+	public void registerCustomModelProperty(String propertyName, Object object) {
+		dataMap.put(propertyName, object);
+	}
+
 	private Map<String, Object> prepareModelData(ContextMappingModel contextMappingModel) {
-		Map<String, Object> dataMap = new HashMap<>();
 		dataMap.put("contextMap", contextMappingModel.getMap());
 		dataMap.put("boundedContexts", contextMappingModel.getBoundedContexts());
 		dataMap.put("domains", contextMappingModel.getDomains());
@@ -85,6 +90,7 @@ public class FreemarkerTextGenerator {
 		dataMap.put("useCases", contextMappingModel.getUseCases());
 		dataMap.put("timestamp", new SimpleDateFormat("dd.MM.YYYY HH:mm:ss z").format(new Date()));
 		dataMap.put("filename", contextMappingModel.eResource().getURI().lastSegment().toString());
+		dataMap.put("username", System.getProperty("user.name"));
 
 		dataMap.putAll(createTemplatingHelperMethods());
 		dataMap.putAll(createClassMap());
@@ -95,6 +101,9 @@ public class FreemarkerTextGenerator {
 	private Map<String, Object> createTemplatingHelperMethods() {
 		Map<String, Object> methodsMap = new HashMap<>();
 		methodsMap.put("instanceOf", new InstanceOfMethod());
+		methodsMap.put("getType", new GetTypeOfComplexTypeMethod());
+		methodsMap.put("filterBoundedContexts", new BoundedContextsFilterMethod());
+		methodsMap.put("filterTeams", new TeamsFilterMethod());
 		return methodsMap;
 	}
 

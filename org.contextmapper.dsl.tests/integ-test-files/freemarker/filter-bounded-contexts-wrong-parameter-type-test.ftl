@@ -1,0 +1,1 @@
+<#list filterBoundedContexts(contextMap) as bc>${bc.name}</#list>

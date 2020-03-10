@@ -16,6 +16,8 @@
 package org.contextmapper.dsl.generator;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.generator.exception.GeneratorInputException;
@@ -34,6 +36,7 @@ public class GenericContentGenerator extends AbstractContextMappingModelGenerato
 
 	private File freemarkerTemplateFile;
 	private String targetFileName;
+	private Map<String, Object> customDataMap = new HashMap<>();;
 
 	public void setFreemarkerTemplateFile(File freemarkerTemplateFile) {
 		this.freemarkerTemplateFile = freemarkerTemplateFile;
@@ -41,6 +44,10 @@ public class GenericContentGenerator extends AbstractContextMappingModelGenerato
 
 	public void setTargetFileName(String targetFileName) {
 		this.targetFileName = targetFileName;
+	}
+
+	public void registerCustomModelProperty(String propertyName, Object object) {
+		customDataMap.put(propertyName, object);
 	}
 
 	@Override
@@ -52,7 +59,11 @@ public class GenericContentGenerator extends AbstractContextMappingModelGenerato
 		if (targetFileName == null || "".equals(targetFileName))
 			throw new GeneratorInputException("Please provide a name for the file that shall be generated.");
 
-		fsa.generateFile(targetFileName, new FreemarkerTextGenerator(freemarkerTemplateFile).generate(model));
+		FreemarkerTextGenerator generator = new FreemarkerTextGenerator(freemarkerTemplateFile);
+		for (Map.Entry<String, Object> customDataEntry : customDataMap.entrySet()) {
+			generator.registerCustomModelProperty(customDataEntry.getKey(), customDataEntry.getValue());
+		}
+		fsa.generateFile(targetFileName, generator.generate(model));
 	}
 
 }

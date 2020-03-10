@@ -1,0 +1,2 @@
+BoundedContext TestTeam { type TEAM }
+BoundedContext TestSystem { type SYSTEM }

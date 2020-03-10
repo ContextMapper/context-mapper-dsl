@@ -4,7 +4,7 @@
 	<extension
 		point="org.eclipse.ui.editors">
 		<editor
-			class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.eclipse.xtext.ui.editor.XtextEditor"
+			class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.contextmapper.dsl.ui.editor.CMLEditor"
 			contributorClass="org.eclipse.ui.editors.text.TextEditorActionContributor"
 			default="true"
 			extensions="cml"
@@ -16,7 +16,7 @@
 	<extension
 		point="org.eclipse.ui.editors">
 		<editor
-			class="org.contextmapper.servicecutter.dsl.ui.ServiceCutterConfigurationDSLExecutableExtensionFactory:org.eclipse.xtext.ui.editor.XtextEditor"
+			class="org.contextmapper.servicecutter.dsl.ui.ServiceCutterConfigurationDSLExecutableExtensionFactory:org.contextmapper.dsl.ui.editor.CMLEditor"
 			contributorClass="org.eclipse.ui.editors.text.TextEditorActionContributor"
 			default="true"
 			extensions="scl"
@@ -363,6 +363,18 @@
 			id="org.eclipse.xtext.ui.editor.outline.QuickOutline"
 			name="Quick Outline">
 		</command>
+		<command
+            name="Refactoring Quick Menu"
+            description="Open the refactoring quick menu."
+            categoryId="org.eclipse.xtext.ui.category.refactoring"
+            id="org.contextmapper.ui.edit.cml.refactor.quickMenu">
+		</command>
+		<command
+            name="Generators Quick Menu"
+            description="Open the generators quick menu."
+            categoryId="org.eclipse.xtext.ui.category.refactoring"
+            id="org.contextmapper.ui.edit.cml.generator.quickMenu">
+		</command>
 	</extension>
 	<extension point="org.eclipse.ui.menus">
 		<menuContribution
@@ -599,100 +611,6 @@
 				</visibleWhen>
 			</command>
 		</menuContribution>
-		<menuContribution
-        locationURI="popup:#TextEditorContext?after=group.edit">
-        	<menu id="org.contextmapper.dsl.ui.refactoring.menu" label="Context Mapper: Refactor" icon="icons/cml.png">
-        		<command defaultHandler="org.contextmapper.dsl.ui.handler.SplitBoundedContextRefactoringHandler" commandId="org.contextmapper.dsl.ui.handler.SplitBoundedContextRefactoringCommand"
-					style="push">
-					<visibleWhen checkEnabled="true">
-					</visibleWhen>
-				</command>
-				<command defaultHandler="org.contextmapper.dsl.ui.handler.SplitAggregateByEntitiesRefactoringHandler" commandId="org.contextmapper.dsl.ui.handler.SplitAggregateByEntitiesRefactoringCommand"
-					style="push">
-					<visibleWhen checkEnabled="true">
-					</visibleWhen>
-				</command>
-				<command defaultHandler="org.contextmapper.dsl.ui.handler.SplitBoundedContextByUseCasesRefactoringHandler" commandId="org.contextmapper.dsl.ui.handler.SplitBoundedContextByUseCasesRefactoringCommand"
-					style="push">
-					<visibleWhen checkEnabled="true">
-					</visibleWhen>
-				</command>
-				<command defaultHandler="org.contextmapper.dsl.ui.handler.SplitBoundedContextByOwnerRefactoringHandler" commandId="org.contextmapper.dsl.ui.handler.SplitBoundedContextByOwnerRefactoringCommand"
-					style="push">
-					<visibleWhen checkEnabled="true">
-					</visibleWhen>
-				</command>
-				<command defaultHandler="org.contextmapper.dsl.ui.handler.ExtractAggregatesByVolatilityRefactoringHandler" commandId="org.contextmapper.dsl.ui.handler.ExtractAggregatesByVolatilityRefactoringCommand"
-					style="push">
-					<visibleWhen checkEnabled="true">
-					</visibleWhen>
-				</command>
-				<command defaultHandler="org.contextmapper.dsl.ui.handler.ExtractAggregatesByCohesionRefactoringHandler" commandId="org.contextmapper.dsl.ui.handler.ExtractAggregatesByCohesionRefactoringCommand"
-					style="push">
-					<visibleWhen checkEnabled="true">
-					</visibleWhen>
-				</command>
-				<command defaultHandler="org.contextmapper.dsl.ui.handler.MergeBoundedContextsRefactoringHandler" commandId="org.contextmapper.dsl.ui.handler.MergeBoundedContextsRefactoringCommand"
-					style="push">
-					<visibleWhen checkEnabled="true">
-					</visibleWhen>
-				</command>
-				<command defaultHandler="org.contextmapper.dsl.ui.handler.MergeAggregatesRefactoringHandler" commandId="org.contextmapper.dsl.ui.handler.MergeAggregatesRefactoringCommand"
-					style="push">
-					<visibleWhen checkEnabled="true">
-					</visibleWhen>
-				</command>
-				<command defaultHandler="org.contextmapper.dsl.ui.handler.ExtractSharedKernelRefactoringHandler" commandId="org.contextmapper.dsl.ui.handler.ExtractSharedKernelRefactoringCommand"
-					style="push">
-					<visibleWhen checkEnabled="true">
-					</visibleWhen>
-				</command>
-				<command defaultHandler="org.contextmapper.dsl.ui.handler.SuspendPartnershipRefactoringHandler" commandId="org.contextmapper.dsl.ui.handler.SuspendPartnershipRefactoringCommand"
-					style="push">
-					<visibleWhen checkEnabled="true">
-					</visibleWhen>
-				</command>
-				<command defaultHandler="org.contextmapper.dsl.ui.handler.SwitchFromSharedKernelToPartnershipRefactoringHandler" commandId="org.contextmapper.dsl.ui.handler.SwitchFromSharedKernelToPartnershipRefactoringCommand"
-					style="push">
-					<visibleWhen checkEnabled="true">
-					</visibleWhen>
-				</command>
-				<command defaultHandler="org.contextmapper.dsl.ui.handler.SwitchFromPartnershipToSharedKernelRefactoringHandler" commandId="org.contextmapper.dsl.ui.handler.SwitchFromPartnershipToSharedKernelRefactoringCommand"
-					style="push">
-					<visibleWhen checkEnabled="true">
-					</visibleWhen>
-				</command>
-        	</menu>
-		</menuContribution>
-		<menuContribution locationURI="popup:#TextEditorContext?after=additions">
-        	<menu id="org.contextmapper.dsl.ui.context.menu" label="Context Mapper" icon="icons/cml.png">
-				<command defaultHandler="org.contextmapper.dsl.ui.handler.ContextMapGenerationHandler" commandId="org.contextmapper.dsl.ui.handler.ContextMapGenerationCommand" style="push">
-				</command>
-				<command defaultHandler="org.contextmapper.dsl.ui.handler.PlantUMLGenerationHandler" commandId="org.contextmapper.dsl.ui.handler.PlantUMLGenerationCommand" style="push">
-				</command>
-				<command defaultHandler="org.contextmapper.dsl.ui.handler.GenericTextFileGenerationHandler" commandId="org.contextmapper.dsl.ui.handler.GenericTextFileGenerationCommand" style="push">
-				</command>
-				<separator
-	         		name="org.contextmapper.dsl.ui.separator1" visible="true">
-				</separator>
-				<command defaultHandler="org.contextmapper.dsl.ui.handler.MDSLGenerationHandler" commandId="org.contextmapper.dsl.ui.handler.MDSLGenerationCommand" style="push">
-				</command>
-				<separator
-	         		name="org.contextmapper.dsl.ui.separator2" visible="true">
-				</separator>
-				<command defaultHandler="org.contextmapper.dsl.ui.handler.NewServiceCutContextMapGenerationHandler" commandId="org.contextmapper.dsl.ui.handler.NewServiceCutContextMapGenerationCommand" style="push">
-				</command>
-				<command defaultHandler="org.contextmapper.dsl.ui.handler.ServiceCutterGenerationHandler" commandId="org.contextmapper.dsl.ui.handler.ServiceCutterGenerationCommand" style="push">
-				</command>
-				<command defaultHandler="org.contextmapper.dsl.ui.handler.ServiceCutterUserRepresentationsExampleGenerationHandler" commandId="org.contextmapper.dsl.ui.handler.ServiceCutterUserRepresentationsExampleGenerationCommand" style="push">
-				</command>
-				<separator
-	         		name="org.contextmapper.dsl.ui.separator3" visible="true">
-				</separator>
-				<command defaultHandler="org.contextmapper.dsl.ui.handler.XMIGenerationHandler" commandId="org.contextmapper.dsl.ui.handler.XMIGenerationCommand" style="push">
-				</command>
-        	</menu>
-        </menuContribution>
 	</extension>
 	<extension point="org.eclipse.ui.preferencePages">
 		<page
@@ -915,4 +833,63 @@
 	<extension point="org.eclipse.ui.startup">
 		<startup class="org.contextmapper.dsl.ui.startup.ContextMapperPluginStartup"/>
 	</extension>
+	<extension
+         point="org.eclipse.ui.newWizards">
+    	<wizard
+        	icon="icons/cml-dialog-image.png"
+            class="org.contextmapper.dsl.ui.wizard.NewCMLFileWizard"
+            category="org.contextmapper.dsl"
+            name="New Context Mapper DSL (CML) File"
+            id="org.contextmapper.dsl.ui.wizard.NewCMLFileWizard">
+			<description>Add new CML file</description>
+    	</wizard>
+    	<wizard category="org.contextmapper.dsl.examples"
+            class="org.eclipse.emf.common.ui.wizard.ExampleInstallerWizard"
+            icon="icons/cml-dialog-image.png"
+            id="org.contextmapper.generator.template.samples.FreemarkerGenerationTemplateExamplesWizard"
+            name="Freemarker Generator Template Examples"
+            project="true">
+			<description>A few example templates for the Context Mapper generic generator based on Freemarker.</description>
+		</wizard>
+    	<category
+            name="Context Mapper"
+            id="org.contextmapper.dsl">
+		</category>
+		<category
+            name="Context Mapper Examples"
+            id="org.contextmapper.dsl.examples">
+		</category>
+    </extension>     
+    <extension point="org.eclipse.emf.common.ui.examples">
+    	<example wizardID="org.contextmapper.generator.template.samples.FreemarkerGenerationTemplateExamplesWizard">
+    		<projectDescriptor name="context-mapper-freemarker-template-examples"
+            	contentURI="samples/freemarker/"
+            	description="A project containing Freemarker example templates for Context Mapper's generic generator."/>
+    	</example>
+    </extension>
+	<extension
+         point="org.eclipse.ui.bindings">
+         <key
+            sequence="M2+M3+T"
+            commandId="org.contextmapper.ui.edit.cml.refactor.quickMenu"
+            contextId="org.eclipse.xtext.ui.XtextEditorScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+         <key
+            platform="carbon"
+            sequence="COMMAND+ALT+T"
+            commandId="org.contextmapper.ui.edit.cml.refactor.quickMenu"
+            contextId="org.eclipse.xtext.ui.XtextEditorScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+         <key
+            sequence="M2+M3+G"
+            commandId="org.contextmapper.ui.edit.cml.generator.quickMenu"
+            contextId="org.eclipse.xtext.ui.XtextEditorScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+         <key
+            platform="carbon"
+            sequence="COMMAND+ALT+G"
+            commandId="org.contextmapper.ui.edit.cml.generator.quickMenu"
+            contextId="org.eclipse.xtext.ui.XtextEditorScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+    </extension>
 </plugin>

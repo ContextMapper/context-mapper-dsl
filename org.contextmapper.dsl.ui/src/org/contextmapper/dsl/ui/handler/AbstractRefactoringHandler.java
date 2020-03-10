@@ -7,6 +7,7 @@ import org.contextmapper.dsl.cml.CMLResourceContainer;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.Import;
 import org.contextmapper.dsl.exception.ContextMapperApplicationException;
+import org.contextmapper.dsl.ui.editor.XtextEditorHelper;
 import org.contextmapper.dsl.ui.internal.DslActivator;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -21,18 +22,14 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.statushandlers.StatusManager;
-import org.eclipse.xtext.resource.EObjectAtOffsetHelper;
 import org.eclipse.xtext.resource.IResourceDescription;
 import org.eclipse.xtext.resource.IResourceDescriptions;
-import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.resource.impl.ResourceDescriptionsProvider;
 import org.eclipse.xtext.ui.editor.XtextEditor;
 import org.eclipse.xtext.ui.editor.utils.EditorUtils;
 import org.eclipse.xtext.ui.resource.XtextLiveScopeResourceSetProvider;
-import org.eclipse.xtext.util.concurrent.IUnitOfWork;
 import org.eclipse.xtext.xbase.lib.IteratorExtensions;
 
 import com.google.common.collect.Iterators;
@@ -42,14 +39,14 @@ import com.google.inject.Inject;
 public abstract class AbstractRefactoringHandler extends AbstractHandler implements IHandler {
 
 	@Inject
-	private EObjectAtOffsetHelper eObjectAtOffsetHelper;
-
-	@Inject
 	XtextLiveScopeResourceSetProvider resourceSetProvider;
 
 	@Inject
 	private ResourceDescriptionsProvider resourceDescriptionsProvider;
 
+	@Inject
+	private XtextEditorHelper xtextEditorHelper;
+	
 	protected Resource currentResource;
 	protected ResourceSet currentResourceSet;
 
@@ -131,25 +128,7 @@ public abstract class AbstractRefactoringHandler extends AbstractHandler impleme
 	 * @return EObject of current context (editor selection)
 	 */
 	protected EObject getSelectedElement() {
-		final XtextEditor editor = EditorUtils.getActiveXtextEditor();
-		if (editor != null) {
-			final ITextSelection selection = (ITextSelection) editor.getSelectionProvider().getSelection();
-			ContextMapperRefactoringContext context = editor.getDocument().priorityReadOnly(new IUnitOfWork<ContextMapperRefactoringContext, XtextResource>() {
-				@Override
-				public ContextMapperRefactoringContext exec(XtextResource resource) throws Exception {
-					EObject selectedElement = eObjectAtOffsetHelper.resolveElementAt(resource, selection.getOffset());
-					if (selectedElement != null) {
-						return new ContextMapperRefactoringContext(selectedElement);
-					}
-					return null;
-				}
-
-			});
-			if (context != null) {
-				return context.selectedObject;
-			}
-		}
-		return null;
+		return xtextEditorHelper.getSelectedElement(EditorUtils.getActiveXtextEditor());
 	}
 
 	private boolean editorHasChanges() {
@@ -165,11 +144,4 @@ public abstract class AbstractRefactoringHandler extends AbstractHandler impleme
 		return !editorHasChanges();
 	}
 
-	protected class ContextMapperRefactoringContext {
-		private EObject selectedObject;
-
-		public ContextMapperRefactoringContext(EObject selectedObject) {
-			this.selectedObject = selectedObject;
-		}
-	}
 }
