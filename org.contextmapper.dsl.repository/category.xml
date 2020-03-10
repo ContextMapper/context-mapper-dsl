@@ -9,6 +9,12 @@
    <feature id="org.contextmapper.servicecutter.feature">
       <category name="main"/>
    </feature>
+   <feature id="org.contextmapper.contextmap.generator.feature" version="0.0.0">
+      <category name="main"/>
+   </feature>
+   <feature id="org.contextmapper.servicecutter.feature" version="0.0.0">
+      <category name="main"/>
+   </feature>
    <bundle id="org.eclipse.emf.henshin.interpreter" version="1.6.0.202001052147">
       <category name="main"/>
    </bundle>
@@ -24,15 +30,13 @@
    <bundle id="org.eclipse.emf.henshin.editor" version="1.6.0.202001052147">
       <category name="main"/>
    </bundle>
-   <feature id="org.contextmapper.contextmap.generator.feature" version="0.0.0">
+   <bundle id="org.freemarker.freemarker">
       <category name="main"/>
-   </feature>
-   <feature id="org.contextmapper.servicecutter.feature" version="0.0.0">
-      <category name="main"/>
-   </feature>
+   </bundle>
    <category-def name="main" label="ContextMappingDSL"/>
    <category-def name="main.source" label="ContextMappingDSL (Sources)"/>
    <repository-reference location="https://download.eclipse.org/modeling/emft/henshin/updates/1.6.0/" enabled="true" />
    <repository-reference location="https://dl.bintray.com/contextmapper/context-map-generator-releases/" enabled="true" />
    <repository-reference location="https://dl.bintray.com/contextmapper/service-cutter-library-releases/" enabled="true" />
+   <repository-reference location="https://dl.bintray.com/contextmapper/context-mapper-osgi-bundles/" enabled="true" />
 </site>

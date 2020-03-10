@@ -38,7 +38,6 @@
 			<unit id="com.fasterxml.jackson.core.jackson-databind" version="2.9.2.v20180207-1730"/>
 			<unit id="com.fasterxml.jackson.core.jackson-annotations" version="2.9.2.v20180207-1730"/>
 			<unit id="org.apache.commons.io" version="2.2.0.v201405211200"/>
-			<unit id="org.freemarker" version="2.3.22.v20160210-1233"/>
 			<repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20180905201904/repository/"/>
 		</location>
 		<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
@@ -52,6 +51,10 @@
 		<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 			<repository location="https://dl.bintray.com/contextmapper/service-cutter-library-releases/"/>
 			<unit id="org.contextmapper.servicecutter.feature.feature.group" version="1.1.4"/>
+		</location>
+		<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+			<repository location="https://dl.bintray.com/contextmapper/context-mapper-osgi-bundles/"/>
+			<unit id="contextmapper.freemarker.feature.group" version="2.3.30"/>
 		</location>
 	</locations>
 </target>
