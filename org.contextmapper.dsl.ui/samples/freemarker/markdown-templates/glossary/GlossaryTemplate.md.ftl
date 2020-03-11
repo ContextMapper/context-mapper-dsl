@@ -4,9 +4,10 @@ Glossary for '${filename}'
 This glossary forms the [ubiquituous language](https://martinfowler.com/bliki/UbiquitousLanguage.html) for '${filename}'.
 
 Analysis Model 
---------------
+==============
 
-### Domain Overview
+<#if domains?has_content>
+## Domain Overview
 
 <#list domains as d>
 Domain `${d.name}` has the  following domain vision statement: 
@@ -24,7 +25,9 @@ ${d.name} contains the following subdomains:
 </#list>
 
 ### Entities
-<#list d.subdomains as sd><#list sd.entities as e><#if e?has_content>
+<#list d.subdomains as sd>
+<#list sd.entities as e>
+<#if e?has_content>
 #### ${e.name}
 Entity in subdomain ${sd.name} (in domain ${d.name}).
 <#if e.hint?has_content>
@@ -45,15 +48,17 @@ Hint: ${e.hint!"*no hint given*"}
  * ${uc.name}
 </#list> 
 </#if>
+</#if>
 
 Design Model
 ============
 
-## Overview
+<#if filterBoundedContexts(boundedContexts)?has_content>
+## Bounded Context Overview
 
 The following [bounded context](https://martinfowler.com/bliki/BoundedContext.html)s are defined:
 
-<#list boundedContexts as bc>
+<#list filterBoundedContexts(boundedContexts) as bc>
 * *${bc.name}*: ${bc.domainVisionStatement!"[domain vision of the context not defined]"} 
 </#list>
 
@@ -150,12 +155,14 @@ It contains the following Bounded Contexts:
  * ${bc.name}
 </#list>
 </#if>
+</#if>
 
-
+<#if filterTeams(boundedContexts)?has_content>
 ## Teams 
 <#list filterTeams(boundedContexts) as team>
  * ${team.name}
 </#list>
+</#if>
 
 <#macro renderDomainObjectOperationsAndAttributes simpleDomainObject>
 <#if simpleDomainObject.operations?has_content>
