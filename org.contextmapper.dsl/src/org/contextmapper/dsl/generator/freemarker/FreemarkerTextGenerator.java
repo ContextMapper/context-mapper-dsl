@@ -88,9 +88,15 @@ public class FreemarkerTextGenerator {
 		dataMap.put("domains", contextMappingModel.getDomains());
 		dataMap.put("imports", contextMappingModel.getImports());
 		dataMap.put("useCases", contextMappingModel.getUseCases());
-		dataMap.put("timestamp", new SimpleDateFormat("dd.MM.YYYY HH:mm:ss z").format(new Date()));
-		dataMap.put("filename", contextMappingModel.eResource().getURI().lastSegment().toString());
-		dataMap.put("username", System.getProperty("user.name"));
+		String timeStamp = new SimpleDateFormat("dd.MM.YYYY HH:mm:ss z").format(new Date());
+		dataMap.put("timestamp", timeStamp); // for backwards compatibility
+		dataMap.put("timeStamp", timeStamp);
+		String fileName = contextMappingModel.eResource().getURI().lastSegment().toString();
+		dataMap.put("filename", fileName); // for backwards compatibility
+		dataMap.put("fileName", fileName);
+		String userName = System.getProperty("user.name");
+		dataMap.put("username", userName); // for backwards compatibility
+		dataMap.put("userName", userName);
 
 		dataMap.putAll(createTemplatingHelperMethods());
 		dataMap.putAll(createClassMap());

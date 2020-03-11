@@ -1,10 +1,18 @@
-Glossary for '${filename}'
-=========================
+---
+title: Glossary for '${fileName}'
+project: ${projectName}
+author: ${userName}
+date: ${timeStamp}, Context Mapper version ${contextMapperVersion}
+copyright: The authors, 2020. All rights reserved.
+---
 
-This glossary forms the [ubiquituous language](https://martinfowler.com/bliki/UbiquitousLanguage.html) for '${filename}'.
+Ubiquitous Language Glossary for '${fileName}'
+=============================================
 
-Analysis Model 
-==============
+This glossary forms the [ubiquituous language](https://martinfowler.com/bliki/UbiquitousLanguage.html) for '${fileName}'.
+
+Analysis Model
+--------------
 
 <#if domains?has_content>
 ## Domain Overview
@@ -51,7 +59,7 @@ Hint: ${e.hint!"*no hint given*"}
 </#if>
 
 Design Model
-============
+------------
 
 <#if filterBoundedContexts(boundedContexts)?has_content>
 ## Bounded Context Overview

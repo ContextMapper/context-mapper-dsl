@@ -82,7 +82,9 @@ public class GenericTextFileGenerationHandler extends AbstractGenerationHandler 
 	}
 
 	private void registerCustomGenerationVariables(ExecutionEvent event) {
-		generator.registerCustomModelProperty("projectname", getSelectedFile(event).getProject().getName());
+		String projectName = getSelectedFile(event).getProject().getName();
+		generator.registerCustomModelProperty("projectname", projectName); // for backwards compatibility
+		generator.registerCustomModelProperty("projectName", projectName);
 		Bundle contextMapperBundle = Platform.getBundle("org.contextmapper.dsl.ui");
 		if (contextMapperBundle != null)
 			generator.registerCustomModelProperty("contextMapperVersion", contextMapperBundle.getVersion().toString());
