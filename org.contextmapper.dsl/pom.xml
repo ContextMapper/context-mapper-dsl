@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.contextmapper.dsl</groupId>
 		<artifactId>org.contextmapper.dsl.parent</artifactId>
-		<version>5.9.2</version>
+		<version>5.9.3-SNAPSHOT</version>
 	</parent>
 	<artifactId>org.contextmapper.dsl</artifactId>
 	<packaging>eclipse-plugin</packaging>
