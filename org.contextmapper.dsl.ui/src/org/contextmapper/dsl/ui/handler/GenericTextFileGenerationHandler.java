@@ -26,6 +26,7 @@ import org.contextmapper.dsl.ui.internal.DslActivator;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.QualifiedName;
@@ -82,7 +83,9 @@ public class GenericTextFileGenerationHandler extends AbstractGenerationHandler 
 	}
 
 	private void registerCustomGenerationVariables(ExecutionEvent event) {
-		generator.registerCustomModelProperty("projectname", getSelectedFile(event).getProject().getName());
+		String projectName = getSelectedFile(event).getProject().getName();
+		generator.registerCustomModelProperty("projectname", projectName); // for backwards compatibility
+		generator.registerCustomModelProperty("projectName", projectName);
 		Bundle contextMapperBundle = Platform.getBundle("org.contextmapper.dsl.ui");
 		if (contextMapperBundle != null)
 			generator.registerCustomModelProperty("contextMapperVersion", contextMapperBundle.getVersion().toString());
@@ -94,7 +97,8 @@ public class GenericTextFileGenerationHandler extends AbstractGenerationHandler 
 			Map<QualifiedName, String> properties = selectedCmlFile.getPersistentProperties();
 			if (!properties.containsKey(getQualifiedName4File(selectedCmlFile, LAST_SELECTED_TEMPLATE_PROPERTY)))
 				return context;
-			IFile templateFile = findFileInContainer(selectedCmlFile.getProject(), properties.get(getQualifiedName4File(selectedCmlFile, LAST_SELECTED_TEMPLATE_PROPERTY)));
+			IFile templateFile = findFileInContainer(selectedCmlFile.getWorkspace().getRoot(),
+					properties.get(getQualifiedName4File(selectedCmlFile, LAST_SELECTED_TEMPLATE_PROPERTY)));
 			context.setFreemarkerTemplateFile(templateFile);
 			if (properties.containsKey(getQualifiedName4File(selectedCmlFile, LAST_TARGET_FILE_NAME_PROPERTY)))
 				context.setTargetFileName(properties.get(getQualifiedName4File(selectedCmlFile, LAST_TARGET_FILE_NAME_PROPERTY)));
@@ -106,8 +110,9 @@ public class GenericTextFileGenerationHandler extends AbstractGenerationHandler 
 
 	private void persistContext(GenerateGenericTextFileContext context) {
 		try {
+			IFile templateFile = context.getFreemarkerTemplateFile();
 			selectedCmlFile.setPersistentProperty(getQualifiedName4File(selectedCmlFile, LAST_SELECTED_TEMPLATE_PROPERTY),
-					context.getFreemarkerTemplateFile().getProjectRelativePath().toString());
+					templateFile.getProject().getName() + IPath.SEPARATOR + templateFile.getProjectRelativePath().toString());
 			selectedCmlFile.setPersistentProperty(getQualifiedName4File(selectedCmlFile, LAST_TARGET_FILE_NAME_PROPERTY), context.getTargetFileName());
 		} catch (CoreException e) {
 			StatusManager.getManager().handle(new Status(IStatus.ERROR, DslActivator.PLUGIN_ID, "Could not persist template file location.", e));

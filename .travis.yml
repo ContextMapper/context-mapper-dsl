@@ -33,3 +33,8 @@ before_install:
 - openssl aes-256-cbc -K $encrypted_324cf7253e32_key -iv $encrypted_324cf7253e32_iv
   -in secret-key.gpg.enc -out secret-key.gpg -d
 
+cache:
+  directories:
+  - $HOME/.m2
+  - $HOME/.gradle
+
