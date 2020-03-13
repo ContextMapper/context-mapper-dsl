@@ -108,7 +108,8 @@ public class FreemarkerTextGenerator {
 		Map<String, Object> methodsMap = new HashMap<>();
 		methodsMap.put("instanceOf", new InstanceOfMethod());
 		methodsMap.put("getType", new GetTypeOfComplexTypeMethod());
-		methodsMap.put("filterBoundedContexts", new BoundedContextsFilterMethod());
+		methodsMap.put("filterBoundedContexts", new BoundedContextsFilterMethod()); // for backwards compatibility
+		methodsMap.put("filterStructuralBoundedContexts", new BoundedContextsFilterMethod());
 		methodsMap.put("filterTeams", new TeamsFilterMethod());
 		return methodsMap;
 	}

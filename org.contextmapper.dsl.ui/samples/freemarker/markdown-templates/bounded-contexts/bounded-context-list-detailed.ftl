@@ -1,4 +1,4 @@
-<#list filterBoundedContexts(boundedContexts) as bc>
+<#list filterStructuralBoundedContexts(boundedContexts) as bc>
     ## Bounded Context ${bc.name}<#lt>
 
     *${bc.name}* has this domain vision statement: ${bc.domainVisionStatement!"[domain vision of the context not defined]"}<#lt>

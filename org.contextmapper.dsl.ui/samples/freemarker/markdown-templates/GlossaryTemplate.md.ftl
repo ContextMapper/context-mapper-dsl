@@ -12,7 +12,7 @@ Analysis Model
 
 Design Model
 ------------
-<#if filterBoundedContexts(boundedContexts)?has_content>
+<#if filterStructuralBoundedContexts(boundedContexts)?has_content>
     ## Bounded Context Overview<#lt>
 
     <#include "./bounded-contexts/bounded-context-list-simple.ftl">
