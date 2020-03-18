@@ -60,7 +60,7 @@ If you want to use the Context Mapper DSL (CML) language and the generator tools
 
 **Gradle:**
 ```gradle
-implementation 'org.contextmapper:context-mapper-dsl:5.9.3'
+implementation 'org.contextmapper:context-mapper-dsl:5.9.4'
 ```
 
 **Maven:**
@@ -68,7 +68,7 @@ implementation 'org.contextmapper:context-mapper-dsl:5.9.3'
 <dependency>
   <groupId>org.contextmapper</groupId>
   <artifactId>context-mapper-dsl</artifactId>
-  <version>5.9.3</version>
+  <version>5.9.4</version>
 </dependency>
 ```
 In our [context-mapper-standalone-example](https://github.com/ContextMapper/context-mapper-standalone-example) repository you find an example project showing how to include the library within your project. It further contains code examples illustrating how to use the CML models and the generator tools (PlantUML, MDSL, etc.).
