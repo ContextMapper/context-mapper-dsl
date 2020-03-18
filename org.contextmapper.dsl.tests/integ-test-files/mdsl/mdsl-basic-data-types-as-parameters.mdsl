@@ -31,7 +31,7 @@ endpoint type CustomersAggregate
 				payload D<double>
 		operation blobMethod
 			expecting
-				payload D<blob>
+				payload D<raw>
 		operation IntegerMethod
 			expecting
 				payload D<int>

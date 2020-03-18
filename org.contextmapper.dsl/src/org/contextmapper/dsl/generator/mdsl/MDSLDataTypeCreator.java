@@ -130,7 +130,7 @@ public class MDSLDataTypeCreator {
 		} else if ("double".equals(dataTypeName.toLowerCase())) {
 			return "D<double>";
 		} else if ("Blob".equals(dataTypeName)) {
-			return "D<blob>";
+			return "D<raw>";
 		} else if ("Date".equals(dataTypeName)) {
 			return "D<string>";
 		}
