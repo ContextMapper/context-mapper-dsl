@@ -83,7 +83,7 @@ public class MergeAggregatesRefactoring extends AbstractRefactoring implements R
 		addElementsToEList(agg1.getResources(), agg2.getResources());
 		addElementsToEList(agg1.getResponsibilities(), agg2.getResponsibilities());
 		addElementsToEList(agg1.getServices(), agg2.getServices());
-		addElementsToEList(agg1.getUseCases(), agg2.getUseCases());
+		addElementsToEList(agg1.getUserRequirements(), agg2.getUserRequirements());
 
 		// update context maps
 		for (ContextMap contextMap : getAllContextMaps()) {

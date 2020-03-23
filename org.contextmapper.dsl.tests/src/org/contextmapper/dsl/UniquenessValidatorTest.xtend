@@ -100,7 +100,7 @@ class UniquenessValidatorTest {
 		val ContextMappingModel result = parseHelper.parse(dslSnippet);
 		// then
 		assertThatNoParsingErrorsOccurred(result);
-		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.USE_CASE, "",
+		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.USER_REQUIREMENT, "",
 			String.format(USE_CASE_NAME_NOT_UNIQUE, "uc"));
 	}
 	

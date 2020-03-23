@@ -44,7 +44,7 @@ public class SplitBoundedContextByUseCasesRefactoringHandler extends AbstractRef
 			return false;
 
 		BoundedContext bc = (BoundedContext) obj;
-		Set<String> useCaseSets = bc.getAggregates().stream().map(agg -> agg.getUseCases().stream().map(uc -> uc.getName()).collect(Collectors.joining(", ")))
+		Set<String> useCaseSets = bc.getAggregates().stream().map(agg -> agg.getUserRequirements().stream().map(uc -> uc.getName()).collect(Collectors.joining(", ")))
 				.collect(Collectors.toSet());
 
 		return useCaseSets.size() > 1;

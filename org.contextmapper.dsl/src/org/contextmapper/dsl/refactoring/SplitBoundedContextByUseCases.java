@@ -26,7 +26,7 @@ public class SplitBoundedContextByUseCases implements Refactoring {
 
 	public SplitBoundedContextByUseCases(String boundedContextName) {
 		this.coreAR = new SplitBoundedContextByAggregateAttribute(
-				aggregate -> new CompoundKey(aggregate.getUseCases().stream().map(uc -> uc.getName()).collect(Collectors.toSet())), boundedContextName);
+				aggregate -> new CompoundKey(aggregate.getUserRequirements().stream().map(uc -> uc.getName()).collect(Collectors.toSet())), boundedContextName);
 	}
 
 	@Override

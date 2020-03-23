@@ -33,7 +33,7 @@ import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLPackage;
 import org.contextmapper.dsl.contextMappingDSL.SculptorModule;
 import org.contextmapper.dsl.contextMappingDSL.Subdomain;
-import org.contextmapper.dsl.contextMappingDSL.UseCase;
+import org.contextmapper.dsl.contextMappingDSL.UserRequirement;
 import org.contextmapper.tactic.dsl.tacticdsl.SimpleDomainObject;
 import org.contextmapper.tactic.dsl.tacticdsl.TacticdslPackage;
 import org.eclipse.xtext.validation.Check;
@@ -88,14 +88,14 @@ public class UniquenessValidator extends AbstractCMLValidator {
 	}
 
 	@Check
-	public void validateThatUseCaseNameIsUnique(final UseCase uc) {
+	public void validateThatUseCaseNameIsUnique(final UserRequirement uc) {
 		if (uc != null) {
-			Iterator<UseCase> allUseCases = resolvingHelper.resolveAllObjectsOfType(getRootCMLModel(uc), UseCase.class).iterator();
-			Iterator<UseCase> duplicateUseCases = IteratorExtensions.filter(allUseCases, ((Function1<UseCase, Boolean>) (UseCase u) -> {
+			Iterator<UserRequirement> allUseCases = resolvingHelper.resolveAllObjectsOfType(getRootCMLModel(uc), UserRequirement.class).iterator();
+			Iterator<UserRequirement> duplicateUseCases = IteratorExtensions.filter(allUseCases, ((Function1<UserRequirement, Boolean>) (UserRequirement u) -> {
 				return u.getName().equals(uc.getName());
 			}));
 			if (IteratorExtensions.size(duplicateUseCases) > 1)
-				error(String.format(USE_CASE_NAME_NOT_UNIQUE, uc.getName()), uc, ContextMappingDSLPackage.Literals.USE_CASE__NAME);
+				error(String.format(USE_CASE_NAME_NOT_UNIQUE, uc.getName()), uc, ContextMappingDSLPackage.Literals.USER_REQUIREMENT__NAME);
 		}
 	}
 

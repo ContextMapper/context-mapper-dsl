@@ -114,8 +114,8 @@ class AggregateDSLParsingTest {
 		// then
 		assertThatNoParsingErrorsOccurred(result);
 		assertThatNoValidationErrorsOccurred(result);
-		assertEquals(2, result.boundedContexts.get(0).aggregates.get(0).useCases.size);
-		val useCases = result.boundedContexts.get(0).aggregates.get(0).useCases.stream.map[name].collect(Collectors.toList);
+		assertEquals(2, result.boundedContexts.get(0).aggregates.get(0).userRequirements.size);
+		val useCases = result.boundedContexts.get(0).aggregates.get(0).userRequirements.stream.map[name].collect(Collectors.toList);
 		assertTrue(useCases.contains("testUseCase1"));
 		assertTrue(useCases.contains("testUseCase2"));
 	}
@@ -231,7 +231,7 @@ class AggregateDSLParsingTest {
 		assertEquals(LikelihoodForChange.OFTEN, result.boundedContexts.get(0).aggregates.get(0).likelihoodForChange);
 		assertEquals("can calculate customer risks...", result.boundedContexts.get(0).aggregates.get(0).responsibilities.get(0));
 		assertEquals(KnowledgeLevel.CONCRETE, result.boundedContexts.get(0).aggregates.get(0).knowledgeLevel);
-		val useCases = result.boundedContexts.get(0).aggregates.get(0).useCases.stream.map[name].collect(Collectors.toList);
+		val useCases = result.boundedContexts.get(0).aggregates.get(0).userRequirements.stream.map[name].collect(Collectors.toList);
 		assertTrue(useCases.contains("testUseCase1"));
 		assertTrue(useCases.contains("testUseCase2"));
 		assertEquals("teamA", result.boundedContexts.get(0).aggregates.get(0).owner.name);

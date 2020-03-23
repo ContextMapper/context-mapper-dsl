@@ -27,7 +27,7 @@ ContextMappingModel:
 		(map = ContextMap)? &
 		(boundedContexts += BoundedContext)* &
 		(domains += Domain)* &
-		(useCases += UseCase)* 
+		(userRequirements += UserRequirement)* 
 	)
 ;
 
@@ -169,7 +169,7 @@ Aggregate :
   "Aggregate" name=ID (OPEN
     (
     	(('responsibilities' ('=')? responsibilities+=STRING) ("," responsibilities+=STRING)*)? &
-    	(('useCases' ('=')? useCases += [UseCase]) ("," useCases += [UseCase])*)? &
+    	((('useCases' | 'userRequirements') ('=')? userRequirements += [UserRequirement]) ("," userRequirements += [UserRequirement])*)? &
     	('owner' ('=')? owner=[BoundedContext])? & 
     	('knowledgeLevel' ('=')? knowledgeLevel=KnowledgeLevel)? &
     	('likelihoodForChange' ('=')? likelihoodForChange=LikelihoodForChange)?
@@ -180,8 +180,8 @@ Aggregate :
      (domainObjects+=SimpleDomainObject))*
   CLOSE)?;
 
-UseCase:
-	'UseCase' name=ID 
+UserRequirement:
+	('UseCase' | 'UserStory') name=ID 
 	(OPEN
 		(('isLatencyCritical' ('=')? isLatencyCritical?='true')? &
 		(('reads' nanoentitiesRead+=STRING*) ("," nanoentitiesRead+=STRING)*)? &

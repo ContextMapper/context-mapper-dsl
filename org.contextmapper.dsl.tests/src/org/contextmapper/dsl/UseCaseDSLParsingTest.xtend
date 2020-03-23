@@ -48,8 +48,24 @@ class UseCaseDSLParsingTest {
 		assertThatNoParsingErrorsOccurred(result);
 		assertThatNoValidationErrorsOccurred(result);
 		
-		assertEquals(1, result.useCases.size)
-		assertEquals("testUsecase", result.useCases.get(0).name)
+		assertEquals(1, result.userRequirements.size)
+		assertEquals("testUsecase", result.userRequirements.get(0).name)
+	}
+	
+	@Test
+	def void canDefineUserStory() {
+		// given
+		val String dslSnippet = '''
+			UserStory testUserStory
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		
+		assertEquals(1, result.userRequirements.size)
+		assertEquals("testUserStory", result.userRequirements.get(0).name)
 	}
 
 	@Test
@@ -66,9 +82,9 @@ class UseCaseDSLParsingTest {
 		assertThatNoParsingErrorsOccurred(result);
 		assertThatNoValidationErrorsOccurred(result);
 		
-		assertEquals(2, result.useCases.get(0).nanoentitiesRead.size)
-		assertEquals("Obj.attr1", result.useCases.get(0).nanoentitiesRead.get(0))
-		assertEquals("Obj.attr2", result.useCases.get(0).nanoentitiesRead.get(1))
+		assertEquals(2, result.userRequirements.get(0).nanoentitiesRead.size)
+		assertEquals("Obj.attr1", result.userRequirements.get(0).nanoentitiesRead.get(0))
+		assertEquals("Obj.attr2", result.userRequirements.get(0).nanoentitiesRead.get(1))
 	}
 	
 	@Test
@@ -85,9 +101,9 @@ class UseCaseDSLParsingTest {
 		assertThatNoParsingErrorsOccurred(result);
 		assertThatNoValidationErrorsOccurred(result);
 		
-		assertEquals(2, result.useCases.get(0).nanoentitiesWritten.size)
-		assertEquals("Obj.attr1", result.useCases.get(0).nanoentitiesWritten.get(0))
-		assertEquals("Obj.attr2", result.useCases.get(0).nanoentitiesWritten.get(1))
+		assertEquals(2, result.userRequirements.get(0).nanoentitiesWritten.size)
+		assertEquals("Obj.attr1", result.userRequirements.get(0).nanoentitiesWritten.get(0))
+		assertEquals("Obj.attr2", result.userRequirements.get(0).nanoentitiesWritten.get(1))
 	}
 	
 	@Test
@@ -104,7 +120,7 @@ class UseCaseDSLParsingTest {
 		assertThatNoParsingErrorsOccurred(result);
 		assertThatNoValidationErrorsOccurred(result);
 		
-		assertEquals(true, result.useCases.get(0).isIsLatencyCritical)
+		assertEquals(true, result.userRequirements.get(0).isIsLatencyCritical)
 	}
 	
 	@Test
@@ -119,7 +135,7 @@ class UseCaseDSLParsingTest {
 		assertThatNoParsingErrorsOccurred(result);
 		assertThatNoValidationErrorsOccurred(result);
 		
-		assertEquals(false, result.useCases.get(0).isIsLatencyCritical)
+		assertEquals(false, result.userRequirements.get(0).isIsLatencyCritical)
 	}
 	
 	@Test
@@ -136,7 +152,7 @@ class UseCaseDSLParsingTest {
 		assertThatNoParsingErrorsOccurred(result);
 		assertThatNoValidationErrorsOccurred(result);
 		
-		assertEquals(true, result.useCases.get(0).isIsLatencyCritical)
+		assertEquals(true, result.userRequirements.get(0).isIsLatencyCritical)
 	}
 	
 }
