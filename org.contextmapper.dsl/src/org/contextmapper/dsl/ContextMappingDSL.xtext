@@ -181,12 +181,41 @@ Aggregate :
   CLOSE)?;
 
 UserRequirement:
-	('UseCase' | 'UserStory') name=ID 
+	UseCase | UserStory
+;
+
+/** 
+ * Unfortunately there seems to be no mechanism to reuse identical attributes here.
+ * Always ensure that UseCase and UserStory is kept in sync!
+ */
+UseCase:
+	'UseCase' name=ID 
 	(OPEN
-		(('isLatencyCritical' ('=')? isLatencyCritical?='true')? &
+		(('actor' ('=')? actor=STRING)? &
+		('activity' ('=')? activity=UserActivity)? &
+		('benefit' ('=')? benefit=STRING)? &
+		('isLatencyCritical' ('=')? isLatencyCritical?='true')? &
 		(('reads' nanoentitiesRead+=STRING*) ("," nanoentitiesRead+=STRING)*)? &
         (('writes' nanoentitiesWritten+=STRING*) ("," nanoentitiesWritten+=STRING)*)?)  
 	CLOSE)?
+;
+
+UserStory:
+	'UserStory' name=ID 
+	(OPEN
+		((('As a' | 'As an') actor=STRING 'I want to' activity=UserActivity 'so that' benefit=STRING)? &
+		('isLatencyCritical' ('=')? isLatencyCritical?='true')? &
+		(('reads' nanoentitiesRead+=STRING*) ("," nanoentitiesRead+=STRING)*)? &
+        (('writes' nanoentitiesWritten+=STRING*) ("," nanoentitiesWritten+=STRING)*)?)  
+	CLOSE)?
+;
+
+UserActivity:
+	verb=UserActivityVerb ('a' | 'an') entity=STRING
+;
+
+UserActivityVerb:
+	'create' | 'read' | 'update' | 'delete' | STRING
 ;
 
 SculptorModule :

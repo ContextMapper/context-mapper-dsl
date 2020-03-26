@@ -155,4 +155,63 @@ class UseCaseDSLParsingTest {
 		assertEquals(true, result.userRequirements.get(0).isIsLatencyCritical)
 	}
 	
+	@Test
+	def void canDefineActor() {
+		// given
+		val String dslSnippet = '''
+			UseCase testUsecase {
+				actor "tester"
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		
+		assertEquals("tester", result.userRequirements.get(0).actor)
+	}
+	
+	@Test
+	def void canDefineActivity() {
+		// given
+		val String dslSnippet = '''
+			UseCase testUsecase {
+				actor = "Insurance Employee"
+				activity = create a "Customer"
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		
+		assertEquals("Insurance Employee", result.userRequirements.get(0).actor)
+		assertEquals("create", result.userRequirements.get(0).activity.verb)
+		assertEquals("Customer", result.userRequirements.get(0).activity.entity)
+	}
+	
+	@Test
+	def void canDefineBenefit() {
+		// given
+		val String dslSnippet = '''
+			UseCase testUsecase {
+				actor = "Insurance Employee"
+				activity = create a "Customer"
+				benefit = "I can manage the customers data and ..."
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		
+		assertEquals("Insurance Employee", result.userRequirements.get(0).actor)
+		assertEquals("create", result.userRequirements.get(0).activity.verb)
+		assertEquals("Customer", result.userRequirements.get(0).activity.entity)
+		assertEquals("I can manage the customers data and ...", result.userRequirements.get(0).benefit)
+	}
+	
 }
