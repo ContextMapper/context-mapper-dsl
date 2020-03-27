@@ -191,8 +191,8 @@ UserRequirement:
 UseCase:
 	'UseCase' name=ID 
 	(OPEN
-		(('actor' ('=')? actor=STRING)? &
-		('activity' ('=')? activity=UserActivity)? &
+		(('actor' ('=')? role=STRING)? &
+		('activity' ('=')? feature=Feature)? &
 		('benefit' ('=')? benefit=STRING)? &
 		('isLatencyCritical' ('=')? isLatencyCritical?='true')? &
 		(('reads' nanoentitiesRead+=STRING*) ("," nanoentitiesRead+=STRING)*)? &
@@ -203,14 +203,14 @@ UseCase:
 UserStory:
 	'UserStory' name=ID 
 	(OPEN
-		((('As a' | 'As an') actor=STRING 'I want to' activity=UserActivity 'so that' benefit=STRING)? &
+		((('As a' | 'As an') role=STRING 'I want to' feature=Feature 'so that' benefit=STRING)? &
 		('isLatencyCritical' ('=')? isLatencyCritical?='true')? &
 		(('reads' nanoentitiesRead+=STRING*) ("," nanoentitiesRead+=STRING)*)? &
         (('writes' nanoentitiesWritten+=STRING*) ("," nanoentitiesWritten+=STRING)*)?)  
 	CLOSE)?
 ;
 
-UserActivity:
+Feature:
 	verb=UserActivityVerb ('a' | 'an') entity=STRING
 ;
 

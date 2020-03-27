@@ -1,0 +1,11 @@
+Domain InsuranceDomain {
+
+}
+
+UserStory US1_Create {
+	As an "Insurance Employee" I want to create a "Customer" so that "I am able to manage the customer data and offer contracts."
+}
+
+UserStory Story_to_be_Ignored {
+	As an "Insurance Employee" I want to create a "" so that "I am able to manage the customer data and offer contracts."
+}

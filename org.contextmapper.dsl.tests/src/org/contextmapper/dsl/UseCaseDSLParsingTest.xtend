@@ -169,7 +169,7 @@ class UseCaseDSLParsingTest {
 		assertThatNoParsingErrorsOccurred(result);
 		assertThatNoValidationErrorsOccurred(result);
 		
-		assertEquals("tester", result.userRequirements.get(0).actor)
+		assertEquals("tester", result.userRequirements.get(0).role)
 	}
 	
 	@Test
@@ -187,9 +187,9 @@ class UseCaseDSLParsingTest {
 		assertThatNoParsingErrorsOccurred(result);
 		assertThatNoValidationErrorsOccurred(result);
 		
-		assertEquals("Insurance Employee", result.userRequirements.get(0).actor)
-		assertEquals("create", result.userRequirements.get(0).activity.verb)
-		assertEquals("Customer", result.userRequirements.get(0).activity.entity)
+		assertEquals("Insurance Employee", result.userRequirements.get(0).role)
+		assertEquals("create", result.userRequirements.get(0).feature.verb)
+		assertEquals("Customer", result.userRequirements.get(0).feature.entity)
 	}
 	
 	@Test
@@ -208,9 +208,9 @@ class UseCaseDSLParsingTest {
 		assertThatNoParsingErrorsOccurred(result);
 		assertThatNoValidationErrorsOccurred(result);
 		
-		assertEquals("Insurance Employee", result.userRequirements.get(0).actor)
-		assertEquals("create", result.userRequirements.get(0).activity.verb)
-		assertEquals("Customer", result.userRequirements.get(0).activity.entity)
+		assertEquals("Insurance Employee", result.userRequirements.get(0).role)
+		assertEquals("create", result.userRequirements.get(0).feature.verb)
+		assertEquals("Customer", result.userRequirements.get(0).feature.entity)
 		assertEquals("I can manage the customers data and ...", result.userRequirements.get(0).benefit)
 	}
 	
