@@ -20,9 +20,10 @@ import org.contextmapper.dsl.contextMappingDSL.Aggregate
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext
 import org.contextmapper.dsl.contextMappingDSL.ContextMap
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel
-import org.contextmapper.dsl.contextMappingDSL.Import
+import org.contextmapper.dsl.contextMappingDSL.Domain
 import org.contextmapper.dsl.contextMappingDSL.Relationship
 import org.contextmapper.dsl.contextMappingDSL.SculptorModule
+import org.contextmapper.dsl.contextMappingDSL.Subdomain
 import org.contextmapper.dsl.services.ContextMappingDSLGrammarAccess
 import org.contextmapper.tactic.dsl.formatting2.TacticDDDLanguageFormatter
 import org.eclipse.xtext.formatting2.IFormattableDocument
@@ -48,9 +49,6 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 		}
 		for (domain : contextMappingModel.domains) {
 			domain.format
-			for (subdomain : domain.subdomains) {
-				subdomain.format
-			}
 		}
 	}
 
@@ -90,6 +88,28 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 		}
 		for(module : boundedContext.modules) {
 			module.format
+		}
+	}
+	
+	def dispatch void format(Domain domain, extension IFormattableDocument document) {
+		interior(
+			domain.regionFor.ruleCallTo(OPENRule).append[newLine],
+			domain.regionFor.ruleCallTo(CLOSERule).prepend[newLines = 2].append[newLines = 2]
+		)[indent]
+		
+		for (subdomain : domain.subdomains) {
+			subdomain.format
+		}
+	}
+	
+	def dispatch void format(Subdomain subdomain, extension IFormattableDocument document) {
+		interior(
+			subdomain.regionFor.ruleCallTo(OPENRule).append[newLine],
+			subdomain.regionFor.ruleCallTo(CLOSERule).prepend[newLines = 2].append[newLines = 2]
+		)[indent]
+		
+		for (entity : subdomain.entities) {
+			entity.format
 		}
 	}
 

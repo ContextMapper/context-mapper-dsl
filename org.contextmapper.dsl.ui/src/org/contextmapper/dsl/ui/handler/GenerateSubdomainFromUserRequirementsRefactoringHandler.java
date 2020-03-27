@@ -21,9 +21,14 @@ import java.util.stream.Collectors;
 import org.contextmapper.dsl.cml.CMLResourceContainer;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.UserRequirement;
+import org.contextmapper.dsl.refactoring.DeriveSubdomainFromUserRequirements;
 import org.contextmapper.dsl.refactoring.ExtractAggregatesByCohesion;
+import org.contextmapper.dsl.refactoring.MergeAggregatesRefactoring;
+import org.contextmapper.dsl.ui.handler.wizard.DeriveSubdomainsFromRequirementsContext;
+import org.contextmapper.dsl.ui.handler.wizard.DeriveSubdomainsFromRequirementsWizard;
 import org.contextmapper.dsl.ui.handler.wizard.ExtractAggregatesByCohesionContext;
 import org.contextmapper.dsl.ui.handler.wizard.ExtractAggregatesByCohesionRefactoringWizard;
+import org.contextmapper.dsl.ui.handler.wizard.MergeAggregatesRefactoringWizard;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -47,9 +52,15 @@ public class GenerateSubdomainFromUserRequirementsRefactoringHandler extends Abs
 	protected void executeRefactoring(CMLResourceContainer resource, ExecutionEvent event) {
 		Set<UserRequirement> userRequirements = getAllSelectedElements().stream().filter(o -> o instanceof UserRequirement).map(o -> (UserRequirement) o)
 				.collect(Collectors.toSet());
-		for (UserRequirement req : userRequirements) {
-			System.out.println("you selected: " + req.getName());
-		}
+
+		Set<String> allDomains = getCurrentContextMappingModel().getDomains().stream().map(d -> d.getName()).collect(Collectors.toSet());
+		String initialDomain = allDomains.isEmpty() ? "" : allDomains.iterator().next();
+
+		DeriveSubdomainsFromRequirementsContext refactoringContext = new DeriveSubdomainsFromRequirementsContext(initialDomain, allDomains);
+		new WizardDialog(HandlerUtil.getActiveShell(event), new DeriveSubdomainsFromRequirementsWizard(refactoringContext, executionContext -> {
+			return finishRefactoring(new DeriveSubdomainFromUserRequirements(executionContext.getDomainName(), executionContext.getSubdomainName(),
+					userRequirements.stream().map(ur -> ur.getName()).collect(Collectors.toSet())), resource, event);
+		})).open();
 	}
 
 }
