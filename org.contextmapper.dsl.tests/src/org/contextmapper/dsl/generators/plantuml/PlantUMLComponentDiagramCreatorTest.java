@@ -104,7 +104,7 @@ class PlantUMLComponentDiagramCreatorTest {
 		// then
 		assertTrue(plantUML.contains("component [myContext1]" + System.lineSeparator()));
 		assertTrue(plantUML.contains("component [myContext2]" + System.lineSeparator()));
-		assertTrue(plantUML.contains("[myContext1]<-->[myContext2] : myPartnershipTest (ourTechnology)" + System.lineSeparator()));
+		assertTrue(plantUML.contains("[myContext1]<-->[myContext2] : myPartnershipTest (Partnership implemented with ourTechnology)" + System.lineSeparator()));
 	}
 
 	@Test
@@ -155,7 +155,7 @@ class PlantUMLComponentDiagramCreatorTest {
 		// then
 		assertTrue(plantUML.contains("component [myContext1]" + System.lineSeparator()));
 		assertTrue(plantUML.contains("component [myContext2]" + System.lineSeparator()));
-		assertTrue(plantUML.contains("[myContext1]<-->[myContext2] : mySharedKernel (ourTechnology)" + System.lineSeparator()));
+		assertTrue(plantUML.contains("[myContext1]<-->[myContext2] : mySharedKernel (Shared Kernel implemented with ourTechnology)" + System.lineSeparator()));
 	}
 
 	@Test

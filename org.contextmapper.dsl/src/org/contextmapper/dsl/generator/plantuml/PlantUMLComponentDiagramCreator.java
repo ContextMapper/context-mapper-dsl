@@ -187,12 +187,16 @@ public class PlantUMLComponentDiagramCreator extends AbstractPlantUMLDiagramCrea
 
 	private String getSymmetricRelationshipLabel(SymmetricRelationship relationship) {
 		StringBuilder label = new StringBuilder();
-		if (relationship.getName() != null && !"".equals(relationship.getName())) {
+		boolean relationshipNameDefined = relationship.getName() != null && !"".equals(relationship.getName());
+		if (relationshipNameDefined) {
 			label.append(relationship.getName());
 		} else {
 			label.append(getRelationshipTypeLabel(relationship));
 		}
-		if (relationship.getImplementationTechnology() != null && !"".equals(relationship.getImplementationTechnology())) {
+		boolean implementationTechnologyDefined = relationship.getImplementationTechnology() != null && !"".equals(relationship.getImplementationTechnology());
+		if (relationshipNameDefined && implementationTechnologyDefined) {
+			label.append(" (").append(getRelationshipTypeLabel(relationship)).append(" implemented with ").append(relationship.getImplementationTechnology()).append(")");
+		} else if (implementationTechnologyDefined) {
 			label.append(" (").append(relationship.getImplementationTechnology()).append(")");
 		}
 		return label.toString();
