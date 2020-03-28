@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.contextmapper.contextmap.generator.model.AbstractRelationship;
 import org.contextmapper.contextmap.generator.model.BoundedContext;
 import org.contextmapper.contextmap.generator.model.ContextMap;
 import org.contextmapper.contextmap.generator.model.DownstreamPatterns;
@@ -39,6 +40,7 @@ import org.contextmapper.dsl.contextMappingDSL.UpstreamRole;
 public class ContextMapModelConverter {
 
 	private Map<String, BoundedContext> bcMap = new HashMap<>();
+	private boolean useNameAndImplementationTechnologyLabels = true;
 
 	/**
 	 * Converts the CML Context Map into a Context Map Generator Context Map.
@@ -61,6 +63,23 @@ public class ContextMapModelConverter {
 		return contextMap;
 	}
 
+	/**
+	 * Converts the CML Context Map into a Context Map Generator Context Map.
+	 * 
+	 * @param cmlContextMap                            the CML Context Map for which
+	 *                                                 you want to generate a
+	 *                                                 graphical Context Map
+	 * @param useNameAndImplementationTechnologyLabels defines whether name and
+	 *                                                 implementation technology on
+	 *                                                 relationships shall be mapped
+	 *                                                 or not
+	 * @return the Context Map Generator Context Map
+	 */
+	public ContextMap convert(org.contextmapper.dsl.contextMappingDSL.ContextMap cmlContextMap, boolean useNameAndImplementationTechnologyLabels) {
+		this.useNameAndImplementationTechnologyLabels = useNameAndImplementationTechnologyLabels;
+		return convert(cmlContextMap);
+	}
+
 	private BoundedContext convert(org.contextmapper.dsl.contextMappingDSL.BoundedContext cmlBoundedContext) {
 		BoundedContext boundedContext = new BoundedContext(cmlBoundedContext.getName());
 		this.bcMap.put(cmlBoundedContext.getName(), boundedContext);
@@ -68,7 +87,7 @@ public class ContextMapModelConverter {
 	}
 
 	private Relationship convert(org.contextmapper.dsl.contextMappingDSL.Relationship cmlRelationship) {
-		Relationship relationship = null;
+		AbstractRelationship relationship = null;
 
 		if (cmlRelationship instanceof org.contextmapper.dsl.contextMappingDSL.Partnership) {
 			org.contextmapper.dsl.contextMappingDSL.Partnership cmlPartnership = (org.contextmapper.dsl.contextMappingDSL.Partnership) cmlRelationship;
@@ -88,6 +107,10 @@ public class ContextMapModelConverter {
 			((UpstreamDownstreamRelationship) relationship).setUpstreamPatterns(convertUpstreamRoles(cmlUpstreamDownstream.getUpstreamRoles()));
 			((UpstreamDownstreamRelationship) relationship).setDownstreamPatterns(convertDownstreamRoles(cmlUpstreamDownstream.getDownstreamRoles()));
 		}
+		if (useNameAndImplementationTechnologyLabels && cmlRelationship.getName() != null)
+			relationship.setName(cmlRelationship.getName());
+		if (useNameAndImplementationTechnologyLabels && cmlRelationship.getImplementationTechnology() != null)
+			relationship.setImplementationTechnology(cmlRelationship.getImplementationTechnology());
 
 		return relationship;
 	}

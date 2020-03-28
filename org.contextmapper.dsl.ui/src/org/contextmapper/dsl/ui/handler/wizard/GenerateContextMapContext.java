@@ -27,6 +27,7 @@ public class GenerateContextMapContext {
 	private boolean fixHeight;
 	private int width;
 	private int height;
+	private boolean generateAdditionalLabels;
 
 	public void setFormats(Set<ContextMapFormat> formats) {
 		this.formats = formats;
@@ -74,6 +75,14 @@ public class GenerateContextMapContext {
 
 	public void setHeight(int height) {
 		this.height = height;
+	}
+
+	public void setGenerateAdditionalLabels(boolean generateAdditionalLabels) {
+		this.generateAdditionalLabels = generateAdditionalLabels;
+	}
+
+	public boolean generateAdditionalLabels() {
+		return generateAdditionalLabels;
 	}
 
 }

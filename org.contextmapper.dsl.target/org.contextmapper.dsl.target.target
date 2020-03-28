@@ -46,7 +46,7 @@
 		</location>
 		<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 			<repository location="https://dl.bintray.com/contextmapper/context-map-generator-releases/"/>
-			<unit id="org.contextmapper.contextmap.generator.feature.feature.group" version="1.0.2"/>
+			<unit id="org.contextmapper.contextmap.generator.feature.feature.group" version="1.1.0"/>
 		</location>
 		<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 			<repository location="https://dl.bintray.com/contextmapper/service-cutter-library-releases/"/>

@@ -42,6 +42,7 @@ public class GenerateContextMapWizardPage extends ContextMapperWizardPage {
 	private Spinner widthSpinner;
 	private Button heightCheckBox;
 	private Spinner heightSpinner;
+	private Button generateLabelsCheckBox;
 
 	private Set<ContextMapFormat> selectedFormats;
 	private int labelSpacingFactor = 5;
@@ -152,6 +153,13 @@ public class GenerateContextMapWizardPage extends ContextMapperWizardPage {
 			}
 		});
 
+		// generate labels checkbox
+		Label generateLabelsLabel = new Label(container, SWT.NONE);
+		generateLabelsLabel.setText("Generate labels:");
+		generateLabelsCheckBox = new Button(container, SWT.CHECK);
+		generateLabelsCheckBox.setText("Labels for relationship names and implementation technologies");
+		generateLabelsCheckBox.setSelection(true);
+
 		// spacing factor label
 		Label labelSpacingFactorLabel = new Label(container, SWT.NONE);
 		labelSpacingFactorLabel.setText("Spacing factor:");
@@ -208,6 +216,10 @@ public class GenerateContextMapWizardPage extends ContextMapperWizardPage {
 
 	public int getHeight() {
 		return height;
+	}
+
+	public boolean generateLabels() {
+		return generateLabelsCheckBox.getSelection();
 	}
 
 	@Override
