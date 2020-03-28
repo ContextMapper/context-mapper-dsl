@@ -198,6 +198,8 @@ public class PlantUMLComponentDiagramCreator extends AbstractPlantUMLDiagramCrea
 			label.append(" (").append(getRelationshipTypeLabel(relationship)).append(" implemented with ").append(relationship.getImplementationTechnology()).append(")");
 		} else if (implementationTechnologyDefined) {
 			label.append(" (").append(relationship.getImplementationTechnology()).append(")");
+		} else if (relationshipNameDefined) {
+			label.append(" (").append(getRelationshipTypeLabel(relationship)).append(")");
 		}
 		return label.toString();
 	}
