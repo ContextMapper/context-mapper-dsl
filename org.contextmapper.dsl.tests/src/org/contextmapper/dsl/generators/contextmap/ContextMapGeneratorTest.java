@@ -107,6 +107,25 @@ class ContextMapGeneratorTest {
 	}
 
 	@Test
+	void canChangeLabelGeneration() {
+		// given
+		ContextMappingModel model = ContextMappingDSLFactory.eINSTANCE.createContextMappingModel();
+		ContextMap contextMap = ContextMappingDSLFactory.eINSTANCE.createContextMap();
+		model.setMap(contextMap);
+
+		// when
+		IFileSystemAccess2Mock filesystem = new IFileSystemAccess2Mock();
+		TestGraphvizContextMapGenerator graphvizGenerator = new TestGraphvizContextMapGenerator();
+		this.generator = new TestContextMapGenerator(graphvizGenerator);
+		this.generator.printAdditionalLabels(false);
+		this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem, new IGeneratorContextMock());
+
+		// then
+		assertTrue(filesystem.getGeneratedFilesSet().contains("testmodel_ContextMap.png"));
+		assertEquals(false, generator.printAdditionalLabels());
+	}
+
+	@Test
 	void cannotSetWidthSmallerThanOne() {
 		Assertions.assertThrows(IllegalArgumentException.class, () -> {
 			this.generator.setWidth(0);

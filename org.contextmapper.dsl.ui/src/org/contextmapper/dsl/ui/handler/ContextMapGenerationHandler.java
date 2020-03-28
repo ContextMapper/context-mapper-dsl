@@ -70,6 +70,7 @@ public class ContextMapGenerationHandler extends AbstractGenerationHandler {
 				generator.setWidth(context.getWidth());
 			else if (context.isFixHeight())
 				generator.setHeight(context.getHeight());
+			generator.printAdditionalLabels(context.generateAdditionalLabels());
 			Display.getDefault().asyncExec(new Runnable() {
 				@Override
 				public void run() {

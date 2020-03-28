@@ -10,7 +10,9 @@ ContextMap InsuranceContextMap {
 	
 	CustomerManagementContext [D,ACL]<-[U,OHS,PL] PrintingContext
 	
-	RiskManagementContext [P]<->[P] PolicyManagementContext
+	RiskManagementContext [P]<->[P] PolicyManagementContext : testLabel {
+		implementationTechnology "Java"
+	}
 
 	PolicyManagementContext [D,CF]<-[U,OHS] CustomerManagementContext
 

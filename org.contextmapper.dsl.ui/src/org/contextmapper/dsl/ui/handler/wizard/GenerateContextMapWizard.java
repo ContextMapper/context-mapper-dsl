@@ -52,6 +52,7 @@ public class GenerateContextMapWizard extends Wizard {
 		context.setFixWidth(page.takeWidth());
 		context.setHeight(page.getHeight());
 		context.setWidth(page.getWidth());
+		context.setGenerateAdditionalLabels(page.generateLabels());
 		return finishFunction.apply(context);
 	}
 

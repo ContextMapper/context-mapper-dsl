@@ -44,6 +44,7 @@ public class ContextMapGenerator extends AbstractContextMapGenerator {
 	private int width = -1;
 	private int height = -1;
 	private boolean useWidth = true;
+	private boolean printAdditionalLabels = true;
 
 	public ContextMapGenerator() {
 		this.formats = new HashSet<>();
@@ -56,7 +57,7 @@ public class ContextMapGenerator extends AbstractContextMapGenerator {
 	protected void generateFromContextMap(org.contextmapper.dsl.contextMappingDSL.ContextMap cmlContextMap, IFileSystemAccess2 fsa, URI inputFileURI) {
 		String fileName = inputFileURI.trimFileExtension().lastSegment();
 
-		ContextMap contextMap = new ContextMapModelConverter().convert(cmlContextMap);
+		ContextMap contextMap = new ContextMapModelConverter().convert(cmlContextMap, printAdditionalLabels);
 		org.contextmapper.contextmap.generator.ContextMapGenerator generator = createContextMapGenerator();
 		generator.setLabelSpacingFactor(labelSpacingFactor);
 		if (this.width > 0 && useWidth)
@@ -115,6 +116,18 @@ public class ContextMapGenerator extends AbstractContextMapGenerator {
 			throw new IllegalArgumentException("Please specify a height that is bigger that 0!");
 		this.useWidth = false;
 		this.height = height;
+	}
+
+	/**
+	 * Defines whether additional labels for the relationship name and
+	 * implementation technology are printed or not.
+	 */
+	public void printAdditionalLabels(boolean printAdditionalLabels) {
+		this.printAdditionalLabels = printAdditionalLabels;
+	}
+	
+	public boolean printAdditionalLabels() {
+		return printAdditionalLabels;
 	}
 
 	private Format getGraphvizLibFormat(ContextMapFormat format) {
