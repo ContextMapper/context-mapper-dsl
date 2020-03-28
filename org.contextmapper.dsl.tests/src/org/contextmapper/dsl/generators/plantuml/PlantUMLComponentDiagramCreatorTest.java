@@ -159,6 +159,31 @@ class PlantUMLComponentDiagramCreatorTest {
 	}
 
 	@Test
+	public void canCreateSharedKernelRelationshipWithNameButNoTechnology() {
+		// given
+		ContextMap contextMap = ContextMappingDSLFactory.eINSTANCE.createContextMap();
+		BoundedContext boundedContext1 = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
+		boundedContext1.setName("myContext1");
+		BoundedContext boundedContext2 = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
+		boundedContext2.setName("myContext2");
+		contextMap.getBoundedContexts().add(boundedContext1);
+		contextMap.getBoundedContexts().add(boundedContext2);
+		SharedKernel sharedKernel = ContextMappingDSLFactory.eINSTANCE.createSharedKernel();
+		sharedKernel.setParticipant1(boundedContext1);
+		sharedKernel.setParticipant2(boundedContext2);
+		sharedKernel.setName("mySharedKernel");
+		contextMap.getRelationships().add(sharedKernel);
+
+		// when
+		String plantUML = this.creator.createDiagram(contextMap);
+
+		// then
+		assertTrue(plantUML.contains("component [myContext1]" + System.lineSeparator()));
+		assertTrue(plantUML.contains("component [myContext2]" + System.lineSeparator()));
+		assertTrue(plantUML.contains("[myContext1]<-->[myContext2] : mySharedKernel (Shared Kernel)" + System.lineSeparator()));
+	}
+
+	@Test
 	public void canCreateUpstreamDownstreamRelationship() {
 		// given
 		ContextMap contextMap = ContextMappingDSLFactory.eINSTANCE.createContextMap();
@@ -390,7 +415,7 @@ class PlantUMLComponentDiagramCreatorTest {
 		assertTrue(plantUML1.contains("myContext2_to_myContext1 <.. [myContext2] : use Aggregate ExposedAggregate1 " + System.lineSeparator()));
 		assertTrue(plantUML2.contains("myContext2_to_myContext1 <.. [myContext2] : use Aggregates ExposedAggregate1, ExposedAggregate2 " + System.lineSeparator()));
 	}
-	
+
 	@Test
 	public void canAddExposedAggregatesToCustomerSupplierUsageLabel() {
 		// given
