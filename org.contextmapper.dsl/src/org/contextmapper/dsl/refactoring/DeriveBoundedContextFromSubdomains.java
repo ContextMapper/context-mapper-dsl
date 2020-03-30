@@ -19,12 +19,15 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
 import org.contextmapper.dsl.contextMappingDSL.Domain;
 import org.contextmapper.dsl.contextMappingDSL.DomainPart;
 import org.contextmapper.dsl.contextMappingDSL.Subdomain;
 import org.contextmapper.dsl.refactoring.exception.RefactoringInputException;
+import org.contextmapper.tactic.dsl.tacticdsl.Entity;
+import org.contextmapper.tactic.dsl.tacticdsl.TacticdslFactory;
 
 import com.google.common.collect.Sets;
 
@@ -49,11 +52,28 @@ public class DeriveBoundedContextFromSubdomains extends AbstractRefactoring impl
 		newBC.setDomainVisionStatement(
 				"This Bounded Context realizes the following subdomains: " + String.join(", ", selectedSubdomains.stream().map(sd -> sd.getName()).collect(Collectors.toList())));
 		for(Subdomain subdomain : selectedSubdomains) {
-			addElementToEList(newBC.getImplementedDomainParts(), (DomainPart) subdomain); 
+			addElementToEList(newBC.getImplementedDomainParts(), (DomainPart) subdomain);
+			createAggregates4Entities(subdomain, newBC);
 		}
 		
+		addElementToEList(rootResource.getContextMappingModel().getBoundedContexts(), newBC);
+		markResourceChanged(rootResource);
 		
 		saveResources();
+	}
+	
+	private void createAggregates4Entities(Subdomain subdomain, BoundedContext newBC) {
+		for(Entity entity : subdomain.getEntities()) {
+			Aggregate aggregate = ContextMappingDSLFactory.eINSTANCE.createAggregate();
+			aggregate.setName(entity.getName() + "Aggregate");
+			
+			Entity rootEntity = TacticdslFactory.eINSTANCE.createEntity();
+			rootEntity.setName(entity.getName());
+			rootEntity.setAggregateRoot(true);
+			
+			addElementToEList(aggregate.getDomainObjects(), rootEntity);
+			addElementToEList(newBC.getAggregates(), aggregate);
+		}
 	}
 
 	private Set<Subdomain> collectSubdomains() {
