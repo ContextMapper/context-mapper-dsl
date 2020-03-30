@@ -1,0 +1,69 @@
+// ** language reference: https://contextmapper.org/docs/language-reference/ 
+
+// ** tactic DDD (analysis level):
+
+Domain SampleDomain {
+	domainVisionStatement "This SampleDomain serves as a skeleton and blueprint for tactic DDD with Contact Mapper. See https://contextmapper.org/docs/language-reference/ for CML syntax reference."
+	
+	Subdomain SampleCoreSubdomain {
+		type=CORE_DOMAIN
+		domainVisionStatement "A core domain differentiates one from the competition. It should be focused on during design."
+		
+		Entity SampleEntity { 
+			aggregateRoot
+			hint = "Entities and their relationships are important artifacts in any object-oriented analysis and tactic DDD models."
+			-AnotherEntity entityReference 
+  		}
+  		Entity AnotherEntity
+
+	}
+	Subdomain SampleSupportingDomain {
+		type=SUPPORTING_DOMAIN
+		domainVisionStatement "This is a supporting domain, see <a href='https://domainlanguage.com/wp-content/uploads/2016/05/DDD_Reference_2015-03.pdf'>DDD reference for explanations</a>"
+	}
+	
+	Subdomain SampleSupportingDomain {
+		type=GENERIC_SUBDOMAIN
+		domainVisionStatement "This is a generic domain, not designed and modeled any further here."
+	}
+}
+
+// ** a bit of strategic DDD and more tactic DDD (design level):
+
+BoundedContext SampleContext1 implements SampleCoreSubdomain {
+	domainVisionStatement="This is the explanation and description of SampleContext1."
+	type=APPLICATION
+	implementationTechnology="Microservice container, for instance Spring Boot or Micronaut (in Java)" 
+	
+	Aggregate SampleAggregate1
+		{
+		responsibilities="Expose a single operation", "Process incoming data","Compute and return a response"
+		Entity SampleAggregateRoot1 {
+			hint = "This entity must have a globally unique ID because it is the aggregate root. Its domain semantics can also be explained in this hint."
+			
+			def String sampleOperation(String p1, int p2);
+			ID globalID
+			
+			String sampleAttribute
+			-SampleValueObject sampleObjectReference
+		}
+		
+		ValueObject SampleValueObject
+		
+		DomainEvent SomethingHasHappenedNotification {
+			hint = "Domain events can be exchanged at the model/context/domain boundary. This tutorial explains how to model event sourcing in CML: https://contextmapper.org/docs/event-sourcing-and-cqrs-modeling/"
+			Date when
+			// could refer to entity or value object here 
+		}
+	}
+} 
+
+BoundedContext SampleContext2 // an empty Bounded Context (all model elements can be empty)
+
+ContextMap SampleContextMap {
+	contains SampleContext1, SampleContext2
+	
+	SampleContext1 [S] -> [C] SampleContext2 : SampleRelationshipLabel {
+		exposedAggregates SampleAggregate1
+	}
+}
