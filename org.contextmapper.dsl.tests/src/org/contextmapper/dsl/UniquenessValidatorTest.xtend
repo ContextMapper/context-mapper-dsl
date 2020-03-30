@@ -181,4 +181,42 @@ class UniquenessValidatorTest {
 			String.format(DOMAIN_OBJECT_NOT_UNIQUE, "Account"));
 	}
 
+	@Test
+	def void cannotDefineDuplicateServiceInBoundedContext() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext ContextA {
+				Aggregate AggregateA {
+					Service TestService
+					Service TestService
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		validationTestHelper.assertError(result, TacticdslPackage.Literals.SERVICE_REPOSITORY_OPTION, "",
+			String.format(SERVICE_NAME_NOT_UNIQUE_IN_BC, "TestService"));
+	}
+	
+	@Test
+	def void cannotDefineDuplicateServiceInSubdomain() {
+		// given
+		val String dslSnippet = '''
+			Domain TestDomain {
+				Subdomain TestSubdomain {
+					Service TestService
+					Service TestService
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		validationTestHelper.assertError(result, TacticdslPackage.Literals.SERVICE_REPOSITORY_OPTION, "",
+			String.format(SERVICE_NAME_NOT_UNIQUE_IN_SUBDOMAIN, "TestService"));
+	}
+
 }

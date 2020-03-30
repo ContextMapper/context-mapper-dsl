@@ -1,7 +1,9 @@
 Domain InsuranceDomain {
 	Subdomain Customers {
 		Entity Customer
-		Service CustomerService
+		Service CustomerService {
+			createCustomer;
+		}
 	}
 }
 

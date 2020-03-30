@@ -29,6 +29,8 @@ import org.contextmapper.dsl.contextMappingDSL.Domain;
 import org.contextmapper.dsl.contextMappingDSL.Subdomain;
 import org.contextmapper.dsl.refactoring.exception.RefactoringInputException;
 import org.contextmapper.tactic.dsl.tacticdsl.Entity;
+import org.contextmapper.tactic.dsl.tacticdsl.Service;
+import org.contextmapper.tactic.dsl.tacticdsl.ServiceOperation;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
@@ -40,7 +42,8 @@ public class DeriveSubdomainFromUserRequirementsTest extends AbstractRefactoring
 
 	@ParameterizedTest
 	@ValueSource(strings = { "derive-subdomain-from-user-story-test-1-input.cml", "derive-subdomain-from-user-story-test-2-input.cml",
-			"derive-subdomain-from-user-story-test-3-input.cml", "derive-subdomain-from-user-story-test-4-input.cml", "derive-subdomain-from-user-story-test-5-input.cml" })
+			"derive-subdomain-from-user-story-test-3-input.cml", "derive-subdomain-from-user-story-test-4-input.cml", "derive-subdomain-from-user-story-test-5-input.cml",
+			"derive-subdomain-from-user-story-test-6-input.cml" })
 	public void canDeriveSubdomainFromUserStory(String inputFile) throws IOException {
 		// given
 		CMLResourceContainer input = getResourceCopyOfTestCML(inputFile);
@@ -62,9 +65,17 @@ public class DeriveSubdomainFromUserRequirementsTest extends AbstractRefactoring
 		Subdomain subdomain = domain.getSubdomains().get(0);
 		assertEquals("Customers", subdomain.getName());
 		assertEquals(1, subdomain.getEntities().size());
+		assertEquals(1, subdomain.getServices().size());
 
 		Entity entity = subdomain.getEntities().get(0);
 		assertEquals("Customer", entity.getName());
+
+		Service service = subdomain.getServices().get(0);
+		assertEquals("CustomerService", service.getName());
+		assertEquals(1, service.getOperations().size());
+
+		ServiceOperation operation = service.getOperations().get(0);
+		assertEquals("createCustomer", operation.getName());
 	}
 
 	@ParameterizedTest

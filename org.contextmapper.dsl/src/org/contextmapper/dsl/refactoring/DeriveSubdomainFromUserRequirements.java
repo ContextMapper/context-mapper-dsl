@@ -24,6 +24,8 @@ import org.contextmapper.dsl.contextMappingDSL.Subdomain;
 import org.contextmapper.dsl.contextMappingDSL.UserRequirement;
 import org.contextmapper.dsl.refactoring.exception.RefactoringInputException;
 import org.contextmapper.tactic.dsl.tacticdsl.Entity;
+import org.contextmapper.tactic.dsl.tacticdsl.Service;
+import org.contextmapper.tactic.dsl.tacticdsl.ServiceOperation;
 import org.contextmapper.tactic.dsl.tacticdsl.TacticdslFactory;
 
 import com.google.common.collect.Sets;
@@ -57,16 +59,45 @@ public class DeriveSubdomainFromUserRequirements extends AbstractRefactoring imp
 
 			String entityName = ur.getFeature().getEntity().replace(" ", "-").trim();
 			Optional<Entity> alreadyExistingEntity = subdomain.getEntities().stream().filter(e -> entityName.equals(e.getName())).findFirst();
-			if (alreadyExistingEntity.isPresent())
-				continue;
+			if (!alreadyExistingEntity.isPresent())
+				addElementToEList(subdomain.getEntities(), createEntity(entityName));
 
-			Entity newEntity = TacticdslFactory.eINSTANCE.createEntity();
-			newEntity.setName(entityName);
-			addElementToEList(subdomain.getEntities(), newEntity);
+			String serviceName = entityName + "Service";
+			Optional<Service> alreadyExistingService = subdomain.getServices().stream().filter(s -> serviceName.equals(s.getName())).findFirst();
+			Service service;
+			if (!alreadyExistingService.isPresent()) {
+				service = createService(serviceName, entityName, ur.getFeature().getVerb());
+				addElementToEList(subdomain.getServices(), service);
+			} else {
+				service = alreadyExistingService.get();
+			}
+
+			String operationName = ur.getFeature().getVerb() + entityName;
+			Optional<ServiceOperation> alreadyExistingServiceOperation = service.getOperations().stream().filter(o -> operationName.equals(o.getName())).findFirst();
+			if (!alreadyExistingServiceOperation.isPresent())
+				addElementToEList(service.getOperations(), createServiceOperation(operationName));
 		}
 
 		markResourceChanged(domain);
 		saveResources();
+	}
+
+	private Entity createEntity(String entityName) {
+		Entity newEntity = TacticdslFactory.eINSTANCE.createEntity();
+		newEntity.setName(entityName);
+		return newEntity;
+	}
+
+	private Service createService(String serviceName, String entityName, String verb) {
+		Service service = TacticdslFactory.eINSTANCE.createService();
+		service.setName(serviceName);
+		return service;
+	}
+
+	private ServiceOperation createServiceOperation(String operationName) {
+		ServiceOperation operation = TacticdslFactory.eINSTANCE.createServiceOperation();
+		operation.setName(operationName);
+		return operation;
 	}
 
 	private Domain getOrCreateDomain() {

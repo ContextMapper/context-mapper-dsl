@@ -85,6 +85,7 @@ Subdomain:
 			(('type' ('=')? type=SubDomainType)? &
 			('domainVisionStatement' ('=')? domainVisionStatement=STRING)?)
 			entities += Entity*
+			services += Service*
 		CLOSE
 	)?
 ;
@@ -211,11 +212,11 @@ UserStory:
 ;
 
 Feature:
-	verb=UserActivityVerb ('a' | 'an') entity=STRING
+	verb=(UserActivityDefaultVerb | STRING) ('a' | 'an') entity=STRING
 ;
 
-UserActivityVerb:
-	'create' | 'read' | 'update' | 'delete' | STRING
+UserActivityDefaultVerb:
+	'create' | 'read' | 'update' | 'delete'
 ;
 
 SculptorModule :

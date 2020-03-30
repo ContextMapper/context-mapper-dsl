@@ -27,6 +27,7 @@ import org.contextmapper.dsl.contextMappingDSL.Subdomain
 import org.contextmapper.dsl.services.ContextMappingDSLGrammarAccess
 import org.contextmapper.tactic.dsl.formatting2.TacticDDDLanguageFormatter
 import org.eclipse.xtext.formatting2.IFormattableDocument
+import org.contextmapper.dsl.contextMappingDSL.UserRequirement
 
 class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 
@@ -105,12 +106,25 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 	def dispatch void format(Subdomain subdomain, extension IFormattableDocument document) {
 		interior(
 			subdomain.regionFor.ruleCallTo(OPENRule).append[newLine],
-			subdomain.regionFor.ruleCallTo(CLOSERule).prepend[newLines = 2].append[newLines = 2]
+			subdomain.regionFor.ruleCallTo(CLOSERule).prepend[newLines = 1].append[newLines = 2]
 		)[indent]
 		
 		for (entity : subdomain.entities) {
 			entity.format
 		}
+		
+		for (service : subdomain.services) {
+			service.format
+		}
+	}
+	
+	def dispatch void format(UserRequirement requirement, extension IFormattableDocument document) {
+		interior(
+			requirement.regionFor.ruleCallTo(OPENRule).append[newLine],
+			requirement.regionFor.ruleCallTo(CLOSERule).prepend[newLine].append[newLines = 2]
+		)[indent]
+
+		requirement.prepend[newLines = 2]
 	}
 
 	def dispatch void format(Relationship relationship, extension IFormattableDocument document) {

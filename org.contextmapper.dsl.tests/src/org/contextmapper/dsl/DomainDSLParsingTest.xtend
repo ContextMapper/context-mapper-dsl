@@ -263,6 +263,28 @@ class DomainDSLParsingTest {
 	}
 	
 	@Test
+	def void canAddServiceToSubdomain() {
+		// given
+		val String dslSnippet = '''
+			Domain Insurance {
+				Subdomain core {
+					type = CORE_DOMAIN
+					domainVisionStatement = "my domain vision for this subdomain"
+	
+					Service MyTestService
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		assertEquals(1, result.domains.get(0).subdomains.get(0).services.size);
+		assertEquals("MyTestService", result.domains.get(0).subdomains.get(0).services.get(0).name);
+	}
+	
+	@Test
 	def void canDefineAttributesWithoutEqualSign() {
 		// given
 		val String dslSnippet = '''

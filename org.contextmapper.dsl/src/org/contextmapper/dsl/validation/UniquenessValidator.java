@@ -20,6 +20,8 @@ import static org.contextmapper.dsl.validation.ValidationMessages.BOUNDED_CONTEX
 import static org.contextmapper.dsl.validation.ValidationMessages.DOMAIN_OBJECT_NOT_UNIQUE;
 import static org.contextmapper.dsl.validation.ValidationMessages.MODULE_NAME_NOT_UNIQUE;
 import static org.contextmapper.dsl.validation.ValidationMessages.USE_CASE_NAME_NOT_UNIQUE;
+import static org.contextmapper.dsl.validation.ValidationMessages.SERVICE_NAME_NOT_UNIQUE_IN_BC;
+import static org.contextmapper.dsl.validation.ValidationMessages.SERVICE_NAME_NOT_UNIQUE_IN_SUBDOMAIN;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -34,17 +36,22 @@ import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLPackage;
 import org.contextmapper.dsl.contextMappingDSL.SculptorModule;
 import org.contextmapper.dsl.contextMappingDSL.Subdomain;
 import org.contextmapper.dsl.contextMappingDSL.UserRequirement;
+import org.contextmapper.tactic.dsl.tacticdsl.Service;
 import org.contextmapper.tactic.dsl.tacticdsl.SimpleDomainObject;
 import org.contextmapper.tactic.dsl.tacticdsl.TacticdslPackage;
+import org.eclipse.xtext.EcoreUtil2;
 import org.eclipse.xtext.validation.Check;
 import org.eclipse.xtext.validation.EValidatorRegistrar;
 import org.eclipse.xtext.xbase.lib.Functions.Function1;
+
+import com.google.common.collect.Sets;
+
 import org.eclipse.xtext.xbase.lib.IteratorExtensions;
 
 public class UniquenessValidator extends AbstractCMLValidator {
 
 	private CMLModelObjectsResolvingHelper resolvingHelper = new CMLModelObjectsResolvingHelper();
-	
+
 	@Override
 	public void register(EValidatorRegistrar registrar) {
 		// not needed for classes used as ComposedCheck
@@ -84,6 +91,34 @@ public class UniquenessValidator extends AbstractCMLValidator {
 			}));
 			if (IteratorExtensions.size(duplicateAggregates) > 1)
 				error(String.format(AGGREGATE_NAME_NOT_UNIQUE, aggregate.getName()), aggregate, ContextMappingDSLPackage.Literals.AGGREGATE__NAME);
+		}
+	}
+
+	@Check
+	public void validateThatServiceNamesAreUniqueInBoundedContext(BoundedContext bc) {
+		Set<String> serviceNames = Sets.newHashSet();
+		Iterator<Service> allServices = Sets.newHashSet(IteratorExtensions.filter(EcoreUtil2.eAll(bc), Service.class)).iterator();
+		while (allServices.hasNext()) {
+			Service service = allServices.next();
+			if (serviceNames.contains(service.getName())) {
+				error(String.format(SERVICE_NAME_NOT_UNIQUE_IN_BC, service.getName()), service, TacticdslPackage.Literals.SERVICE_REPOSITORY_OPTION__NAME);
+			} else {
+				serviceNames.add(service.getName());
+			}
+		}
+	}
+
+	@Check
+	public void validateThatServiceNamesAreUniqueInSubdomain(Subdomain subdomain) {
+		Set<String> serviceNames = Sets.newHashSet();
+		Iterator<Service> allServices = Sets.newHashSet(IteratorExtensions.filter(EcoreUtil2.eAll(subdomain), Service.class)).iterator();
+		while (allServices.hasNext()) {
+			Service service = allServices.next();
+			if (serviceNames.contains(service.getName())) {
+				error(String.format(SERVICE_NAME_NOT_UNIQUE_IN_SUBDOMAIN, service.getName()), service, TacticdslPackage.Literals.SERVICE_REPOSITORY_OPTION__NAME);
+			} else {
+				serviceNames.add(service.getName());
+			}
 		}
 	}
 
