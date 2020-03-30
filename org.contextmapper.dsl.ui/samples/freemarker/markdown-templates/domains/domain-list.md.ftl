@@ -1,11 +1,12 @@
 <#import "/domain-objects/domain-object-attribute-and-operation-tables.ftl" as attrOpsMacro>
 
 <#if domains?has_content>
-    ## Domain Overview<#lt>
+    ## Domain Report<#lt>
 
     <#list domains as d>
         Domain `${d.name}` has the  following domain vision statement:<#lt>
         ${d.domainVisionStatement!"[*TODO create domain vision statement for ${d.name}*]"}<#lt>
+    
     </#list>
 
     <#list domains as d>

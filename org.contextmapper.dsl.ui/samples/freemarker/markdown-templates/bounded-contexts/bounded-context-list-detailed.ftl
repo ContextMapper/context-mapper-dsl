@@ -3,13 +3,11 @@
 
     *${bc.name}* has this domain vision statement: ${bc.domainVisionStatement!"[domain vision of the context not defined]"}<#lt>
 
-    A number of aggregates are part of the ubiquituous language of this Bounded Context. The following paragraphs describe them, as well as their inner structures.<#lt>
-
     <#list bc.aggregates as agg>
         ### Aggregate ${agg.name}<#lt>
         This aggregate can be classified as ${agg.doc!"[no doc string]"}. Its responsibilities are:<#lt>
 
-        <#if useCases?has_content>
+        <#if agg?has_content>
             <#list agg.responsibilities as r>
                 * ${r}<#lt>
             </#list>
@@ -17,15 +15,14 @@
             * [no (more) responsibilities defined]<#lt>
         </#if>
 
-        <#if agg.domainObjects?has_content>
+        <#assign entities = agg.domainObjects?filter(do -> instanceOf(do, Entity))>
+        <#if entities?has_content>
             #### Entities (in Aggregate)<#lt>
-            <#list agg.domainObjects as dob>
-                <#if instanceOf(dob, Entity)>
-                    ##### ${dob.name}<#lt>
-                    ${dob.hint!"[hint missing]"}<#lt>
+            <#list entities as dob>
+                ##### ${dob.name}<#lt>
+                ${dob.hint!"[hint missing]"}<#lt>
 
-                    <@attrOpsMacro.renderDomainObjectOperationsAndAttributes dob />
-                </#if>
+                <@attrOpsMacro.renderDomainObjectOperationsAndAttributes dob />
             </#list>
         </#if>
 
@@ -37,21 +34,21 @@
             </#list>
         </#if>
 
-        #### Value Objects<#lt>
-        <#if agg.domainObjects?has_content>
-            <#list agg.domainObjects as dob>
-                <#if instanceOf(dob, ValueObject)>
-                    ##### ${dob.name}<#lt>
-                    ${dob.hint!"[hint missing]"}<#lt>
+        <#assign valueObjects = agg.domainObjects?filter(do -> instanceOf(do, ValueObject))>
+        <#if valueObjects?has_content>
+            #### Value Objects<#lt>
+            <#list valueObjects as dob>
+                ##### ${dob.name}<#lt>
+                ${dob.hint!"[hint missing]"}<#lt>
 
-                    <@attrOpsMacro.renderDomainObjectOperationsAndAttributes dob />
-                </#if>
+                <@attrOpsMacro.renderDomainObjectOperationsAndAttributes dob />
             </#list>
         </#if>
 
-        #### Enumerations (Enums)<#lt>
-        <#list agg.domainObjects as dob>
-            <#if instanceOf(dob, Enum)>
+        <#assign enums = agg.domainObjects?filter(do -> instanceOf(do, Enum))>
+        <#if enums?has_content>
+            #### Enumerations (Enums)<#lt>
+            <#list enums as dob>
                 ##### ${dob.name}<#lt>
                 ${dob.hint!"[hint missing]"}<#lt>
 
@@ -59,23 +56,21 @@
                 <#list dob.values as value>
                     * ${value.name}<#lt>
                 </#list>
-            </#if>
+            </#list>
+        </#if>
 
-        </#list>
-
-        <#if agg.domainObjects?has_content>
+        <#assign events = agg.domainObjects?filter(do -> instanceOf(do, DomainEvent) || instanceOf(do, CommandEvent))>
+        <#if events?has_content>
             #### Events (Command Events, Domain Events)<#lt>
-            <#list agg.domainObjects as dob>
-                <#if instanceOf(dob, Event)>
-                    <#if instanceOf(dob, DomainEvent)>
-                        ##### ${dob.name} (DomainEvent)<#lt>
-                    <#elseif instanceOf(dob, CommandEvent)>
-                        ##### ${dob.name} (CommandEvent)<#lt>
-                    </#if>
-                    ${dob.hint!"[hint missing]"}<#lt>
-
-                    <@attrOpsMacro.renderDomainObjectOperationsAndAttributes dob />
+            <#list events as dob>
+                <#if instanceOf(dob, DomainEvent)>
+                    ##### ${dob.name} (DomainEvent)<#lt>
+                <#elseif instanceOf(dob, CommandEvent)>
+                    ##### ${dob.name} (CommandEvent)<#lt>
                 </#if>
+                ${dob.hint!"[hint missing]"}<#lt>
+
+                <@attrOpsMacro.renderDomainObjectOperationsAndAttributes dob />
             </#list>
         </#if>
 
