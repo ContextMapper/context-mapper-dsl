@@ -1,5 +1,5 @@
 ---
-title: Glossary for '${fileName}'
+title: Report generated from '${fileName}'
 project: ${projectName}
 author: ${userName}
 date: ${timeStamp}, Context Mapper version ${contextMapperVersion}
