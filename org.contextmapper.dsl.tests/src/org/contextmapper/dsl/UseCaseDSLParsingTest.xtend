@@ -178,7 +178,7 @@ class UseCaseDSLParsingTest {
 		val String dslSnippet = '''
 			UseCase testUsecase {
 				actor = "Insurance Employee"
-				activity = create a "Customer"
+				interaction = create a "Customer"
 			}
 		''';
 		// when
@@ -198,7 +198,7 @@ class UseCaseDSLParsingTest {
 		val String dslSnippet = '''
 			UseCase testUsecase {
 				actor = "Insurance Employee"
-				activity = create a "Customer"
+				interaction = create a "Customer"
 				benefit = "I can manage the customers data and ..."
 			}
 		''';

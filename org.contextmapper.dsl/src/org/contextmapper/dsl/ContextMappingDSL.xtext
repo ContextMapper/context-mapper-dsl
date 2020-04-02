@@ -193,7 +193,7 @@ UseCase:
 	'UseCase' name=ID 
 	(OPEN
 		(('actor' ('=')? role=STRING)? &
-		('activity' ('=')? feature=Feature)? &
+		('interaction' ('=')? feature=Feature)? &
 		('benefit' ('=')? benefit=STRING)? &
 		('isLatencyCritical' ('=')? isLatencyCritical?='true')? &
 		(('reads' nanoentitiesRead+=STRING*) ("," nanoentitiesRead+=STRING)*)? &
