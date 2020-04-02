@@ -44,7 +44,7 @@ public class ContextMapGenerator extends AbstractContextMapGenerator {
 	private int width = -1;
 	private int height = -1;
 	private boolean useWidth = true;
-	private boolean printAdditionalLabels = true;
+	private boolean printAdditionalLabels = false;
 
 	public ContextMapGenerator() {
 		this.formats = new HashSet<>();
