@@ -158,7 +158,7 @@ public class GenerateContextMapWizardPage extends ContextMapperWizardPage {
 		generateLabelsLabel.setText("Generate labels:");
 		generateLabelsCheckBox = new Button(container, SWT.CHECK);
 		generateLabelsCheckBox.setText("Labels for relationship names and implementation technologies");
-		generateLabelsCheckBox.setSelection(true);
+		generateLabelsCheckBox.setSelection(false);
 
 		// spacing factor label
 		Label labelSpacingFactorLabel = new Label(container, SWT.NONE);
