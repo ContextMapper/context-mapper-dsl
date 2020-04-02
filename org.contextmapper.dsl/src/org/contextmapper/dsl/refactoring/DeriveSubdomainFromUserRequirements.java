@@ -62,7 +62,7 @@ public class DeriveSubdomainFromUserRequirements extends AbstractRefactoring imp
 			if (!alreadyExistingEntity.isPresent())
 				addElementToEList(subdomain.getEntities(), createEntity(entityName));
 
-			String serviceName = entityName + "Service";
+			String serviceName = ur.getName() + "Service";
 			Optional<Service> alreadyExistingService = subdomain.getServices().stream().filter(s -> serviceName.equals(s.getName())).findFirst();
 			Service service;
 			if (!alreadyExistingService.isPresent()) {

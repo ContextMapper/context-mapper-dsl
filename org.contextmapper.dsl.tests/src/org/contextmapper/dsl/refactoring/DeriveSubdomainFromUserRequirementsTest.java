@@ -71,7 +71,7 @@ public class DeriveSubdomainFromUserRequirementsTest extends AbstractRefactoring
 		assertEquals("Customer", entity.getName());
 
 		Service service = subdomain.getServices().get(0);
-		assertEquals("CustomerService", service.getName());
+		assertEquals("US1_CreateService", service.getName());
 		assertEquals(1, service.getOperations().size());
 
 		ServiceOperation operation = service.getOperations().get(0);
