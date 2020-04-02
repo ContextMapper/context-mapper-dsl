@@ -16,7 +16,8 @@ Model Report for '${fileName}'
     Design Part<#lt>
     ------------<#lt>
     <#if filterStructuralBoundedContexts(boundedContexts)?has_content>
-        ## Bounded Context Overview<#lt>
+        
+        ### Bounded Context Overview<#lt>
 
         <#include "./bounded-contexts/bounded-context-list-simple.ftl">
         <#include "./bounded-contexts/bounded-context-list-detailed.ftl">
