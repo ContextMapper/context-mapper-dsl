@@ -43,4 +43,8 @@ public class ValidationMessages {
 	/* Generator problems */
 	public static final String EMPTY_UML_COMPONENT_DIAGRAM_MESSAGE = "Sorry, we cannot generate a component diagram. Your Context Map seems to be empty.";
 	public static final String EMPTY_UML_CLASS_DIAGRAM_MESSAGE = "Sorry, we cannot generate a class diagram for this Bounded Context. There are no Aggregates or none of the Aggregates contain any domain objects (entities, value objects or domain events).";
+	
+	/* General input problems */
+	public static final String ENTITY_NAME_CONTAINS_INVALID_CHARACTERS = "The given entity name contains invalid characters. The following characters are allowed: a-z, A-Z, 0-9, _";
+	public static final String VERB_CONTAINS_INVALID_CHARACTERS = "The given verb contains invalid characters. The following characters are allowed: a-z, A-Z, 0-9, _";
 }

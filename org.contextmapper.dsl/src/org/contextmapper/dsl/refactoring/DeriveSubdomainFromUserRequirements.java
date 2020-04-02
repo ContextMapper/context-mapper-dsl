@@ -57,7 +57,7 @@ public class DeriveSubdomainFromUserRequirements extends AbstractRefactoring imp
 			if (ur.getFeature() == null || ur.getFeature().getEntity() == null || "".equals(ur.getFeature().getEntity()))
 				continue;
 
-			String entityName = ur.getFeature().getEntity().replace(" ", "-").trim();
+			String entityName = ur.getFeature().getEntity().replace(" ", "_").trim();
 			Optional<Entity> alreadyExistingEntity = subdomain.getEntities().stream().filter(e -> entityName.equals(e.getName())).findFirst();
 			if (!alreadyExistingEntity.isPresent())
 				addElementToEList(subdomain.getEntities(), createEntity(entityName));
