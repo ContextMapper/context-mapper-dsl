@@ -15,6 +15,7 @@
  */
 package org.contextmapper.dsl.ui.handler.wizard;
 
+import java.util.Map;
 import java.util.Set;
 
 public class DeriveSubdomainsFromRequirementsContext {
@@ -22,11 +23,11 @@ public class DeriveSubdomainsFromRequirementsContext {
 	private String initialDomain;
 	private String domainName;
 	private String subdomainName;
-	private Set<String> allDomains;
+	private Map<String, Set<String>> allDomainsAndSubdomains;
 
-	public DeriveSubdomainsFromRequirementsContext(String initialDomain, Set<String> allDomains) {
+	public DeriveSubdomainsFromRequirementsContext(String initialDomain, Map<String, Set<String>> allDomainsAndSubdomains) {
 		this.initialDomain = initialDomain;
-		this.allDomains = allDomains;
+		this.allDomainsAndSubdomains = allDomainsAndSubdomains;
 	}
 
 	public String getInitialDomain() {
@@ -54,11 +55,11 @@ public class DeriveSubdomainsFromRequirementsContext {
 	}
 
 	public Set<String> getAllDomains() {
-		return allDomains;
+		return allDomainsAndSubdomains.keySet();
 	}
 
-	public void setAllDomains(Set<String> allDomains) {
-		this.allDomains = allDomains;
+	public Map<String, Set<String>> getDomainSubdomainMapping() {
+		return allDomainsAndSubdomains;
 	}
 
 }

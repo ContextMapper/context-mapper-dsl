@@ -40,7 +40,7 @@ public class DeriveSubdomainsFromRequirementsWizard extends Wizard {
 
 	@Override
 	public void addPages() {
-		page = new DeriveSubdomainFromRequirementsWizardPage(context.getInitialDomain(), context.getAllDomains());
+		page = new DeriveSubdomainFromRequirementsWizardPage(context.getInitialDomain(), context.getDomainSubdomainMapping());
 		addPage(page);
 	}
 

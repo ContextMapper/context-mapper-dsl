@@ -16,6 +16,7 @@
 package org.contextmapper.dsl.ui.handler.wizard.pages;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.jface.fieldassist.AutoCompleteField;
@@ -36,26 +37,27 @@ import org.eclipse.swt.widgets.Text;
 public class DeriveSubdomainFromRequirementsWizardPage extends ContextMapperWizardPage {
 
 	private String initialDomain;
-	private Set<String> allDomains;
+	private Map<String, Set<String>> domainSubdomainMapping;
 
 	private Combo comboDomains;
-	private Text textSubdomain;
+	private Combo comboSubdomain;
+	private AutoCompleteField subdomainAutoCompleteField;
 	private Composite container;
 
-	public DeriveSubdomainFromRequirementsWizardPage(String initialDomain, Set<String> allDomains) {
+	public DeriveSubdomainFromRequirementsWizardPage(String initialDomain, Map<String, Set<String>> domainSubdomainMapping) {
 		super("Subdomain Definition Page");
 		this.initialDomain = initialDomain;
-		this.allDomains = allDomains;
+		this.domainSubdomainMapping = domainSubdomainMapping;
 	}
 
 	@Override
 	public String getTitle() {
-		return "Subdomain Definition";
+		return "Domain and Subdomain Definition";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Define the name of the Subdomain to be created:";
+		return "Choose the name of the Domain and Subdomain to be created/updated:";
 	}
 
 	@Override
@@ -71,11 +73,12 @@ public class DeriveSubdomainFromRequirementsWizardPage extends ContextMapperWiza
 		// domain selection field
 		comboDomains = new Combo(container, SWT.DROP_DOWN);
 		comboDomains.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		comboDomains.setItems(this.allDomains.toArray(new String[this.allDomains.size()]));
-		comboDomains.select(new ArrayList<String>(this.allDomains).indexOf(this.initialDomain));
+		comboDomains.setItems(this.domainSubdomainMapping.keySet().toArray(new String[this.domainSubdomainMapping.size()]));
+		comboDomains.select(new ArrayList<String>(this.domainSubdomainMapping.keySet()).indexOf(this.initialDomain));
 		comboDomains.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				updateSubdomainCombo(domainSubdomainMapping.get(comboDomains.getText()));
 				setPageComplete(isPageComplete());
 			}
 		});
@@ -85,29 +88,48 @@ public class DeriveSubdomainFromRequirementsWizardPage extends ContextMapperWiza
 				setPageComplete(isPageComplete());
 			}
 		});
-		new AutoCompleteField(comboDomains, new ComboContentAdapter(), this.allDomains.toArray(new String[allDomains.size()]));
+		new AutoCompleteField(comboDomains, new ComboContentAdapter(), this.domainSubdomainMapping.keySet().toArray(new String[domainSubdomainMapping.size()]));
 
 		Label subdomainNameLabel = new Label(container, SWT.NONE);
 		subdomainNameLabel.setText("Subdomain name:");
 
-		textSubdomain = new Text(container, SWT.BORDER | SWT.SINGLE);
-		textSubdomain.setText("");
-		textSubdomain.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		textSubdomain.addKeyListener(new KeyAdapter() {
+		Set<String> initialSubdomains = domainSubdomainMapping.get(initialDomain);
+		comboSubdomain = new Combo(container, SWT.DROP_DOWN);
+		comboSubdomain.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		comboSubdomain.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				setPageComplete(isPageComplete());
+			}
+		});
+		comboSubdomain.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				setPageComplete(isPageComplete());
 			}
 		});
+		this.subdomainAutoCompleteField = new AutoCompleteField(comboSubdomain, new ComboContentAdapter(), initialSubdomains.toArray(new String[initialSubdomains.size()]));
+		updateSubdomainCombo(initialSubdomains);
 
 		setControl(container);
 		setPageComplete(false);
 	}
 
+	private void updateSubdomainCombo(Set<String> subdomains) {
+		if (subdomains == null) {
+			comboSubdomain.setItems(new String[0]);
+			subdomainAutoCompleteField.setProposals(new String[0]);
+		}
+
+		String[] items = subdomains.toArray(new String[subdomains.size()]);
+		comboSubdomain.setItems(items);
+		subdomainAutoCompleteField.setProposals(items);
+	}
+
 	@Override
 	public void setVisible(boolean visible) {
 		super.setVisible(visible);
-		this.textSubdomain.forceFocus();
+		this.comboSubdomain.forceFocus();
 	}
 
 	public String getDomain() {
@@ -115,12 +137,12 @@ public class DeriveSubdomainFromRequirementsWizardPage extends ContextMapperWiza
 	}
 
 	public String getSubdomain() {
-		return textSubdomain.getText();
+		return comboSubdomain.getText();
 	}
 
 	@Override
 	public boolean isPageComplete() {
-		return comboDomains.getText() != null && !"".equals(comboDomains.getText()) && textSubdomain.getText() != null && !"".equals(textSubdomain.getText());
+		return comboDomains.getText() != null && !"".equals(comboDomains.getText()) && comboSubdomain.getText() != null && !"".equals(comboSubdomain.getText());
 	}
 
 	@Override
