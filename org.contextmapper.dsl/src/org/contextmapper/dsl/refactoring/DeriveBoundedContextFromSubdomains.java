@@ -67,7 +67,7 @@ public class DeriveBoundedContextFromSubdomains extends AbstractRefactoring impl
 	private void createAggregates4Entities(Subdomain subdomain, BoundedContext newBC) {
 		for (Entity entity : subdomain.getEntities()) {
 			Aggregate aggregate = ContextMappingDSLFactory.eINSTANCE.createAggregate();
-			aggregate.setName(entity.getName() + "Aggregate");
+			aggregate.setName(getUniqueAggregateName(newBC, entity.getName() + "Aggregate"));
 
 			Entity rootEntity = TacticdslFactory.eINSTANCE.createEntity();
 			rootEntity.setName(entity.getName());
@@ -76,6 +76,17 @@ public class DeriveBoundedContextFromSubdomains extends AbstractRefactoring impl
 			addElementToEList(aggregate.getDomainObjects(), rootEntity);
 			addElementToEList(newBC.getAggregates(), aggregate);
 		}
+	}
+
+	private String getUniqueAggregateName(BoundedContext bc, String initialAggregateName) {
+		Set<String> allAggregateNames = bc.getAggregates().stream().map(agg -> agg.getName()).collect(Collectors.toSet());
+		String aggregateName = initialAggregateName;
+		int counter = 2;
+		while (allAggregateNames.contains(aggregateName)) {
+			aggregateName = initialAggregateName + "_" + counter;
+			counter++;
+		}
+		return aggregateName;
 	}
 
 	private Set<Subdomain> collectSubdomains() {

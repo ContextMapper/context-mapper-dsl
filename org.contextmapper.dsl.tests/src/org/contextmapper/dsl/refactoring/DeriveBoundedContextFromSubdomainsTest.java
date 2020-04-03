@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.cml.CMLResourceContainer;
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
@@ -70,6 +71,30 @@ public class DeriveBoundedContextFromSubdomainsTest extends AbstractRefactoringT
 		Entity entity = (Entity) aggregate.getDomainObjects().get(0);
 		assertEquals("Customer", entity.getName());
 		assertTrue(entity.isAggregateRoot());
+	}
+
+	@Test
+	public void canSolveAggregateNameConflicts() throws IOException {
+		// given
+		CMLResourceContainer input = getResourceCopyOfTestCML("derive-bc-from-subdomain-test-2-input.cml");
+
+		// when
+		Set<String> subdomains = Sets.newHashSet(Arrays.asList(new String[] { "CustomerDomain", "AnotherDomain" }));
+		DeriveBoundedContextFromSubdomains ar = new DeriveBoundedContextFromSubdomains("NewTestBC", subdomains);
+		ar.doRefactor(input);
+
+		// then
+		ContextMappingModel model = reloadResource(input).getContextMappingModel();
+		assertEquals(1, model.getBoundedContexts().size());
+		assertNotNull(model.getBoundedContexts().get(0));
+
+		BoundedContext bc = model.getBoundedContexts().get(0);
+		assertEquals("NewTestBC", bc.getName());
+		assertEquals(2, bc.getAggregates().size());
+
+		Set<String> aggregateNames = bc.getAggregates().stream().map(ag -> ag.getName()).collect(Collectors.toSet());
+		assertTrue(aggregateNames.contains("CustomerAggregate"));
+		assertTrue(aggregateNames.contains("CustomerAggregate_2"));
 	}
 
 	@Test
