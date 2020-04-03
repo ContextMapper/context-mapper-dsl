@@ -15,6 +15,7 @@
  */
 package org.contextmapper.dsl.refactoring;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -27,9 +28,15 @@ import org.contextmapper.dsl.contextMappingDSL.Domain;
 import org.contextmapper.dsl.contextMappingDSL.DomainPart;
 import org.contextmapper.dsl.contextMappingDSL.Subdomain;
 import org.contextmapper.dsl.refactoring.exception.RefactoringInputException;
+import org.contextmapper.tactic.dsl.tacticdsl.Attribute;
+import org.contextmapper.tactic.dsl.tacticdsl.ComplexType;
+import org.contextmapper.tactic.dsl.tacticdsl.DomainObjectOperation;
 import org.contextmapper.tactic.dsl.tacticdsl.Entity;
+import org.contextmapper.tactic.dsl.tacticdsl.Parameter;
+import org.contextmapper.tactic.dsl.tacticdsl.SimpleDomainObject;
 import org.contextmapper.tactic.dsl.tacticdsl.TacticdslFactory;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 public class DeriveBoundedContextFromSubdomains extends AbstractRefactoring implements Refactoring {
@@ -68,14 +75,39 @@ public class DeriveBoundedContextFromSubdomains extends AbstractRefactoring impl
 		for (Entity entity : subdomain.getEntities()) {
 			Aggregate aggregate = ContextMappingDSLFactory.eINSTANCE.createAggregate();
 			aggregate.setName(getUniqueAggregateName(newBC, entity.getName() + "Aggregate"));
+			aggregate.setComment("// TODO: please add other domain objects (entities, value objects, domain events) and their attributes and operations.");
 
 			Entity rootEntity = TacticdslFactory.eINSTANCE.createEntity();
 			rootEntity.setName(entity.getName());
 			rootEntity.setAggregateRoot(true);
 
+			Attribute globalIdAttribute = TacticdslFactory.eINSTANCE.createAttribute();
+			globalIdAttribute.setType("GlobalID");
+			globalIdAttribute.setName("globalId");
+
+			addElementToEList(rootEntity.getAttributes(), globalIdAttribute);
 			addElementToEList(aggregate.getDomainObjects(), rootEntity);
 			addElementToEList(newBC.getAggregates(), aggregate);
 		}
+	}
+
+	private ComplexType createComplexType(String type) {
+		ComplexType complexType = TacticdslFactory.eINSTANCE.createComplexType();
+		complexType.setType(type);
+		return complexType;
+	}
+
+	private ComplexType createComplexType(SimpleDomainObject type) {
+		ComplexType complexType = TacticdslFactory.eINSTANCE.createComplexType();
+		complexType.setDomainObjectType(type);
+		return complexType;
+	}
+
+	private Parameter createParameter(String name, ComplexType type) {
+		Parameter parameter = TacticdslFactory.eINSTANCE.createParameter();
+		parameter.setName(name);
+		parameter.setParameterType(type);
+		return parameter;
 	}
 
 	private String getUniqueAggregateName(BoundedContext bc, String initialAggregateName) {

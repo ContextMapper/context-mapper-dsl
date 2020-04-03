@@ -15,10 +15,10 @@
  */
 package org.contextmapper.dsl.refactoring;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -31,6 +31,7 @@ import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContextType;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.refactoring.exception.RefactoringInputException;
+import org.contextmapper.tactic.dsl.tacticdsl.Attribute;
 import org.contextmapper.tactic.dsl.tacticdsl.Entity;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -71,6 +72,12 @@ public class DeriveBoundedContextFromSubdomainsTest extends AbstractRefactoringT
 		Entity entity = (Entity) aggregate.getDomainObjects().get(0);
 		assertEquals("Customer", entity.getName());
 		assertTrue(entity.isAggregateRoot());
+		assertEquals(1, entity.getAttributes().size());
+
+		Attribute attr = entity.getAttributes().get(0);
+		assertNotNull(attr);
+		assertEquals("globalId", attr.getName());
+		assertEquals("GlobalID", attr.getType());
 	}
 
 	@Test
