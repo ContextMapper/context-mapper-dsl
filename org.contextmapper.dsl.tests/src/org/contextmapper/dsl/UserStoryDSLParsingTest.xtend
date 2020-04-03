@@ -75,7 +75,7 @@ class UserStoryDSLParsingTest {
 	}
 
 	@Test
-	def void cannotDefineVerbWithWhitespaces() {
+	def void verbWithWhitespacesProducesWarning() {
 		// given
 		val String dslSnippet = '''
 			UserStory testUsecase {
@@ -86,12 +86,12 @@ class UserStoryDSLParsingTest {
 		val ContextMappingModel result = parseHelper.parse(dslSnippet);
 		// then
 		assertThatNoParsingErrorsOccurred(result);
-		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.FEATURE, "",
+		validationTestHelper.assertWarning(result, ContextMappingDSLPackage.Literals.FEATURE, "",
 			VERB_CONTAINS_INVALID_CHARACTERS);
 	}
 	
 	@Test
-	def void cannotDefineEntityWithWhitespaces() {
+	def void entityWithWhitespacesProducesWarning() {
 		// given
 		val String dslSnippet = '''
 			UserStory testUsecase {
@@ -102,7 +102,7 @@ class UserStoryDSLParsingTest {
 		val ContextMappingModel result = parseHelper.parse(dslSnippet);
 		// then
 		assertThatNoParsingErrorsOccurred(result);
-		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.FEATURE, "",
+		validationTestHelper.assertWarning(result, ContextMappingDSLPackage.Literals.FEATURE, "",
 			ENTITY_NAME_CONTAINS_INVALID_CHARACTERS);
 	}
 

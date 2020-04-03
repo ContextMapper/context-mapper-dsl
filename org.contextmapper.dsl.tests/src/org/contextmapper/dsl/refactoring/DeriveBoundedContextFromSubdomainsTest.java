@@ -27,6 +27,7 @@ import java.util.Set;
 import org.contextmapper.dsl.cml.CMLResourceContainer;
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
+import org.contextmapper.dsl.contextMappingDSL.BoundedContextType;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.refactoring.exception.RefactoringInputException;
 import org.contextmapper.tactic.dsl.tacticdsl.Entity;
@@ -56,6 +57,7 @@ public class DeriveBoundedContextFromSubdomainsTest extends AbstractRefactoringT
 
 		BoundedContext bc = model.getBoundedContexts().get(0);
 		assertEquals("NewTestBC", bc.getName());
+		assertEquals(BoundedContextType.FEATURE, bc.getType());
 		assertEquals(1, bc.getAggregates().size());
 		assertNotNull(bc.getAggregates().get(0));
 

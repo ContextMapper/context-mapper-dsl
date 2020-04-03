@@ -37,13 +37,13 @@ public class UserRequirementsValidator extends AbstractDeclarativeValidator {
 			return;
 
 		if (!feature.getEntity().matches("^[a-zA-Z_][a-zA-Z0-9_]*"))
-			error(ENTITY_NAME_CONTAINS_INVALID_CHARACTERS, feature, ContextMappingDSLPackage.Literals.FEATURE__ENTITY);
+			warning(ENTITY_NAME_CONTAINS_INVALID_CHARACTERS, feature, ContextMappingDSLPackage.Literals.FEATURE__ENTITY);
 		
 		if(feature.getVerb() == null)
 			return;
 		
 		if (!feature.getVerb().matches("^[a-zA-Z_][a-zA-Z0-9_]*"))
-			error(VERB_CONTAINS_INVALID_CHARACTERS, feature, ContextMappingDSLPackage.Literals.FEATURE__VERB);
+			warning(VERB_CONTAINS_INVALID_CHARACTERS, feature, ContextMappingDSLPackage.Literals.FEATURE__VERB);
 	}
 
 }
