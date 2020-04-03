@@ -64,6 +64,8 @@ public class DeriveSubdomainFromUserRequirementsTest extends AbstractRefactoring
 
 		Subdomain subdomain = domain.getSubdomains().get(0);
 		assertEquals("Customers", subdomain.getName());
+		assertEquals("Aims at promoting the following benefit for a Insurance Employee: I am able to manage the customer data and offer contracts.",
+				subdomain.getDomainVisionStatement());
 		assertEquals(1, subdomain.getEntities().size());
 		assertEquals(1, subdomain.getServices().size());
 
@@ -76,6 +78,31 @@ public class DeriveSubdomainFromUserRequirementsTest extends AbstractRefactoring
 
 		ServiceOperation operation = service.getOperations().get(0);
 		assertEquals("createCustomer", operation.getName());
+	}
+
+	@Test
+	public void canMergeDomainVisionStatements() throws IOException {
+		// given
+		CMLResourceContainer input = getResourceCopyOfTestCML("derive-subdomain-from-user-story-test-existing-dvs-1.cml");
+
+		// when
+		Set<String> userStories = Sets.newHashSet(Arrays.asList(new String[] { "US1_Create", "Story_to_be_Ignored" }));
+		DeriveSubdomainFromUserRequirements ar = new DeriveSubdomainFromUserRequirements("InsuranceDomain", "Customers", userStories);
+		ar.doRefactor(input);
+
+		// then
+		ContextMappingModel model = reloadResource(input).getContextMappingModel();
+		assertEquals(1, model.getDomains().size());
+		assertNotNull(model.getDomains().get(0));
+
+		Domain domain = model.getDomains().get(0);
+		assertEquals(1, domain.getSubdomains().size());
+		assertNotNull(domain.getSubdomains().get(0));
+
+		Subdomain subdomain = domain.getSubdomains().get(0);
+		assertEquals("Customers", subdomain.getName());
+		assertEquals("existing dvs 1; existing dvs 2; Aims at promoting the following benefit for a Insurance Employee: I am able to manage the customer data and offer contracts.",
+				subdomain.getDomainVisionStatement());
 	}
 
 	@ParameterizedTest

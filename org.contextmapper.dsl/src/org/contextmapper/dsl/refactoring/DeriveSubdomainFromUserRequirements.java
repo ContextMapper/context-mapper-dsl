@@ -15,6 +15,7 @@
  */
 package org.contextmapper.dsl.refactoring;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -28,9 +29,12 @@ import org.contextmapper.tactic.dsl.tacticdsl.Service;
 import org.contextmapper.tactic.dsl.tacticdsl.ServiceOperation;
 import org.contextmapper.tactic.dsl.tacticdsl.TacticdslFactory;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 public class DeriveSubdomainFromUserRequirements extends AbstractRefactoring implements Refactoring {
+
+	private static final String BENEFIT_SEPARATOR_STRING = "; ";
 
 	private Set<String> userRequiremendIds = Sets.newHashSet();
 	private String domainName;
@@ -52,6 +56,9 @@ public class DeriveSubdomainFromUserRequirements extends AbstractRefactoring imp
 
 		Domain domain = getOrCreateDomain();
 		Subdomain subdomain = getOrCreateSubdomain(domain);
+		List<String> benefits = Lists.newLinkedList();
+		if (subdomain.getDomainVisionStatement() != null && !"".equals(subdomain.getDomainVisionStatement()))
+			benefits.addAll(List.of(subdomain.getDomainVisionStatement().split(BENEFIT_SEPARATOR_STRING)));
 
 		for (UserRequirement ur : selectedUserRequirements) {
 			if (ur.getFeature() == null || ur.getFeature().getEntity() == null || "".equals(ur.getFeature().getEntity()))
@@ -61,6 +68,8 @@ public class DeriveSubdomainFromUserRequirements extends AbstractRefactoring imp
 			Optional<Entity> alreadyExistingEntity = subdomain.getEntities().stream().filter(e -> entityName.equals(e.getName())).findFirst();
 			if (!alreadyExistingEntity.isPresent())
 				addElementToEList(subdomain.getEntities(), createEntity(entityName));
+
+			benefits.add("Aims at promoting the following benefit for a " + ur.getRole() + ": " + ur.getBenefit());
 
 			String serviceName = ur.getName() + "Service";
 			Optional<Service> alreadyExistingService = subdomain.getServices().stream().filter(s -> serviceName.equals(s.getName())).findFirst();
@@ -72,11 +81,13 @@ public class DeriveSubdomainFromUserRequirements extends AbstractRefactoring imp
 				service = alreadyExistingService.get();
 			}
 
-			String operationName = ur.getFeature().getVerb() + entityName;
+			String operationName = ur.getFeature().getVerb().replace(" ", "_") + entityName;
 			Optional<ServiceOperation> alreadyExistingServiceOperation = service.getOperations().stream().filter(o -> operationName.equals(o.getName())).findFirst();
 			if (!alreadyExistingServiceOperation.isPresent())
 				addElementToEList(service.getOperations(), createServiceOperation(operationName));
 		}
+
+		subdomain.setDomainVisionStatement(String.join(BENEFIT_SEPARATOR_STRING, benefits));
 
 		markResourceChanged(domain);
 		saveResources();
