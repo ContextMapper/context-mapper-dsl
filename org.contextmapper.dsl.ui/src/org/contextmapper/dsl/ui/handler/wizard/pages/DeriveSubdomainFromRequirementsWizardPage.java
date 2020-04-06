@@ -147,6 +147,6 @@ public class DeriveSubdomainFromRequirementsWizardPage extends ContextMapperWiza
 
 	@Override
 	public void performHelp() {
-		Program.launch("https://contextmapper.org/docs/derive-subdomains-from-user-requirements/");
+		Program.launch("https://contextmapper.org/docs/rapid-ooad/");
 	}
 }
