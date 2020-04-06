@@ -73,6 +73,26 @@ class UserStoryDSLParsingTest {
 		assertEquals("Customer", result.userRequirements.get(0).feature.entity)
 		assertEquals("I can manage the customers data and ...", result.userRequirements.get(0).benefit)
 	}
+	
+	@Test
+	def void canDefineStoryWithoutA() {
+		// given
+		val String dslSnippet = '''
+			UserStory testUsecase {
+				As an "Insurance Employee" I want to create "Customer" so that "I can manage the customers data and ..."
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+
+		assertEquals("Insurance Employee", result.userRequirements.get(0).role)
+		assertEquals("create", result.userRequirements.get(0).feature.verb)
+		assertEquals("Customer", result.userRequirements.get(0).feature.entity)
+		assertEquals("I can manage the customers data and ...", result.userRequirements.get(0).benefit)
+	}
 
 	@Test
 	def void verbWithWhitespacesProducesWarning() {

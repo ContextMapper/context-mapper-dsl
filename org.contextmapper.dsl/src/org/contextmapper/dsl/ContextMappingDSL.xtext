@@ -212,7 +212,7 @@ UserStory:
 ;
 
 Feature:
-	verb=(UserActivityDefaultVerb | STRING) ('a' | 'an') entity=STRING
+	verb=(UserActivityDefaultVerb | STRING) ('a' | 'an')? entity=STRING
 ;
 
 UserActivityDefaultVerb:
