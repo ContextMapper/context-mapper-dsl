@@ -75,7 +75,10 @@ public class DeriveBoundedContextFromSubdomains extends AbstractRefactoring impl
 		Aggregate aggregate = ContextMappingDSLFactory.eINSTANCE.createAggregate();
 		aggregate.setName(subdomain.getName() + "Aggregate");
 		aggregate.setComment("/* This Aggregate contains the entities and services of the '" + subdomain.getName() + "' subdomain." + System.lineSeparator()
-				+ "	 * You can now refactor the Aggregate, for example by using the 'Split Aggregate by Entities' architectural refactoring. */");
+				+ "	 * TODO: You can now refactor the Aggregate, for example by using the 'Split Aggregate by Entities' architectural refactoring." + System.lineSeparator()
+				+ "	 * TODO: Add attributes and operations to the entities." + System.lineSeparator()
+				+ "	 * TODO: Add operations to the services." + System.lineSeparator()
+				+ "	 * Find examples and further instructions on our website: https://contextmapper.org/docs/rapid-ooad/ */");
 
 		createEntities(subdomain, aggregate);
 		createServices(subdomain, aggregate);
@@ -88,9 +91,6 @@ public class DeriveBoundedContextFromSubdomains extends AbstractRefactoring impl
 			Entity newEntity = TacticdslFactory.eINSTANCE.createEntity();
 			newEntity.setName(entity.getName());
 			newEntity.setAggregateRoot(false);
-			newEntity.setComment("/* TODO: Add attributes, references, and operations to entity (see examples below)." + System.lineSeparator()
-					+ "		 * attribute example: String attribute" + System.lineSeparator() + "		 * reference example: - OtherObject reference" + System.lineSeparator()
-					+ "		 * operation example: def ReturnType doSomething(Parameter parameter);" + System.lineSeparator() + "		 */");
 
 			Attribute idAttribute = TacticdslFactory.eINSTANCE.createAttribute();
 			idAttribute.setType(entity.getName() + "ID");
@@ -107,8 +107,6 @@ public class DeriveBoundedContextFromSubdomains extends AbstractRefactoring impl
 			newService.setName(service.getName());
 			newService.setDoc(service.getDoc());
 			newService.setHint(service.getHint());
-			newService.setComment("/* TODO: Add operations to service." + System.lineSeparator()
-					+ "		 * example: ReturnType exampleServiceOperation(String param1, @Object param2);" + System.lineSeparator() + "		 */");
 
 			addElementsToEList(newService.getOperations(), copyAndEnhanceOperations(service));
 			addElementToEList(aggregate.getServices(), newService);
