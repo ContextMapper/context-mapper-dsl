@@ -18,9 +18,11 @@ package org.contextmapper.dsl.refactoring;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
 import org.contextmapper.dsl.contextMappingDSL.Domain;
+import org.contextmapper.dsl.contextMappingDSL.Feature;
 import org.contextmapper.dsl.contextMappingDSL.Subdomain;
 import org.contextmapper.dsl.contextMappingDSL.UserRequirement;
 import org.contextmapper.dsl.refactoring.exception.RefactoringInputException;
@@ -61,30 +63,11 @@ public class DeriveSubdomainFromUserRequirements extends AbstractRefactoring imp
 			benefits.addAll(List.of(subdomain.getDomainVisionStatement().split(BENEFIT_SEPARATOR_STRING)));
 
 		for (UserRequirement ur : selectedUserRequirements) {
-			if (ur.getFeature() == null || ur.getFeature().getEntity() == null || "".equals(ur.getFeature().getEntity()))
+			if (!doesContainAtLeastOneEntity(ur))
 				continue;
 
-			String entityName = ur.getFeature().getEntity().replace(" ", "_").trim();
-			Optional<Entity> alreadyExistingEntity = subdomain.getEntities().stream().filter(e -> entityName.equals(e.getName())).findFirst();
-			if (!alreadyExistingEntity.isPresent())
-				addElementToEList(subdomain.getEntities(), createEntity(entityName));
-
 			benefits.add("Aims at promoting the following benefit for a " + ur.getRole() + ": " + ur.getBenefit());
-
-			String serviceName = ur.getName().substring(0, 1).toUpperCase() + ur.getName().substring(1) + "Service";
-			Optional<Service> alreadyExistingService = subdomain.getServices().stream().filter(s -> serviceName.equals(s.getName())).findFirst();
-			Service service;
-			if (!alreadyExistingService.isPresent()) {
-				service = createService(serviceName, entityName, ur.getFeature().getVerb());
-				addElementToEList(subdomain.getServices(), service);
-			} else {
-				service = alreadyExistingService.get();
-			}
-
-			String operationName = ur.getFeature().getVerb().replace(" ", "_") + entityName;
-			Optional<ServiceOperation> alreadyExistingServiceOperation = service.getOperations().stream().filter(o -> operationName.equals(o.getName())).findFirst();
-			if (!alreadyExistingServiceOperation.isPresent())
-				addElementToEList(service.getOperations(), createServiceOperation(operationName));
+			deriveSubdomainEntities4Features(subdomain, ur.getName(), ur.getFeatures());
 		}
 
 		subdomain.setDomainVisionStatement(String.join(BENEFIT_SEPARATOR_STRING, benefits));
@@ -93,10 +76,42 @@ public class DeriveSubdomainFromUserRequirements extends AbstractRefactoring imp
 		saveResources();
 	}
 
-	private Entity createEntity(String entityName) {
-		Entity newEntity = TacticdslFactory.eINSTANCE.createEntity();
-		newEntity.setName(entityName);
-		return newEntity;
+	private boolean doesContainAtLeastOneEntity(UserRequirement ur) {
+		if (ur.getFeatures().isEmpty())
+			return false;
+
+		Set<String> entityNames = ur.getFeatures().stream().map(f -> f.getEntity()).collect(Collectors.toSet());
+		return !entityNames.isEmpty() && !"".equals(entityNames.iterator().next());
+	}
+
+	private void deriveSubdomainEntities4Features(Subdomain subdomain, String urName, List<Feature> features) {
+		for (Feature feature : features) {
+			if (feature.getEntity() == null || "".equals(feature.getEntity()))
+				continue;
+
+			String entityName = feature.getEntity().replace(" ", "_").trim();
+			Optional<Entity> alreadyExistingEntity = subdomain.getEntities().stream().filter(e -> entityName.equals(e.getName())).findFirst();
+			if (!alreadyExistingEntity.isPresent()) {
+				Entity newEntity = TacticdslFactory.eINSTANCE.createEntity();
+				newEntity.setName(entityName);
+				addElementToEList(subdomain.getEntities(), newEntity);
+			}
+
+			String serviceName = urName.substring(0, 1).toUpperCase() + urName.substring(1) + "Service";
+			Optional<Service> alreadyExistingService = subdomain.getServices().stream().filter(s -> serviceName.equals(s.getName())).findFirst();
+			Service service;
+			if (!alreadyExistingService.isPresent()) {
+				service = createService(serviceName, entityName, feature.getVerb());
+				addElementToEList(subdomain.getServices(), service);
+			} else {
+				service = alreadyExistingService.get();
+			}
+
+			String operationName = feature.getVerb().replace(" ", "_") + entityName;
+			Optional<ServiceOperation> alreadyExistingServiceOperation = service.getOperations().stream().filter(o -> operationName.equals(o.getName())).findFirst();
+			if (!alreadyExistingServiceOperation.isPresent())
+				addElementToEList(service.getOperations(), createServiceOperation(operationName));
+		}
 	}
 
 	private Service createService(String serviceName, String entityName, String verb) {

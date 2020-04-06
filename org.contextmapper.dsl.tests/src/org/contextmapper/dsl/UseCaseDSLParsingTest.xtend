@@ -188,8 +188,8 @@ class UseCaseDSLParsingTest {
 		assertThatNoValidationErrorsOccurred(result);
 		
 		assertEquals("Insurance Employee", result.userRequirements.get(0).role)
-		assertEquals("create", result.userRequirements.get(0).feature.verb)
-		assertEquals("Customer", result.userRequirements.get(0).feature.entity)
+		assertEquals("create", result.userRequirements.get(0).features.get(0).verb)
+		assertEquals("Customer", result.userRequirements.get(0).features.get(0).entity)
 	}
 	
 	@Test
@@ -209,9 +209,28 @@ class UseCaseDSLParsingTest {
 		assertThatNoValidationErrorsOccurred(result);
 		
 		assertEquals("Insurance Employee", result.userRequirements.get(0).role)
-		assertEquals("create", result.userRequirements.get(0).feature.verb)
-		assertEquals("Customer", result.userRequirements.get(0).feature.entity)
+		assertEquals("create", result.userRequirements.get(0).features.get(0).verb)
+		assertEquals("Customer", result.userRequirements.get(0).features.get(0).entity)
 		assertEquals("I can manage the customers data and ...", result.userRequirements.get(0).benefit)
+	}
+	
+	@Test
+	def void canDefineMultipleInteractions() {
+		// given
+		val String dslSnippet = '''
+			UseCase testUsecase {
+				actor = "Insurance Employee"
+				interaction = create a "Customer", "update" an "Address"
+				benefit = "I can manage the customers data and ..."
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		
+		assertEquals(2, result.userRequirements.get(0).features.size)
 	}
 	
 }

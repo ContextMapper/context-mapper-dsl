@@ -69,8 +69,8 @@ class UserStoryDSLParsingTest {
 		assertThatNoValidationErrorsOccurred(result);
 
 		assertEquals("Insurance Employee", result.userRequirements.get(0).role)
-		assertEquals("create", result.userRequirements.get(0).feature.verb)
-		assertEquals("Customer", result.userRequirements.get(0).feature.entity)
+		assertEquals("create", result.userRequirements.get(0).features.get(0).verb)
+		assertEquals("Customer", result.userRequirements.get(0).features.get(0).entity)
 		assertEquals("I can manage the customers data and ...", result.userRequirements.get(0).benefit)
 	}
 	
@@ -89,8 +89,8 @@ class UserStoryDSLParsingTest {
 		assertThatNoValidationErrorsOccurred(result);
 
 		assertEquals("Insurance Employee", result.userRequirements.get(0).role)
-		assertEquals("create", result.userRequirements.get(0).feature.verb)
-		assertEquals("Customer", result.userRequirements.get(0).feature.entity)
+		assertEquals("create", result.userRequirements.get(0).features.get(0).verb)
+		assertEquals("Customer", result.userRequirements.get(0).features.get(0).entity)
 		assertEquals("I can manage the customers data and ...", result.userRequirements.get(0).benefit)
 	}
 
@@ -124,6 +124,28 @@ class UserStoryDSLParsingTest {
 		assertThatNoParsingErrorsOccurred(result);
 		validationTestHelper.assertWarning(result, ContextMappingDSLPackage.Literals.FEATURE, "",
 			ENTITY_NAME_CONTAINS_INVALID_CHARACTERS);
+	}
+	
+	@Test
+	def void canDefineStoryWithMultipleFeatures() {
+		// given
+		val String dslSnippet = '''
+			UserStory testUsecase {
+				As an "Insurance Employee" 
+					I want to create a "Customer"
+					I want to update a "Customer"
+					I want to create an "Address"
+				so that "I can manage the customers data and ..."
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		
+		assertEquals(1, result.userRequirements.size)
+		assertEquals(3, result.userRequirements.get(0).features.size)
 	}
 
 }
