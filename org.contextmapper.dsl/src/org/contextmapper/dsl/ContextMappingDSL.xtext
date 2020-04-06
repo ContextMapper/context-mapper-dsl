@@ -165,7 +165,7 @@ CustomerSupplierRelationship:
 ;
 
 Aggregate :
-  (comment=SL_COMMENT)?
+  (comment=ML_COMMENT)?
   (doc=STRING)?
   "Aggregate" name=ID (OPEN
     (

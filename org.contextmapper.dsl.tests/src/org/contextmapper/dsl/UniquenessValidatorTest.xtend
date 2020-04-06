@@ -56,6 +56,25 @@ class UniquenessValidatorTest {
 	}
 	
 	@Test
+	def void cannotDefineDuplicateSubdomain() {
+		// given
+		val String dslSnippet = '''
+			Domain TestDomain {
+				Subdomain TestSubdomain
+			}
+			Domain AnotherTestDomain {
+				Subdomain TestSubdomain
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.SUBDOMAIN, "",
+			String.format(SUBDOMAIN_OBJECT_NOT_UNIQUE, "TestSubdomain"));
+	}
+	
+	@Test
 	def void cannotDefineDuplicateModule() {
 		// given
 		val String dslSnippet = '''

@@ -30,10 +30,10 @@ import org.contextmapper.dsl.contextMappingDSL.Subdomain;
 import org.contextmapper.dsl.refactoring.exception.RefactoringInputException;
 import org.contextmapper.tactic.dsl.tacticdsl.Attribute;
 import org.contextmapper.tactic.dsl.tacticdsl.ComplexType;
-import org.contextmapper.tactic.dsl.tacticdsl.DomainObjectOperation;
 import org.contextmapper.tactic.dsl.tacticdsl.Entity;
 import org.contextmapper.tactic.dsl.tacticdsl.Parameter;
-import org.contextmapper.tactic.dsl.tacticdsl.SimpleDomainObject;
+import org.contextmapper.tactic.dsl.tacticdsl.Service;
+import org.contextmapper.tactic.dsl.tacticdsl.ServiceOperation;
 import org.contextmapper.tactic.dsl.tacticdsl.TacticdslFactory;
 
 import com.google.common.collect.Lists;
@@ -62,7 +62,7 @@ public class DeriveBoundedContextFromSubdomains extends AbstractRefactoring impl
 		newBC.setType(BoundedContextType.FEATURE);
 		for (Subdomain subdomain : selectedSubdomains) {
 			addElementToEList(newBC.getImplementedDomainParts(), (DomainPart) subdomain);
-			createAggregates4Entities(subdomain, newBC);
+			createAggregate4Subdomain(subdomain, newBC);
 		}
 
 		addElementToEList(rootResource.getContextMappingModel().getBoundedContexts(), newBC);
@@ -71,35 +71,76 @@ public class DeriveBoundedContextFromSubdomains extends AbstractRefactoring impl
 		saveResources();
 	}
 
-	private void createAggregates4Entities(Subdomain subdomain, BoundedContext newBC) {
+	private void createAggregate4Subdomain(Subdomain subdomain, BoundedContext newBC) {
+		Aggregate aggregate = ContextMappingDSLFactory.eINSTANCE.createAggregate();
+		aggregate.setName(subdomain.getName() + "Aggregate");
+		aggregate.setComment("/* This Aggregate contains the entities and services of the '" + subdomain.getName() + "' subdomain." + System.lineSeparator()
+				+ "	 * You can now refactor the Aggregate, for example by using the 'Split Aggregate by Entities' architectural refactoring. */");
+
+		createEntities(subdomain, aggregate);
+		createServices(subdomain, aggregate);
+
+		addElementToEList(newBC.getAggregates(), aggregate);
+	}
+
+	private void createEntities(Subdomain subdomain, Aggregate aggregate) {
 		for (Entity entity : subdomain.getEntities()) {
-			Aggregate aggregate = ContextMappingDSLFactory.eINSTANCE.createAggregate();
-			aggregate.setName(getUniqueAggregateName(newBC, entity.getName() + "Aggregate"));
-			aggregate.setComment("// TODO: please add other domain objects (entities, value objects, domain events) and their attributes and operations.");
+			Entity newEntity = TacticdslFactory.eINSTANCE.createEntity();
+			newEntity.setName(entity.getName());
+			newEntity.setAggregateRoot(false);
+			newEntity.setComment("/* TODO: Add attributes, references, and operations to entity (see examples below)." + System.lineSeparator()
+					+ "		 * attribute example: String attribute" + System.lineSeparator() + "		 * reference example: - OtherObject reference" + System.lineSeparator()
+					+ "		 * operation example: def ReturnType doSomething(Parameter parameter);" + System.lineSeparator() + "		 */");
 
-			Entity rootEntity = TacticdslFactory.eINSTANCE.createEntity();
-			rootEntity.setName(entity.getName());
-			rootEntity.setAggregateRoot(true);
+			Attribute idAttribute = TacticdslFactory.eINSTANCE.createAttribute();
+			idAttribute.setType(entity.getName() + "ID");
+			idAttribute.setName(entity.getName().toLowerCase() + "Id");
 
-			Attribute globalIdAttribute = TacticdslFactory.eINSTANCE.createAttribute();
-			globalIdAttribute.setType("GlobalID");
-			globalIdAttribute.setName("globalId");
-
-			addElementToEList(rootEntity.getAttributes(), globalIdAttribute);
-			addElementToEList(aggregate.getDomainObjects(), rootEntity);
-			addElementToEList(newBC.getAggregates(), aggregate);
+			addElementToEList(newEntity.getAttributes(), idAttribute);
+			addElementToEList(aggregate.getDomainObjects(), newEntity);
 		}
+	}
+
+	private void createServices(Subdomain subdomain, Aggregate aggregate) {
+		for (Service service : subdomain.getServices()) {
+			Service newService = TacticdslFactory.eINSTANCE.createService();
+			newService.setName(service.getName());
+			newService.setDoc(service.getDoc());
+			newService.setHint(service.getHint());
+			newService.setComment("/* TODO: Add operations to service." + System.lineSeparator()
+					+ "		 * example: ReturnType exampleServiceOperation(String param1, @Object param2);" + System.lineSeparator() + "		 */");
+
+			addElementsToEList(newService.getOperations(), copyAndEnhanceOperations(service));
+			addElementToEList(aggregate.getServices(), newService);
+		}
+	}
+
+	private List<ServiceOperation> copyAndEnhanceOperations(Service service) {
+		List<ServiceOperation> operations = Lists.newLinkedList();
+		for (ServiceOperation operation : service.getOperations()) {
+			ServiceOperation copiedOperation = TacticdslFactory.eINSTANCE.createServiceOperation();
+			copiedOperation.setName(operation.getName());
+			copiedOperation.setDelegateHolder(operation.getDelegateHolder());
+			copiedOperation.setHint(operation.getHint());
+			copiedOperation.setDoc(operation.getDoc());
+			copiedOperation.setPublish(operation.getPublish());
+			copiedOperation.setThrows(operation.getThrows());
+			copiedOperation.setVisibility(operation.getVisibility());
+			operations.add(copiedOperation);
+
+			if (operation.getReturnType() == null)
+				copiedOperation.setReturnType(createComplexType(service.getName() + "Output"));
+
+			if (operation.getParameters().isEmpty())
+				addElementToEList(copiedOperation.getParameters(), createParameter("input", createComplexType(service.getName() + "Input")));
+
+		}
+		return operations;
 	}
 
 	private ComplexType createComplexType(String type) {
 		ComplexType complexType = TacticdslFactory.eINSTANCE.createComplexType();
 		complexType.setType(type);
-		return complexType;
-	}
-
-	private ComplexType createComplexType(SimpleDomainObject type) {
-		ComplexType complexType = TacticdslFactory.eINSTANCE.createComplexType();
-		complexType.setDomainObjectType(type);
 		return complexType;
 	}
 
@@ -119,17 +160,6 @@ public class DeriveBoundedContextFromSubdomains extends AbstractRefactoring impl
 			counter++;
 		}
 		return bcName;
-	}
-
-	private String getUniqueAggregateName(BoundedContext bc, String initialAggregateName) {
-		Set<String> allAggregateNames = bc.getAggregates().stream().map(agg -> agg.getName()).collect(Collectors.toSet());
-		String aggregateName = initialAggregateName;
-		int counter = 2;
-		while (allAggregateNames.contains(aggregateName)) {
-			aggregateName = initialAggregateName + "_" + counter;
-			counter++;
-		}
-		return aggregateName;
 	}
 
 	private Set<Subdomain> collectSubdomains() {

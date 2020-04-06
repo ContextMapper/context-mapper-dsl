@@ -71,7 +71,7 @@ public class DeriveSubdomainFromUserRequirements extends AbstractRefactoring imp
 
 			benefits.add("Aims at promoting the following benefit for a " + ur.getRole() + ": " + ur.getBenefit());
 
-			String serviceName = ur.getName() + "Service";
+			String serviceName = ur.getName().substring(0, 1).toUpperCase() + ur.getName().substring(1) + "Service";
 			Optional<Service> alreadyExistingService = subdomain.getServices().stream().filter(s -> serviceName.equals(s.getName())).findFirst();
 			Service service;
 			if (!alreadyExistingService.isPresent()) {

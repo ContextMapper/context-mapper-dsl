@@ -22,6 +22,7 @@ import static org.contextmapper.dsl.validation.ValidationMessages.MODULE_NAME_NO
 import static org.contextmapper.dsl.validation.ValidationMessages.USE_CASE_NAME_NOT_UNIQUE;
 import static org.contextmapper.dsl.validation.ValidationMessages.SERVICE_NAME_NOT_UNIQUE_IN_BC;
 import static org.contextmapper.dsl.validation.ValidationMessages.SERVICE_NAME_NOT_UNIQUE_IN_SUBDOMAIN;
+import static org.contextmapper.dsl.validation.ValidationMessages.SUBDOMAIN_OBJECT_NOT_UNIQUE;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -67,6 +68,18 @@ public class UniquenessValidator extends AbstractCMLValidator {
 					}));
 			if (IteratorExtensions.size(duplicateBoundedContexts) > 1)
 				error(String.format(BOUNDED_CONTEXT_NAME_NOT_UNIQUE, bc.getName()), bc, ContextMappingDSLPackage.Literals.BOUNDED_CONTEXT__NAME);
+		}
+	}
+
+	@Check
+	public void validateThatSubdomainNameIsUnique(final Subdomain subdomain) {
+		if (subdomain != null) {
+			Iterator<Subdomain> allSubdomains = resolvingHelper.resolveAllObjectsOfType(getRootCMLModel(subdomain), Subdomain.class).iterator();
+			Iterator<Subdomain> duplicateSubdomains = IteratorExtensions.filter(allSubdomains, ((Function1<Subdomain, Boolean>) (Subdomain sd) -> {
+				return subdomain.getName().equals(sd.getName());
+			}));
+			if (IteratorExtensions.size(duplicateSubdomains) > 1)
+				error(String.format(SUBDOMAIN_OBJECT_NOT_UNIQUE, subdomain.getName()), subdomain, ContextMappingDSLPackage.Literals.DOMAIN_PART__NAME);
 		}
 	}
 

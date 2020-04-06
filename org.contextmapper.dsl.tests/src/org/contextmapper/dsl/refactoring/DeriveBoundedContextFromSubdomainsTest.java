@@ -16,6 +16,7 @@
 package org.contextmapper.dsl.refactoring;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -33,6 +34,9 @@ import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.refactoring.exception.RefactoringInputException;
 import org.contextmapper.tactic.dsl.tacticdsl.Attribute;
 import org.contextmapper.tactic.dsl.tacticdsl.Entity;
+import org.contextmapper.tactic.dsl.tacticdsl.Parameter;
+import org.contextmapper.tactic.dsl.tacticdsl.Service;
+import org.contextmapper.tactic.dsl.tacticdsl.ServiceOperation;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -64,29 +68,29 @@ public class DeriveBoundedContextFromSubdomainsTest extends AbstractRefactoringT
 		assertNotNull(bc.getAggregates().get(0));
 
 		Aggregate aggregate = bc.getAggregates().get(0);
-		assertEquals("CustomerAggregate", aggregate.getName());
+		assertEquals("CustomerDomainAggregate", aggregate.getName());
 		assertEquals(1, aggregate.getDomainObjects().size());
 		assertNotNull(aggregate.getDomainObjects().get(0));
 		assertTrue(aggregate.getDomainObjects().get(0) instanceof Entity);
 
 		Entity entity = (Entity) aggregate.getDomainObjects().get(0);
 		assertEquals("Customer", entity.getName());
-		assertTrue(entity.isAggregateRoot());
+		assertFalse(entity.isAggregateRoot());
 		assertEquals(1, entity.getAttributes().size());
 
 		Attribute attr = entity.getAttributes().get(0);
 		assertNotNull(attr);
-		assertEquals("globalId", attr.getName());
-		assertEquals("GlobalID", attr.getType());
+		assertEquals("customerId", attr.getName());
+		assertEquals("CustomerID", attr.getType());
 	}
 
 	@Test
-	public void canSolveAggregateNameConflicts() throws IOException {
+	public void canCopyAndEnhanceServices() throws IOException {
 		// given
-		CMLResourceContainer input = getResourceCopyOfTestCML("derive-bc-from-subdomain-test-2-input.cml");
+		CMLResourceContainer input = getResourceCopyOfTestCML("derive-bc-from-subdomain-test-1-input.cml");
 
 		// when
-		Set<String> subdomains = Sets.newHashSet(Arrays.asList(new String[] { "CustomerDomain", "AnotherDomain" }));
+		Set<String> subdomains = Sets.newHashSet(Arrays.asList(new String[] { "CustomerDomain" }));
 		DeriveBoundedContextFromSubdomains ar = new DeriveBoundedContextFromSubdomains("NewTestBC", subdomains);
 		ar.doRefactor(input);
 
@@ -97,11 +101,25 @@ public class DeriveBoundedContextFromSubdomainsTest extends AbstractRefactoringT
 
 		BoundedContext bc = model.getBoundedContexts().get(0);
 		assertEquals("NewTestBC", bc.getName());
-		assertEquals(2, bc.getAggregates().size());
+		assertEquals(BoundedContextType.FEATURE, bc.getType());
+		assertEquals(1, bc.getAggregates().size());
+		assertNotNull(bc.getAggregates().get(0));
 
-		Set<String> aggregateNames = bc.getAggregates().stream().map(ag -> ag.getName()).collect(Collectors.toSet());
-		assertTrue(aggregateNames.contains("CustomerAggregate"));
-		assertTrue(aggregateNames.contains("CustomerAggregate_2"));
+		Aggregate aggregate = bc.getAggregates().get(0);
+		assertEquals(1, aggregate.getServices().size());
+
+		Service service = aggregate.getServices().get(0);
+		assertEquals("CustomerService", service.getName());
+		assertEquals(1, service.getOperations().size());
+
+		ServiceOperation operation = service.getOperations().get(0);
+		assertEquals("createCustomer", operation.getName());
+		assertEquals("CustomerServiceOutput", operation.getReturnType().getType());
+		assertEquals(1, operation.getParameters().size());
+
+		Parameter parameter = operation.getParameters().get(0);
+		assertEquals("input", parameter.getName());
+		assertEquals("CustomerServiceInput", parameter.getParameterType().getType());
 	}
 
 	@Test

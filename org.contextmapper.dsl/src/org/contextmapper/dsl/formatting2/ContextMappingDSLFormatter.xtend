@@ -166,6 +166,8 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 		aggregate.prepend[newLines = 1]
 		aggregate.regionFor.keyword('Aggregate').prepend[newLine]
 
+		aggregate.comment.format
+
 		for (domainObject : aggregate.domainObjects) {
 			domainObject.format
 		}

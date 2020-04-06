@@ -46,7 +46,7 @@ Application :
   "}";
 
 Service :
-  (comment=SL_COMMENT)?
+  (comment=ML_COMMENT)?
   (doc=STRING)?
   "Service" name=ID ("{"
   	(
@@ -182,7 +182,7 @@ DomainObject :
   Entity | ValueObject | Event;
 
 Entity :
-  (comment=SL_COMMENT)?
+  (comment=ML_COMMENT)?
   (doc=STRING)?
   (abstract?="abstract")? "Entity" name=ID ("extends" (("@"extends=[Entity]) | (extendsName=JavaIdentifier)))?
   ("with" ("@")?traits+=[Trait])* ("{"
@@ -209,7 +209,7 @@ Entity :
   "}")?;
 
 ValueObject :
-  (comment=SL_COMMENT)?
+  (comment=ML_COMMENT)?
   (doc=STRING)?
   (abstract?="abstract")? "ValueObject" name=ID ("extends" (("@"extends=[ValueObject]) | (extendsName=JavaIdentifier)))?
   ("with" ("@")?traits+=[Trait])* ("{"
@@ -237,7 +237,7 @@ ValueObject :
   "}")?;
 
 DomainEvent :
-  (comment=SL_COMMENT)?
+  (comment=ML_COMMENT)?
   (doc=STRING)?
   (abstract?="abstract")? "DomainEvent" name=ID ("extends" (("@"extends=[DomainEvent]) | (extendsName=JavaIdentifier)))?
   ("with" ("@")?traits+=[Trait])* ("{"
@@ -265,7 +265,7 @@ DomainEvent :
   "}")?;
 
 CommandEvent :
-  (comment=SL_COMMENT)?
+  (comment=ML_COMMENT)?
   (doc=STRING)?
   (abstract?="abstract")? "CommandEvent" name=ID ("extends" (("@"extends=[CommandEvent]) | (extendsName=JavaIdentifier)))?
   ("with" ("@")?traits+=[Trait])* ("{"
@@ -315,7 +315,7 @@ DomainObjectOperation :
     ";";
 
 DataTransferObject :
-  (comment=SL_COMMENT)?
+  (comment=ML_COMMENT)?
   (doc=STRING)?
   (abstract?="abstract")? "DataTransferObject" name=ID ("extends" (("@"extends=[DataTransferObject]) | (extendsName=JavaIdentifier)))? ("{"
     ("package" "=" package=JavaIdentifier )?
