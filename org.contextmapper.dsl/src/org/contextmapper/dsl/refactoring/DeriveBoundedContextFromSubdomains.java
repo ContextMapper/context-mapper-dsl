@@ -129,10 +129,11 @@ public class DeriveBoundedContextFromSubdomains extends AbstractRefactoring impl
 			operations.add(copiedOperation);
 
 			if (operation.getReturnType() == null)
-				copiedOperation.setReturnType(createComplexType(service.getName() + "Output"));
+				copiedOperation.setReturnType(createComplexType(operation.getName().substring(0, 1).toUpperCase() + operation.getName().substring(1) + "Output"));
 
 			if (operation.getParameters().isEmpty())
-				addElementToEList(copiedOperation.getParameters(), createParameter("input", createComplexType(service.getName() + "Input")));
+				addElementToEList(copiedOperation.getParameters(),
+						createParameter("input", createComplexType(operation.getName().substring(0, 1).toUpperCase() + operation.getName().substring(1) + "Input")));
 
 		}
 		return operations;

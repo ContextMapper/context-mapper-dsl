@@ -114,12 +114,12 @@ public class DeriveBoundedContextFromSubdomainsTest extends AbstractRefactoringT
 
 		ServiceOperation operation = service.getOperations().get(0);
 		assertEquals("createCustomer", operation.getName());
-		assertEquals("CustomerServiceOutput", operation.getReturnType().getType());
+		assertEquals("CreateCustomerOutput", operation.getReturnType().getType());
 		assertEquals(1, operation.getParameters().size());
 
 		Parameter parameter = operation.getParameters().get(0);
 		assertEquals("input", parameter.getName());
-		assertEquals("CustomerServiceInput", parameter.getParameterType().getType());
+		assertEquals("CreateCustomerInput", parameter.getParameterType().getType());
 	}
 
 	@Test
