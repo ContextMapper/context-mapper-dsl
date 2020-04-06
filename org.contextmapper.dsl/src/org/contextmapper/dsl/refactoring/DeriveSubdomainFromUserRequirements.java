@@ -81,7 +81,10 @@ public class DeriveSubdomainFromUserRequirements extends AbstractRefactoring imp
 			return false;
 
 		Set<String> entityNames = ur.getFeatures().stream().map(f -> f.getEntity()).collect(Collectors.toSet());
-		return !entityNames.isEmpty() && !"".equals(entityNames.iterator().next());
+		if (entityNames.size() == 1 && "".equals(entityNames.iterator().next()))
+			return false;
+
+		return true;
 	}
 
 	private void deriveSubdomainEntities4Features(Subdomain subdomain, String urName, List<Feature> features) {

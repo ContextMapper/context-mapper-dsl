@@ -49,7 +49,7 @@ public class DeriveSubdomainFromUserRequirementsTest extends AbstractRefactoring
 		CMLResourceContainer input = getResourceCopyOfTestCML(inputFile);
 
 		// when
-		Set<String> userStories = Sets.newHashSet(Arrays.asList(new String[] { "US1_Create", "Story_to_be_Ignored" }));
+		Set<String> userStories = Sets.newHashSet(Arrays.asList(new String[] { "US1_Create", "Story_to_be_Ignored", "UseCase_to_be_Ignored" }));
 		DeriveSubdomainFromUserRequirements ar = new DeriveSubdomainFromUserRequirements("InsuranceDomain", "Customers", userStories);
 		ar.doRefactor(input);
 
