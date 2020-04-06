@@ -56,6 +56,25 @@ class UniquenessValidatorTest {
 	}
 	
 	@Test
+	def void cannotDefineDuplicateSubdomain() {
+		// given
+		val String dslSnippet = '''
+			Domain TestDomain {
+				Subdomain TestSubdomain
+			}
+			Domain AnotherTestDomain {
+				Subdomain TestSubdomain
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.SUBDOMAIN, "",
+			String.format(SUBDOMAIN_OBJECT_NOT_UNIQUE, "TestSubdomain"));
+	}
+	
+	@Test
 	def void cannotDefineDuplicateModule() {
 		// given
 		val String dslSnippet = '''
@@ -100,7 +119,7 @@ class UniquenessValidatorTest {
 		val ContextMappingModel result = parseHelper.parse(dslSnippet);
 		// then
 		assertThatNoParsingErrorsOccurred(result);
-		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.USE_CASE, "",
+		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.USER_REQUIREMENT, "",
 			String.format(USE_CASE_NAME_NOT_UNIQUE, "uc"));
 	}
 	
@@ -179,6 +198,44 @@ class UniquenessValidatorTest {
 		assertThatNoParsingErrorsOccurred(result);
 		validationTestHelper.assertError(result, TacticdslPackage.Literals.SIMPLE_DOMAIN_OBJECT, "",
 			String.format(DOMAIN_OBJECT_NOT_UNIQUE, "Account"));
+	}
+
+	@Test
+	def void cannotDefineDuplicateServiceInBoundedContext() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext ContextA {
+				Aggregate AggregateA {
+					Service TestService
+					Service TestService
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		validationTestHelper.assertError(result, TacticdslPackage.Literals.SERVICE_REPOSITORY_OPTION, "",
+			String.format(SERVICE_NAME_NOT_UNIQUE_IN_BC, "TestService"));
+	}
+	
+	@Test
+	def void cannotDefineDuplicateServiceInSubdomain() {
+		// given
+		val String dslSnippet = '''
+			Domain TestDomain {
+				Subdomain TestSubdomain {
+					Service TestService
+					Service TestService
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		validationTestHelper.assertError(result, TacticdslPackage.Literals.SERVICE_REPOSITORY_OPTION, "",
+			String.format(SERVICE_NAME_NOT_UNIQUE_IN_SUBDOMAIN, "TestService"));
 	}
 
 }

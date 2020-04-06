@@ -37,8 +37,15 @@ public class ValidationMessages {
 	public static final String MODULE_NAME_NOT_UNIQUE = "Duplicate name. There is already an existing Module named '%s'.";
 	public static final String USE_CASE_NAME_NOT_UNIQUE = "Multiple use cases with the name '%s' have been declared.";
 	public static final String DOMAIN_OBJECT_NOT_UNIQUE = "Multiple domain objects with the name '%s' have been declared.";
+	public static final String SUBDOMAIN_OBJECT_NOT_UNIQUE = "Multiple subdomains with the name '%s' have been declared.";
+	public static final String SERVICE_NAME_NOT_UNIQUE_IN_BC = "Multiple services with the name '%s' have been declared in this Bounded Context.";
+	public static final String SERVICE_NAME_NOT_UNIQUE_IN_SUBDOMAIN = "Multiple services with the name '%s' have been declared in this Subdomain.";
 
 	/* Generator problems */
 	public static final String EMPTY_UML_COMPONENT_DIAGRAM_MESSAGE = "Sorry, we cannot generate a component diagram. Your Context Map seems to be empty.";
 	public static final String EMPTY_UML_CLASS_DIAGRAM_MESSAGE = "Sorry, we cannot generate a class diagram for this Bounded Context. There are no Aggregates or none of the Aggregates contain any domain objects (entities, value objects or domain events).";
+
+	/* General input problems */
+	public static final String ENTITY_NAME_CONTAINS_INVALID_CHARACTERS = "The entity name should consist of the following characters: a-z, A-Z, 0-9, _. Please rename the entity accordingly before applying transformations.";
+	public static final String VERB_CONTAINS_INVALID_CHARACTERS = "The verb should consist of the following characters: a-z, A-Z, 0-9, _. Please rename it accordingly before applying transformations.";
 }

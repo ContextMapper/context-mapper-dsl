@@ -1,0 +1,12 @@
+Domain InsuranceDomain {
+	Subdomain Customers {
+		domainVisionStatement "existing dvs 1; existing dvs 2"
+	
+		Entity Customer
+		Service US1_CreateService
+	}
+}
+
+UserStory US1_Create {
+	As an "Insurance Employee" I want to create a "Customer" so that "I am able to manage the customer data and offer contracts."
+}

@@ -25,10 +25,11 @@ import org.contextmapper.tactic.dsl.tacticdsl.DomainObjectOperation
 import org.contextmapper.tactic.dsl.tacticdsl.Entity
 import org.contextmapper.tactic.dsl.tacticdsl.Parameter
 import org.contextmapper.tactic.dsl.tacticdsl.Reference
-import org.contextmapper.tactic.dsl.tacticdsl.TacticDDDModel
+import org.contextmapper.tactic.dsl.tacticdsl.Service
 import org.contextmapper.tactic.dsl.tacticdsl.ValueObject
 import org.eclipse.xtext.formatting2.AbstractFormatter2
 import org.eclipse.xtext.formatting2.IFormattableDocument
+import org.contextmapper.tactic.dsl.tacticdsl.ServiceOperation
 
 class TacticDDDLanguageFormatter extends AbstractFormatter2 {
 
@@ -162,5 +163,36 @@ class TacticDDDLanguageFormatter extends AbstractFormatter2 {
 	
 	def dispatch void format(Parameter parameter, extension IFormattableDocument document) {
 		parameter.parameterType.format
+	}
+	
+	def dispatch void format(Service service, extension IFormattableDocument document) {
+		interior(
+			service.regionFor.keyword('{').append[newLine],
+			service.regionFor.keyword('}').prepend[newLine].append[newLine]
+		)[indent]
+
+		service.prepend[newLines = 1]
+		service.regionFor.keyword('Service').prepend[newLine]
+
+		for (operation : service.operations) {
+			operation.format
+		}
+	}
+	
+	def dispatch void format(ServiceOperation operation, extension IFormattableDocument document) {
+		operation.prepend[newLines = 1]
+		
+		operation.regionFor.keyword(';').prepend[noSpace]
+		operation.regionFor.keyword('(').append[noSpace]
+		operation.regionFor.keyword(')').prepend[noSpace]
+		operation.regionFor.keywords(',').forEach[
+			prepend[noSpace]
+		]
+		
+		operation.returnType.format
+		
+		for(parameter : operation.parameters) {
+			parameter.format
+		}
 	}
 }

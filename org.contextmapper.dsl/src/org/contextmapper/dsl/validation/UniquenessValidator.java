@@ -20,6 +20,9 @@ import static org.contextmapper.dsl.validation.ValidationMessages.BOUNDED_CONTEX
 import static org.contextmapper.dsl.validation.ValidationMessages.DOMAIN_OBJECT_NOT_UNIQUE;
 import static org.contextmapper.dsl.validation.ValidationMessages.MODULE_NAME_NOT_UNIQUE;
 import static org.contextmapper.dsl.validation.ValidationMessages.USE_CASE_NAME_NOT_UNIQUE;
+import static org.contextmapper.dsl.validation.ValidationMessages.SERVICE_NAME_NOT_UNIQUE_IN_BC;
+import static org.contextmapper.dsl.validation.ValidationMessages.SERVICE_NAME_NOT_UNIQUE_IN_SUBDOMAIN;
+import static org.contextmapper.dsl.validation.ValidationMessages.SUBDOMAIN_OBJECT_NOT_UNIQUE;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -33,18 +36,23 @@ import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLPackage;
 import org.contextmapper.dsl.contextMappingDSL.SculptorModule;
 import org.contextmapper.dsl.contextMappingDSL.Subdomain;
-import org.contextmapper.dsl.contextMappingDSL.UseCase;
+import org.contextmapper.dsl.contextMappingDSL.UserRequirement;
+import org.contextmapper.tactic.dsl.tacticdsl.Service;
 import org.contextmapper.tactic.dsl.tacticdsl.SimpleDomainObject;
 import org.contextmapper.tactic.dsl.tacticdsl.TacticdslPackage;
+import org.eclipse.xtext.EcoreUtil2;
 import org.eclipse.xtext.validation.Check;
 import org.eclipse.xtext.validation.EValidatorRegistrar;
 import org.eclipse.xtext.xbase.lib.Functions.Function1;
+
+import com.google.common.collect.Sets;
+
 import org.eclipse.xtext.xbase.lib.IteratorExtensions;
 
 public class UniquenessValidator extends AbstractCMLValidator {
 
 	private CMLModelObjectsResolvingHelper resolvingHelper = new CMLModelObjectsResolvingHelper();
-	
+
 	@Override
 	public void register(EValidatorRegistrar registrar) {
 		// not needed for classes used as ComposedCheck
@@ -60,6 +68,18 @@ public class UniquenessValidator extends AbstractCMLValidator {
 					}));
 			if (IteratorExtensions.size(duplicateBoundedContexts) > 1)
 				error(String.format(BOUNDED_CONTEXT_NAME_NOT_UNIQUE, bc.getName()), bc, ContextMappingDSLPackage.Literals.BOUNDED_CONTEXT__NAME);
+		}
+	}
+
+	@Check
+	public void validateThatSubdomainNameIsUnique(final Subdomain subdomain) {
+		if (subdomain != null) {
+			Iterator<Subdomain> allSubdomains = resolvingHelper.resolveAllObjectsOfType(getRootCMLModel(subdomain), Subdomain.class).iterator();
+			Iterator<Subdomain> duplicateSubdomains = IteratorExtensions.filter(allSubdomains, ((Function1<Subdomain, Boolean>) (Subdomain sd) -> {
+				return subdomain.getName().equals(sd.getName());
+			}));
+			if (IteratorExtensions.size(duplicateSubdomains) > 1)
+				error(String.format(SUBDOMAIN_OBJECT_NOT_UNIQUE, subdomain.getName()), subdomain, ContextMappingDSLPackage.Literals.DOMAIN_PART__NAME);
 		}
 	}
 
@@ -88,14 +108,42 @@ public class UniquenessValidator extends AbstractCMLValidator {
 	}
 
 	@Check
-	public void validateThatUseCaseNameIsUnique(final UseCase uc) {
+	public void validateThatServiceNamesAreUniqueInBoundedContext(BoundedContext bc) {
+		Set<String> serviceNames = Sets.newHashSet();
+		Iterator<Service> allServices = Sets.newHashSet(IteratorExtensions.filter(EcoreUtil2.eAll(bc), Service.class)).iterator();
+		while (allServices.hasNext()) {
+			Service service = allServices.next();
+			if (serviceNames.contains(service.getName())) {
+				error(String.format(SERVICE_NAME_NOT_UNIQUE_IN_BC, service.getName()), service, TacticdslPackage.Literals.SERVICE_REPOSITORY_OPTION__NAME);
+			} else {
+				serviceNames.add(service.getName());
+			}
+		}
+	}
+
+	@Check
+	public void validateThatServiceNamesAreUniqueInSubdomain(Subdomain subdomain) {
+		Set<String> serviceNames = Sets.newHashSet();
+		Iterator<Service> allServices = Sets.newHashSet(IteratorExtensions.filter(EcoreUtil2.eAll(subdomain), Service.class)).iterator();
+		while (allServices.hasNext()) {
+			Service service = allServices.next();
+			if (serviceNames.contains(service.getName())) {
+				error(String.format(SERVICE_NAME_NOT_UNIQUE_IN_SUBDOMAIN, service.getName()), service, TacticdslPackage.Literals.SERVICE_REPOSITORY_OPTION__NAME);
+			} else {
+				serviceNames.add(service.getName());
+			}
+		}
+	}
+
+	@Check
+	public void validateThatUseCaseNameIsUnique(final UserRequirement uc) {
 		if (uc != null) {
-			Iterator<UseCase> allUseCases = resolvingHelper.resolveAllObjectsOfType(getRootCMLModel(uc), UseCase.class).iterator();
-			Iterator<UseCase> duplicateUseCases = IteratorExtensions.filter(allUseCases, ((Function1<UseCase, Boolean>) (UseCase u) -> {
+			Iterator<UserRequirement> allUseCases = resolvingHelper.resolveAllObjectsOfType(getRootCMLModel(uc), UserRequirement.class).iterator();
+			Iterator<UserRequirement> duplicateUseCases = IteratorExtensions.filter(allUseCases, ((Function1<UserRequirement, Boolean>) (UserRequirement u) -> {
 				return u.getName().equals(uc.getName());
 			}));
 			if (IteratorExtensions.size(duplicateUseCases) > 1)
-				error(String.format(USE_CASE_NAME_NOT_UNIQUE, uc.getName()), uc, ContextMappingDSLPackage.Literals.USE_CASE__NAME);
+				error(String.format(USE_CASE_NAME_NOT_UNIQUE, uc.getName()), uc, ContextMappingDSLPackage.Literals.USER_REQUIREMENT__NAME);
 		}
 	}
 

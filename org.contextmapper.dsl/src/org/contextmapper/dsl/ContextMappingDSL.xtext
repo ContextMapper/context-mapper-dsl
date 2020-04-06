@@ -27,7 +27,7 @@ ContextMappingModel:
 		(map = ContextMap)? &
 		(boundedContexts += BoundedContext)* &
 		(domains += Domain)* &
-		(useCases += UseCase)* 
+		(userRequirements += UserRequirement)* 
 	)
 ;
 
@@ -85,6 +85,7 @@ Subdomain:
 			(('type' ('=')? type=SubDomainType)? &
 			('domainVisionStatement' ('=')? domainVisionStatement=STRING)?)
 			entities += Entity*
+			services += Service*
 		CLOSE
 	)?
 ;
@@ -164,12 +165,12 @@ CustomerSupplierRelationship:
 ;
 
 Aggregate :
-  (comment=SL_COMMENT)?
+  (comment=ML_COMMENT)?
   (doc=STRING)?
   "Aggregate" name=ID (OPEN
     (
     	(('responsibilities' ('=')? responsibilities+=STRING) ("," responsibilities+=STRING)*)? &
-    	(('useCases' ('=')? useCases += [UseCase]) ("," useCases += [UseCase])*)? &
+    	((('useCases' | 'userRequirements') ('=')? userRequirements += [UserRequirement]) ("," userRequirements += [UserRequirement])*)? &
     	('owner' ('=')? owner=[BoundedContext])? & 
     	('knowledgeLevel' ('=')? knowledgeLevel=KnowledgeLevel)? &
     	('likelihoodForChange' ('=')? likelihoodForChange=LikelihoodForChange)?
@@ -180,13 +181,42 @@ Aggregate :
      (domainObjects+=SimpleDomainObject))*
   CLOSE)?;
 
+UserRequirement:
+	UseCase | UserStory
+;
+
+/** 
+ * Unfortunately there seems to be no mechanism to reuse identical attributes here.
+ * Always ensure that UseCase and UserStory is kept in sync!
+ */
 UseCase:
 	'UseCase' name=ID 
 	(OPEN
-		(('isLatencyCritical' ('=')? isLatencyCritical?='true')? &
+		(('actor' ('=')? role=STRING)? &
+		('interaction' ('=')? features+=Feature ("," features+=Feature)*)? &
+		('benefit' ('=')? benefit=STRING)? &
+		('isLatencyCritical' ('=')? isLatencyCritical?='true')? &
 		(('reads' nanoentitiesRead+=STRING*) ("," nanoentitiesRead+=STRING)*)? &
         (('writes' nanoentitiesWritten+=STRING*) ("," nanoentitiesWritten+=STRING)*)?)  
 	CLOSE)?
+;
+
+UserStory:
+	'UserStory' name=ID 
+	(OPEN
+		((('As a' | 'As an') role=STRING ('I want to' features+=Feature)+ 'so that' benefit=STRING)? &
+		('isLatencyCritical' ('=')? isLatencyCritical?='true')? &
+		(('reads' nanoentitiesRead+=STRING*) ("," nanoentitiesRead+=STRING)*)? &
+        (('writes' nanoentitiesWritten+=STRING*) ("," nanoentitiesWritten+=STRING)*)?)  
+	CLOSE)?
+;
+
+Feature:
+	verb=(UserActivityDefaultVerb | STRING) ('a' | 'an')? entity=STRING
+;
+
+UserActivityDefaultVerb:
+	'create' | 'read' | 'update' | 'delete'
 ;
 
 SculptorModule :

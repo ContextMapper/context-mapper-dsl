@@ -715,15 +715,6 @@ private val DIGITS_PATTERN = Pattern.compile("[0-9]+[0-9]*")
 	}
 
 	@Check
-	def checkServiceDuplicateName(Service service) {
-		if (service.name !== null && service.rootContainer.eAllOfType(typeof(Service)).filter [it.name == service.name].size > 1) {
-			error("Duplicate name.  There is already an existing Service named '"
-				+ service.name + "'.", SERVICE_REPOSITORY_OPTION__NAME, service.name
-			);  
-		}
-	}
-
-	@Check
 	def checkRepositoryDuplicateName(Repository repository) {
 		if (repository.name !== null && repository.rootContainer.eAllOfClass(typeof(Repository)).filter [it.name == repository.name].size > 1) {
 			error("Duplicate name.  There is already an existing Repository named '"

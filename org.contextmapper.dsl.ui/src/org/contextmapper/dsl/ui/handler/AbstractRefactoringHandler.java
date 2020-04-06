@@ -46,7 +46,7 @@ public abstract class AbstractRefactoringHandler extends AbstractHandler impleme
 
 	@Inject
 	private XtextEditorHelper xtextEditorHelper;
-	
+
 	protected Resource currentResource;
 	protected ResourceSet currentResourceSet;
 
@@ -128,7 +128,16 @@ public abstract class AbstractRefactoringHandler extends AbstractHandler impleme
 	 * @return EObject of current context (editor selection)
 	 */
 	protected EObject getSelectedElement() {
-		return xtextEditorHelper.getSelectedElement(EditorUtils.getActiveXtextEditor());
+		return xtextEditorHelper.getFirstSelectedElement(EditorUtils.getActiveXtextEditor());
+	}
+
+	/**
+	 * Finds all selected objects in the editor.
+	 * 
+	 * @return set with all EObject's of the current editor selection.
+	 */
+	protected Set<EObject> getAllSelectedElements() {
+		return xtextEditorHelper.getAllSelectedElements(EditorUtils.getActiveXtextEditor());
 	}
 
 	private boolean editorHasChanges() {

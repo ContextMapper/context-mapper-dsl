@@ -25,7 +25,9 @@ import org.contextmapper.dsl.cml.CMLResourceContainer;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
+import org.contextmapper.dsl.contextMappingDSL.Domain;
 import org.contextmapper.dsl.contextMappingDSL.Import;
+import org.contextmapper.dsl.contextMappingDSL.UserRequirement;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -43,6 +45,8 @@ public abstract class AbstractRefactoring implements Refactoring {
 	protected Set<CMLResourceContainer> importedResources;
 	private Map<BoundedContext, CMLResourceContainer> boundedContextsMap = Maps.newHashMap();
 	private Map<ContextMap, CMLResourceContainer> contextMapMap = Maps.newHashMap();
+	private Map<Domain, CMLResourceContainer> domainMap = Maps.newHashMap();
+	private Map<UserRequirement, CMLResourceContainer> userRequirementMap = Maps.newHashMap();
 	private List<CMLResourceContainer> changedResources = Lists.newArrayList();
 
 	protected ResourceSet consistencyCheckResources;
@@ -78,6 +82,14 @@ public abstract class AbstractRefactoring implements Refactoring {
 		return Sets.newHashSet(this.contextMapMap.keySet());
 	}
 
+	protected Set<Domain> getAllDomains() {
+		return Sets.newHashSet(this.domainMap.keySet());
+	}
+
+	protected Set<UserRequirement> getAllUserRequirements() {
+		return Sets.newHashSet(this.userRequirementMap.keySet());
+	}
+
 	protected void saveResource(Resource resource) {
 		try {
 			resource.save(SaveOptions.newBuilder().format().getOptions().toOptionsMap());
@@ -104,6 +116,14 @@ public abstract class AbstractRefactoring implements Refactoring {
 		markResourceChanged(getResource(changedContextMap));
 	}
 
+	protected void markResourceChanged(Domain domain) {
+		markResourceChanged(getResource(domain));
+	}
+
+	protected void markResourceChanged(UserRequirement userRequirement) {
+		markResourceChanged(getResource(userRequirement));
+	}
+
 	protected void markResourceChanged(CMLResourceContainer resource) {
 		this.changedResources.add(resource);
 	}
@@ -117,13 +137,28 @@ public abstract class AbstractRefactoring implements Refactoring {
 		return this.contextMapMap.get(contextMap);
 	}
 
+	protected CMLResourceContainer getResource(Domain domain) {
+		if (!this.domainMap.containsKey(domain))
+			this.domainMap.put(domain, rootResource);
+		return this.domainMap.get(domain);
+	}
+
+	protected CMLResourceContainer getResource(UserRequirement userRequirement) {
+		return this.userRequirementMap.get(userRequirement);
+	}
+
 	private void resolveRootElements() {
-		resolveBoundedContexts(rootResource);
-		resolveContextMaps(rootResource);
+		resolveAllRootElements(rootResource);
 		for (CMLResourceContainer importedResource : importedResources) {
-			resolveBoundedContexts(importedResource);
-			resolveContextMaps(importedResource);
+			resolveAllRootElements(importedResource);
 		}
+	}
+
+	private void resolveAllRootElements(CMLResourceContainer importedResource) {
+		resolveBoundedContexts(importedResource);
+		resolveContextMaps(importedResource);
+		resolveDomains(importedResource);
+		resolveUserRequirements(importedResource);
 	}
 
 	private void resolveBoundedContexts(CMLResourceContainer resource) {
@@ -141,6 +176,18 @@ public abstract class AbstractRefactoring implements Refactoring {
 		}
 	}
 
+	private void resolveDomains(CMLResourceContainer resource) {
+		for (Domain domain : resource.getContextMappingModel().getDomains()) {
+			this.domainMap.put(domain, resource);
+		}
+	}
+
+	private void resolveUserRequirements(CMLResourceContainer resource) {
+		for (UserRequirement userRequirement : resource.getContextMappingModel().getUserRequirements()) {
+			this.userRequirementMap.put(userRequirement, resource);
+		}
+	}
+
 	/**
 	 * Checks whether source contains an import statement to target.
 	 */
@@ -151,7 +198,7 @@ public abstract class AbstractRefactoring implements Refactoring {
 		}
 		return false;
 	}
-	
+
 	protected <T> void addElementsToEList(EList<T> list, List<T> elementsToAdd) {
 		// ugly workaround (clear list and add all again); otherwise list is not
 		// properly updated when saving ecore model :(
@@ -160,7 +207,7 @@ public abstract class AbstractRefactoring implements Refactoring {
 		list.addAll(tempList);
 		list.addAll(elementsToAdd);
 	}
-	
+
 	protected <T> void addElementToEList(EList<T> list, T elementToAdd) {
 		// ugly workaround (clear list and add all again); otherwise list is not
 		// properly updated when saving ecore model :(
