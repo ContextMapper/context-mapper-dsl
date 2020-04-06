@@ -1,0 +1,11 @@
+// BC already exists:
+BoundedContext NewTestBC
+
+Domain InsuranceDomain {
+	Subdomain CustomerDomain {
+		Entity Customer
+	}
+	Subdomain AnotherDomain {
+		Entity Customer
+	}
+}

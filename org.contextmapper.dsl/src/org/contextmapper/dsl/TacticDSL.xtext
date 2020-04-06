@@ -46,6 +46,7 @@ Application :
   "}";
 
 Service :
+  (comment=SL_COMMENT)?
   (doc=STRING)?
   "Service" name=ID ("{"
   	(

@@ -56,7 +56,7 @@ public class DeriveBoundedContextFromSubdomains extends AbstractRefactoring impl
 			throw new RefactoringInputException("Please provide at least one subdomain name that can be found in the given CML model.");
 
 		BoundedContext newBC = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
-		newBC.setName(boundedContextName);
+		newBC.setName(getUniqueBoundedContextName(boundedContextName));
 		newBC.setDomainVisionStatement(
 				"This Bounded Context realizes the following subdomains: " + String.join(", ", selectedSubdomains.stream().map(sd -> sd.getName()).collect(Collectors.toList())));
 		newBC.setType(BoundedContextType.FEATURE);
@@ -108,6 +108,17 @@ public class DeriveBoundedContextFromSubdomains extends AbstractRefactoring impl
 		parameter.setName(name);
 		parameter.setParameterType(type);
 		return parameter;
+	}
+
+	private String getUniqueBoundedContextName(String initialName) {
+		String bcName = initialName;
+		Set<String> allBCNames = getAllBoundedContexts().stream().map(bc -> bc.getName()).collect(Collectors.toSet());
+		int counter = 2;
+		while (allBCNames.contains(bcName)) {
+			bcName = initialName + "_" + counter;
+			counter++;
+		}
+		return bcName;
 	}
 
 	private String getUniqueAggregateName(BoundedContext bc, String initialAggregateName) {

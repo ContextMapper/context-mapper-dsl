@@ -105,6 +105,24 @@ public class DeriveBoundedContextFromSubdomainsTest extends AbstractRefactoringT
 	}
 
 	@Test
+	public void canFindUniqueBoundedContextName() throws IOException {
+		// given
+		CMLResourceContainer input = getResourceCopyOfTestCML("derive-bc-from-subdomain-test-3-input.cml");
+
+		// when
+		Set<String> subdomains = Sets.newHashSet(Arrays.asList(new String[] { "CustomerDomain", "AnotherDomain" }));
+		DeriveBoundedContextFromSubdomains ar = new DeriveBoundedContextFromSubdomains("NewTestBC", subdomains);
+		ar.doRefactor(input);
+
+		// then
+		ContextMappingModel model = reloadResource(input).getContextMappingModel();
+		assertEquals(2, model.getBoundedContexts().size());
+		Set<String> bcNames = model.getBoundedContexts().stream().map(bc -> bc.getName()).collect(Collectors.toSet());
+		assertTrue(bcNames.contains("NewTestBC"));
+		assertTrue(bcNames.contains("NewTestBC_2"));
+	}
+
+	@Test
 	public void canThrowExceptionIfNoCorrectSubdomainNameIsProvided() throws IOException {
 		// given
 		CMLResourceContainer input = getResourceCopyOfTestCML("derive-bc-from-subdomain-test-1-input.cml");
