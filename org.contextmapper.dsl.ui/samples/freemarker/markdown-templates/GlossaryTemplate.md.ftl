@@ -23,7 +23,7 @@ This glossary forms the vocabulary of the [ubiquituous language](https://martinf
 
         <#if contextMap??>
             ### Context Maps<#lt>
-            The Context Map '${contextMap.name}' in file '${filename}' is of type '${contextMap.type}'.<#lt>
+            The Context Map <#if contextMap.name?has_content>'${contextMap.name}'</#if> in file '${filename}' is of type '${contextMap.type}'.<#lt>
         </#if>
     </#if>
 
