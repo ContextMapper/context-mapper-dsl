@@ -34,6 +34,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
+import com.google.common.collect.Sets;
+
 public class DeriveSubdomainFromRequirementsWizardPage extends ContextMapperWizardPage {
 
 	private String initialDomain;
@@ -94,6 +96,8 @@ public class DeriveSubdomainFromRequirementsWizardPage extends ContextMapperWiza
 		subdomainNameLabel.setText("Subdomain name:");
 
 		Set<String> initialSubdomains = domainSubdomainMapping.get(initialDomain);
+		if (initialSubdomains == null)
+			initialSubdomains = Sets.newHashSet();
 		comboSubdomain = new Combo(container, SWT.DROP_DOWN);
 		comboSubdomain.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		comboSubdomain.addSelectionListener(new SelectionAdapter() {
