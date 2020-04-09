@@ -3,7 +3,8 @@ Domain InsuranceDomain {
 		Entity Customer
 		
 		Service CustomerService {
-			createCustomer
+			createCustomer;
+			testMethod;
 		}
 	}
 }

@@ -1,0 +1,25 @@
+BoundedContext NewTestBC {
+	Aggregate CustomerDomainAggregate {
+		Entity Customer {
+			String firstName // already existing attribute
+			- RefObj reference1
+		}
+		Entity RefObj
+	}
+}
+
+Domain InsuranceDomain {
+	Subdomain CustomerDomain {
+		Entity Customer {
+			String firstName
+			String lastName
+			- RefObj reference1
+			- RefObj reference2
+		}
+		Entity RefObj
+		
+		Service CustomerService {
+			createCustomer
+		}
+	}
+}
