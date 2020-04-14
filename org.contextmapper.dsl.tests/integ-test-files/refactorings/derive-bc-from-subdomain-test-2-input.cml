@@ -1,6 +1,4 @@
-BoundedContext NewTestBC {
-	Aggregate CustomerDomainAggregate // Aggregate already existing
-}
+BoundedContext NewTestBC // BC already existing
 
 Domain InsuranceDomain {
 	Subdomain CustomerDomain {

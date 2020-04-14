@@ -1,5 +1,7 @@
 BoundedContext NewTestBC {
-	Aggregate CustomerDomainAggregate // Aggregate already existing
+	Aggregate CustomerDomainAggregate {
+		Entity Customer // Entity already existing
+	}
 }
 
 Domain InsuranceDomain {

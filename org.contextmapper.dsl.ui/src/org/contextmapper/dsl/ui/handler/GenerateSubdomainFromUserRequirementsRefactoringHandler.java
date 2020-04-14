@@ -45,7 +45,7 @@ public class GenerateSubdomainFromUserRequirementsRefactoringHandler extends Abs
 
 		// selection must at least contain one user requirements (use case or user
 		// story)
-		return objects.stream().filter(o -> o instanceof UserRequirement).findFirst().isPresent();
+		return objects.stream().filter(o -> o instanceof UserRequirement).findFirst().isPresent() && super.isEnabled();
 	}
 
 	@Override

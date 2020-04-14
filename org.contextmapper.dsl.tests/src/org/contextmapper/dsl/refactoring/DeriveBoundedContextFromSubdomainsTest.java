@@ -46,7 +46,8 @@ import com.google.common.collect.Sets;
 public class DeriveBoundedContextFromSubdomainsTest extends AbstractRefactoringTest {
 
 	@ParameterizedTest
-	@ValueSource(strings = { "derive-bc-from-subdomain-test-1-input.cml" })
+	@ValueSource(strings = { "derive-bc-from-subdomain-test-1-input.cml", "derive-bc-from-subdomain-test-2-input.cml", "derive-bc-from-subdomain-test-3-input.cml",
+			"derive-bc-from-subdomain-test-4-input.cml", "derive-bc-from-subdomain-test-5-input.cml" })
 	public void canDeriveBoundedContextFromSubdomain(String inputFile) throws IOException {
 		// given
 		CMLResourceContainer input = getResourceCopyOfTestCML(inputFile);
@@ -84,10 +85,11 @@ public class DeriveBoundedContextFromSubdomainsTest extends AbstractRefactoringT
 		assertEquals("CustomerID", attr.getType());
 	}
 
-	@Test
-	public void canCopyAndEnhanceServices() throws IOException {
+	@ParameterizedTest
+	@ValueSource(strings = { "derive-bc-from-subdomain-test-1-input.cml", "derive-bc-from-subdomain-test-6-input.cml", "derive-bc-from-subdomain-test-7-input.cml" })
+	public void canCopyAndEnhanceServices(String inputFile) throws IOException {
 		// given
-		CMLResourceContainer input = getResourceCopyOfTestCML("derive-bc-from-subdomain-test-1-input.cml");
+		CMLResourceContainer input = getResourceCopyOfTestCML(inputFile);
 
 		// when
 		Set<String> subdomains = Sets.newHashSet(Arrays.asList(new String[] { "CustomerDomain" }));
@@ -110,9 +112,9 @@ public class DeriveBoundedContextFromSubdomainsTest extends AbstractRefactoringT
 
 		Service service = aggregate.getServices().get(0);
 		assertEquals("CustomerService", service.getName());
-		assertEquals(1, service.getOperations().size());
+		assertEquals(2, service.getOperations().size());
 
-		ServiceOperation operation = service.getOperations().get(0);
+		ServiceOperation operation = service.getOperations().stream().filter(o -> o.getName().equals("createCustomer")).findFirst().get();
 		assertEquals("createCustomer", operation.getName());
 		assertEquals("CreateCustomerOutput", operation.getReturnType().getType());
 		assertEquals(1, operation.getParameters().size());
@@ -123,21 +125,52 @@ public class DeriveBoundedContextFromSubdomainsTest extends AbstractRefactoringT
 	}
 
 	@Test
-	public void canFindUniqueBoundedContextName() throws IOException {
+	public void canHandleDuplicateAggregateNameInOtherContext() throws IOException {
 		// given
-		CMLResourceContainer input = getResourceCopyOfTestCML("derive-bc-from-subdomain-test-3-input.cml");
+		CMLResourceContainer input = getResourceCopyOfTestCML("derive-bc-from-subdomain-duplicate-aggregate-name-test-1-input.cml");
 
 		// when
-		Set<String> subdomains = Sets.newHashSet(Arrays.asList(new String[] { "CustomerDomain", "AnotherDomain" }));
+		Set<String> subdomains = Sets.newHashSet(Arrays.asList(new String[] { "CustomerDomain" }));
 		DeriveBoundedContextFromSubdomains ar = new DeriveBoundedContextFromSubdomains("NewTestBC", subdomains);
 		ar.doRefactor(input);
 
 		// then
 		ContextMappingModel model = reloadResource(input).getContextMappingModel();
 		assertEquals(2, model.getBoundedContexts().size());
-		Set<String> bcNames = model.getBoundedContexts().stream().map(bc -> bc.getName()).collect(Collectors.toSet());
-		assertTrue(bcNames.contains("NewTestBC"));
-		assertTrue(bcNames.contains("NewTestBC_2"));
+
+		BoundedContext generatedContext = model.getBoundedContexts().stream().filter(bc -> bc.getName().equals("NewTestBC")).findFirst().get();
+		assertNotNull(generatedContext);
+		assertEquals(1, generatedContext.getAggregates().size());
+		assertEquals("CustomerDomainAggregate_2", generatedContext.getAggregates().get(0).getName());
+	}
+
+	@Test
+	public void canCopyEntityAttributesAndReferences() throws IOException {
+		// given
+		CMLResourceContainer input = getResourceCopyOfTestCML("derive-bc-from-subdomain-entity-attributes-test-1-input.cml");
+
+		// when
+		Set<String> subdomains = Sets.newHashSet(Arrays.asList(new String[] { "CustomerDomain" }));
+		DeriveBoundedContextFromSubdomains ar = new DeriveBoundedContextFromSubdomains("NewTestBC", subdomains);
+		ar.doRefactor(input);
+
+		// then
+		ContextMappingModel model = reloadResource(input).getContextMappingModel();
+		assertEquals(1, model.getBoundedContexts().size());
+		assertNotNull(model.getBoundedContexts().get(0));
+
+		BoundedContext bc = model.getBoundedContexts().get(0);
+		assertEquals("NewTestBC", bc.getName());
+		assertEquals(BoundedContextType.FEATURE, bc.getType());
+		assertEquals(1, bc.getAggregates().size());
+		assertNotNull(bc.getAggregates().get(0));
+
+		Aggregate aggregate = bc.getAggregates().get(0);
+		assertEquals(2, aggregate.getDomainObjects().size());
+
+		Entity entity = (Entity) aggregate.getDomainObjects().stream().filter(e -> e.getName().equals("Customer")).findAny().get();
+		assertEquals(3, entity.getAttributes().size());
+		assertEquals(2, entity.getReferences().size());
 	}
 
 	@Test

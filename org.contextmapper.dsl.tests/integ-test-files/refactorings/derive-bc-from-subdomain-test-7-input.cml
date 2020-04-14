@@ -1,0 +1,18 @@
+BoundedContext NewTestBC {
+	Aggregate CustomerDomainAggregate {
+		Service CustomerService {
+			ReturnValue testMethod(ParamType param);
+		}
+	}
+}
+
+Domain InsuranceDomain {
+	Subdomain CustomerDomain {
+		Entity Customer
+		
+		Service CustomerService {
+			createCustomer;
+			testMethod;
+		}
+	}
+}

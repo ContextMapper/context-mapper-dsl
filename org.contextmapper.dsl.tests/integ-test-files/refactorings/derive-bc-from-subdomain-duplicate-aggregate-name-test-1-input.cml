@@ -1,3 +1,7 @@
+BoundedContext JustAnotherContext {
+	Aggregate CustomerDomainAggregate // generated name already exists
+}
+
 Domain InsuranceDomain {
 	Subdomain CustomerDomain {
 		Entity Customer
