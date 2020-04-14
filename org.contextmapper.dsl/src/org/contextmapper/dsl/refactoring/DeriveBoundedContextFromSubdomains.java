@@ -73,7 +73,7 @@ public class DeriveBoundedContextFromSubdomains extends AbstractRefactoring impl
 	}
 
 	private void createAggregate4Subdomain(Subdomain subdomain, BoundedContext bc) {
-		Aggregate aggregate = createOrGetAggregate(bc, subdomain.getName() + "Aggregate");
+		Aggregate aggregate = createOrGetAggregate(bc, getAggregateName(subdomain.getName() + "Aggregate", bc));
 		aggregate.setComment("/* This Aggregate contains the entities and services of the '" + subdomain.getName() + "' subdomain." + System.lineSeparator()
 				+ "	 * TODO: You can now refactor the Aggregate, for example by using the 'Split Aggregate by Entities' architectural refactoring." + System.lineSeparator()
 				+ "	 * TODO: Add attributes and operations to the entities." + System.lineSeparator() + "	 * TODO: Add operations to the services." + System.lineSeparator()
@@ -81,6 +81,30 @@ public class DeriveBoundedContextFromSubdomains extends AbstractRefactoring impl
 
 		createEntities(subdomain, aggregate);
 		createServices(subdomain, aggregate);
+	}
+
+	private String getAggregateName(String initialName, BoundedContext bc) {
+		Set<String> currentBCAggregates = bc.getAggregates().stream().map(agg -> agg.getName()).collect(Collectors.toSet());
+		if (currentBCAggregates.contains(initialName))
+			return initialName;
+
+		String contextName = initialName;
+		Set<String> allAggregateNames = collectAllAggregateNames();
+		allAggregateNames.removeAll(currentBCAggregates);
+		int counter = 2;
+		while (allAggregateNames.contains(contextName)) {
+			contextName = initialName + "_" + counter;
+			counter++;
+		}
+		return contextName;
+	}
+
+	private Set<String> collectAllAggregateNames() {
+		Set<String> aggregateNames = Sets.newHashSet();
+		for (BoundedContext bc : getAllBoundedContexts()) {
+			aggregateNames.addAll(bc.getAggregates().stream().map(agg -> agg.getName()).collect(Collectors.toSet()));
+		}
+		return aggregateNames;
 	}
 
 	private void createEntities(Subdomain subdomain, Aggregate aggregate) {

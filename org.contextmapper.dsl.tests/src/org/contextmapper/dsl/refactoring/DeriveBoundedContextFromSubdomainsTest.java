@@ -125,6 +125,26 @@ public class DeriveBoundedContextFromSubdomainsTest extends AbstractRefactoringT
 	}
 
 	@Test
+	public void canHandleDuplicateAggregateNameInOtherContext() throws IOException {
+		// given
+		CMLResourceContainer input = getResourceCopyOfTestCML("derive-bc-from-subdomain-duplicate-aggregate-name-test-1-input.cml");
+
+		// when
+		Set<String> subdomains = Sets.newHashSet(Arrays.asList(new String[] { "CustomerDomain" }));
+		DeriveBoundedContextFromSubdomains ar = new DeriveBoundedContextFromSubdomains("NewTestBC", subdomains);
+		ar.doRefactor(input);
+
+		// then
+		ContextMappingModel model = reloadResource(input).getContextMappingModel();
+		assertEquals(2, model.getBoundedContexts().size());
+
+		BoundedContext generatedContext = model.getBoundedContexts().stream().filter(bc -> bc.getName().equals("NewTestBC")).findFirst().get();
+		assertNotNull(generatedContext);
+		assertEquals(1, generatedContext.getAggregates().size());
+		assertEquals("CustomerDomainAggregate_2", generatedContext.getAggregates().get(0).getName());
+	}
+
+	@Test
 	public void canCopyEntityAttributesAndReferences() throws IOException {
 		// given
 		CMLResourceContainer input = getResourceCopyOfTestCML("derive-bc-from-subdomain-entity-attributes-test-1-input.cml");
