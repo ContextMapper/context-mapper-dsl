@@ -1,21 +1,37 @@
-<#import "entities/jdl-entity.ftl" as entityMacro>
 <#assign allEntityNames = [] />
-<#list boundedContexts as bc>
-	<#assign entities = [] />
-	<#assign entityNames = [] />
-	<#list bc.aggregates as agg>
-		<#assign entities = entities + agg.domainObjects?filter(dob -> instanceOf(dob, Entity))>
-	</#list>
-	<#assign entityNames = entities?map(e -> e.name)>
-	<#assign allEntityNames = allEntityNames + entityNames>
-	<#if entities?has_content>
-	
-		/* Bounded Context ${bc.name} */<#lt>
-		<#list entities as entity>
-			<@entityMacro.jdlEntity entity />
-		</#list>
-		microservice ${entityNames?join(", ")} with ${bc.name}<#lt>
+<#assign oneToManyRefs = [] />
+<#assign oneToOneRefs = [] />
+<#list filterStructuralBoundedContexts(boundedContexts) as bc>
+<#assign entities = [] />
+<#assign entityNames = [] />
+<#list bc.aggregates as agg>
+	<#assign entities = entities + agg.domainObjects?filter(dob -> instanceOf(dob, Entity))>
+</#list>
+<#assign entityNames = entities?map(e -> e.name)>
+<#assign allEntityNames = allEntityNames + entityNames>
+<#if entities?has_content>
+
+/* Bounded Context ${bc.name} */<#lt>
+<#list entities as entity>
+
+entity ${entity.name} {
+<#list entity.attributes as attribute>
+	${attribute.name} ${mapAttributeType(attribute.type)}
+</#list>
+}
+<#list entity.references as reference>
+	<#if reference.domainObjectType?has_content && instanceOf(reference.domainObjectType, Entity) && entityNames?seq_contains(reference.domainObjectType.name)>
+		<#if reference.collectionType?has_content && reference.collectionType.name() != "NONE">
+			<#assign oneToManyRefs = oneToManyRefs + [ entity.name + "{" + reference.name + "} to " + reference.domainObjectType.name ]>
+		<#else>
+			<#assign oneToOneRefs = oneToOneRefs + [ entity.name + "{"+ reference.name + "} to " + reference.domainObjectType.name ]>
+		</#if>
 	</#if>
+</#list>
+
+</#list>
+microservice ${entityNames?join(", ")} with ${bc.name}<#lt>
+</#if>
 	
 application {
 	config {
@@ -29,6 +45,23 @@ application {
 }
 </#list>
 
+/* relationships */
+<#if oneToManyRefs?has_content>
+	relationship OneToMany {<#lt>
+		<#list oneToManyRefs as reference>
+			${reference}
+		</#list>
+	}<#lt>
+</#if>
+<#if oneToOneRefs?has_content>
+	relationship OneToOne {<#lt>
+		<#list oneToOneRefs as reference>
+			${reference}
+		</#list>
+	}<#lt>
+</#if>
+
+/* microservice gateyway app */
 application {
 	config {
 		baseName gateway,
@@ -40,5 +73,35 @@ application {
 	</#if>
 }
 
+/* additional options */
 dto * with mapstruct
 service * with serviceImpl
+
+<#-- Data type mapping -->
+<#function mapAttributeType inputType>
+  <#if inputType == "String">
+  	<#return "String">
+  <#elseif inputType == "int" || inputType == "Integer">
+  	<#return "Integer">
+  <#elseif inputType == "long" || inputType == "Long">
+  	<#return "Long">
+  <#elseif inputType == "boolean" || inputType == "Boolean">
+  	<#return "Boolean">
+  <#elseif inputType == "Date" || inputType == "DateTime" || inputType == "Timestamp">
+  	<#return "LocalDate">
+  <#elseif inputType == "BigDecimal" || inputType == "BigInteger">
+  	<#return "BigDecimal">
+  <#elseif inputType == "double" || inputType == "Double">
+  	<#return "Double">
+  <#elseif inputType == "float" || inputType == "Float">
+  	<#return "Float">
+  <#elseif inputType == "Key">
+  	<#return "UUID">
+  <#elseif inputType == "Blob" || inputType =="Object[]">
+  	<#return "Blob">
+  <#elseif inputType == "Clob">
+  	<#return "TextBlob">
+  <#else>
+  	<#return "Blob">
+  </#if>
+</#function>
