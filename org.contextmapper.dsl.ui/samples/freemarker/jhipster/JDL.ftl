@@ -1,6 +1,7 @@
 <#assign allEntityNames = [] />
 <#assign oneToManyRefs = [] />
 <#assign oneToOneRefs = [] />
+<#assign portCounter = 8080 />
 <#list filterStructuralBoundedContexts(boundedContexts) as bc>
 <#assign entities = [] />
 <#assign entityNames = [] />
@@ -32,12 +33,14 @@ entity ${entity.name} {
 </#list>
 microservice ${entityNames?join(", ")} with ${bc.name}<#lt>
 </#if>
-	
+
+<#assign portCounter++ />
 application {
 	config {
 		baseName ${bc.name},
 		packageName org.contextmapper.generated.${bc.name?lower_case},
 		applicationType microservice
+		serverPort ${portCounter?int?c}
 	}
 	<#if entityNames?has_content>
 	entities ${entityNames?join(", ")}
@@ -67,6 +70,7 @@ application {
 		baseName gateway,
 		packageName org.contextmapper.generated.gateway,
 		applicationType gateway
+		serverPort 8080
 	}
 	<#if allEntityNames?has_content>
 	entities ${allEntityNames?join(", ")}
