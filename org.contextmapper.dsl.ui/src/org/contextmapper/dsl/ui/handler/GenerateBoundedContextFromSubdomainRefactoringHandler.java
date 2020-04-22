@@ -41,8 +41,6 @@ public class GenerateBoundedContextFromSubdomainRefactoringHandler extends Abstr
 		new WizardDialog(HandlerUtil.getActiveShell(event), new DeriveBoundedContextFromSubdomainsWizard(refactoringContext, executionContext -> {
 			return finishRefactoring(new DeriveBoundedContextFromSubdomains(executionContext.getBoundedContextName(), ids), resource, event);
 		})).open();
-
-		new DeriveBoundedContextFromSubdomains("NewContextFromSubdomains", ids).doRefactor(resource, getAllResources());
 	}
 
 	@Override
