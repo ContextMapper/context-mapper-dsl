@@ -1,7 +1,20 @@
+<#--
+ This template generates a JHipster JDL file.
+ Please consult our online tutorial https://contextmapper.org/docs/jhipster-microservice-generation/ to learn how to use it.
+-->
+<#-- 
+ variables to collect entity names and references: 
+-->
 <#assign allEntityNames = [] />
 <#assign oneToManyRefs = [] />
 <#assign oneToOneRefs = [] />
+<#-- 
+ counter to give microservices different ports: (8081, 8082, 8083, ...) 
+-->
 <#assign portCounter = 8080 />
+<#-- 
+ loop to collect entity data per Bounded Context (BC) and create application plus microservice for each BC
+-->
 <#list filterStructuralBoundedContexts(boundedContexts) as bc>
 <#assign entities = [] />
 <#assign entityNames = [] />
@@ -48,6 +61,9 @@ application {
 }
 </#list>
 
+<#--
+ here we print the collected references as relationships:
+-->
 /* relationships */
 <#if oneToManyRefs?has_content>
 	relationship OneToMany {<#lt>
@@ -64,7 +80,10 @@ application {
 	}<#lt>
 </#if>
 
-/* microservice gateyway app */
+<#--
+ create a microservice gateway (user interface)
+-->
+/* microservice gateway app */
 application {
 	config {
 		baseName gateway,
@@ -77,11 +96,14 @@ application {
 	</#if>
 }
 
+<#--
+ additional configurations for the JHipster generator:
+-->
 /* additional options */
 dto * with mapstruct
 service * with serviceImpl
 
-<#-- Data type mapping -->
+<#-- Data type mapping: -->
 <#function mapAttributeType inputType>
   <#if inputType == "String">
   	<#return "String">
