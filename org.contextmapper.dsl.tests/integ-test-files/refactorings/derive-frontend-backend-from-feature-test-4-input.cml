@@ -1,0 +1,5 @@
+BoundedContext TestSystem {
+	type FEATURE
+}
+
+BoundedContext TestSystemBackend // default backend context name already exists

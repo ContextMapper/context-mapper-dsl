@@ -1,0 +1,26 @@
+ContextMap testMap { // test with existing context map
+}
+
+BoundedContext TestFeature {
+	type FEATURE
+	
+	Module TestModule { // existing module
+		Aggregate TestAggregateInModule {
+			Entity TestEntityInModule {
+				String attr1
+				- TestEntity ref1
+			}
+		}
+	}
+	
+	Aggregate TestAggregate { // existing aggregate
+		Entity TestEntity {
+			String attr1
+		}
+	}
+	
+}
+
+BoundedContext JustSomeContext {
+	Aggregate TestAggregateInModuleBackend // simulate duplicate name problem here
+}
