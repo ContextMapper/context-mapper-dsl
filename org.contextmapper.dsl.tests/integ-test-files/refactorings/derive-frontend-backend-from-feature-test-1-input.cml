@@ -1,0 +1,3 @@
+BoundedContext TestFeature {
+	type FEATURE
+}

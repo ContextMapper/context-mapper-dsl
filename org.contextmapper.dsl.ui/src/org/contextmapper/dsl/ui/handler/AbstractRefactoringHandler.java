@@ -69,7 +69,7 @@ public abstract class AbstractRefactoringHandler extends AbstractHandler impleme
 		return null;
 	}
 
-	private Resource getCurrentResource() {
+	protected Resource getCurrentResource() {
 		XtextEditor xEditor = EditorUtils.getActiveXtextEditor();
 		IResource xResource = xEditor.getResource();
 

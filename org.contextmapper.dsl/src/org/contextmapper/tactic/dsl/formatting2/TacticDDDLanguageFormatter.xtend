@@ -27,6 +27,7 @@ import org.contextmapper.tactic.dsl.tacticdsl.Parameter
 import org.contextmapper.tactic.dsl.tacticdsl.Reference
 import org.contextmapper.tactic.dsl.tacticdsl.Service
 import org.contextmapper.tactic.dsl.tacticdsl.ValueObject
+import org.contextmapper.tactic.dsl.tacticdsl.Enum
 import org.eclipse.xtext.formatting2.AbstractFormatter2
 import org.eclipse.xtext.formatting2.IFormattableDocument
 import org.contextmapper.tactic.dsl.tacticdsl.ServiceOperation
@@ -51,9 +52,11 @@ class TacticDDDLanguageFormatter extends AbstractFormatter2 {
 		}
 		for (reference : entity.references) {
 			reference.format
+			reference.append[newLine]
 		}
 		for (operation : entity.operations) {
 			operation.format
+			operation.append[newLine]
 		}
 	}
 	
@@ -73,9 +76,11 @@ class TacticDDDLanguageFormatter extends AbstractFormatter2 {
 		}
 		for (reference : domainEvent.references) {
 			reference.format
+			reference.append[newLine]
 		}
 		for (operation : domainEvent.operations) {
 			operation.format
+			operation.append[newLine]
 		}
 	}
 	
@@ -95,9 +100,11 @@ class TacticDDDLanguageFormatter extends AbstractFormatter2 {
 		}
 		for (reference : commandEvent.references) {
 			reference.format
+			reference.append[newLine]
 		}
 		for (operation : commandEvent.operations) {
 			operation.format
+			operation.append[newLine]
 		}
 	}
 	
@@ -116,9 +123,26 @@ class TacticDDDLanguageFormatter extends AbstractFormatter2 {
 		}
 		for (reference : valueObject.references) {
 			reference.format
+			reference.append[newLine]
 		}
 		for (operation : valueObject.operations) {
 			operation.format
+			operation.append[newLine]
+		}
+	}
+	
+	def dispatch void format(Enum enumm, extension IFormattableDocument document) {
+		interior(
+			enumm.regionFor.keyword('{').append[newLine],
+			enumm.regionFor.keyword('}').prepend[newLine].append[newLine]
+		)[indent]
+
+		enumm.prepend[newLines = 1]
+		enumm.regionFor.keyword('enum').prepend[newLine]
+
+		for (attribute : enumm.attributes) {
+			attribute.format
+			attribute.append[newLine]
 		}
 	}
 

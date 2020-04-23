@@ -536,6 +536,15 @@
 			</activeWhen>
 		</handler>
 		<handler 
+			class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.contextmapper.dsl.ui.handler.GenerateBackendFrontendSystemsFromFeatureBCRefactoringHandler"
+			commandId="org.contextmapper.dsl.ui.handler.GenerateBackendFrontendSystemsFromFeatureBCRefactoringCommand">
+			<activeWhen>
+				<reference
+					definitionId="org.contextmapper.dsl.ContextMappingDSL.Editor.opened">
+				</reference>
+			</activeWhen>
+		</handler>
+		<handler 
 			class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.eclipse.xtext.ui.refactoring.ui.DefaultRenameElementHandler"
 			commandId="org.eclipse.xtext.ui.refactoring.RenameElement">
 			<activeWhen>
@@ -627,6 +636,12 @@
 	      point="org.eclipse.ui.commands">
 	      <command name="Derive Bounded Context From Subdomains" categoryId="org.eclipse.xtext.ui.category.refactoring"
              id="org.contextmapper.dsl.ui.handler.GenerateBoundedContextFromSubdomainRefactoringCommand">
+	      </command>
+	</extension>
+	<extension
+	      point="org.eclipse.ui.commands">
+	      <command name="Derive Frontend and Backend Systems From Feature" categoryId="org.eclipse.xtext.ui.category.refactoring"
+             id="org.contextmapper.dsl.ui.handler.GenerateBackendFrontendSystemsFromFeatureBCRefactoringCommand">
 	      </command>
 	</extension>
 	<extension point="org.eclipse.ui.menus">

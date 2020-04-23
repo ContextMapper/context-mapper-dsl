@@ -1,0 +1,5 @@
+BoundedContext TestSystem {
+	type FEATURE
+}
+
+BoundedContext TestSystemFrontend // default frontend name already exists

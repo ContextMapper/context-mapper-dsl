@@ -36,13 +36,13 @@ public class UserRequirementsValidator extends AbstractDeclarativeValidator {
 		if (feature.getEntity() == null)
 			return;
 
-		if (!feature.getEntity().matches("^[a-zA-Z_][a-zA-Z0-9_]*"))
+		if (!feature.getEntity().matches(AbstractCMLValidator.ID_VALIDATION_PATTERN))
 			warning(ENTITY_NAME_CONTAINS_INVALID_CHARACTERS, feature, ContextMappingDSLPackage.Literals.FEATURE__ENTITY);
-		
-		if(feature.getVerb() == null)
+
+		if (feature.getVerb() == null)
 			return;
-		
-		if (!feature.getVerb().matches("^[a-zA-Z_][a-zA-Z0-9_]*"))
+
+		if (!feature.getVerb().matches(AbstractCMLValidator.ID_VALIDATION_PATTERN))
 			warning(VERB_CONTAINS_INVALID_CHARACTERS, feature, ContextMappingDSLPackage.Literals.FEATURE__VERB);
 	}
 

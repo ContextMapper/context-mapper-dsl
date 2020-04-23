@@ -1,0 +1,3 @@
+BoundedContext TestSystem {
+	type SYSTEM
+}

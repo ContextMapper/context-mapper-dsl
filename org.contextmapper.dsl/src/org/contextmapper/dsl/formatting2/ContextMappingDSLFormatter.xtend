@@ -165,6 +165,13 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 		
 		aggregate.prepend[newLines = 1]
 		aggregate.regionFor.keyword('Aggregate').prepend[newLine]
+		
+		aggregate.regionFor.keyword('responsibilities').prepend[newLine]
+		aggregate.regionFor.keyword('owner').prepend[newLine]
+		aggregate.regionFor.keyword('useCases').prepend[newLine]
+		aggregate.regionFor.keyword('userRequirements').prepend[newLine]
+		aggregate.regionFor.keyword('knowledgeLevel').prepend[newLine]
+		aggregate.regionFor.keyword('likelihoodForChange').prepend[newLine]
 
 		aggregate.comment.format
 

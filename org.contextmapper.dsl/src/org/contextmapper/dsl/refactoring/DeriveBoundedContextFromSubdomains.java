@@ -15,7 +15,6 @@
  */
 package org.contextmapper.dsl.refactoring;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -38,7 +37,6 @@ import org.contextmapper.tactic.dsl.tacticdsl.ServiceOperation;
 import org.contextmapper.tactic.dsl.tacticdsl.TacticdslFactory;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 public class DeriveBoundedContextFromSubdomains extends AbstractRefactoring implements Refactoring {

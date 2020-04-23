@@ -22,6 +22,8 @@ import org.eclipse.xtext.validation.AbstractDeclarativeValidator;
 
 public class AbstractCMLValidator extends AbstractDeclarativeValidator {
 
+	public static final String ID_VALIDATION_PATTERN = "^[a-zA-Z_][a-zA-Z0-9_]*";
+
 	protected ContextMappingModel getRootCMLModel(EObject modelElement) {
 		return (ContextMappingModel) EcoreUtil.getRootContainer(modelElement);
 	}
