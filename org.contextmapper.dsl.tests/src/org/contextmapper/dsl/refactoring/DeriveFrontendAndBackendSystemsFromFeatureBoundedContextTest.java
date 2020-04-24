@@ -60,7 +60,7 @@ public class DeriveFrontendAndBackendSystemsFromFeatureBoundedContextTest extend
 	}
 
 	@Test
-	public void canCheckThatInputBCIsFeature() throws IOException {
+	public void canCheckThatInputBCIsFeatureOrApplication() throws IOException {
 		// given
 		CMLResourceContainer input = getResourceCopyOfTestCML("derive-frontend-backend-from-feature-test-2-input.cml");
 		DeriveFrontendAndBackendSystemsFromFeatureBoundedContext ar = new DeriveFrontendAndBackendSystemsFromFeatureBoundedContext("TestSystem", ACL);
@@ -85,7 +85,8 @@ public class DeriveFrontendAndBackendSystemsFromFeatureBoundedContextTest extend
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = { "derive-frontend-backend-from-feature-test-3-input.cml", "derive-frontend-backend-from-feature-test-4-input.cml" })
+	@ValueSource(strings = { "derive-frontend-backend-from-feature-test-3-input.cml", "derive-frontend-backend-from-feature-test-4-input.cml",
+			"derive-frontend-backend-from-feature-test-6-input.cml" })
 	public void canDeriveFrontendAndBackendSystemContexts(String inputFile) throws IOException {
 		// given
 		CMLResourceContainer input = getResourceCopyOfTestCML(inputFile);

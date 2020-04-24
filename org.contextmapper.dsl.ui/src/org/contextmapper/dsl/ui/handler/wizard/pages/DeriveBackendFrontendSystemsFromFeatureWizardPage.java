@@ -51,18 +51,18 @@ public class DeriveBackendFrontendSystemsFromFeatureWizardPage extends ContextMa
 	private boolean hasError = true;
 
 	public DeriveBackendFrontendSystemsFromFeatureWizardPage(DeriveBackendFrontendFromFeatureContext context) {
-		super("Derive Backend and Frontend System From Feature Bounded Context");
+		super("Derive Frontend/Backend Systems And Integration Relationship");
 		this.context = context;
 	}
 
 	@Override
 	public String getTitle() {
-		return "Derive Backend and Frontend System From Feature Bounded Context";
+		return "Derive Frontend/Backend Systems and Integration Relationship";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Configure derived Bounded Contexts:";
+		return "Configure the derived Bounded Contexts and integration relationship:";
 	}
 
 	@Override
@@ -162,7 +162,7 @@ public class DeriveBackendFrontendSystemsFromFeatureWizardPage extends ContextMa
 		hintLabel4.setText("from the backend one, and the frontend needs a translation/anticorruption layer.");
 
 		Label relationshipImplTechnologyLabel = new Label(container, SWT.NONE);
-		relationshipImplTechnologyLabel.setText("Relationship Implementation Technology:");
+		relationshipImplTechnologyLabel.setText("Relationship Impl. Technology:");
 		relationshipImplementationTechnology = new Text(container, SWT.BORDER | SWT.SINGLE);
 		relationshipImplementationTechnology.setText(context.getRelationshipImplementationTechnology());
 		relationshipImplementationTechnology.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));

@@ -182,7 +182,7 @@ public class DeriveFrontendAndBackendSystemsFromFeatureBoundedContext extends Ab
 		if (!optFeatureBC.isPresent())
 			throw new RefactoringInputException("A Bounded Context with the name '" + featureBoundedContextName + "' does not exist!");
 		BoundedContext featureBC = optFeatureBC.get();
-		if (featureBC.getType() != BoundedContextType.FEATURE)
+		if (featureBC.getType() != BoundedContextType.FEATURE && featureBC.getType() != BoundedContextType.APPLICATION)
 			throw new RefactoringInputException("The Bounded Context '" + featureBoundedContextName + "' is not of the type FEATURE!");
 		Set<String> allBCNames = getAllBoundedContexts().stream().map(bc -> bc.getName()).collect(Collectors.toSet());
 		if (allBCNames.contains(frontendName))

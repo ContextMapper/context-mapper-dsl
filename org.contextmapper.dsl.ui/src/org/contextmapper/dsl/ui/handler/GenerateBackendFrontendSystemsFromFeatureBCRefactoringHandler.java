@@ -66,7 +66,7 @@ public class GenerateBackendFrontendSystemsFromFeatureBCRefactoringHandler exten
 			return false;
 
 		BoundedContext selectedContext = (BoundedContext) obj;
-		if (selectedContext.getType() != BoundedContextType.FEATURE)
+		if (selectedContext.getType() != BoundedContextType.FEATURE && selectedContext.getType() != BoundedContextType.APPLICATION)
 			return false;
 
 		return super.isEnabled();

@@ -36,7 +36,7 @@ public class DeriveBackendFrontendSystemsFromFeatureWizard extends Wizard {
 
 	@Override
 	public String getWindowTitle() {
-		return "Define Subdomain Name";
+		return "Derive Frontend/Backend Systems and Integration Relationship";
 	}
 
 	@Override
