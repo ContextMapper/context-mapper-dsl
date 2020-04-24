@@ -43,6 +43,9 @@ public class DeriveFrontendAndBackendSystemsFromFeatureBoundedContext extends Ab
 	private boolean deriveViewModelInFrontend = true;
 	private String frontendName;
 	private String backendName;
+	private String frontendImplTechnology;
+	private String backendImplTechnology;
+	private String relationshipImplTechnology;
 
 	public DeriveFrontendAndBackendSystemsFromFeatureBoundedContext(String featureBoundedContextName, FrontendBackendRelationshipType relationshipType) {
 		this.featureBoundedContextName = featureBoundedContextName;
@@ -60,12 +63,14 @@ public class DeriveFrontendAndBackendSystemsFromFeatureBoundedContext extends Ab
 		BoundedContext backend = EcoreUtil.copy(featureContext);
 		backend.setType(BoundedContextType.SYSTEM);
 		backend.setName(backendName);
+		backend.setImplementationTechnology(backendImplTechnology);
 		addElementToEList(model.getBoundedContexts(), backend);
 		adjustCopiedAggregateAndModuleNames(backend, "Backend");
 
 		BoundedContext frontend = EcoreUtil.copy(featureContext);
 		frontend.setType(BoundedContextType.SYSTEM);
 		frontend.setName(frontendName);
+		frontend.setImplementationTechnology(frontendImplTechnology);
 		addElementToEList(model.getBoundedContexts(), frontend);
 		if (!deriveViewModelInFrontend) {
 			frontend.getAggregates().clear();
@@ -81,6 +86,7 @@ public class DeriveFrontendAndBackendSystemsFromFeatureBoundedContext extends Ab
 		relationship.setUpstream(backend);
 		relationship.getUpstreamRoles().add(UpstreamRole.PUBLISHED_LANGUAGE);
 		relationship.getDownstreamRoles().add(getDownstreamRole());
+		relationship.setImplementationTechnology(relationshipImplTechnology);
 		addElementsToEList(relationship.getUpstreamExposedAggregates(), collectAggregates(backend));
 		addElementToEList(map.getBoundedContexts(), frontend);
 		addElementToEList(map.getBoundedContexts(), backend);
@@ -195,6 +201,18 @@ public class DeriveFrontendAndBackendSystemsFromFeatureBoundedContext extends Ab
 
 	public void setBackendName(String backendName) {
 		this.backendName = backendName;
+	}
+
+	public void setFrontendImplementationTechnology(String technology) {
+		this.frontendImplTechnology = technology;
+	}
+
+	public void setBackendImplementationTechnology(String technology) {
+		this.backendImplTechnology = technology;
+	}
+
+	public void setRelationshipImplTechnology(String technology) {
+		this.relationshipImplTechnology = technology;
 	}
 
 	public enum FrontendBackendRelationshipType {

@@ -28,6 +28,9 @@ public class DeriveBackendFrontendFromFeatureContext {
 	private String featureBoundedContextName;
 	private boolean deriveViewModelInFrontend = true;
 	private DeriveFrontendAndBackendSystemsFromFeatureBoundedContext.FrontendBackendRelationshipType relationshipType;
+	private String frontendImplementationTechnology;
+	private String backendImplementationTechnology;
+	private String relationshipImplementationTechnology;
 
 	public DeriveBackendFrontendFromFeatureContext(String featureBoundedContextName, Set<String> allBoundedContextNames) {
 		this.featureBoundedContextName = featureBoundedContextName;
@@ -83,6 +86,30 @@ public class DeriveBackendFrontendFromFeatureContext {
 
 	public void deriveViewModelInFrontend(boolean deriveViewModelInFrontend) {
 		this.deriveViewModelInFrontend = deriveViewModelInFrontend;
+	}
+
+	public String getFrontendImplementationTechnology() {
+		return frontendImplementationTechnology;
+	}
+
+	public void setFrontendImplementationTechnology(String frontendImplementationTechnology) {
+		this.frontendImplementationTechnology = frontendImplementationTechnology;
+	}
+
+	public String getBackendImplementationTechnology() {
+		return backendImplementationTechnology;
+	}
+
+	public void setBackendImplementationTechnology(String backendImplementationTechnology) {
+		this.backendImplementationTechnology = backendImplementationTechnology;
+	}
+
+	public String getRelationshipImplementationTechnology() {
+		return relationshipImplementationTechnology;
+	}
+
+	public void setRelationshipImplementationTechnology(String relationshipImplementationTechnology) {
+		this.relationshipImplementationTechnology = relationshipImplementationTechnology;
 	}
 
 }
