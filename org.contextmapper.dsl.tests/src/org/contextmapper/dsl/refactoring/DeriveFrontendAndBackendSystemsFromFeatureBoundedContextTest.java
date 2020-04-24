@@ -60,7 +60,7 @@ public class DeriveFrontendAndBackendSystemsFromFeatureBoundedContextTest extend
 	}
 
 	@Test
-	public void canCheckThatInputBCIsFeature() throws IOException {
+	public void canCheckThatInputBCIsFeatureOrApplication() throws IOException {
 		// given
 		CMLResourceContainer input = getResourceCopyOfTestCML("derive-frontend-backend-from-feature-test-2-input.cml");
 		DeriveFrontendAndBackendSystemsFromFeatureBoundedContext ar = new DeriveFrontendAndBackendSystemsFromFeatureBoundedContext("TestSystem", ACL);
@@ -85,7 +85,8 @@ public class DeriveFrontendAndBackendSystemsFromFeatureBoundedContextTest extend
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = { "derive-frontend-backend-from-feature-test-3-input.cml", "derive-frontend-backend-from-feature-test-4-input.cml" })
+	@ValueSource(strings = { "derive-frontend-backend-from-feature-test-3-input.cml", "derive-frontend-backend-from-feature-test-4-input.cml",
+			"derive-frontend-backend-from-feature-test-6-input.cml" })
 	public void canDeriveFrontendAndBackendSystemContexts(String inputFile) throws IOException {
 		// given
 		CMLResourceContainer input = getResourceCopyOfTestCML(inputFile);
@@ -247,6 +248,31 @@ public class DeriveFrontendAndBackendSystemsFromFeatureBoundedContextTest extend
 		assertEquals(1, frontend.getAggregates().size());
 		Aggregate sampleAggregate = frontend.getAggregates().get(0);
 		assertEquals("ViewModel", sampleAggregate.getName());
+	}
+
+	@Test
+	public void canSetImplementationTechnologies() throws IOException {
+		// given
+		CMLResourceContainer input = getResourceCopyOfTestCML("derive-frontend-backend-from-feature-test-5-input.cml");
+		DeriveFrontendAndBackendSystemsFromFeatureBoundedContext ar = new DeriveFrontendAndBackendSystemsFromFeatureBoundedContext("TestFeature", ACL);
+		ar.setBackendImplementationTechnology("Spring Boot");
+		ar.setFrontendImplementationTechnology("Angular");
+		ar.setRelationshipImplTechnology("RESTful HTTP");
+
+		// when
+		ar.doRefactor(input);
+
+		// then
+		ContextMappingModel model = reloadResource(input).getContextMappingModel();
+		BoundedContext frontend = model.getBoundedContexts().stream().filter(bc -> bc.getName().equals("TestFeatureFrontend")).findFirst().get();
+		BoundedContext backend = model.getBoundedContexts().stream().filter(bc -> bc.getName().equals("TestFeatureBackend")).findFirst().get();
+		UpstreamDownstreamRelationship relationship = (UpstreamDownstreamRelationship) model.getMap().getRelationships().get(0);
+		assertNotNull(frontend);
+		assertNotNull(backend);
+		assertNotNull(relationship);
+		assertEquals("Spring Boot", backend.getImplementationTechnology());
+		assertEquals("Angular", frontend.getImplementationTechnology());
+		assertEquals("RESTful HTTP", relationship.getImplementationTechnology());
 	}
 
 }

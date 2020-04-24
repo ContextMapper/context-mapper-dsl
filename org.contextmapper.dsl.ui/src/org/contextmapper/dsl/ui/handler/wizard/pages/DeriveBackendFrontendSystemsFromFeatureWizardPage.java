@@ -43,23 +43,26 @@ public class DeriveBackendFrontendSystemsFromFeatureWizardPage extends ContextMa
 	private Composite container;
 	private Text frontendNameText;
 	private Text backendNameText;
+	private Text frontendImplementationTechnology;
+	private Text backendImplementationTechnology;
+	private Text relationshipImplementationTechnology;
 	private Combo typeSelectionCombo;
 	private Button deriveViewModelCheckbox;
 	private boolean hasError = true;
 
 	public DeriveBackendFrontendSystemsFromFeatureWizardPage(DeriveBackendFrontendFromFeatureContext context) {
-		super("Derive Backend and Frontend System From Feature Bounded Context");
+		super("Derive Frontend/Backend Systems And Integration Relationship");
 		this.context = context;
 	}
 
 	@Override
 	public String getTitle() {
-		return "Derive Backend and Frontend System From Feature Bounded Context";
+		return "Derive Frontend/Backend Systems and Integration Relationship";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Configure derived Bounded Contexts:";
+		return "Configure the derived Bounded Contexts and integration relationship:";
 	}
 
 	@Override
@@ -88,6 +91,32 @@ public class DeriveBackendFrontendSystemsFromFeatureWizardPage extends ContextMa
 		backendNameText.setText(context.getBackendName());
 		backendNameText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		backendNameText.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				validate();
+				setPageComplete(isPageComplete());
+			}
+		});
+
+		Label frontendImplTechnologyLabel = new Label(container, SWT.NONE);
+		frontendImplTechnologyLabel.setText("Frontend Implementation Technology:");
+		frontendImplementationTechnology = new Text(container, SWT.BORDER | SWT.SINGLE);
+		frontendImplementationTechnology.setText(context.getFrontendImplementationTechnology());
+		frontendImplementationTechnology.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		frontendImplementationTechnology.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				validate();
+				setPageComplete(isPageComplete());
+			}
+		});
+
+		Label backendImplTechnologyLabel = new Label(container, SWT.NONE);
+		backendImplTechnologyLabel.setText("Backend Implementation Technology:");
+		backendImplementationTechnology = new Text(container, SWT.BORDER | SWT.SINGLE);
+		backendImplementationTechnology.setText(context.getBackendImplementationTechnology());
+		backendImplementationTechnology.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		backendImplementationTechnology.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				validate();
@@ -132,6 +161,19 @@ public class DeriveBackendFrontendSystemsFromFeatureWizardPage extends ContextMa
 		Label hintLabel4 = new Label(container, SWT.NONE);
 		hintLabel4.setText("from the backend one, and the frontend needs a translation/anticorruption layer.");
 
+		Label relationshipImplTechnologyLabel = new Label(container, SWT.NONE);
+		relationshipImplTechnologyLabel.setText("Relationship Impl. Technology:");
+		relationshipImplementationTechnology = new Text(container, SWT.BORDER | SWT.SINGLE);
+		relationshipImplementationTechnology.setText(context.getRelationshipImplementationTechnology());
+		relationshipImplementationTechnology.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		relationshipImplementationTechnology.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				validate();
+				setPageComplete(isPageComplete());
+			}
+		});
+
 		new Label(container, SWT.NONE);
 		deriveViewModelCheckbox = new Button(container, SWT.CHECK);
 		deriveViewModelCheckbox.setSelection(context.deriveViewModelInFrontend());
@@ -154,6 +196,18 @@ public class DeriveBackendFrontendSystemsFromFeatureWizardPage extends ContextMa
 
 	public String getBackendName() {
 		return backendNameText.getText();
+	}
+
+	public String getFrontendImplementationTechnology() {
+		return frontendImplementationTechnology.getText();
+	}
+
+	public String getRelationshipImplementationTechnology() {
+		return relationshipImplementationTechnology.getText();
+	}
+
+	public String getBackendImplementationTechnology() {
+		return backendImplementationTechnology.getText();
 	}
 
 	public FrontendBackendRelationshipType getRelationshipType() {

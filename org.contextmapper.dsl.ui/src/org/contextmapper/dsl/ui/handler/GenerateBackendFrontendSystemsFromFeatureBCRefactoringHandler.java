@@ -42,12 +42,18 @@ public class GenerateBackendFrontendSystemsFromFeatureBCRefactoringHandler exten
 		Set<String> allBCNames = collectAllBoundedContexts().stream().map(bc -> bc.getName()).collect(Collectors.toSet());
 
 		DeriveBackendFrontendFromFeatureContext refactoringContext = new DeriveBackendFrontendFromFeatureContext(selectedContext.getName(), allBCNames);
+		refactoringContext.setFrontendImplementationTechnology(selectedContext.getImplementationTechnology() != null ? selectedContext.getImplementationTechnology() : "");
+		refactoringContext.setBackendImplementationTechnology(selectedContext.getImplementationTechnology() != null ? selectedContext.getImplementationTechnology() : "");
+		refactoringContext.setRelationshipImplementationTechnology("");
 		new WizardDialog(HandlerUtil.getActiveShell(event), new DeriveBackendFrontendSystemsFromFeatureWizard(refactoringContext, executionContext -> {
 			DeriveFrontendAndBackendSystemsFromFeatureBoundedContext ar = new DeriveFrontendAndBackendSystemsFromFeatureBoundedContext(
 					executionContext.getFeatureBoundedContextName(), executionContext.getRelationshipType());
 			ar.deriveViewModelInFronted(executionContext.deriveViewModelInFrontend());
 			ar.setBackendName(executionContext.getBackendName());
 			ar.setFrontendName(executionContext.getFrontendName());
+			ar.setBackendImplementationTechnology(executionContext.getBackendImplementationTechnology());
+			ar.setFrontendImplementationTechnology(executionContext.getFrontendImplementationTechnology());
+			ar.setRelationshipImplTechnology(executionContext.getRelationshipImplementationTechnology());
 			return finishRefactoring(ar, resource, event);
 		})).open();
 	}
@@ -60,7 +66,7 @@ public class GenerateBackendFrontendSystemsFromFeatureBCRefactoringHandler exten
 			return false;
 
 		BoundedContext selectedContext = (BoundedContext) obj;
-		if (selectedContext.getType() != BoundedContextType.FEATURE)
+		if (selectedContext.getType() != BoundedContextType.FEATURE && selectedContext.getType() != BoundedContextType.APPLICATION)
 			return false;
 
 		return super.isEnabled();

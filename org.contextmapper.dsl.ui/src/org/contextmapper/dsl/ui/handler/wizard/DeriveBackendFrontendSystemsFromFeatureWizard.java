@@ -36,7 +36,7 @@ public class DeriveBackendFrontendSystemsFromFeatureWizard extends Wizard {
 
 	@Override
 	public String getWindowTitle() {
-		return "Define Subdomain Name";
+		return "Derive Frontend/Backend Systems and Integration Relationship";
 	}
 
 	@Override
@@ -51,6 +51,9 @@ public class DeriveBackendFrontendSystemsFromFeatureWizard extends Wizard {
 		context.setBackendName(page.getBackendName());
 		context.deriveViewModelInFrontend(page.deriveViewModelInFrontend());
 		context.setRelationshipType(page.getRelationshipType());
+		context.setFrontendImplementationTechnology(page.getFrontendImplementationTechnology());
+		context.setBackendImplementationTechnology(page.getBackendImplementationTechnology());
+		context.setRelationshipImplementationTechnology(page.getRelationshipImplementationTechnology());
 		return finishFunction.apply(context);
 	}
 
