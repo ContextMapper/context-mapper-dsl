@@ -1,0 +1,5 @@
+BoundedContext TestBackend {
+	type SYSTEM
+}
+
+BoundedContext TestBackendDatabase // already existing name

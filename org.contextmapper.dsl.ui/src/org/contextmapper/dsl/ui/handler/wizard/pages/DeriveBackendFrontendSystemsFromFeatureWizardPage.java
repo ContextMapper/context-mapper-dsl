@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.contextmapper.dsl.refactoring.DeriveFrontendAndBackendSystemsFromFeatureBoundedContext.FrontendBackendRelationshipType;
+import org.contextmapper.dsl.refactoring.ContextSplittingIntegrationType;
 import org.contextmapper.dsl.ui.handler.wizard.DeriveBackendFrontendFromFeatureContext;
 import org.contextmapper.dsl.validation.AbstractCMLValidator;
 import org.eclipse.swt.SWT;
@@ -129,9 +129,9 @@ public class DeriveBackendFrontendSystemsFromFeatureWizardPage extends ContextMa
 
 		typeSelectionCombo = new Combo(container, SWT.DROP_DOWN | SWT.READ_ONLY);
 		typeSelectionCombo.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		List<String> selectionStrings = Arrays.asList(FrontendBackendRelationshipType.values()).stream().map(l -> l.toString()).collect(Collectors.toList());
+		List<String> selectionStrings = Arrays.asList(ContextSplittingIntegrationType.values()).stream().map(l -> l.toString()).collect(Collectors.toList());
 		typeSelectionCombo.setItems(selectionStrings.toArray(new String[selectionStrings.size()]));
-		typeSelectionCombo.select(selectionStrings.indexOf(FrontendBackendRelationshipType.CONFORMIST.toString()));
+		typeSelectionCombo.select(selectionStrings.indexOf(ContextSplittingIntegrationType.CONFORMIST.toString()));
 		typeSelectionCombo.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -210,8 +210,8 @@ public class DeriveBackendFrontendSystemsFromFeatureWizardPage extends ContextMa
 		return backendImplementationTechnology.getText();
 	}
 
-	public FrontendBackendRelationshipType getRelationshipType() {
-		return FrontendBackendRelationshipType.valueOf(this.typeSelectionCombo.getText());
+	public ContextSplittingIntegrationType getRelationshipType() {
+		return ContextSplittingIntegrationType.valueOf(this.typeSelectionCombo.getText());
 	}
 
 	public boolean deriveViewModelInFrontend() {

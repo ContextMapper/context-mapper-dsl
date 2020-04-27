@@ -15,8 +15,8 @@
  */
 package org.contextmapper.dsl.refactoring;
 
-import static org.contextmapper.dsl.refactoring.DeriveFrontendAndBackendSystemsFromFeatureBoundedContext.FrontendBackendRelationshipType.ACL;
-import static org.contextmapper.dsl.refactoring.DeriveFrontendAndBackendSystemsFromFeatureBoundedContext.FrontendBackendRelationshipType.CONFORMIST;
+import static org.contextmapper.dsl.refactoring.ContextSplittingIntegrationType.ACL;
+import static org.contextmapper.dsl.refactoring.ContextSplittingIntegrationType.CONFORMIST;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

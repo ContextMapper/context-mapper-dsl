@@ -17,8 +17,7 @@ package org.contextmapper.dsl.ui.handler.wizard;
 
 import java.util.Set;
 
-import org.contextmapper.dsl.refactoring.DeriveFrontendAndBackendSystemsFromFeatureBoundedContext;
-import org.contextmapper.dsl.refactoring.DeriveFrontendAndBackendSystemsFromFeatureBoundedContext.FrontendBackendRelationshipType;
+import org.contextmapper.dsl.refactoring.ContextSplittingIntegrationType;
 
 public class DeriveBackendFrontendFromFeatureContext {
 
@@ -27,7 +26,7 @@ public class DeriveBackendFrontendFromFeatureContext {
 	private Set<String> allBoundedContextNames;
 	private String featureBoundedContextName;
 	private boolean deriveViewModelInFrontend = true;
-	private DeriveFrontendAndBackendSystemsFromFeatureBoundedContext.FrontendBackendRelationshipType relationshipType;
+	private ContextSplittingIntegrationType relationshipType;
 	private String frontendImplementationTechnology;
 	private String backendImplementationTechnology;
 	private String relationshipImplementationTechnology;
@@ -37,7 +36,7 @@ public class DeriveBackendFrontendFromFeatureContext {
 		this.allBoundedContextNames = allBoundedContextNames;
 		this.frontendName = featureBoundedContextName + "Frontend";
 		this.backendName = featureBoundedContextName + "Backend";
-		this.relationshipType = FrontendBackendRelationshipType.CONFORMIST;
+		this.relationshipType = ContextSplittingIntegrationType.CONFORMIST;
 	}
 
 	public String getFrontendName() {
@@ -72,11 +71,11 @@ public class DeriveBackendFrontendFromFeatureContext {
 		this.featureBoundedContextName = featureBoundedContextName;
 	}
 
-	public DeriveFrontendAndBackendSystemsFromFeatureBoundedContext.FrontendBackendRelationshipType getRelationshipType() {
+	public ContextSplittingIntegrationType getRelationshipType() {
 		return relationshipType;
 	}
 
-	public void setRelationshipType(DeriveFrontendAndBackendSystemsFromFeatureBoundedContext.FrontendBackendRelationshipType relationshipType) {
+	public void setRelationshipType(ContextSplittingIntegrationType relationshipType) {
 		this.relationshipType = relationshipType;
 	}
 

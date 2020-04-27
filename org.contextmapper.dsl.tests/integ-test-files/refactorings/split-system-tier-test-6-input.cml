@@ -1,0 +1,13 @@
+BoundedContext TestBackend {
+	type SYSTEM
+
+	Module TestModule {
+		Aggregate TestAggregateInModule {
+			Entity TestEntityInModule
+		}
+	}
+		
+	Aggregate TestAggregate {
+		Entity TestEntity
+	}
+}
