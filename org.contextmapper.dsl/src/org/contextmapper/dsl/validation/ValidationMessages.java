@@ -50,5 +50,5 @@ public class ValidationMessages {
 	public static final String VERB_CONTAINS_INVALID_CHARACTERS = "The verb should consist of the following characters: a-z, A-Z, 0-9, _. Please rename it accordingly before applying transformations.";
 	
 	/* Warnings and suggestions */
-	public static final String MODULE_CONTAINS_POTENTIALLY_IGNORED_OBJECTS = "The module '%s' contains Services and/or Entities that are not part of an Aggregate. Some of our generators may ignore those objects! We recommend to move them into an Aggregate.";
+	public static final String MODULE_CONTAINS_POTENTIALLY_IGNORED_OBJECTS = "The module '%s' contains Services and/or Entities that are not part of an Aggregate. The MDSL and Service Cutter generators ignore them. Please move them into an Aggregate.";
 }
