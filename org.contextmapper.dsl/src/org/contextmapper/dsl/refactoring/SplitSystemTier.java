@@ -15,6 +15,7 @@
  */
 package org.contextmapper.dsl.refactoring;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -24,10 +25,14 @@ import org.contextmapper.dsl.contextMappingDSL.BoundedContextType;
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
 import org.contextmapper.dsl.contextMappingDSL.DownstreamRole;
+import org.contextmapper.dsl.contextMappingDSL.Relationship;
+import org.contextmapper.dsl.contextMappingDSL.SymmetricRelationship;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamRole;
 import org.contextmapper.dsl.refactoring.exception.RefactoringInputException;
 import org.eclipse.emf.ecore.util.EcoreUtil;
+
+import com.google.common.collect.Lists;
 
 public class SplitSystemTier extends AbstractRefactoring implements Refactoring {
 
@@ -54,7 +59,7 @@ public class SplitSystemTier extends AbstractRefactoring implements Refactoring 
 		checkPreconditions();
 
 		BoundedContext systemContext = getAllBoundedContexts().stream().filter(bc -> bc.getName().equals(systemExistingBoundedContextName)).findFirst().get();
-		systemContext.setName(systemNewBoundedContextName);
+		renameBoundedContext(systemContext.getName(), systemNewBoundedContextName);
 
 		BoundedContext newTierContext = createNewTierBC(systemContext);
 		newTierContext.setName(newTierName);
@@ -66,6 +71,39 @@ public class SplitSystemTier extends AbstractRefactoring implements Refactoring 
 
 		markResourceChanged(rootResource);
 		saveResources();
+	}
+
+	private void renameBoundedContext(String currentName, String newName) {
+		List<BoundedContext> allInstances = getAllBoundedContexts().stream().filter(bc -> bc.getName().equals(systemExistingBoundedContextName)).collect(Collectors.toList());
+		for (ContextMap contextMap : getAllContextMaps()) {
+			allInstances.addAll(contextMap.getBoundedContexts().stream().filter(bc -> bc.getName().equals(systemExistingBoundedContextName)).collect(Collectors.toList()));
+			allInstances.addAll(getAllRelationshipContextsByName(contextMap, currentName));
+			markResourceChanged(contextMap);
+		}
+		for (BoundedContext bc : allInstances) {
+			bc.setName(newName);
+			markResourceChanged(bc);
+		}
+	}
+
+	private List<BoundedContext> getAllRelationshipContextsByName(ContextMap map, String contextName) {
+		List<BoundedContext> contexts = Lists.newLinkedList();
+		for (Relationship rel : map.getRelationships()) {
+			if (rel instanceof UpstreamDownstreamRelationship) {
+				UpstreamDownstreamRelationship upDownRel = (UpstreamDownstreamRelationship) rel;
+				if (upDownRel.getDownstream().getName().equals(contextName))
+					contexts.add(upDownRel.getDownstream());
+				if (upDownRel.getUpstream().getName().equals(contextName))
+					contexts.add(upDownRel.getUpstream());
+			} else if (rel instanceof SymmetricRelationship) {
+				SymmetricRelationship symRel = (SymmetricRelationship) rel;
+				if (symRel.getParticipant1().getName().equals(contextName))
+					contexts.add(symRel.getParticipant1());
+				if (symRel.getParticipant2().getName().equals(contextName))
+					contexts.add(symRel.getParticipant2());
+			}
+		}
+		return contexts;
 	}
 
 	private void createUpstreamDownstreamRelationship(BoundedContext existingContext, BoundedContext newContext) {
@@ -143,7 +181,23 @@ public class SplitSystemTier extends AbstractRefactoring implements Refactoring 
 	}
 
 	public enum SplitBoundedContextRelationshipType {
-		EXISTING_CONTEXT_BECOMES_UPSTREAM, EXISTING_CONTEXT_BECOMES_DOWNSTREAM
+		EXISTING_CONTEXT_BECOMES_UPSTREAM("Upstream"), EXISTING_CONTEXT_BECOMES_DOWNSTREAM("Downstream");
+
+		private String label;
+
+		private SplitBoundedContextRelationshipType(String label) {
+			this.label = label;
+		}
+
+		public String getLabel() {
+			return label;
+		}
+
+		public static SplitBoundedContextRelationshipType byLabel(String label) {
+			if (label != null && "Downstream".equals(label))
+				return EXISTING_CONTEXT_BECOMES_DOWNSTREAM;
+			return EXISTING_CONTEXT_BECOMES_UPSTREAM;
+		}
 	}
 
 }

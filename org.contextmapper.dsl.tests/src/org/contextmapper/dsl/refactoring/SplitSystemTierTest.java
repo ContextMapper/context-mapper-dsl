@@ -16,31 +16,30 @@
 package org.contextmapper.dsl.refactoring;
 
 import static org.contextmapper.dsl.refactoring.ContextSplittingIntegrationType.ACL;
-import static org.contextmapper.dsl.refactoring.ContextSplittingIntegrationType.CONFORMIST;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.cml.CMLResourceContainer;
-import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
-import org.contextmapper.dsl.contextMappingDSL.BoundedContextType;
-import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.DownstreamRole;
 import org.contextmapper.dsl.contextMappingDSL.SculptorModule;
+import org.contextmapper.dsl.contextMappingDSL.SymmetricRelationship;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamRole;
 import org.contextmapper.dsl.refactoring.SplitSystemTier.SplitBoundedContextRelationshipType;
 import org.contextmapper.dsl.refactoring.exception.RefactoringInputException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -219,6 +218,83 @@ public class SplitSystemTierTest extends AbstractRefactoringTest {
 		UpstreamDownstreamRelationship newRelationship = (UpstreamDownstreamRelationship) model.getMap().getRelationships().get(0);
 		assertEquals("Oracle DB", newTier.getImplementationTechnology());
 		assertEquals("JDBC", newRelationship.getImplementationTechnology());
+	}
+
+	@Test
+	public void canGetRelationshipTypeLabel() {
+		// given
+		SplitBoundedContextRelationshipType upstream = SplitBoundedContextRelationshipType.EXISTING_CONTEXT_BECOMES_UPSTREAM;
+		SplitBoundedContextRelationshipType downstream = SplitBoundedContextRelationshipType.EXISTING_CONTEXT_BECOMES_DOWNSTREAM;
+
+		// when
+		String upstreamLabel = upstream.getLabel();
+		String downstreamLabel = downstream.getLabel();
+
+		// then
+		assertEquals("Upstream", upstreamLabel);
+		assertEquals("Downstream", downstreamLabel);
+	}
+
+	@ParameterizedTest
+	@CsvSource({ "Upstream, EXISTING_CONTEXT_BECOMES_UPSTREAM", "Downstream, EXISTING_CONTEXT_BECOMES_DOWNSTREAM" })
+	public void canGetRelationshipTypeByLabel(String inputLabel, String expectedType) {
+		// given
+		String label = inputLabel;
+
+		// when
+		SplitBoundedContextRelationshipType type = SplitBoundedContextRelationshipType.byLabel(label);
+
+		// then
+		assertEquals(SplitBoundedContextRelationshipType.valueOf(expectedType), type);
+	}
+
+	@Test
+	public void relationshipTypeCanHandleNullValue() {
+		// given
+		String label = null;
+
+		// when
+		SplitBoundedContextRelationshipType type = SplitBoundedContextRelationshipType.byLabel(label);
+
+		// then
+		assertEquals(SplitBoundedContextRelationshipType.EXISTING_CONTEXT_BECOMES_UPSTREAM, type);
+	}
+
+	@Test
+	public void canRenameContextInRelationships() throws IOException {
+		// given
+		CMLResourceContainer input = getResourceCopyOfTestCML("split-system-tier-test-7-input.cml");
+		SplitSystemTier ar = new SplitSystemTier("TestBackend", "TestBackendLogic", "TestBackendDatabase");
+
+		// when
+		ar.doRefactor(input);
+
+		// then
+		ContextMappingModel model = reloadResource(input).getContextMappingModel();
+		assertEquals(3, model.getBoundedContexts().size());
+		assertTrue(getBoundedContextNames(model.getBoundedContexts()).contains("TestBackendLogic"));
+		assertFalse(getBoundedContextNames(model.getBoundedContexts()).contains("TestBackend"));
+
+		Set<String> namesOnContextMap = getBoundedContextNames(model.getMap().getBoundedContexts());
+		assertTrue(namesOnContextMap.contains("TestBackendLogic"));
+		assertFalse(namesOnContextMap.contains("TestBackend"));
+
+		UpstreamDownstreamRelationship upDownRel1 = model.getMap().getRelationships().stream().filter(r -> r.getName().equals("upDownTestRel1"))
+				.map(r -> (UpstreamDownstreamRelationship) r).findFirst().get();
+		UpstreamDownstreamRelationship upDownRel2 = model.getMap().getRelationships().stream().filter(r -> r.getName().equals("upDownTestRel2"))
+				.map(r -> (UpstreamDownstreamRelationship) r).findFirst().get();
+		SymmetricRelationship symRel1 = model.getMap().getRelationships().stream().filter(r -> r.getName().equals("symTestRel1")).map(r -> (SymmetricRelationship) r).findFirst()
+				.get();
+		SymmetricRelationship symRel2 = model.getMap().getRelationships().stream().filter(r -> r.getName().equals("symTestRel2")).map(r -> (SymmetricRelationship) r).findFirst()
+				.get();
+		assertEquals("TestBackendLogic", upDownRel1.getUpstream().getName());
+		assertEquals("TestBackendLogic", upDownRel2.getDownstream().getName());
+		assertEquals("TestBackendLogic", symRel1.getParticipant1().getName());
+		assertEquals("TestBackendLogic", symRel2.getParticipant2().getName());
+	}
+
+	private Set<String> getBoundedContextNames(List<BoundedContext> contexts) {
+		return contexts.stream().map(bc -> bc.getName()).collect(Collectors.toSet());
 	}
 
 }

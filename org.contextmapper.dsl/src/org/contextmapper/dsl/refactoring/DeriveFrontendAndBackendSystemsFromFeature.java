@@ -30,7 +30,7 @@ import org.contextmapper.dsl.contextMappingDSL.UpstreamRole;
 import org.contextmapper.dsl.refactoring.exception.RefactoringInputException;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
-public class DeriveFrontendAndBackendSystemsFromFeatureBoundedContext extends AbstractRefactoring implements Refactoring {
+public class DeriveFrontendAndBackendSystemsFromFeature extends AbstractRefactoring implements Refactoring {
 
 	private String featureBoundedContextName;
 	private ContextSplittingIntegrationType relationshipType;
@@ -43,7 +43,7 @@ public class DeriveFrontendAndBackendSystemsFromFeatureBoundedContext extends Ab
 
 	private RefactoringHelper helper;
 
-	public DeriveFrontendAndBackendSystemsFromFeatureBoundedContext(String featureBoundedContextName, ContextSplittingIntegrationType relationshipType) {
+	public DeriveFrontendAndBackendSystemsFromFeature(String featureBoundedContextName, ContextSplittingIntegrationType relationshipType) {
 		this.featureBoundedContextName = featureBoundedContextName;
 		this.relationshipType = relationshipType;
 		this.frontendName = featureBoundedContextName + "Frontend";

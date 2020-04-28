@@ -43,7 +43,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-public class DeriveFrontendAndBackendSystemsFromFeatureBoundedContextTest extends AbstractRefactoringTest {
+public class DeriveFrontendAndBackendSystemsFromFeatureTest extends AbstractRefactoringTest {
 
 	@ParameterizedTest
 	@ValueSource(strings = { "SomeContextThatDoesNotExist" })
@@ -51,7 +51,7 @@ public class DeriveFrontendAndBackendSystemsFromFeatureBoundedContextTest extend
 	public void canCheckIfBoundedContextNameExists(String inputBoundedContextName) throws IOException {
 		// given
 		CMLResourceContainer input = getResourceCopyOfTestCML("derive-frontend-backend-from-feature-test-1-input.cml");
-		DeriveFrontendAndBackendSystemsFromFeatureBoundedContext ar = new DeriveFrontendAndBackendSystemsFromFeatureBoundedContext(inputBoundedContextName, CONFORMIST);
+		DeriveFrontendAndBackendSystemsFromFeature ar = new DeriveFrontendAndBackendSystemsFromFeature(inputBoundedContextName, CONFORMIST);
 
 		// when, then
 		assertThrows(RefactoringInputException.class, () -> {
@@ -63,7 +63,7 @@ public class DeriveFrontendAndBackendSystemsFromFeatureBoundedContextTest extend
 	public void canCheckThatInputBCIsFeatureOrApplication() throws IOException {
 		// given
 		CMLResourceContainer input = getResourceCopyOfTestCML("derive-frontend-backend-from-feature-test-2-input.cml");
-		DeriveFrontendAndBackendSystemsFromFeatureBoundedContext ar = new DeriveFrontendAndBackendSystemsFromFeatureBoundedContext("TestSystem", ACL);
+		DeriveFrontendAndBackendSystemsFromFeature ar = new DeriveFrontendAndBackendSystemsFromFeature("TestSystem", ACL);
 
 		// when, then
 		assertThrows(RefactoringInputException.class, () -> {
@@ -76,7 +76,7 @@ public class DeriveFrontendAndBackendSystemsFromFeatureBoundedContextTest extend
 	public void canCheckThatFrontendNameNotAlreadyExists(String inputFile) throws IOException {
 		// given
 		CMLResourceContainer input = getResourceCopyOfTestCML(inputFile);
-		DeriveFrontendAndBackendSystemsFromFeatureBoundedContext ar = new DeriveFrontendAndBackendSystemsFromFeatureBoundedContext("TestSystem", ACL);
+		DeriveFrontendAndBackendSystemsFromFeature ar = new DeriveFrontendAndBackendSystemsFromFeature("TestSystem", ACL);
 
 		// when, then
 		assertThrows(RefactoringInputException.class, () -> {
@@ -90,7 +90,7 @@ public class DeriveFrontendAndBackendSystemsFromFeatureBoundedContextTest extend
 	public void canDeriveFrontendAndBackendSystemContexts(String inputFile) throws IOException {
 		// given
 		CMLResourceContainer input = getResourceCopyOfTestCML(inputFile);
-		DeriveFrontendAndBackendSystemsFromFeatureBoundedContext ar = new DeriveFrontendAndBackendSystemsFromFeatureBoundedContext("TestSystem", ACL);
+		DeriveFrontendAndBackendSystemsFromFeature ar = new DeriveFrontendAndBackendSystemsFromFeature("TestSystem", ACL);
 		ar.setBackendName("TestBackend");
 		ar.setFrontendName("TestFrontend");
 
@@ -116,7 +116,7 @@ public class DeriveFrontendAndBackendSystemsFromFeatureBoundedContextTest extend
 	public void canDeriveUpstreamDownstreamRelationship() throws IOException {
 		// given
 		CMLResourceContainer input = getResourceCopyOfTestCML("derive-frontend-backend-from-feature-test-1-input.cml");
-		DeriveFrontendAndBackendSystemsFromFeatureBoundedContext ar = new DeriveFrontendAndBackendSystemsFromFeatureBoundedContext("TestFeature", CONFORMIST);
+		DeriveFrontendAndBackendSystemsFromFeature ar = new DeriveFrontendAndBackendSystemsFromFeature("TestFeature", CONFORMIST);
 
 		// when
 		ar.doRefactor(input);
@@ -142,7 +142,7 @@ public class DeriveFrontendAndBackendSystemsFromFeatureBoundedContextTest extend
 	public void canChangeDownstreamRole() throws IOException {
 		// given
 		CMLResourceContainer input = getResourceCopyOfTestCML("derive-frontend-backend-from-feature-test-1-input.cml");
-		DeriveFrontendAndBackendSystemsFromFeatureBoundedContext ar = new DeriveFrontendAndBackendSystemsFromFeatureBoundedContext("TestFeature", ACL);
+		DeriveFrontendAndBackendSystemsFromFeature ar = new DeriveFrontendAndBackendSystemsFromFeature("TestFeature", ACL);
 
 		// when
 		ar.doRefactor(input);
@@ -157,7 +157,7 @@ public class DeriveFrontendAndBackendSystemsFromFeatureBoundedContextTest extend
 	public void canCopyBackendDomainModel() throws IOException {
 		// given
 		CMLResourceContainer input = getResourceCopyOfTestCML("derive-frontend-backend-from-feature-test-5-input.cml");
-		DeriveFrontendAndBackendSystemsFromFeatureBoundedContext ar = new DeriveFrontendAndBackendSystemsFromFeatureBoundedContext("TestFeature", ACL);
+		DeriveFrontendAndBackendSystemsFromFeature ar = new DeriveFrontendAndBackendSystemsFromFeature("TestFeature", ACL);
 		ar.deriveViewModelInFronted(false);
 
 		// when
@@ -191,7 +191,7 @@ public class DeriveFrontendAndBackendSystemsFromFeatureBoundedContextTest extend
 	public void canDeriveViewModelForFrontend() throws IOException {
 		// given
 		CMLResourceContainer input = getResourceCopyOfTestCML("derive-frontend-backend-from-feature-test-5-input.cml");
-		DeriveFrontendAndBackendSystemsFromFeatureBoundedContext ar = new DeriveFrontendAndBackendSystemsFromFeatureBoundedContext("TestFeature", ACL);
+		DeriveFrontendAndBackendSystemsFromFeature ar = new DeriveFrontendAndBackendSystemsFromFeature("TestFeature", ACL);
 
 		// when
 		ar.doRefactor(input);
@@ -217,7 +217,7 @@ public class DeriveFrontendAndBackendSystemsFromFeatureBoundedContextTest extend
 	public void canAddExposedAggregatesToNewRelationship() throws IOException {
 		// given
 		CMLResourceContainer input = getResourceCopyOfTestCML("derive-frontend-backend-from-feature-test-5-input.cml");
-		DeriveFrontendAndBackendSystemsFromFeatureBoundedContext ar = new DeriveFrontendAndBackendSystemsFromFeatureBoundedContext("TestFeature", ACL);
+		DeriveFrontendAndBackendSystemsFromFeature ar = new DeriveFrontendAndBackendSystemsFromFeature("TestFeature", ACL);
 
 		// when
 		ar.doRefactor(input);
@@ -235,7 +235,7 @@ public class DeriveFrontendAndBackendSystemsFromFeatureBoundedContextTest extend
 	public void canAddViewModelSampleIfNotGenerated() throws IOException {
 		// given
 		CMLResourceContainer input = getResourceCopyOfTestCML("derive-frontend-backend-from-feature-test-5-input.cml");
-		DeriveFrontendAndBackendSystemsFromFeatureBoundedContext ar = new DeriveFrontendAndBackendSystemsFromFeatureBoundedContext("TestFeature", ACL);
+		DeriveFrontendAndBackendSystemsFromFeature ar = new DeriveFrontendAndBackendSystemsFromFeature("TestFeature", ACL);
 		ar.deriveViewModelInFronted(false);
 
 		// when
@@ -254,7 +254,7 @@ public class DeriveFrontendAndBackendSystemsFromFeatureBoundedContextTest extend
 	public void canSetImplementationTechnologies() throws IOException {
 		// given
 		CMLResourceContainer input = getResourceCopyOfTestCML("derive-frontend-backend-from-feature-test-5-input.cml");
-		DeriveFrontendAndBackendSystemsFromFeatureBoundedContext ar = new DeriveFrontendAndBackendSystemsFromFeatureBoundedContext("TestFeature", ACL);
+		DeriveFrontendAndBackendSystemsFromFeature ar = new DeriveFrontendAndBackendSystemsFromFeature("TestFeature", ACL);
 		ar.setBackendImplementationTechnology("Spring Boot");
 		ar.setFrontendImplementationTechnology("Angular");
 		ar.setRelationshipImplTechnology("RESTful HTTP");

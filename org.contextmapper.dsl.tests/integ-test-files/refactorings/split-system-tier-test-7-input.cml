@@ -1,0 +1,16 @@
+ContextMap {
+	contains TestBackend
+	contains AnotherContext
+	
+	TestBackend -> AnotherContext : upDownTestRel1
+	TestBackend <- AnotherContext : upDownTestRel2
+	
+	TestBackend [P]<->[P] AnotherContext : symTestRel1
+	AnotherContext [P]<->[P] TestBackend : symTestRel2
+}
+
+BoundedContext TestBackend {
+	type SYSTEM
+}
+
+BoundedContext AnotherContext
