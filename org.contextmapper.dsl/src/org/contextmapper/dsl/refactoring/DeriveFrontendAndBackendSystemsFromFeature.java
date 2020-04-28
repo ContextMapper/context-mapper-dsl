@@ -15,7 +15,6 @@
  */
 package org.contextmapper.dsl.refactoring;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -26,20 +25,15 @@ import org.contextmapper.dsl.contextMappingDSL.BoundedContextType;
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
 import org.contextmapper.dsl.contextMappingDSL.DownstreamRole;
-import org.contextmapper.dsl.contextMappingDSL.SculptorModule;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamRole;
 import org.contextmapper.dsl.refactoring.exception.RefactoringInputException;
-import org.contextmapper.tactic.dsl.tacticdsl.SimpleDomainObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-
-public class DeriveFrontendAndBackendSystemsFromFeatureBoundedContext extends AbstractRefactoring implements Refactoring {
+public class DeriveFrontendAndBackendSystemsFromFeature extends AbstractRefactoring implements Refactoring {
 
 	private String featureBoundedContextName;
-	private FrontendBackendRelationshipType relationshipType;
+	private ContextSplittingIntegrationType relationshipType;
 	private boolean deriveViewModelInFrontend = true;
 	private String frontendName;
 	private String backendName;
@@ -47,11 +41,14 @@ public class DeriveFrontendAndBackendSystemsFromFeatureBoundedContext extends Ab
 	private String backendImplTechnology;
 	private String relationshipImplTechnology;
 
-	public DeriveFrontendAndBackendSystemsFromFeatureBoundedContext(String featureBoundedContextName, FrontendBackendRelationshipType relationshipType) {
+	private RefactoringHelper helper;
+
+	public DeriveFrontendAndBackendSystemsFromFeature(String featureBoundedContextName, ContextSplittingIntegrationType relationshipType) {
 		this.featureBoundedContextName = featureBoundedContextName;
 		this.relationshipType = relationshipType;
 		this.frontendName = featureBoundedContextName + "Frontend";
 		this.backendName = featureBoundedContextName + "Backend";
+		this.helper = new RefactoringHelper(this);
 	}
 
 	@Override
@@ -65,7 +62,7 @@ public class DeriveFrontendAndBackendSystemsFromFeatureBoundedContext extends Ab
 		backend.setName(backendName);
 		backend.setImplementationTechnology(backendImplTechnology);
 		addElementToEList(model.getBoundedContexts(), backend);
-		adjustCopiedAggregateAndModuleNames(backend, "Backend");
+		helper.adjustAggregateAndModuleNames(backend, "Backend");
 
 		BoundedContext frontend = EcoreUtil.copy(featureContext);
 		frontend.setType(BoundedContextType.SYSTEM);
@@ -77,7 +74,7 @@ public class DeriveFrontendAndBackendSystemsFromFeatureBoundedContext extends Ab
 			frontend.getModules().clear();
 			addElementToEList(frontend.getAggregates(), createSampleViewModelAggregate());
 		} else {
-			adjustCopiedAggregateAndModuleNames(frontend, "ViewModel");
+			helper.adjustAggregateAndModuleNames(frontend, "ViewModel");
 		}
 
 		ContextMap map = createOrGetContextMap();
@@ -87,7 +84,7 @@ public class DeriveFrontendAndBackendSystemsFromFeatureBoundedContext extends Ab
 		relationship.getUpstreamRoles().add(UpstreamRole.PUBLISHED_LANGUAGE);
 		relationship.getDownstreamRoles().add(getDownstreamRole());
 		relationship.setImplementationTechnology(relationshipImplTechnology);
-		addElementsToEList(relationship.getUpstreamExposedAggregates(), collectAggregates(backend));
+		addElementsToEList(relationship.getUpstreamExposedAggregates(), helper.collectAggregates(backend));
 		addElementToEList(map.getBoundedContexts(), frontend);
 		addElementToEList(map.getBoundedContexts(), backend);
 		addElementToEList(map.getRelationships(), relationship);
@@ -104,64 +101,6 @@ public class DeriveFrontendAndBackendSystemsFromFeatureBoundedContext extends Ab
 		return aggregate;
 	}
 
-	private void adjustCopiedAggregateAndModuleNames(BoundedContext bc, String suffix) {
-		Set<String> allAggregateNames = collectAllAggregateNames();
-		Set<String> allModuleNames = collectAllModuleNames();
-		for (Aggregate aggregate : bc.getAggregates()) {
-			aggregate.setName(getUniqueName(aggregate.getName() + suffix, allAggregateNames));
-			adjustCopiedDomainObjectNames(aggregate.getDomainObjects(), suffix);
-		}
-		for (SculptorModule module : bc.getModules()) {
-			module.setName(getUniqueName(module.getName() + suffix, allModuleNames));
-			adjustCopiedDomainObjectNames(module.getDomainObjects(), suffix);
-			for (Aggregate aggregate : module.getAggregates()) {
-				aggregate.setName(getUniqueName(aggregate.getName() + suffix, allAggregateNames));
-				adjustCopiedDomainObjectNames(aggregate.getDomainObjects(), suffix);
-			}
-		}
-	}
-
-	private void adjustCopiedDomainObjectNames(List<SimpleDomainObject> domainObjects, String suffix) {
-		for (SimpleDomainObject simpleDO : domainObjects) {
-			simpleDO.setName(simpleDO.getName() + suffix);
-		}
-	}
-
-	private String getUniqueName(String initialName, Set<String> givenNames) {
-		String name = initialName;
-		int counter = 2;
-		while (givenNames.contains(name)) {
-			name = initialName + "_" + counter;
-			counter++;
-		}
-		return name;
-	}
-
-	private Set<String> collectAllAggregateNames() {
-		Set<String> aggregateNames = Sets.newHashSet();
-		for (BoundedContext bc : getAllBoundedContexts()) {
-			aggregateNames.addAll(collectAggregates(bc).stream().map(agg -> agg.getName()).collect(Collectors.toSet()));
-		}
-		return aggregateNames;
-	}
-
-	private List<Aggregate> collectAggregates(BoundedContext bc) {
-		List<Aggregate> aggregates = Lists.newLinkedList();
-		aggregates.addAll(bc.getAggregates());
-		for (SculptorModule module : bc.getModules()) {
-			aggregates.addAll(module.getAggregates());
-		}
-		return aggregates;
-	}
-
-	private Set<String> collectAllModuleNames() {
-		Set<String> moduleNames = Sets.newHashSet();
-		for (BoundedContext bc : getAllBoundedContexts()) {
-			moduleNames.addAll(bc.getModules().stream().map(m -> m.getName()).collect(Collectors.toSet()));
-		}
-		return moduleNames;
-	}
-
 	private ContextMap createOrGetContextMap() {
 		if (model.getMap() != null)
 			return model.getMap();
@@ -172,7 +111,7 @@ public class DeriveFrontendAndBackendSystemsFromFeatureBoundedContext extends Ab
 	}
 
 	private DownstreamRole getDownstreamRole() {
-		if (this.relationshipType == FrontendBackendRelationshipType.ACL)
+		if (this.relationshipType == ContextSplittingIntegrationType.ACL)
 			return DownstreamRole.ANTICORRUPTION_LAYER;
 		return DownstreamRole.CONFORMIST;
 	}
@@ -213,10 +152,6 @@ public class DeriveFrontendAndBackendSystemsFromFeatureBoundedContext extends Ab
 
 	public void setRelationshipImplTechnology(String technology) {
 		this.relationshipImplTechnology = technology;
-	}
-
-	public enum FrontendBackendRelationshipType {
-		CONFORMIST, ACL
 	}
 
 }

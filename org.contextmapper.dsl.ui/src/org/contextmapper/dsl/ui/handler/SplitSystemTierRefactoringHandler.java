@@ -23,9 +23,9 @@ import org.contextmapper.dsl.cml.CMLImportResolver;
 import org.contextmapper.dsl.cml.CMLResourceContainer;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContextType;
-import org.contextmapper.dsl.refactoring.DeriveFrontendAndBackendSystemsFromFeature;
-import org.contextmapper.dsl.ui.handler.wizard.DeriveBackendFrontendFromFeatureContext;
-import org.contextmapper.dsl.ui.handler.wizard.DeriveBackendFrontendSystemsFromFeatureWizard;
+import org.contextmapper.dsl.refactoring.SplitSystemTier;
+import org.contextmapper.dsl.ui.handler.wizard.SplitSystemTierContext;
+import org.contextmapper.dsl.ui.handler.wizard.SplitSystemTierWizard;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -34,26 +34,22 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 import com.google.common.collect.Lists;
 
-public class GenerateBackendFrontendSystemsFromFeatureBCRefactoringHandler extends AbstractRefactoringWithUserInputHandler {
+public class SplitSystemTierRefactoringHandler extends AbstractRefactoringWithUserInputHandler {
 
 	@Override
 	protected void executeRefactoring(CMLResourceContainer resource, ExecutionEvent event) {
 		BoundedContext selectedContext = (BoundedContext) getSelectedElement();
 		Set<String> allBCNames = collectAllBoundedContexts().stream().map(bc -> bc.getName()).collect(Collectors.toSet());
 
-		DeriveBackendFrontendFromFeatureContext refactoringContext = new DeriveBackendFrontendFromFeatureContext(selectedContext.getName(), allBCNames);
-		refactoringContext.setFrontendImplementationTechnology(selectedContext.getImplementationTechnology() != null ? selectedContext.getImplementationTechnology() : "");
-		refactoringContext.setBackendImplementationTechnology(selectedContext.getImplementationTechnology() != null ? selectedContext.getImplementationTechnology() : "");
-		refactoringContext.setRelationshipImplementationTechnology("");
-		new WizardDialog(HandlerUtil.getActiveShell(event), new DeriveBackendFrontendSystemsFromFeatureWizard(refactoringContext, executionContext -> {
-			DeriveFrontendAndBackendSystemsFromFeature ar = new DeriveFrontendAndBackendSystemsFromFeature(
-					executionContext.getFeatureBoundedContextName(), executionContext.getRelationshipType());
-			ar.deriveViewModelInFronted(executionContext.deriveViewModelInFrontend());
-			ar.setBackendName(executionContext.getBackendName());
-			ar.setFrontendName(executionContext.getFrontendName());
-			ar.setBackendImplementationTechnology(executionContext.getBackendImplementationTechnology());
-			ar.setFrontendImplementationTechnology(executionContext.getFrontendImplementationTechnology());
-			ar.setRelationshipImplTechnology(executionContext.getRelationshipImplementationTechnology());
+		SplitSystemTierContext refactoringContext = new SplitSystemTierContext(selectedContext.getName(), selectedContext.getName() + "_Tier1",
+				selectedContext.getName() + "_Tier2", allBCNames);
+		new WizardDialog(HandlerUtil.getActiveShell(event), new SplitSystemTierWizard(refactoringContext, executionContext -> {
+			SplitSystemTier ar = new SplitSystemTier(executionContext.getOriginalSystemName(), executionContext.getExistingContextTierName(), executionContext.getNewTierName());
+			ar.setIntegrationType(executionContext.getIntegrationType());
+			ar.setRelationshipType(executionContext.getRelationshipType());
+			ar.setNewTierImplementationTechnology(executionContext.getNewTierImplementationTechnology());
+			ar.setNewRelationshipImplementationTechnology(executionContext.getNewRelationshipImplementationTechnology());
+			ar.copyDomainModel(executionContext.copyDomainModel());
 			return finishRefactoring(ar, resource, event);
 		})).open();
 	}
@@ -66,7 +62,7 @@ public class GenerateBackendFrontendSystemsFromFeatureBCRefactoringHandler exten
 			return false;
 
 		BoundedContext selectedContext = (BoundedContext) obj;
-		if (selectedContext.getType() != BoundedContextType.FEATURE && selectedContext.getType() != BoundedContextType.APPLICATION)
+		if (selectedContext.getType() != BoundedContextType.SYSTEM)
 			return false;
 
 		return super.isEnabled();

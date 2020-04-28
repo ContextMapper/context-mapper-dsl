@@ -1,0 +1,7 @@
+ContextMap {
+	// already existing context map; but no contexts
+}
+
+BoundedContext TestBackend {
+	type SYSTEM
+}

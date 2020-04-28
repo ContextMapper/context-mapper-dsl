@@ -1,0 +1,3 @@
+BoundedContext TestBackend {
+	type SYSTEM
+}
