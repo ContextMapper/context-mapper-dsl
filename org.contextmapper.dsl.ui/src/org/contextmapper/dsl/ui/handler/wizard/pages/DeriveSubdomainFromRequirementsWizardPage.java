@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
 
+import org.contextmapper.dsl.validation.AbstractCMLValidator;
 import org.eclipse.jface.fieldassist.AutoCompleteField;
 import org.eclipse.jface.fieldassist.ComboContentAdapter;
 import org.eclipse.swt.SWT;
@@ -32,7 +33,6 @@ import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
 
 import com.google.common.collect.Sets;
 
@@ -45,6 +45,8 @@ public class DeriveSubdomainFromRequirementsWizardPage extends ContextMapperWiza
 	private Combo comboSubdomain;
 	private AutoCompleteField subdomainAutoCompleteField;
 	private Composite container;
+
+	private boolean hasError = true;
 
 	public DeriveSubdomainFromRequirementsWizardPage(String initialDomain, Map<String, Set<String>> domainSubdomainMapping) {
 		super("Subdomain Definition Page");
@@ -81,12 +83,14 @@ public class DeriveSubdomainFromRequirementsWizardPage extends ContextMapperWiza
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				updateSubdomainCombo(domainSubdomainMapping.get(comboDomains.getText()));
+				validate();
 				setPageComplete(isPageComplete());
 			}
 		});
 		comboDomains.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
+				validate();
 				setPageComplete(isPageComplete());
 			}
 		});
@@ -103,12 +107,14 @@ public class DeriveSubdomainFromRequirementsWizardPage extends ContextMapperWiza
 		comboSubdomain.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				validate();
 				setPageComplete(isPageComplete());
 			}
 		});
 		comboSubdomain.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
+				validate();
 				setPageComplete(isPageComplete());
 			}
 		});
@@ -116,7 +122,27 @@ public class DeriveSubdomainFromRequirementsWizardPage extends ContextMapperWiza
 		updateSubdomainCombo(initialSubdomains);
 
 		setControl(container);
+		validate();
 		setPageComplete(false);
+	}
+
+	private void validate() {
+		setErrorMessage(null);
+		hasError = false;
+
+		if (!comboDomains.getText().matches(AbstractCMLValidator.ID_VALIDATION_PATTERN)) {
+			setError("The domain name '" + comboDomains.getText() + "' is not valid. Allowed characters are: a-z, A-Z, 0-9, _");
+			return;
+		}
+		if (!comboSubdomain.getText().matches(AbstractCMLValidator.ID_VALIDATION_PATTERN)) {
+			setError("The domain name '" + comboSubdomain.getText() + "' is not valid. Allowed characters are: a-z, A-Z, 0-9, _");
+			return;
+		}
+	}
+
+	private void setError(String message) {
+		hasError = true;
+		setErrorMessage(message);
 	}
 
 	private void updateSubdomainCombo(Set<String> subdomains) {
@@ -146,7 +172,7 @@ public class DeriveSubdomainFromRequirementsWizardPage extends ContextMapperWiza
 
 	@Override
 	public boolean isPageComplete() {
-		return comboDomains.getText() != null && !"".equals(comboDomains.getText()) && comboSubdomain.getText() != null && !"".equals(comboSubdomain.getText());
+		return !hasError && comboDomains.getText() != null && !"".equals(comboDomains.getText()) && comboSubdomain.getText() != null && !"".equals(comboSubdomain.getText());
 	}
 
 	@Override
