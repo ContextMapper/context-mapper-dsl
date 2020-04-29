@@ -20,8 +20,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.refactoring.ContextSplittingIntegrationType;
-import org.contextmapper.dsl.refactoring.SplitSystemTier.SplitBoundedContextRelationshipType;
-import org.contextmapper.dsl.ui.handler.wizard.SplitSystemTierContext;
+import org.contextmapper.dsl.refactoring.SplitSystemIntoSubsystems.SplitBoundedContextRelationshipType;
+import org.contextmapper.dsl.ui.handler.wizard.SplitSystemIntoSubsystemsContext;
 import org.contextmapper.dsl.validation.AbstractCMLValidator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
@@ -37,33 +37,33 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-public class SplitSystemTierWizardPage extends ContextMapperWizardPage {
+public class SplitSystemIntoSubsystemsWizardPage extends ContextMapperWizardPage {
 
-	private SplitSystemTierContext context;
+	private SplitSystemIntoSubsystemsContext context;
 
 	private Composite container;
-	private Text existingSystemTierNameText;
-	private Text newSystemTierNameText;
+	private Text existingSubsystemNameText;
+	private Text newSubsystemNameText;
 	private Combo relationshipTypeSelectionCombo;
 	private Combo integrationTypeSelectionCombo;
-	private Text newTierImplementationTechnology;
+	private Text newSubsystemImplementationTechnology;
 	private Text newRelationshipImplementationTechnology;
 	private Button copyDomainModelCheckbox;
 	private boolean hasError = true;
 
-	public SplitSystemTierWizardPage(SplitSystemTierContext context) {
-		super("Split System Into Two Tiers");
+	public SplitSystemIntoSubsystemsWizardPage(SplitSystemIntoSubsystemsContext context) {
+		super("Split System Context Into Two Subsystems");
 		this.context = context;
 	}
 
 	@Override
 	public String getTitle() {
-		return "Split System Into Two Tiers";
+		return "Split System Context Into Two Subsystems";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Configure the two tiers:";
+		return "Configure the two subsystems:";
 	}
 
 	@Override
@@ -73,12 +73,12 @@ public class SplitSystemTierWizardPage extends ContextMapperWizardPage {
 		container.setLayout(layout);
 		layout.numColumns = 2;
 
-		Label existingTierNameLabel = new Label(container, SWT.NONE);
-		existingTierNameLabel.setText("Tier 1 Name (existing Bounded Context):");
-		existingSystemTierNameText = new Text(container, SWT.BORDER | SWT.SINGLE);
-		existingSystemTierNameText.setText(context.getExistingContextTierName());
-		existingSystemTierNameText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		existingSystemTierNameText.addKeyListener(new KeyAdapter() {
+		Label existingSubsystemNameLabel = new Label(container, SWT.NONE);
+		existingSubsystemNameLabel.setText("Existing Subsystem:");
+		existingSubsystemNameText = new Text(container, SWT.BORDER | SWT.SINGLE);
+		existingSubsystemNameText.setText(context.getExistingContextSubsystemName());
+		existingSubsystemNameText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		existingSubsystemNameText.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				validate();
@@ -86,12 +86,12 @@ public class SplitSystemTierWizardPage extends ContextMapperWizardPage {
 			}
 		});
 
-		Label newTierNameLabel = new Label(container, SWT.NONE);
-		newTierNameLabel.setText("Tier 2 Name (new Bounded Context):");
-		newSystemTierNameText = new Text(container, SWT.BORDER | SWT.SINGLE);
-		newSystemTierNameText.setText(context.getNewTierName());
-		newSystemTierNameText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		newSystemTierNameText.addKeyListener(new KeyAdapter() {
+		Label newSubsystemNameLabel = new Label(container, SWT.NONE);
+		newSubsystemNameLabel.setText("New Subsystem:");
+		newSubsystemNameText = new Text(container, SWT.BORDER | SWT.SINGLE);
+		newSubsystemNameText.setText(context.getNewSubsystemName());
+		newSubsystemNameText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		newSubsystemNameText.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				validate();
@@ -99,12 +99,12 @@ public class SplitSystemTierWizardPage extends ContextMapperWizardPage {
 			}
 		});
 
-		Label newTierImplTechnologyLabel = new Label(container, SWT.NONE);
-		newTierImplTechnologyLabel.setText("Tier 2 (new) Implementation Technology:");
-		newTierImplementationTechnology = new Text(container, SWT.BORDER | SWT.SINGLE);
-		newTierImplementationTechnology.setText(context.getNewTierImplementationTechnology());
-		newTierImplementationTechnology.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		newTierImplementationTechnology.addKeyListener(new KeyAdapter() {
+		Label newSubsystemImplTechnologyLabel = new Label(container, SWT.NONE);
+		newSubsystemImplTechnologyLabel.setText("New Subsystems Impl. Technology:");
+		newSubsystemImplementationTechnology = new Text(container, SWT.BORDER | SWT.SINGLE);
+		newSubsystemImplementationTechnology.setText(context.getNewSubsystemImplementationTechnology());
+		newSubsystemImplementationTechnology.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		newSubsystemImplementationTechnology.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				validate();
@@ -113,7 +113,7 @@ public class SplitSystemTierWizardPage extends ContextMapperWizardPage {
 		});
 
 		Label relationshipTypeLabel = new Label(container, SWT.NONE);
-		relationshipTypeLabel.setText("Tier 1 Role in Upstream/Downstream rel.:");
+		relationshipTypeLabel.setText("New Subsystems Relationship Role:");
 
 		relationshipTypeSelectionCombo = new Combo(container, SWT.DROP_DOWN | SWT.READ_ONLY);
 		relationshipTypeSelectionCombo.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -136,7 +136,7 @@ public class SplitSystemTierWizardPage extends ContextMapperWizardPage {
 		});
 
 		Label integrationTypeLabel = new Label(container, SWT.NONE);
-		integrationTypeLabel.setText("Integration Type:");
+		integrationTypeLabel.setText("Downstream Integration Type:");
 
 		integrationTypeSelectionCombo = new Combo(container, SWT.DROP_DOWN | SWT.READ_ONLY);
 		integrationTypeSelectionCombo.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -160,14 +160,14 @@ public class SplitSystemTierWizardPage extends ContextMapperWizardPage {
 
 		new Label(container, SWT.NONE);
 		Label hintLabel1 = new Label(container, SWT.NONE);
-		hintLabel1.setText("Hint: With the CONFORMIST integration type, the downstream tier conforms to");
+		hintLabel1.setText("Hint: With the CONFORMIST integration type, the downstream subsystem conforms to");
 		new Label(container, SWT.NONE);
 		Label hintLabel2 = new Label(container, SWT.NONE);
-		hintLabel2.setText("the domain model of the upstream tier.");
+		hintLabel2.setText("the domain model of the upstream subsystem.");
 
 		new Label(container, SWT.NONE);
 		Label hintLabel3 = new Label(container, SWT.NONE);
-		hintLabel3.setText("Hint: With the ACL integration type, the downstream tier domain model differs");
+		hintLabel3.setText("Hint: With the ACL integration type, the downstream subsystem domain model differs");
 		new Label(container, SWT.NONE);
 		Label hintLabel4 = new Label(container, SWT.NONE);
 		hintLabel4.setText("from the upstream domain model, and the downstream needs a translation/anti-");
@@ -191,7 +191,7 @@ public class SplitSystemTierWizardPage extends ContextMapperWizardPage {
 		new Label(container, SWT.NONE);
 		copyDomainModelCheckbox = new Button(container, SWT.CHECK);
 		copyDomainModelCheckbox.setSelection(context.copyDomainModel());
-		copyDomainModelCheckbox.setText("Copy domain model from existing context (tier 1) to new context (tier 2).");
+		copyDomainModelCheckbox.setText("Copy domain model from existing subsystem to new subsystem.");
 
 		setControl(container);
 		validate();
@@ -201,15 +201,15 @@ public class SplitSystemTierWizardPage extends ContextMapperWizardPage {
 	@Override
 	public void setVisible(boolean visible) {
 		super.setVisible(visible);
-		this.newSystemTierNameText.forceFocus();
+		this.newSubsystemNameText.forceFocus();
 	}
 
-	public String getExistingContextTierName() {
-		return this.existingSystemTierNameText.getText();
+	public String getExistingSubsystemName() {
+		return this.existingSubsystemNameText.getText();
 	}
 
-	public String getNewContextTierName() {
-		return this.newSystemTierNameText.getText();
+	public String getNewSubsystemName() {
+		return this.newSubsystemNameText.getText();
 	}
 
 	public ContextSplittingIntegrationType getIntegrationType() {
@@ -220,8 +220,8 @@ public class SplitSystemTierWizardPage extends ContextMapperWizardPage {
 		return SplitBoundedContextRelationshipType.byLabel(this.relationshipTypeSelectionCombo.getText());
 	}
 
-	public String getNewTierImplementationTechnology() {
-		return this.newRelationshipImplementationTechnology.getText();
+	public String getNewSubsystemImplementationTechnology() {
+		return this.newSubsystemImplementationTechnology.getText();
 	}
 
 	public String getNewRelationshipImplementationTechnology() {
@@ -236,20 +236,20 @@ public class SplitSystemTierWizardPage extends ContextMapperWizardPage {
 		setErrorMessage(null);
 		hasError = false;
 
-		if (!existingSystemTierNameText.getText().matches(AbstractCMLValidator.ID_VALIDATION_PATTERN)) {
-			setError("The Bounded Context name '" + existingSystemTierNameText.getText() + "' is not valid. Allowed characters are: a-z, A-Z, 0-9, _");
+		if (!existingSubsystemNameText.getText().matches(AbstractCMLValidator.ID_VALIDATION_PATTERN)) {
+			setError("The Bounded Context name '" + existingSubsystemNameText.getText() + "' is not valid. Allowed characters are: a-z, A-Z, 0-9, _");
 			return;
 		}
-		if (!newSystemTierNameText.getText().matches(AbstractCMLValidator.ID_VALIDATION_PATTERN)) {
-			setError("The Bounded Context name '" + newSystemTierNameText.getText() + "' is not valid. Allowed characters are: a-z, A-Z, 0-9, _");
+		if (!newSubsystemNameText.getText().matches(AbstractCMLValidator.ID_VALIDATION_PATTERN)) {
+			setError("The Bounded Context name '" + newSubsystemNameText.getText() + "' is not valid. Allowed characters are: a-z, A-Z, 0-9, _");
 			return;
 		}
-		if (!existingSystemTierNameText.getText().equals(context.getOriginalSystemName()) && context.getExistingBoundedContexts().contains(existingSystemTierNameText.getText())) {
-			setError("A Bounded Context with the name '" + existingSystemTierNameText.getText() + "' already exists.");
+		if (!existingSubsystemNameText.getText().equals(context.getOriginalSystemName()) && context.getExistingBoundedContexts().contains(existingSubsystemNameText.getText())) {
+			setError("A Bounded Context with the name '" + existingSubsystemNameText.getText() + "' already exists.");
 			return;
 		}
-		if (this.context.getExistingBoundedContexts().contains(newSystemTierNameText.getText())) {
-			setError("A Bounded Context with the name '" + newSystemTierNameText.getText() + "' already exists.");
+		if (this.context.getExistingBoundedContexts().contains(newSubsystemNameText.getText())) {
+			setError("A Bounded Context with the name '" + newSubsystemNameText.getText() + "' already exists.");
 			return;
 		}
 	}
@@ -261,7 +261,7 @@ public class SplitSystemTierWizardPage extends ContextMapperWizardPage {
 
 	@Override
 	public boolean isPageComplete() {
-		return !hasError && !"".equals(existingSystemTierNameText.getText()) && !"".equals(newSystemTierNameText.getText());
+		return !hasError && !"".equals(existingSubsystemNameText.getText()) && !"".equals(newSubsystemNameText.getText());
 	}
 
 	@Override

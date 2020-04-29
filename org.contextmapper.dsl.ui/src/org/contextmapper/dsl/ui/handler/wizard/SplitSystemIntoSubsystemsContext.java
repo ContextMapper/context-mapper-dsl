@@ -18,24 +18,24 @@ package org.contextmapper.dsl.ui.handler.wizard;
 import java.util.Set;
 
 import org.contextmapper.dsl.refactoring.ContextSplittingIntegrationType;
-import org.contextmapper.dsl.refactoring.SplitSystemTier.SplitBoundedContextRelationshipType;
+import org.contextmapper.dsl.refactoring.SplitSystemIntoSubsystems.SplitBoundedContextRelationshipType;
 
-public class SplitSystemTierContext {
+public class SplitSystemIntoSubsystemsContext {
 
 	private String originalSystemName;
-	private String existingContextTierName;
-	private String newTierName;
-	private SplitBoundedContextRelationshipType relationshipType = SplitBoundedContextRelationshipType.EXISTING_CONTEXT_BECOMES_DOWNSTREAM;
+	private String existingContextSubsystemName;
+	private String newSubsystemName;
+	private SplitBoundedContextRelationshipType relationshipType = SplitBoundedContextRelationshipType.NEW_CONTEXT_BECOMES_UPSTREAM;
 	private ContextSplittingIntegrationType integrationType = ContextSplittingIntegrationType.CONFORMIST;
 	private boolean copyDomainModel = false;
-	private String newTierImplementationTechnology = "";
+	private String newSubsystemImplementationTechnology = "";
 	private String newRelationshipImplementationTechnology = "";
 	private Set<String> existingBoundedContexts;
 
-	public SplitSystemTierContext(String originalSystemName, String existingContextTierName, String newTierName, Set<String> existingBoundedContexts) {
+	public SplitSystemIntoSubsystemsContext(String originalSystemName, String existingContextSubsystemName, String newSubsystemName, Set<String> existingBoundedContexts) {
 		this.originalSystemName = originalSystemName;
-		this.existingContextTierName = existingContextTierName;
-		this.newTierName = newTierName;
+		this.existingContextSubsystemName = existingContextSubsystemName;
+		this.newSubsystemName = newSubsystemName;
 		this.existingBoundedContexts = existingBoundedContexts;
 	}
 
@@ -43,20 +43,20 @@ public class SplitSystemTierContext {
 		return originalSystemName;
 	}
 
-	public String getExistingContextTierName() {
-		return existingContextTierName;
+	public String getExistingContextSubsystemName() {
+		return existingContextSubsystemName;
 	}
 
-	public void setExistingContextTierName(String existingContextTierName) {
-		this.existingContextTierName = existingContextTierName;
+	public void setExistingContextSubsystemName(String existingContextSubsystemName) {
+		this.existingContextSubsystemName = existingContextSubsystemName;
 	}
 
-	public String getNewTierName() {
-		return newTierName;
+	public String getNewSubsystemName() {
+		return newSubsystemName;
 	}
 
-	public void setNewTierName(String newTierName) {
-		this.newTierName = newTierName;
+	public void setNewSubsystemName(String newSubsystemName) {
+		this.newSubsystemName = newSubsystemName;
 	}
 
 	public SplitBoundedContextRelationshipType getRelationshipType() {
@@ -83,12 +83,12 @@ public class SplitSystemTierContext {
 		this.copyDomainModel = copyDomainModel;
 	}
 
-	public String getNewTierImplementationTechnology() {
-		return newTierImplementationTechnology;
+	public String getNewSubsystemImplementationTechnology() {
+		return newSubsystemImplementationTechnology;
 	}
 
-	public void setNewTierImplementationTechnology(String newTierImplementationTechnology) {
-		this.newTierImplementationTechnology = newTierImplementationTechnology;
+	public void setNewSubsystemImplementationTechnology(String newSubsystemImplementationTechnology) {
+		this.newSubsystemImplementationTechnology = newSubsystemImplementationTechnology;
 	}
 
 	public String getNewRelationshipImplementationTechnology() {

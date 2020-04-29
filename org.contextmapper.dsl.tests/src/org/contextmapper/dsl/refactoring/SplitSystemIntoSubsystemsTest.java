@@ -35,7 +35,7 @@ import org.contextmapper.dsl.contextMappingDSL.SculptorModule;
 import org.contextmapper.dsl.contextMappingDSL.SymmetricRelationship;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamRole;
-import org.contextmapper.dsl.refactoring.SplitSystemTier.SplitBoundedContextRelationshipType;
+import org.contextmapper.dsl.refactoring.SplitSystemIntoSubsystems.SplitBoundedContextRelationshipType;
 import org.contextmapper.dsl.refactoring.exception.RefactoringInputException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -43,7 +43,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-public class SplitSystemTierTest extends AbstractRefactoringTest {
+public class SplitSystemIntoSubsystemsTest extends AbstractRefactoringTest {
 
 	@ParameterizedTest
 	@ValueSource(strings = { "SomeContextThatDoesNotExist" })
@@ -51,7 +51,7 @@ public class SplitSystemTierTest extends AbstractRefactoringTest {
 	public void canCheckIfBoundedContextNameExists(String inputBoundedContextName) throws IOException {
 		// given
 		CMLResourceContainer input = getResourceCopyOfTestCML("split-system-tier-test-1-input.cml");
-		SplitSystemTier ar = new SplitSystemTier(inputBoundedContextName, "NewName4ExistingTier", "NewTierName");
+		SplitSystemIntoSubsystems ar = new SplitSystemIntoSubsystems(inputBoundedContextName, "NewName4ExistingTier", "NewTierName");
 
 		// when, then
 		assertThrows(RefactoringInputException.class, () -> {
@@ -63,7 +63,7 @@ public class SplitSystemTierTest extends AbstractRefactoringTest {
 	public void canCheckThatInputBCIsSystem() throws IOException {
 		// given
 		CMLResourceContainer input = getResourceCopyOfTestCML("split-system-tier-test-2-input.cml");
-		SplitSystemTier ar = new SplitSystemTier("TestBackend", "TestBackendLogic", "TestBackendDatabase");
+		SplitSystemIntoSubsystems ar = new SplitSystemIntoSubsystems("TestBackend", "TestBackendLogic", "TestBackendDatabase");
 
 		// when, then
 		assertThrows(RefactoringInputException.class, () -> {
@@ -75,7 +75,7 @@ public class SplitSystemTierTest extends AbstractRefactoringTest {
 	public void canCheckThatName4ExistingContextNotAlreadyExists() throws IOException {
 		// given
 		CMLResourceContainer input = getResourceCopyOfTestCML("split-system-tier-test-3-input.cml");
-		SplitSystemTier ar = new SplitSystemTier("TestBackend", "TestBackendLogic", "TestBackendDatabase");
+		SplitSystemIntoSubsystems ar = new SplitSystemIntoSubsystems("TestBackend", "TestBackendLogic", "TestBackendDatabase");
 
 		// when, then
 		assertThrows(RefactoringInputException.class, () -> {
@@ -87,7 +87,7 @@ public class SplitSystemTierTest extends AbstractRefactoringTest {
 	public void canCheckThatName4NewTierNotAlreadyExists() throws IOException {
 		// given
 		CMLResourceContainer input = getResourceCopyOfTestCML("split-system-tier-test-4-input.cml");
-		SplitSystemTier ar = new SplitSystemTier("TestBackend", "TestBackendLogic", "TestBackendDatabase");
+		SplitSystemIntoSubsystems ar = new SplitSystemIntoSubsystems("TestBackend", "TestBackendLogic", "TestBackendDatabase");
 
 		// when, then
 		assertThrows(RefactoringInputException.class, () -> {
@@ -99,7 +99,7 @@ public class SplitSystemTierTest extends AbstractRefactoringTest {
 	public void canSplitTier() throws IOException {
 		// given
 		CMLResourceContainer input = getResourceCopyOfTestCML("split-system-tier-test-1-input.cml");
-		SplitSystemTier ar = new SplitSystemTier("TestBackend", "TestBackendLogic", "TestBackendDatabase");
+		SplitSystemIntoSubsystems ar = new SplitSystemIntoSubsystems("TestBackend", "TestBackendLogic", "TestBackendDatabase");
 
 		// when
 		ar.doRefactor(input);
@@ -116,7 +116,7 @@ public class SplitSystemTierTest extends AbstractRefactoringTest {
 	public void canCreateUpstreamDownstreamRelationship() throws IOException {
 		// given
 		CMLResourceContainer input = getResourceCopyOfTestCML("split-system-tier-test-1-input.cml");
-		SplitSystemTier ar = new SplitSystemTier("TestBackend", "TestBackendLogic", "TestBackendDatabase");
+		SplitSystemIntoSubsystems ar = new SplitSystemIntoSubsystems("TestBackend", "TestBackendLogic", "TestBackendDatabase");
 
 		// when
 		ar.doRefactor(input);
@@ -126,8 +126,8 @@ public class SplitSystemTierTest extends AbstractRefactoringTest {
 		assertNotNull(model.getMap());
 		assertEquals(1, model.getMap().getRelationships().size());
 		UpstreamDownstreamRelationship relationship = (UpstreamDownstreamRelationship) model.getMap().getRelationships().get(0);
-		assertEquals("TestBackendDatabase", relationship.getUpstream().getName());
-		assertEquals("TestBackendLogic", relationship.getDownstream().getName());
+		assertEquals("TestBackendDatabase", relationship.getDownstream().getName());
+		assertEquals("TestBackendLogic", relationship.getUpstream().getName());
 		assertTrue(relationship.getUpstreamRoles().contains(UpstreamRole.PUBLISHED_LANGUAGE));
 		assertTrue(relationship.getDownstreamRoles().contains(DownstreamRole.CONFORMIST));
 	}
@@ -136,8 +136,8 @@ public class SplitSystemTierTest extends AbstractRefactoringTest {
 	public void canSwitchUpstreamDownstreamRoleInNewRelationship() throws IOException {
 		// given
 		CMLResourceContainer input = getResourceCopyOfTestCML("split-system-tier-test-5-input.cml");
-		SplitSystemTier ar = new SplitSystemTier("TestBackend", "TestBackendLogic", "TestBackendDatabase");
-		ar.setRelationshipType(SplitBoundedContextRelationshipType.EXISTING_CONTEXT_BECOMES_UPSTREAM);
+		SplitSystemIntoSubsystems ar = new SplitSystemIntoSubsystems("TestBackend", "TestBackendLogic", "TestBackendDatabase");
+		ar.setRelationshipType(SplitBoundedContextRelationshipType.NEW_CONTEXT_BECOMES_UPSTREAM);
 
 		// when
 		ar.doRefactor(input);
@@ -147,8 +147,8 @@ public class SplitSystemTierTest extends AbstractRefactoringTest {
 		assertNotNull(model.getMap());
 		assertEquals(1, model.getMap().getRelationships().size());
 		UpstreamDownstreamRelationship relationship = (UpstreamDownstreamRelationship) model.getMap().getRelationships().get(0);
-		assertEquals("TestBackendLogic", relationship.getUpstream().getName());
-		assertEquals("TestBackendDatabase", relationship.getDownstream().getName());
+		assertEquals("TestBackendLogic", relationship.getDownstream().getName());
+		assertEquals("TestBackendDatabase", relationship.getUpstream().getName());
 		assertTrue(relationship.getUpstreamRoles().contains(UpstreamRole.PUBLISHED_LANGUAGE));
 		assertTrue(relationship.getDownstreamRoles().contains(DownstreamRole.CONFORMIST));
 	}
@@ -157,7 +157,7 @@ public class SplitSystemTierTest extends AbstractRefactoringTest {
 	public void canSwitchIntegrationTypeToACL() throws IOException {
 		// given
 		CMLResourceContainer input = getResourceCopyOfTestCML("split-system-tier-test-5-input.cml");
-		SplitSystemTier ar = new SplitSystemTier("TestBackend", "TestBackendLogic", "TestBackendDatabase");
+		SplitSystemIntoSubsystems ar = new SplitSystemIntoSubsystems("TestBackend", "TestBackendLogic", "TestBackendDatabase");
 		ar.setIntegrationType(ACL);
 
 		// when
@@ -168,8 +168,8 @@ public class SplitSystemTierTest extends AbstractRefactoringTest {
 		assertNotNull(model.getMap());
 		assertEquals(1, model.getMap().getRelationships().size());
 		UpstreamDownstreamRelationship relationship = (UpstreamDownstreamRelationship) model.getMap().getRelationships().get(0);
-		assertEquals("TestBackendDatabase", relationship.getUpstream().getName());
-		assertEquals("TestBackendLogic", relationship.getDownstream().getName());
+		assertEquals("TestBackendDatabase", relationship.getDownstream().getName());
+		assertEquals("TestBackendLogic", relationship.getUpstream().getName());
 		assertTrue(relationship.getUpstreamRoles().contains(UpstreamRole.PUBLISHED_LANGUAGE));
 		assertTrue(relationship.getDownstreamRoles().contains(DownstreamRole.ANTICORRUPTION_LAYER));
 	}
@@ -178,7 +178,7 @@ public class SplitSystemTierTest extends AbstractRefactoringTest {
 	public void canCopyDomainModel() throws IOException {
 		// given
 		CMLResourceContainer input = getResourceCopyOfTestCML("split-system-tier-test-6-input.cml");
-		SplitSystemTier ar = new SplitSystemTier("TestBackend", "TestBackendLogic", "TestBackendDatabase");
+		SplitSystemIntoSubsystems ar = new SplitSystemIntoSubsystems("TestBackend", "TestBackendLogic", "TestBackendDatabase");
 		ar.copyDomainModel(true);
 
 		// when
@@ -205,8 +205,8 @@ public class SplitSystemTierTest extends AbstractRefactoringTest {
 	public void canDefineImplementationTechnologies() throws IOException {
 		// given
 		CMLResourceContainer input = getResourceCopyOfTestCML("split-system-tier-test-6-input.cml");
-		SplitSystemTier ar = new SplitSystemTier("TestBackend", "TestBackendLogic", "TestBackendDatabase");
-		ar.setNewTierImplementationTechnology("Oracle DB");
+		SplitSystemIntoSubsystems ar = new SplitSystemIntoSubsystems("TestBackend", "TestBackendLogic", "TestBackendDatabase");
+		ar.setNewSubsystemImplementationTechnology("Oracle DB");
 		ar.setNewRelationshipImplementationTechnology("JDBC");
 
 		// when
@@ -223,8 +223,8 @@ public class SplitSystemTierTest extends AbstractRefactoringTest {
 	@Test
 	public void canGetRelationshipTypeLabel() {
 		// given
-		SplitBoundedContextRelationshipType upstream = SplitBoundedContextRelationshipType.EXISTING_CONTEXT_BECOMES_UPSTREAM;
-		SplitBoundedContextRelationshipType downstream = SplitBoundedContextRelationshipType.EXISTING_CONTEXT_BECOMES_DOWNSTREAM;
+		SplitBoundedContextRelationshipType upstream = SplitBoundedContextRelationshipType.NEW_CONTEXT_BECOMES_UPSTREAM;
+		SplitBoundedContextRelationshipType downstream = SplitBoundedContextRelationshipType.NEW_CONTEXT_BECOMES_DOWNSTREAM;
 
 		// when
 		String upstreamLabel = upstream.getLabel();
@@ -236,7 +236,7 @@ public class SplitSystemTierTest extends AbstractRefactoringTest {
 	}
 
 	@ParameterizedTest
-	@CsvSource({ "Upstream, EXISTING_CONTEXT_BECOMES_UPSTREAM", "Downstream, EXISTING_CONTEXT_BECOMES_DOWNSTREAM" })
+	@CsvSource({ "Upstream, NEW_CONTEXT_BECOMES_UPSTREAM", "Downstream, NEW_CONTEXT_BECOMES_DOWNSTREAM" })
 	public void canGetRelationshipTypeByLabel(String inputLabel, String expectedType) {
 		// given
 		String label = inputLabel;
@@ -257,14 +257,14 @@ public class SplitSystemTierTest extends AbstractRefactoringTest {
 		SplitBoundedContextRelationshipType type = SplitBoundedContextRelationshipType.byLabel(label);
 
 		// then
-		assertEquals(SplitBoundedContextRelationshipType.EXISTING_CONTEXT_BECOMES_UPSTREAM, type);
+		assertEquals(SplitBoundedContextRelationshipType.NEW_CONTEXT_BECOMES_UPSTREAM, type);
 	}
 
 	@Test
 	public void canRenameContextInRelationships() throws IOException {
 		// given
 		CMLResourceContainer input = getResourceCopyOfTestCML("split-system-tier-test-7-input.cml");
-		SplitSystemTier ar = new SplitSystemTier("TestBackend", "TestBackendLogic", "TestBackendDatabase");
+		SplitSystemIntoSubsystems ar = new SplitSystemIntoSubsystems("TestBackend", "TestBackendLogic", "TestBackendDatabase");
 
 		// when
 		ar.doRefactor(input);

@@ -17,16 +17,16 @@ package org.contextmapper.dsl.ui.handler.wizard;
 
 import java.util.function.Function;
 
-import org.contextmapper.dsl.ui.handler.wizard.pages.SplitSystemTierWizardPage;
+import org.contextmapper.dsl.ui.handler.wizard.pages.SplitSystemIntoSubsystemsWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 
-public class SplitSystemTierWizard extends Wizard {
+public class SplitSystemIntoSubsystemsWizard extends Wizard {
 
-	private SplitSystemTierWizardPage page;
-	private Function<SplitSystemTierContext, Boolean> finishFunction;
-	private SplitSystemTierContext context;
+	private SplitSystemIntoSubsystemsWizardPage page;
+	private Function<SplitSystemIntoSubsystemsContext, Boolean> finishFunction;
+	private SplitSystemIntoSubsystemsContext context;
 
-	public SplitSystemTierWizard(SplitSystemTierContext context, Function<SplitSystemTierContext, Boolean> finishFunction) {
+	public SplitSystemIntoSubsystemsWizard(SplitSystemIntoSubsystemsContext context, Function<SplitSystemIntoSubsystemsContext, Boolean> finishFunction) {
 		super();
 		setNeedsProgressMonitor(true);
 		this.context = context;
@@ -35,23 +35,23 @@ public class SplitSystemTierWizard extends Wizard {
 
 	@Override
 	public String getWindowTitle() {
-		return "Split System Into Two Tiers";
+		return "Split System Context Into Two Subsystems";
 	}
 
 	@Override
 	public void addPages() {
-		page = new SplitSystemTierWizardPage(context);
+		page = new SplitSystemIntoSubsystemsWizardPage(context);
 		addPage(page);
 	}
 
 	@Override
 	public boolean performFinish() {
-		context.setExistingContextTierName(page.getExistingContextTierName());
-		context.setNewTierName(page.getNewContextTierName());
+		context.setExistingContextSubsystemName(page.getExistingSubsystemName());
+		context.setNewSubsystemName(page.getNewSubsystemName());
 		context.copyDomainModel(page.copyDomainModel());
 		context.setRelationshipType(page.getRelationshipType());
 		context.setIntegrationType(page.getIntegrationType());
-		context.setNewTierImplementationTechnology(page.getNewTierImplementationTechnology());
+		context.setNewSubsystemImplementationTechnology(page.getNewSubsystemImplementationTechnology());
 		context.setNewRelationshipImplementationTechnology(page.getNewRelationshipImplementationTechnology());
 		return finishFunction.apply(context);
 	}
