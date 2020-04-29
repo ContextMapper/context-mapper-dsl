@@ -111,9 +111,11 @@ public class SplitSystemIntoSubsystems extends AbstractRefactoring implements Re
 		if (this.relationshipType == SplitBoundedContextRelationshipType.NEW_CONTEXT_BECOMES_DOWNSTREAM) {
 			relationship.setDownstream(newContext);
 			relationship.setUpstream(existingContext);
+			addElementsToEList(relationship.getUpstreamExposedAggregates(), existingContext.getAggregates());
 		} else {
 			relationship.setDownstream(existingContext);
 			relationship.setUpstream(newContext);
+			addElementsToEList(relationship.getUpstreamExposedAggregates(), newContext.getAggregates());
 		}
 		if (integrationType == ContextSplittingIntegrationType.CONFORMIST) {
 			relationship.getDownstreamRoles().add(DownstreamRole.CONFORMIST);

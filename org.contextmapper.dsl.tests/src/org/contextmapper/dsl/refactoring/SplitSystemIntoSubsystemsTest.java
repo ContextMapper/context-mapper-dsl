@@ -131,6 +131,25 @@ public class SplitSystemIntoSubsystemsTest extends AbstractRefactoringTest {
 		assertTrue(relationship.getUpstreamRoles().contains(UpstreamRole.PUBLISHED_LANGUAGE));
 		assertTrue(relationship.getDownstreamRoles().contains(DownstreamRole.CONFORMIST));
 	}
+	
+	@Test
+	public void canAddExposedAggregatesToRelationship() throws IOException {
+		// given
+		CMLResourceContainer input = getResourceCopyOfTestCML("split-system-tier-test-8-input.cml");
+		SplitSystemIntoSubsystems ar = new SplitSystemIntoSubsystems("TestBackend", "TestBackendLogic", "TestBackendDatabase");
+		ar.copyDomainModel(true);
+
+		// when
+		ar.doRefactor(input);
+
+		// then
+		ContextMappingModel model = reloadResource(input).getContextMappingModel();
+		assertNotNull(model.getMap());
+		assertEquals(1, model.getMap().getRelationships().size());
+		UpstreamDownstreamRelationship relationship = (UpstreamDownstreamRelationship) model.getMap().getRelationships().get(0);
+		assertEquals(1, relationship.getUpstreamExposedAggregates().size());
+		assertEquals("TestAggregate", relationship.getUpstreamExposedAggregates().get(0).getName());
+	}
 
 	@Test
 	public void canSwitchUpstreamDownstreamRoleInNewRelationship() throws IOException {
