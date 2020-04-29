@@ -34,23 +34,23 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import com.google.common.collect.Lists;
 
-public class SplitSystemTier extends AbstractRefactoring implements Refactoring {
+public class SplitSystemIntoSubsystems extends AbstractRefactoring implements Refactoring {
 
 	private String systemExistingBoundedContextName;
-	private String systemNewBoundedContextName;
-	private String newTierName;
-	private SplitBoundedContextRelationshipType relationshipType = SplitBoundedContextRelationshipType.EXISTING_CONTEXT_BECOMES_DOWNSTREAM;
+	private String existingSubsystemName;
+	private String newSubsystemName;
+	private SplitBoundedContextRelationshipType relationshipType = SplitBoundedContextRelationshipType.NEW_CONTEXT_BECOMES_DOWNSTREAM;
 	private ContextSplittingIntegrationType integrationType = ContextSplittingIntegrationType.CONFORMIST;
 	private boolean copyDomainModel = false;
-	private String newTierImplementationTechnology = "";
+	private String newSubsystemImplementationTechnology = "";
 	private String newRelationshipImplementationTechnology = "";
 
 	private RefactoringHelper helper;
 
-	public SplitSystemTier(String systemExistingBoundedContextName, String systemNewBoundedContextName, String newTierName) {
+	public SplitSystemIntoSubsystems(String systemExistingBoundedContextName, String existingSubsystemName, String newSubsystemName) {
 		this.systemExistingBoundedContextName = systemExistingBoundedContextName;
-		this.systemNewBoundedContextName = systemNewBoundedContextName;
-		this.newTierName = newTierName;
+		this.existingSubsystemName = existingSubsystemName;
+		this.newSubsystemName = newSubsystemName;
 		this.helper = new RefactoringHelper(this);
 	}
 
@@ -59,15 +59,15 @@ public class SplitSystemTier extends AbstractRefactoring implements Refactoring 
 		checkPreconditions();
 
 		BoundedContext systemContext = getAllBoundedContexts().stream().filter(bc -> bc.getName().equals(systemExistingBoundedContextName)).findFirst().get();
-		renameBoundedContext(systemContext.getName(), systemNewBoundedContextName);
+		renameBoundedContext(systemContext.getName(), existingSubsystemName);
 
-		BoundedContext newTierContext = createNewTierBC(systemContext);
-		newTierContext.setName(newTierName);
-		newTierContext.setType(BoundedContextType.SYSTEM);
-		newTierContext.setImplementationTechnology(newTierImplementationTechnology);
+		BoundedContext newSubsystemContext = createNewSubsystemBC(systemContext);
+		newSubsystemContext.setName(newSubsystemName);
+		newSubsystemContext.setType(BoundedContextType.SYSTEM);
+		newSubsystemContext.setImplementationTechnology(newSubsystemImplementationTechnology);
 
-		addElementToEList(model.getBoundedContexts(), newTierContext);
-		createUpstreamDownstreamRelationship(systemContext, newTierContext);
+		addElementToEList(model.getBoundedContexts(), newSubsystemContext);
+		createUpstreamDownstreamRelationship(systemContext, newSubsystemContext);
 
 		markResourceChanged(rootResource);
 		saveResources();
@@ -108,12 +108,14 @@ public class SplitSystemTier extends AbstractRefactoring implements Refactoring 
 
 	private void createUpstreamDownstreamRelationship(BoundedContext existingContext, BoundedContext newContext) {
 		UpstreamDownstreamRelationship relationship = ContextMappingDSLFactory.eINSTANCE.createUpstreamDownstreamRelationship();
-		if (this.relationshipType == SplitBoundedContextRelationshipType.EXISTING_CONTEXT_BECOMES_DOWNSTREAM) {
-			relationship.setDownstream(existingContext);
-			relationship.setUpstream(newContext);
-		} else {
+		if (this.relationshipType == SplitBoundedContextRelationshipType.NEW_CONTEXT_BECOMES_DOWNSTREAM) {
 			relationship.setDownstream(newContext);
 			relationship.setUpstream(existingContext);
+			addElementsToEList(relationship.getUpstreamExposedAggregates(), existingContext.getAggregates());
+		} else {
+			relationship.setDownstream(existingContext);
+			relationship.setUpstream(newContext);
+			addElementsToEList(relationship.getUpstreamExposedAggregates(), newContext.getAggregates());
 		}
 		if (integrationType == ContextSplittingIntegrationType.CONFORMIST) {
 			relationship.getDownstreamRoles().add(DownstreamRole.CONFORMIST);
@@ -128,10 +130,10 @@ public class SplitSystemTier extends AbstractRefactoring implements Refactoring 
 		addElementToEList(map.getRelationships(), relationship);
 	}
 
-	private BoundedContext createNewTierBC(BoundedContext existingTier) {
+	private BoundedContext createNewSubsystemBC(BoundedContext existingSubsystem) {
 		if (this.copyDomainModel) {
-			BoundedContext copiedContext = EcoreUtil.copy(existingTier);
-			helper.adjustAggregateAndModuleNames(copiedContext, "_" + this.newTierName);
+			BoundedContext copiedContext = EcoreUtil.copy(existingSubsystem);
+			helper.adjustAggregateAndModuleNames(copiedContext, "_" + this.newSubsystemName);
 			return copiedContext;
 		}
 		return ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
@@ -154,10 +156,10 @@ public class SplitSystemTier extends AbstractRefactoring implements Refactoring 
 		if (systemBC.getType() != BoundedContextType.SYSTEM)
 			throw new RefactoringInputException("The Bounded Context '" + systemExistingBoundedContextName + "' is not of the type FEATURE!");
 		Set<String> allBCNames = getAllBoundedContexts().stream().map(bc -> bc.getName()).collect(Collectors.toSet());
-		if (allBCNames.contains(systemNewBoundedContextName))
-			throw new RefactoringInputException("A Bounded Context with the name '" + systemNewBoundedContextName + "' already exists in your model!");
-		if (allBCNames.contains(newTierName))
-			throw new RefactoringInputException("A Bounded Context with the name '" + newTierName + "' already exists in your model!");
+		if (allBCNames.contains(existingSubsystemName))
+			throw new RefactoringInputException("A Bounded Context with the name '" + existingSubsystemName + "' already exists in your model!");
+		if (allBCNames.contains(newSubsystemName))
+			throw new RefactoringInputException("A Bounded Context with the name '" + newSubsystemName + "' already exists in your model!");
 	}
 
 	public void setRelationshipType(SplitBoundedContextRelationshipType relationshipType) {
@@ -172,8 +174,8 @@ public class SplitSystemTier extends AbstractRefactoring implements Refactoring 
 		this.copyDomainModel = copyDomainModel;
 	}
 
-	public void setNewTierImplementationTechnology(String newTierImplementationTechnology) {
-		this.newTierImplementationTechnology = newTierImplementationTechnology;
+	public void setNewSubsystemImplementationTechnology(String newSubsystemImplementationTechnology) {
+		this.newSubsystemImplementationTechnology = newSubsystemImplementationTechnology;
 	}
 
 	public void setNewRelationshipImplementationTechnology(String newRelationshipImplementationTechnology) {
@@ -181,7 +183,7 @@ public class SplitSystemTier extends AbstractRefactoring implements Refactoring 
 	}
 
 	public enum SplitBoundedContextRelationshipType {
-		EXISTING_CONTEXT_BECOMES_UPSTREAM("Upstream"), EXISTING_CONTEXT_BECOMES_DOWNSTREAM("Downstream");
+		NEW_CONTEXT_BECOMES_UPSTREAM("Upstream"), NEW_CONTEXT_BECOMES_DOWNSTREAM("Downstream");
 
 		private String label;
 
@@ -195,8 +197,8 @@ public class SplitSystemTier extends AbstractRefactoring implements Refactoring 
 
 		public static SplitBoundedContextRelationshipType byLabel(String label) {
 			if (label != null && "Downstream".equals(label))
-				return EXISTING_CONTEXT_BECOMES_DOWNSTREAM;
-			return EXISTING_CONTEXT_BECOMES_UPSTREAM;
+				return NEW_CONTEXT_BECOMES_DOWNSTREAM;
+			return NEW_CONTEXT_BECOMES_UPSTREAM;
 		}
 	}
 

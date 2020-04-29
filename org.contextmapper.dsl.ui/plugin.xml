@@ -545,8 +545,8 @@
 			</activeWhen>
 		</handler>
 		<handler 
-			class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.contextmapper.dsl.ui.handler.SplitSystemTierRefactoringHandler"
-			commandId="org.contextmapper.dsl.ui.handler.SplitSystemTierRefactoringCommand">
+			class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.contextmapper.dsl.ui.handler.SplitSystemIntoSubsystemsRefactoringHandler"
+			commandId="org.contextmapper.dsl.ui.handler.SplitSystemIntoSubsystemsRefactoringCommand">
 			<activeWhen>
 				<reference
 					definitionId="org.contextmapper.dsl.ContextMappingDSL.Editor.opened">
@@ -655,8 +655,8 @@
 	</extension>
 	<extension
 	      point="org.eclipse.ui.commands">
-	      <command name="Split System Into Two Tiers" categoryId="org.eclipse.xtext.ui.category.refactoring"
-             id="org.contextmapper.dsl.ui.handler.SplitSystemTierRefactoringCommand">
+	      <command name="Split System Context Into Subsystems" categoryId="org.eclipse.xtext.ui.category.refactoring"
+             id="org.contextmapper.dsl.ui.handler.SplitSystemIntoSubsystemsRefactoringCommand">
 	      </command>
 	</extension>
 	<extension point="org.eclipse.ui.menus">

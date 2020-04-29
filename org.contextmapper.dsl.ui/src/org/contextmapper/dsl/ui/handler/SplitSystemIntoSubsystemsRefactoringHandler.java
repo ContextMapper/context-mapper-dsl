@@ -23,9 +23,9 @@ import org.contextmapper.dsl.cml.CMLImportResolver;
 import org.contextmapper.dsl.cml.CMLResourceContainer;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContextType;
-import org.contextmapper.dsl.refactoring.SplitSystemTier;
-import org.contextmapper.dsl.ui.handler.wizard.SplitSystemTierContext;
-import org.contextmapper.dsl.ui.handler.wizard.SplitSystemTierWizard;
+import org.contextmapper.dsl.refactoring.SplitSystemIntoSubsystems;
+import org.contextmapper.dsl.ui.handler.wizard.SplitSystemIntoSubsystemsContext;
+import org.contextmapper.dsl.ui.handler.wizard.SplitSystemIntoSubsystemsWizard;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -34,20 +34,21 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 import com.google.common.collect.Lists;
 
-public class SplitSystemTierRefactoringHandler extends AbstractRefactoringWithUserInputHandler {
+public class SplitSystemIntoSubsystemsRefactoringHandler extends AbstractRefactoringWithUserInputHandler {
 
 	@Override
 	protected void executeRefactoring(CMLResourceContainer resource, ExecutionEvent event) {
 		BoundedContext selectedContext = (BoundedContext) getSelectedElement();
 		Set<String> allBCNames = collectAllBoundedContexts().stream().map(bc -> bc.getName()).collect(Collectors.toSet());
 
-		SplitSystemTierContext refactoringContext = new SplitSystemTierContext(selectedContext.getName(), selectedContext.getName() + "_Tier1",
-				selectedContext.getName() + "_Tier2", allBCNames);
-		new WizardDialog(HandlerUtil.getActiveShell(event), new SplitSystemTierWizard(refactoringContext, executionContext -> {
-			SplitSystemTier ar = new SplitSystemTier(executionContext.getOriginalSystemName(), executionContext.getExistingContextTierName(), executionContext.getNewTierName());
+		SplitSystemIntoSubsystemsContext refactoringContext = new SplitSystemIntoSubsystemsContext(selectedContext.getName(), selectedContext.getName(),
+				selectedContext.getName() + "_New_Subsystem", allBCNames);
+		new WizardDialog(HandlerUtil.getActiveShell(event), new SplitSystemIntoSubsystemsWizard(refactoringContext, executionContext -> {
+			SplitSystemIntoSubsystems ar = new SplitSystemIntoSubsystems(executionContext.getOriginalSystemName(), executionContext.getExistingContextSubsystemName(),
+					executionContext.getNewSubsystemName());
 			ar.setIntegrationType(executionContext.getIntegrationType());
 			ar.setRelationshipType(executionContext.getRelationshipType());
-			ar.setNewTierImplementationTechnology(executionContext.getNewTierImplementationTechnology());
+			ar.setNewSubsystemImplementationTechnology(executionContext.getNewSubsystemImplementationTechnology());
 			ar.setNewRelationshipImplementationTechnology(executionContext.getNewRelationshipImplementationTechnology());
 			ar.copyDomainModel(executionContext.copyDomainModel());
 			return finishRefactoring(ar, resource, event);

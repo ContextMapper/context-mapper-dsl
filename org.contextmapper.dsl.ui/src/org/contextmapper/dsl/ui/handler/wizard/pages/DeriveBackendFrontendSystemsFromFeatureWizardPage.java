@@ -125,7 +125,7 @@ public class DeriveBackendFrontendSystemsFromFeatureWizardPage extends ContextMa
 		});
 
 		Label typeSelectionLabel = new Label(container, SWT.NONE);
-		typeSelectionLabel.setText("Integration Type:");
+		typeSelectionLabel.setText("Frontend Integration Type:");
 
 		typeSelectionCombo = new Combo(container, SWT.DROP_DOWN | SWT.READ_ONLY);
 		typeSelectionCombo.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
