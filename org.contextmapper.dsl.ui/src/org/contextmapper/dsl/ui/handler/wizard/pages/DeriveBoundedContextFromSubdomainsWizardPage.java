@@ -17,6 +17,7 @@ package org.contextmapper.dsl.ui.handler.wizard.pages;
 
 import java.util.Set;
 
+import org.contextmapper.dsl.validation.AbstractCMLValidator;
 import org.eclipse.jface.fieldassist.AutoCompleteField;
 import org.eclipse.jface.fieldassist.ComboContentAdapter;
 import org.eclipse.swt.SWT;
@@ -38,6 +39,8 @@ public class DeriveBoundedContextFromSubdomainsWizardPage extends ContextMapperW
 
 	private Combo comboBCs;
 	private Composite container;
+
+	private boolean hasError = true;
 
 	public DeriveBoundedContextFromSubdomainsWizardPage(String initialBoundedContextName, Set<String> existingBoundedContexts) {
 		super("Bounded Context Definition Page");
@@ -73,19 +76,37 @@ public class DeriveBoundedContextFromSubdomainsWizardPage extends ContextMapperW
 		comboBCs.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				validate();
 				setPageComplete(isPageComplete());
 			}
 		});
 		comboBCs.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
+				validate();
 				setPageComplete(isPageComplete());
 			}
 		});
 		new AutoCompleteField(comboBCs, new ComboContentAdapter(), this.existingBoundedContexts.toArray(new String[existingBoundedContexts.size()]));
 
 		setControl(container);
+		validate();
 		setPageComplete(false);
+	}
+
+	private void validate() {
+		setErrorMessage(null);
+		hasError = false;
+
+		if (!comboBCs.getText().matches(AbstractCMLValidator.ID_VALIDATION_PATTERN)) {
+			setError("The domain name '" + comboBCs.getText() + "' is not valid. Allowed characters are: a-z, A-Z, 0-9, _");
+			return;
+		}
+	}
+
+	private void setError(String message) {
+		hasError = true;
+		setErrorMessage(message);
 	}
 
 	@Override
@@ -100,7 +121,7 @@ public class DeriveBoundedContextFromSubdomainsWizardPage extends ContextMapperW
 
 	@Override
 	public boolean isPageComplete() {
-		return comboBCs.getText() != null && !"".equals(comboBCs.getText());
+		return !hasError && comboBCs.getText() != null && !"".equals(comboBCs.getText());
 	}
 
 	@Override
