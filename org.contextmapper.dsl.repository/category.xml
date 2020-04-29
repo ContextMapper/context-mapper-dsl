@@ -4,7 +4,7 @@
       <category name="main"/>
    </feature>
    <feature id="org.contextmapper.dsl.feature.source" version="0.0.0">
-      <category name="main.source"/>
+      <category name="main"/>
    </feature>
    <feature id="org.contextmapper.servicecutter.feature">
       <category name="main"/>
@@ -33,8 +33,7 @@
    <bundle id="org.freemarker.freemarker">
       <category name="main"/>
    </bundle>
-   <category-def name="main" label="ContextMappingDSL"/>
-   <category-def name="main.source" label="ContextMappingDSL (Sources)"/>
+   <category-def name="main" label="Context Mapper"/>
    <repository-reference location="https://download.eclipse.org/modeling/emft/henshin/updates/1.6.0/" enabled="true" />
    <repository-reference location="https://dl.bintray.com/contextmapper/context-map-generator-releases/" enabled="true" />
    <repository-reference location="https://dl.bintray.com/contextmapper/service-cutter-library-releases/" enabled="true" />
