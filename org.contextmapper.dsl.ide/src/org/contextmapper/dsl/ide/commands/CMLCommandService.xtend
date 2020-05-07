@@ -47,8 +47,14 @@ class CMLCommandService implements IExecutableCommandService {
 				LOG.info(
 					"CML LSP command has been called: " + params.getCommand() + " (" + params.getArguments().get(0) +
 						")");
-				command.executeCommand(new CMLResourceContainer(resource), params);
-				return "Command '" + params.command + "' executed."
+				try {
+					command.executeCommand(new CMLResourceContainer(resource), params);
+				} catch (Exception e) {
+					LOG.error("The command '" + command + "' resulted in an error", e);
+					e.printStackTrace(System.out);
+					return "Error occurred: " + e.message;
+				}
+				return "Command executed."
 			].get
 		}
 	}

@@ -5,7 +5,7 @@ dependencies {
 	compile "org.eclipse.xtext:org.eclipse.xtext.xbase:${xtextVersion}"
 	
 	compile group: 'commons-io', name: 'commons-io', version: '2.6'
-	compile group: 'org.freemarker', name: 'freemarker', version: '2.3.22'
+	compile group: 'org.freemarker', name: 'freemarker', version: '2.3.30'
 	compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.9'
 	compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.9.9'
 	compile group: 'org.contextmapper', name: 'henshin-interpreter', version: '1.4.0'

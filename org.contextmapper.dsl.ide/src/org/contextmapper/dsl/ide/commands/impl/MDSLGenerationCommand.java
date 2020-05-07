@@ -16,12 +16,11 @@
 package org.contextmapper.dsl.ide.commands.impl;
 
 import org.contextmapper.dsl.generator.MDSLContractsGenerator;
-import org.contextmapper.dsl.generator.PlantUMLGenerator;
 import org.eclipse.xtext.generator.IGenerator2;
 
 /**
- * This command calls the PlantUML generator that generates all PlantUML
- * diagrams.
+ * This command calls the MDSL generator that generates all MDSL
+ * service contracts.
  * 
  * @author Stefan Kapferer
  *
