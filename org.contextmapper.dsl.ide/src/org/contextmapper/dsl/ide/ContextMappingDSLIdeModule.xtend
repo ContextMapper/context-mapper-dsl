@@ -15,7 +15,9 @@
  */
 package org.contextmapper.dsl.ide
 
+import org.contextmapper.dsl.ide.actions.CMLActionService
 import org.contextmapper.dsl.ide.commands.CMLCommandService
+import org.eclipse.xtext.ide.server.codeActions.ICodeActionService2
 import org.eclipse.xtext.ide.server.commands.IExecutableCommandService
 
 /**
@@ -25,6 +27,10 @@ class ContextMappingDSLIdeModule extends AbstractContextMappingDSLIdeModule {
 
 	def Class<? extends IExecutableCommandService> bindIExecutableCommandService() {
 		return CMLCommandService
+	}
+	
+	def Class<? extends ICodeActionService2> bindICodeActionService2() {
+		return CMLActionService
 	}
 
 }
