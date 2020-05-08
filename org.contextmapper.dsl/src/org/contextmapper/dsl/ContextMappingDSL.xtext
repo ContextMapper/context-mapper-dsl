@@ -212,7 +212,7 @@ UserStory:
 ;
 
 Feature:
-	verb=(UserActivityDefaultVerb | STRING) ('a' | 'an')? entity=STRING
+	verb=(UserActivityDefaultVerb | STRING) ('a' | 'an')? entity=STRING ('with its' entityAttributes+=STRING ("," entityAttributes+=STRING)*)? (('in a' | 'in an' | 'for a' | 'for an') containerEntity=STRING)?
 ;
 
 UserActivityDefaultVerb:

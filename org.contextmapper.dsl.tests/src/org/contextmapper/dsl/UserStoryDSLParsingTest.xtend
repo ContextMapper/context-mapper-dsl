@@ -147,5 +147,50 @@ class UserStoryDSLParsingTest {
 		assertEquals(1, result.userRequirements.size)
 		assertEquals(3, result.userRequirements.get(0).features.size)
 	}
+	
+	@Test
+	def void canDefineStoryWithAttributes() {
+		// given
+		val String dslSnippet = '''
+			UserStory testUsecase {
+				As an "Insurance Employee" 
+					I want to create a "Customer" with its "firstname", "lastname"
+				so that "I can manage the customers data and ..."
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		
+		val feature = result.userRequirements.get(0).features.get(0);
+		assertTrue(feature.entityAttributes.contains("firstname"));
+		assertTrue(feature.entityAttributes.contains("lastname"));
+	}
+	
+	@Test
+	def void canDefineContainmentRelationship() {
+		// given
+		val String dslSnippet = '''
+			UserStory testUsecase {
+				As an "Insurance Employee" 
+					I want to create an "Address" with its "firstname", "lastname" in a "Customer"
+					I want to create an "Address" with its "firstname", "lastname" in an "Customer"
+					I want to create an "Address" with its "firstname", "lastname" for a "Customer"
+					I want to create an "Address" with its "firstname", "lastname" for an "Customer"
+				so that "I can manage the customers data and addresses"
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		
+		for(feature : result.userRequirements.get(0).features) {
+			assertEquals("Customer", feature.containerEntity)
+		}
+	}
 
 }

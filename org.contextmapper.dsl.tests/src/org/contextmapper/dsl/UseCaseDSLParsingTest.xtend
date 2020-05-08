@@ -233,4 +233,45 @@ class UseCaseDSLParsingTest {
 		assertEquals(2, result.userRequirements.get(0).features.size)
 	}
 	
+	@Test
+	def void canDefineEntityAttributes() {
+		// given
+		val String dslSnippet = '''
+			UseCase testUsecase {
+				actor = "Insurance Employee"
+				interactions = create a "Customer" with its "firstname", "lastname"
+				benefit = "I can manage the customers data and ..."
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		
+		val feature = result.userRequirements.get(0).features.get(0);
+		assertTrue(feature.entityAttributes.contains("firstname"));
+		assertTrue(feature.entityAttributes.contains("lastname"));
+	}
+	
+	@Test
+	def void canDefineContainmentRelationship() {
+		// given
+		val String dslSnippet = '''
+			UseCase testUsecase {
+				actor = "Insurance Employee"
+				interactions = create an "Address" with its "firstname", "lastname" for a "Customer"
+				benefit = "I can manage the customers data and ..."
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		
+		val feature = result.userRequirements.get(0).features.get(0);
+		assertEquals("Customer", feature.containerEntity);
+	}
+	
 }
