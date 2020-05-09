@@ -156,7 +156,7 @@ public class SplitSystemIntoSubsystems extends AbstractRefactoring implements Re
 		if (systemBC.getType() != BoundedContextType.SYSTEM)
 			throw new RefactoringInputException("The Bounded Context '" + systemExistingBoundedContextName + "' is not of the type FEATURE!");
 		Set<String> allBCNames = getAllBoundedContexts().stream().map(bc -> bc.getName()).collect(Collectors.toSet());
-		if (allBCNames.contains(existingSubsystemName))
+		if (!existingSubsystemName.equals(systemExistingBoundedContextName) && allBCNames.contains(existingSubsystemName))
 			throw new RefactoringInputException("A Bounded Context with the name '" + existingSubsystemName + "' already exists in your model!");
 		if (allBCNames.contains(newSubsystemName))
 			throw new RefactoringInputException("A Bounded Context with the name '" + newSubsystemName + "' already exists in your model!");

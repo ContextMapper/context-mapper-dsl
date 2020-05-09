@@ -28,7 +28,10 @@ import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.Domain;
 import org.contextmapper.dsl.contextMappingDSL.Subdomain;
 import org.contextmapper.dsl.refactoring.exception.RefactoringInputException;
+import org.contextmapper.tactic.dsl.tacticdsl.Attribute;
+import org.contextmapper.tactic.dsl.tacticdsl.CollectionType;
 import org.contextmapper.tactic.dsl.tacticdsl.Entity;
+import org.contextmapper.tactic.dsl.tacticdsl.Reference;
 import org.contextmapper.tactic.dsl.tacticdsl.Service;
 import org.contextmapper.tactic.dsl.tacticdsl.ServiceOperation;
 import org.junit.jupiter.api.Test;
@@ -146,6 +149,72 @@ public class DeriveSubdomainFromUserRequirementsTest extends AbstractRefactoring
 		assertThrows(RefactoringInputException.class, () -> {
 			ar.doRefactor(input);
 		});
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = { "derive-subdomain-from-user-story-test-7-input.cml", "derive-subdomain-from-user-story-test-8-input.cml" })
+	public void canCreateEntityAttributes(String inputFile) throws IOException {
+		// given
+		CMLResourceContainer input = getResourceCopyOfTestCML(inputFile);
+
+		// when
+		Set<String> userStories = Sets.newHashSet(Arrays.asList(new String[] { "US1_Create" }));
+		DeriveSubdomainFromUserRequirements ar = new DeriveSubdomainFromUserRequirements("InsuranceDomain", "Customers", userStories);
+		ar.doRefactor(input);
+
+		// then
+		ContextMappingModel model = reloadResource(input).getContextMappingModel();
+		Subdomain subdomain = model.getDomains().get(0).getSubdomains().get(0);
+		assertNotNull(subdomain);
+		Entity customerEntity = subdomain.getEntities().stream().filter(e -> e.getName().equals("Customer")).findFirst().get();
+		assertNotNull(customerEntity);
+		Attribute firstNameAttribute = customerEntity.getAttributes().stream().filter(a -> a.getName().equals("firstname")).findFirst().get();
+		Attribute lastNameAttribute = customerEntity.getAttributes().stream().filter(a -> a.getName().equals("lastname")).findFirst().get();
+		assertNotNull(firstNameAttribute);
+		assertNotNull(lastNameAttribute);
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = { "derive-subdomain-from-user-story-test-9-input.cml" })
+	public void canCreateContainmentReference(String inputFile) throws IOException {
+		// given
+		CMLResourceContainer input = getResourceCopyOfTestCML(inputFile);
+
+		// when
+		Set<String> userStories = Sets.newHashSet(Arrays.asList(new String[] { "US1_Create" }));
+		DeriveSubdomainFromUserRequirements ar = new DeriveSubdomainFromUserRequirements("InsuranceDomain", "Customers", userStories);
+		ar.doRefactor(input);
+
+		// then
+		ContextMappingModel model = reloadResource(input).getContextMappingModel();
+		Subdomain subdomain = model.getDomains().get(0).getSubdomains().get(0);
+		assertNotNull(subdomain);
+		Entity customerEntity = subdomain.getEntities().stream().filter(e -> e.getName().equals("Customer")).findFirst().get();
+		assertNotNull(customerEntity);
+		Reference addressReference = customerEntity.getReferences().stream().filter(r -> r.getName().equals("addressList")).findFirst().get();
+		assertNotNull(addressReference);
+		assertEquals(CollectionType.LIST, addressReference.getCollectionType());
+		assertEquals("Address", addressReference.getDomainObjectType().getName());
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = { "derive-subdomain-from-user-story-test-10-input.cml", "derive-subdomain-from-user-story-test-11-input.cml" })
+	public void canIgnoreEmptyReferences(String inputFile) throws IOException {
+		// given
+		CMLResourceContainer input = getResourceCopyOfTestCML(inputFile);
+
+		// when
+		Set<String> userStories = Sets.newHashSet(Arrays.asList(new String[] { "US1_Create" }));
+		DeriveSubdomainFromUserRequirements ar = new DeriveSubdomainFromUserRequirements("InsuranceDomain", "Customers", userStories);
+		ar.doRefactor(input);
+
+		// then
+		ContextMappingModel model = reloadResource(input).getContextMappingModel();
+		Subdomain subdomain = model.getDomains().get(0).getSubdomains().get(0);
+		assertNotNull(subdomain);
+		Entity customerEntity = subdomain.getEntities().stream().filter(e -> e.getName().equals("Customer")).findFirst().get();
+		assertNotNull(customerEntity);
+		assertEquals(0, customerEntity.getReferences().size());
 	}
 
 }

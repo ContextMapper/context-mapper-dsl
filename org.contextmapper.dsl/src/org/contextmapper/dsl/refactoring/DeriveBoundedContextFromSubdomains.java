@@ -15,6 +15,7 @@
  */
 package org.contextmapper.dsl.refactoring;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -34,6 +35,7 @@ import org.contextmapper.tactic.dsl.tacticdsl.Parameter;
 import org.contextmapper.tactic.dsl.tacticdsl.Reference;
 import org.contextmapper.tactic.dsl.tacticdsl.Service;
 import org.contextmapper.tactic.dsl.tacticdsl.ServiceOperation;
+import org.contextmapper.tactic.dsl.tacticdsl.SimpleDomainObject;
 import org.contextmapper.tactic.dsl.tacticdsl.TacticdslFactory;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
@@ -120,20 +122,31 @@ public class DeriveBoundedContextFromSubdomains extends AbstractRefactoring impl
 				addElementToEList(bcEntity.getAttributes(), idAttribute);
 			}
 		}
+		for (Entity sdEntity : subdomain.getEntities()) {
+			Entity bcEntity = createOrGetEntity(aggregate, sdEntity.getName());
+			copyReferences(sdEntity, bcEntity, aggregate.getDomainObjects());
+		}
 	}
 
 	private void copyAttributes(Entity source, Entity target) {
 		Set<String> existingAttrs = target.getAttributes().stream().map(attr -> attr.getName()).collect(Collectors.toSet());
-		Set<String> existingRefs = target.getReferences().stream().map(ref -> ref.getName()).collect(Collectors.toSet());
 		for (Attribute sourceAttr : source.getAttributes()) {
 			if (existingAttrs.contains(sourceAttr.getName()))
 				continue;
 			addElementToEList(target.getAttributes(), EcoreUtil.copy(sourceAttr));
 		}
+	}
+
+	private void copyReferences(Entity source, Entity target, List<SimpleDomainObject> referenceableObjects) {
+		Set<String> existingRefs = target.getReferences().stream().map(ref -> ref.getName()).collect(Collectors.toSet());
 		for (Reference sourceRef : source.getReferences()) {
 			if (existingRefs.contains(sourceRef.getName()))
 				continue;
-			addElementToEList(target.getReferences(), EcoreUtil.copy(sourceRef));
+			Reference newReference = TacticdslFactory.eINSTANCE.createReference();
+			newReference.setName(sourceRef.getName());
+			newReference.setCollectionType(sourceRef.getCollectionType());
+			newReference.setDomainObjectType(referenceableObjects.stream().filter(o -> o.getName().equals(sourceRef.getDomainObjectType().getName())).findFirst().get());
+			addElementToEList(target.getReferences(), newReference);
 		}
 	}
 
