@@ -26,7 +26,10 @@ import org.contextmapper.dsl.contextMappingDSL.Feature;
 import org.contextmapper.dsl.contextMappingDSL.Subdomain;
 import org.contextmapper.dsl.contextMappingDSL.UserRequirement;
 import org.contextmapper.dsl.refactoring.exception.RefactoringInputException;
+import org.contextmapper.tactic.dsl.tacticdsl.Attribute;
+import org.contextmapper.tactic.dsl.tacticdsl.CollectionType;
 import org.contextmapper.tactic.dsl.tacticdsl.Entity;
+import org.contextmapper.tactic.dsl.tacticdsl.Reference;
 import org.contextmapper.tactic.dsl.tacticdsl.Service;
 import org.contextmapper.tactic.dsl.tacticdsl.ServiceOperation;
 import org.contextmapper.tactic.dsl.tacticdsl.TacticdslFactory;
@@ -70,6 +73,10 @@ public class DeriveSubdomainFromUserRequirements extends AbstractRefactoring imp
 			deriveSubdomainEntities4Features(subdomain, ur.getName(), ur.getFeatures());
 		}
 
+		for (UserRequirement ur : selectedUserRequirements) {
+			deriveSubdomainEntityReferences(subdomain, ur.getFeatures());
+		}
+
 		subdomain.setDomainVisionStatement(String.join(BENEFIT_SEPARATOR_STRING, benefits));
 
 		markResourceChanged(domain);
@@ -92,14 +99,10 @@ public class DeriveSubdomainFromUserRequirements extends AbstractRefactoring imp
 			if (feature.getEntity() == null || "".equals(feature.getEntity()))
 				continue;
 
-			String entityName = feature.getEntity().replace(" ", "_").trim();
-			Optional<Entity> alreadyExistingEntity = subdomain.getEntities().stream().filter(e -> entityName.equals(e.getName())).findFirst();
-			if (!alreadyExistingEntity.isPresent()) {
-				Entity newEntity = TacticdslFactory.eINSTANCE.createEntity();
-				newEntity.setName(entityName);
-				addElementToEList(subdomain.getEntities(), newEntity);
-			}
+			// create the entity
+			String entityName = createEntityIfNotExisting(feature.getEntity(), subdomain, feature.getEntityAttributes());
 
+			// create the service
 			String serviceName = urName.substring(0, 1).toUpperCase() + urName.substring(1) + "Service";
 			Optional<Service> alreadyExistingService = subdomain.getServices().stream().filter(s -> serviceName.equals(s.getName())).findFirst();
 			Service service;
@@ -114,6 +117,53 @@ public class DeriveSubdomainFromUserRequirements extends AbstractRefactoring imp
 			Optional<ServiceOperation> alreadyExistingServiceOperation = service.getOperations().stream().filter(o -> operationName.equals(o.getName())).findFirst();
 			if (!alreadyExistingServiceOperation.isPresent())
 				addElementToEList(service.getOperations(), createServiceOperation(operationName));
+
+			// create the entity that contains the one created above
+			if (feature.getContainerEntity() != null && !"".equals(feature.getContainerEntity()))
+				createEntityIfNotExisting(feature.getContainerEntity(), subdomain, Lists.newLinkedList());
+		}
+	}
+
+	private void deriveSubdomainEntityReferences(Subdomain subdomain, List<Feature> features) {
+		for (Feature feature : features) {
+			if (feature.getContainerEntity() == null || "".equals(feature.getContainerEntity()))
+				continue;
+
+			Entity containerEntity = subdomain.getEntities().stream().filter(e -> e.getName().equals(feature.getContainerEntity())).findFirst().get();
+			Entity referencedEntity = subdomain.getEntities().stream().filter(e -> e.getName().equals(feature.getEntity())).findFirst().get();
+
+			Reference reference = TacticdslFactory.eINSTANCE.createReference();
+			reference.setName(referencedEntity.getName().toLowerCase() + "List");
+			reference.setCollectionType(CollectionType.LIST);
+			reference.setDomainObjectType(referencedEntity);
+			addElementToEList(containerEntity.getReferences(), reference);
+		}
+	}
+
+	private String createEntityIfNotExisting(String entity, Subdomain subdomain, List<String> attributes) {
+		String entityName = entity.replace(" ", "_").trim();
+		Optional<Entity> alreadyExistingEntity = subdomain.getEntities().stream().filter(e -> entityName.equals(e.getName())).findFirst();
+		if (!alreadyExistingEntity.isPresent()) {
+			Entity newEntity = TacticdslFactory.eINSTANCE.createEntity();
+			newEntity.setName(entityName);
+			createEntityAttributes(newEntity, attributes);
+			addElementToEList(subdomain.getEntities(), newEntity);
+		} else {
+			createEntityAttributes(alreadyExistingEntity.get(), attributes);
+		}
+		return entityName;
+	}
+
+	private void createEntityAttributes(Entity entity, List<String> attributeNames) {
+		Set<String> existingAttrNames = entity.getAttributes().stream().map(a -> a.getName()).collect(Collectors.toSet());
+		for (String attrName : attributeNames) {
+			if (existingAttrNames.contains(attrName))
+				continue;
+
+			Attribute attribute = TacticdslFactory.eINSTANCE.createAttribute();
+			attribute.setName(attrName);
+			attribute.setType("String");
+			addElementToEList(entity.getAttributes(), attribute);
 		}
 	}
 

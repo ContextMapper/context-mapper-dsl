@@ -212,7 +212,7 @@ UserStory:
 ;
 
 Feature:
-	verb=(UserActivityDefaultVerb | STRING) ('a' | 'an')? entity=STRING
+	verb=(UserActivityDefaultVerb | STRING) ('a' | 'an')? entity=STRING ('with its' entityAttributes+=STRING ("," entityAttributes+=STRING)*)? (('in a' | 'in an' | 'for a' | 'for an') containerEntity=STRING)?
 ;
 
 UserActivityDefaultVerb:
@@ -241,15 +241,15 @@ enum DownstreamRole:
 ;
 
 enum ContextMapState:
-	AS_IS | TO_BE
+	UNDEFINED | AS_IS | TO_BE
 ;
 
 enum ContextMapType:
-	SYSTEM_LANDSCAPE | ORGANIZATIONAL
+	UNDEFINED | SYSTEM_LANDSCAPE | ORGANIZATIONAL
 ;
 
 enum BoundedContextType:
-	FEATURE | APPLICATION | SYSTEM | TEAM
+	UNDEFINED | FEATURE | APPLICATION | SYSTEM | TEAM
 ;
 
 enum SubDomainType:

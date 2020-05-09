@@ -1,0 +1,9 @@
+Domain InsuranceDomain {
+	Subdomain Customers {
+		Entity Customer
+	}
+}
+
+UserStory US1_Create {
+	As an "Insurance Employee" I want to create an "Address" with its "city", "postalcode" so that "I am able to manage the customer data and offer contracts."
+}
