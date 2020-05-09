@@ -19,7 +19,7 @@
 <#assign entities = [] />
 <#assign entityNames = [] />
 <#list bc.aggregates as agg>
-	<#assign entities = entities + agg.domainObjects?filter(dob -> instanceOf(dob, Entity))>
+	<#assign entities = entities + agg.domainObjects?filter(dob -> instanceOf(dob, Entity) || instanceOf(dob, ValueObject))>
 </#list>
 <#assign entityNames = entities?map(e -> e.name)>
 <#assign allEntityNames = allEntityNames + entityNames>
@@ -34,7 +34,7 @@ entity ${entity.name} {
 </#list>
 }
 <#list entity.references as reference>
-	<#if reference.domainObjectType?has_content && instanceOf(reference.domainObjectType, Entity) && entityNames?seq_contains(reference.domainObjectType.name)>
+	<#if reference.domainObjectType?has_content && (instanceOf(reference.domainObjectType, Entity) || instanceOf(reference.domainObjectType, ValueObject)) && entityNames?seq_contains(reference.domainObjectType.name)>
 		<#if reference.collectionType?has_content && reference.collectionType.name() != "NONE">
 			<#assign oneToManyRefs = oneToManyRefs + [ entity.name + "{" + reference.name + "} to " + reference.domainObjectType.name ]>
 		<#else>
