@@ -175,7 +175,7 @@ public class DeriveSubdomainFromUserRequirementsTest extends AbstractRefactoring
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = { "derive-subdomain-from-user-story-test-9-input.cml" })
+	@ValueSource(strings = { "derive-subdomain-from-user-story-test-9-input.cml", "derive-subdomain-from-user-story-test-12-input.cml" })
 	public void canCreateContainmentReference(String inputFile) throws IOException {
 		// given
 		CMLResourceContainer input = getResourceCopyOfTestCML(inputFile);
@@ -191,6 +191,7 @@ public class DeriveSubdomainFromUserRequirementsTest extends AbstractRefactoring
 		assertNotNull(subdomain);
 		Entity customerEntity = subdomain.getEntities().stream().filter(e -> e.getName().equals("Customer")).findFirst().get();
 		assertNotNull(customerEntity);
+		assertEquals(1, customerEntity.getReferences().size());
 		Reference addressReference = customerEntity.getReferences().stream().filter(r -> r.getName().equals("addressList")).findFirst().get();
 		assertNotNull(addressReference);
 		assertEquals(CollectionType.LIST, addressReference.getCollectionType());

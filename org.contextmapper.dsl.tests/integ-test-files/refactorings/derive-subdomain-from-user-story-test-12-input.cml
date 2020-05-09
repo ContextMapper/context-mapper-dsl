@@ -1,0 +1,12 @@
+Domain InsuranceDomain {
+	Subdomain Customers {
+		Entity Customer {
+			- List<Address> addressList // reference already exists
+		}
+		Entity Address
+	}
+}
+
+UserStory US1_Create {
+	As an "Insurance Employee" I want to create an "Address" with its "city", "postalcode" for a "Customer" so that "I am able to manage the customer data and offer contracts."
+}

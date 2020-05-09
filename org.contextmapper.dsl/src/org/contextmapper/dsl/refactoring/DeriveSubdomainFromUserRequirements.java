@@ -131,9 +131,13 @@ public class DeriveSubdomainFromUserRequirements extends AbstractRefactoring imp
 
 			Entity containerEntity = subdomain.getEntities().stream().filter(e -> e.getName().equals(feature.getContainerEntity())).findFirst().get();
 			Entity referencedEntity = subdomain.getEntities().stream().filter(e -> e.getName().equals(feature.getEntity())).findFirst().get();
+			String refName = referencedEntity.getName().toLowerCase() + "List";
+
+			if (containerEntity.getReferences().stream().filter(r -> r.getName().equals(refName)).findAny().isPresent())
+				continue;
 
 			Reference reference = TacticdslFactory.eINSTANCE.createReference();
-			reference.setName(referencedEntity.getName().toLowerCase() + "List");
+			reference.setName(refName);
 			reference.setCollectionType(CollectionType.LIST);
 			reference.setDomainObjectType(referencedEntity);
 			addElementToEList(containerEntity.getReferences(), reference);
