@@ -129,8 +129,10 @@ public class DeriveSubdomainFromUserRequirements extends AbstractRefactoring imp
 			if (feature.getContainerEntity() == null || "".equals(feature.getContainerEntity()))
 				continue;
 
-			Entity containerEntity = subdomain.getEntities().stream().filter(e -> e.getName().equals(feature.getContainerEntity())).findFirst().get();
-			Entity referencedEntity = subdomain.getEntities().stream().filter(e -> e.getName().equals(feature.getEntity())).findFirst().get();
+			String containerEntityName = mapEntityName(feature.getContainerEntity());
+			String referencedEntityName = mapEntityName(feature.getEntity());
+			Entity containerEntity = subdomain.getEntities().stream().filter(e -> e.getName().equals(containerEntityName)).findFirst().get();
+			Entity referencedEntity = subdomain.getEntities().stream().filter(e -> e.getName().equals(referencedEntityName)).findFirst().get();
 			String refName = referencedEntity.getName().toLowerCase() + "List";
 
 			if (containerEntity.getReferences().stream().filter(r -> r.getName().equals(refName)).findAny().isPresent())
@@ -145,7 +147,7 @@ public class DeriveSubdomainFromUserRequirements extends AbstractRefactoring imp
 	}
 
 	private String createEntityIfNotExisting(String entity, Subdomain subdomain, List<String> attributes) {
-		String entityName = entity.replace(" ", "_").trim();
+		String entityName = mapEntityName(entity);
 		Optional<Entity> alreadyExistingEntity = subdomain.getEntities().stream().filter(e -> entityName.equals(e.getName())).findFirst();
 		if (!alreadyExistingEntity.isPresent()) {
 			Entity newEntity = TacticdslFactory.eINSTANCE.createEntity();
@@ -156,6 +158,10 @@ public class DeriveSubdomainFromUserRequirements extends AbstractRefactoring imp
 			createEntityAttributes(alreadyExistingEntity.get(), attributes);
 		}
 		return entityName;
+	}
+
+	private String mapEntityName(String entityName) {
+		return entityName.trim().replace(" ", "_");
 	}
 
 	private void createEntityAttributes(Entity entity, List<String> attributeNames) {
