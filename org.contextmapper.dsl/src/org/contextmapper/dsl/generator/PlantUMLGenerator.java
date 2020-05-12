@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 The Context Mapper Project Team
+ * Copyright 2018-2020 The Context Mapper Project Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,33 +15,59 @@
  */
 package org.contextmapper.dsl.generator;
 
+import java.util.Optional;
+
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
-import org.contextmapper.dsl.contextMappingDSL.ContextMap;
+import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.Domain;
+import org.contextmapper.dsl.contextMappingDSL.Subdomain;
+import org.contextmapper.dsl.generator.exception.GeneratorInputException;
 import org.contextmapper.dsl.generator.plantuml.PlantUMLBoundedContextClassDiagramCreator;
 import org.contextmapper.dsl.generator.plantuml.PlantUMLComponentDiagramCreator;
 import org.contextmapper.dsl.generator.plantuml.PlantUMLSubdomainClassDiagramCreator;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.xtext.generator.IFileSystemAccess2;
 
-public class PlantUMLGenerator extends AbstractContextMapGenerator {
+public class PlantUMLGenerator extends AbstractContextMappingModelGenerator {
 
 	private static final String PLANT_UML_FILE_EXT = "puml";
 
 	@Override
-	protected void generateFromContextMap(ContextMap contextMap, IFileSystemAccess2 fsa, URI inputFileURI) {
+	protected void generateFromContextMappingModel(ContextMappingModel model, IFileSystemAccess2 fsa, URI inputFileURI) {
+		checkPreconditions();
 		String fileName = inputFileURI.trimFileExtension().lastSegment();
-		fsa.generateFile(fileName + "_ContextMap." + PLANT_UML_FILE_EXT, new PlantUMLComponentDiagramCreator().createDiagram(contextMap));
-		for (BoundedContext boundedContext : contextMap.getBoundedContexts()) {
+
+		// generate component diagram, if Context Map available
+		if (model.getMap() != null)
+			fsa.generateFile(fileName + "_ContextMap." + PLANT_UML_FILE_EXT, new PlantUMLComponentDiagramCreator().createDiagram(model.getMap()));
+
+		// generate class diagrams for Bounded Contexts
+		for (BoundedContext boundedContext : model.getBoundedContexts()) {
 			fsa.generateFile(fileName + "_BC_" + boundedContext.getName() + "." + PLANT_UML_FILE_EXT,
 					new PlantUMLBoundedContextClassDiagramCreator().createDiagram(boundedContext));
 		}
-		for (Domain domain : this.contextMappingModel.getDomains()) {
-			domain.getSubdomains().stream().filter(subdomain -> subdomain.getEntities().size() > 0).forEach(subdomain -> {
+
+		// generate class diagrams for subdomains (that have entities)
+		for (Domain domain : model.getDomains()) {
+			domain.getSubdomains().stream().filter(subdomain -> !subdomain.getEntities().isEmpty()).forEach(subdomain -> {
 				fsa.generateFile(fileName + "_SD_" + subdomain.getName() + "." + PLANT_UML_FILE_EXT,
 						new PlantUMLSubdomainClassDiagramCreator(domain.getName()).createDiagram(subdomain));
 			});
 		}
+	}
+
+	private void checkPreconditions() {
+		if (this.contextMappingModel.getMap() == null && this.contextMappingModel.getBoundedContexts().isEmpty() && !modelHasSubdomainWithEntities())
+			throw new GeneratorInputException(
+					"Your model does not contain a Context Map, a Bounded Context, or a Subdomain. Therefore we have nothing to generate. Create at least one of the mentioned Objects.");
+	}
+
+	private boolean modelHasSubdomainWithEntities() {
+		for (Domain domain : this.contextMappingModel.getDomains()) {
+			Optional<Subdomain> optSubdomain = domain.getSubdomains().stream().filter(subdomain -> !subdomain.getEntities().isEmpty()).findAny();
+			return optSubdomain.isPresent();
+		}
+		return false;
 	}
 
 }

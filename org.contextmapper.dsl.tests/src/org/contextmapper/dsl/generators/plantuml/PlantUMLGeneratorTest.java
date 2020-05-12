@@ -26,6 +26,7 @@ import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.Domain;
 import org.contextmapper.dsl.contextMappingDSL.Subdomain;
 import org.contextmapper.dsl.generator.PlantUMLGenerator;
+import org.contextmapper.dsl.generator.exception.GeneratorInputException;
 import org.contextmapper.dsl.generator.exception.NoContextMapDefinedException;
 import org.contextmapper.dsl.generators.mocks.ContextMappingModelResourceMock;
 import org.contextmapper.dsl.generators.mocks.IFileSystemAccess2Mock;
@@ -56,6 +57,7 @@ class PlantUMLGeneratorTest {
 		subdomain.setName("TestSubdomain");
 		domain.getSubdomains().add(subdomain);
 		boundedContext.setName("TestContext");
+		model.getBoundedContexts().add(boundedContext);
 		contextMap.getBoundedContexts().add(boundedContext);
 		model.setMap(contextMap);
 		model.getDomains().add(domain);
@@ -71,17 +73,31 @@ class PlantUMLGeneratorTest {
 	}
 
 	@Test
+	void canCreateBoundedContextClassDiagramsWithoutContextMap() {
+		// given
+		ContextMappingModel model = ContextMappingDSLFactory.eINSTANCE.createContextMappingModel();
+		BoundedContext boundedContext = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
+		boundedContext.setName("TestContext");
+		model.getBoundedContexts().add(boundedContext);
+
+		// when
+		IFileSystemAccess2Mock filesystem = new IFileSystemAccess2Mock();
+		this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem, new IGeneratorContextMock());
+
+		// then
+		assertTrue(filesystem.getGeneratedFilesSet().contains("testmodel_BC_TestContext.puml"));
+	}
+
+	@Test
 	void canCreatePlantUMLDiagrmFiles4SubdomainIfEntitiesAvailable() {
 		// given
 		ContextMappingModel model = ContextMappingDSLFactory.eINSTANCE.createContextMappingModel();
-		ContextMap contextMap = ContextMappingDSLFactory.eINSTANCE.createContextMap();
 		Domain domain = ContextMappingDSLFactory.eINSTANCE.createDomain();
 		Subdomain subdomain = ContextMappingDSLFactory.eINSTANCE.createSubdomain();
 		domain.setName("TestDomain");
 		subdomain.setName("TestSubdomain");
 		domain.getSubdomains().add(subdomain);
 		subdomain.getEntities().add(createTestEntity("TestEntity"));
-		model.setMap(contextMap);
 		model.getDomains().add(domain);
 
 		// when
@@ -93,18 +109,30 @@ class PlantUMLGeneratorTest {
 	}
 
 	@Test
-	void expectExceptionForEmptyModel() {
+	void expectExceptionForEmptyResource() {
 		IFileSystemAccess2Mock filesystem = new IFileSystemAccess2Mock();
-		assertThrows(NoContextMapDefinedException.class, () -> {
+		assertThrows(GeneratorInputException.class, () -> {
 			this.generator.doGenerate(new ContextMappingModelResourceMock(null, "testmodel", "cml"), filesystem, new IGeneratorContextMock());
 		});
 	}
 
 	@Test
-	void expectExceptionForNoContextMap() {
+	void expectExceptionForEmptyContextMappingModel() {
 		ContextMappingModel model = ContextMappingDSLFactory.eINSTANCE.createContextMappingModel();
 		IFileSystemAccess2Mock filesystem = new IFileSystemAccess2Mock();
-		assertThrows(NoContextMapDefinedException.class, () -> {
+		assertThrows(GeneratorInputException.class, () -> {
+			this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem, new IGeneratorContextMock());
+		});
+	}
+
+	@Test
+	void expectExceptionIfThereIsOnlyAnEmptyDomain() {
+		ContextMappingModel model = ContextMappingDSLFactory.eINSTANCE.createContextMappingModel();
+		Domain emptyDomain = ContextMappingDSLFactory.eINSTANCE.createDomain();
+		emptyDomain.setName("TestDomain");
+		model.getDomains().add(emptyDomain);
+		IFileSystemAccess2Mock filesystem = new IFileSystemAccess2Mock();
+		assertThrows(GeneratorInputException.class, () -> {
 			this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem, new IGeneratorContextMock());
 		});
 	}
