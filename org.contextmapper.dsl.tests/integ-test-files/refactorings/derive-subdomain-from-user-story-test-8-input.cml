@@ -6,6 +6,7 @@ Domain InsuranceDomain {
 	}
 }
 
+// includes empty attribute name string that must be ignored:
 UserStory US1_Create {
-	As an "Insurance Employee" I want to create a "Customer" with its "firstname", "lastname" so that "I am able to manage the customer data and offer contracts."
+	As an "Insurance Employee" I want to create a "Customer" with its "Firstname", "Lastname", "" so that "I am able to manage the customer data and offer contracts."
 }
