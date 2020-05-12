@@ -17,6 +17,7 @@
 
 import com.google.inject.Inject
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel
+import org.contextmapper.dsl.contextMappingDSL.UseCase
 import org.contextmapper.dsl.tests.ContextMappingDSLInjectorProvider
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.extensions.InjectionExtension
@@ -272,6 +273,49 @@ class UseCaseDSLParsingTest {
 		
 		val feature = result.userRequirements.get(0).features.get(0);
 		assertEquals("Customer", feature.containerEntity);
+	}
+	
+	@Test
+	def void canDefineScope() {
+		// given
+		val String dslSnippet = '''
+			UseCase testUsecase {
+				actor = "Insurance Employee"
+				interactions = create an "Address"
+				benefit = "I can manage the customers addresses."
+				scope = "Insurance ERP"
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		
+		val ur = result.userRequirements.get(0) as UseCase;
+		assertEquals("Insurance ERP", ur.scope);
+	}
+	
+	@Test
+	def void canDefineLevel() {
+		// given
+		val String dslSnippet = '''
+			UseCase testUsecase {
+				actor = "Insurance Employee"
+				interactions = create an "Address"
+				benefit = "I can manage the customers addresses."
+				scope = "Insurance ERP"
+				level = "Sea Level"
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		
+		val ur = result.userRequirements.get(0) as UseCase;
+		assertEquals("Sea Level", ur.level);
 	}
 	
 }

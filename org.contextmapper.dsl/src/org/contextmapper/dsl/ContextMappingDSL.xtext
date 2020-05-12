@@ -195,6 +195,8 @@ UseCase:
 		(('actor' ('=')? role=STRING)? &
 		('interactions' ('=')? features+=Feature ("," features+=Feature)*)? &
 		('benefit' ('=')? benefit=STRING)? &
+		('scope' ('=')? scope=STRING)? &
+		('level' ('=')? level=STRING)? &
 		('isLatencyCritical' ('=')? isLatencyCritical?='true')? &
 		(('reads' nanoentitiesRead+=STRING*) ("," nanoentitiesRead+=STRING)*)? &
         (('writes' nanoentitiesWritten+=STRING*) ("," nanoentitiesWritten+=STRING)*)?)  
