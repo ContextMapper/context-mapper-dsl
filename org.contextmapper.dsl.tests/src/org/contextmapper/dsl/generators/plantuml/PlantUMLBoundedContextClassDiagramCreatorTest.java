@@ -221,7 +221,7 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 		String plantUML = this.creator.createDiagram(boundedContext);
 
 		// then
-		assertTrue(plantUML.contains("	class Test <<Aggregate Root>> {" + System.lineSeparator() + "	}" + System.lineSeparator()));
+		assertTrue(plantUML.contains("	class Test <<(A,#fffab8) Aggregate Root>> {" + System.lineSeparator() + "	}" + System.lineSeparator()));
 	}
 
 	@Test
@@ -257,7 +257,7 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 		String plantUML = this.creator.createDiagram(boundedContext);
 
 		// then
-		assertTrue(plantUML.contains("	class TestEvent <<Domain Event>> {" + System.lineSeparator() + "	}" + System.lineSeparator()));
+		assertTrue(plantUML.contains("	class TestEvent <<(E,#ff9f4b) Domain Event>> {" + System.lineSeparator() + "	}" + System.lineSeparator()));
 	}
 
 	@Test
@@ -275,7 +275,7 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 		String plantUML = this.creator.createDiagram(boundedContext);
 
 		// then
-		assertTrue(plantUML.contains("	class TestCommandEvent <<Command Event>> {" + System.lineSeparator() + "	}" + System.lineSeparator()));
+		assertTrue(plantUML.contains("	class TestCommandEvent <<(C,#3bc5e9) Command>> {" + System.lineSeparator() + "	}" + System.lineSeparator()));
 	}
 
 	@Test
@@ -500,7 +500,7 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 		String plantUML = this.creator.createDiagram(bc);
 
 		// then
-		assertTrue(plantUML.contains("	class Customer <<Aggregate Root>> {" + System.lineSeparator() + "		ReturnType updateAddress(Address address)" + System.lineSeparator()
+		assertTrue(plantUML.contains("	class Customer <<(A,#fffab8) Aggregate Root>> {" + System.lineSeparator() + "		ReturnType updateAddress(Address address)" + System.lineSeparator()
 				+ "	}" + System.lineSeparator()));
 	}
 
@@ -515,7 +515,7 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 		String plantUML = this.creator.createDiagram(bc);
 
 		// then
-		assertTrue(plantUML.contains("	class Customer <<Aggregate Root>> {" + System.lineSeparator() + "		List<ReturnType> updateAddress(Address address)"
+		assertTrue(plantUML.contains("	class Customer <<(A,#fffab8) Aggregate Root>> {" + System.lineSeparator() + "		List<ReturnType> updateAddress(Address address)"
 				+ System.lineSeparator() + "		void anotherMethod(Set<Address> addresses)" + System.lineSeparator() + "	}" + System.lineSeparator()));
 	}
 
@@ -530,7 +530,7 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 		String plantUML = this.creator.createDiagram(bc);
 
 		// then
-		assertTrue(plantUML.contains("	class Customer <<Aggregate Root>> {" + System.lineSeparator() + "		void anotherMethod(String param)" + System.lineSeparator()
+		assertTrue(plantUML.contains("	class Customer <<(A,#fffab8) Aggregate Root>> {" + System.lineSeparator() + "		void anotherMethod(String param)" + System.lineSeparator()
 				+ "		void yetAnotherMethod(String param)" + System.lineSeparator() + "	}" + System.lineSeparator()));
 	}
 

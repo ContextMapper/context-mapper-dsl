@@ -77,16 +77,16 @@ abstract public class AbstractPlantUMLClassDiagramCreator<T extends EObject> ext
 
 	private void printEvent(Event event, int indentation) {
 		if (event instanceof CommandEvent)
-			printStereotypedClass("Command Event", event, indentation);
+			printStereotypedClass("(C,#3bc5e9) Command", event, indentation);
 		else if (event instanceof DomainEvent)
-			printStereotypedClass("Domain Event", event, indentation);
+			printStereotypedClass("(E,#ff9f4b) Domain Event", event, indentation);
 	}
 
 	private void printStereotypedClass(String stereotype, DomainObject object, int indentation) {
 		printIndentation(indentation);
 		sb.append("class").append(" ").append(object.getName());
 		if (object.isAggregateRoot())
-			sb.append(" <<Aggregate Root>> ");
+			sb.append(" <<(A,#fffab8) Aggregate Root>> ");
 		else
 			sb.append(" <<" + stereotype + ">> ");
 		sb.append("{");
