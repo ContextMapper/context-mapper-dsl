@@ -18,12 +18,14 @@ package org.contextmapper.dsl.generators.contextmap;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.generator.ContextMapGenerator;
 import org.contextmapper.dsl.generator.contextmap.ContextMapFormat;
+import org.contextmapper.dsl.generator.exception.NoContextMapDefinedException;
 import org.contextmapper.dsl.generators.mocks.ContextMappingModelResourceMock;
 import org.contextmapper.dsl.generators.mocks.IFileSystemAccess2Mock;
 import org.contextmapper.dsl.generators.mocks.IGeneratorContextMock;
@@ -237,6 +239,23 @@ class ContextMapGeneratorTest {
 		}
 	}
 
+	@Test
+	void expectExceptionForEmptyModel() {
+		IFileSystemAccess2Mock filesystem = new IFileSystemAccess2Mock();
+		assertThrows(NoContextMapDefinedException.class, () -> {
+			this.generator.doGenerate(new ContextMappingModelResourceMock(null, "testmodel", "cml"), filesystem, new IGeneratorContextMock());
+		});
+	}
+
+	@Test
+	void expectExceptionForNoContextMap() {
+		ContextMappingModel model = ContextMappingDSLFactory.eINSTANCE.createContextMappingModel();
+		IFileSystemAccess2Mock filesystem = new IFileSystemAccess2Mock();
+		assertThrows(NoContextMapDefinedException.class, () -> {
+			this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem, new IGeneratorContextMock());
+		});
+	}
+	
 	private class TestGraphvizContextMapGenerator extends org.contextmapper.contextmap.generator.ContextMapGenerator {
 		public int getLabelSpacingFactor() {
 			return labelSpacingFactor;
