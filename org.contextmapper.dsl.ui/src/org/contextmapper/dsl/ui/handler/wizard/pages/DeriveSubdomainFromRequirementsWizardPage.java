@@ -159,7 +159,10 @@ public class DeriveSubdomainFromRequirementsWizardPage extends ContextMapperWiza
 	@Override
 	public void setVisible(boolean visible) {
 		super.setVisible(visible);
-		this.comboSubdomain.forceFocus();
+		if (this.initialDomain != null && !"".equals(this.initialDomain))
+			this.comboSubdomain.forceFocus();
+		else
+			this.comboDomains.forceFocus();
 	}
 
 	public String getDomain() {
