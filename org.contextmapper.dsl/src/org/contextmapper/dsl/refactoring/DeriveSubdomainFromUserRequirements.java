@@ -166,15 +166,25 @@ public class DeriveSubdomainFromUserRequirements extends AbstractRefactoring imp
 
 	private void createEntityAttributes(Entity entity, List<String> attributeNames) {
 		Set<String> existingAttrNames = entity.getAttributes().stream().map(a -> a.getName()).collect(Collectors.toSet());
-		for (String attrName : attributeNames) {
-			if (existingAttrNames.contains(attrName))
+		for (String attributeName : attributeNames) {
+			if ("".equals(attributeName.trim()))
+				continue;
+
+			String attributeNameEncoded = encodeAttrName(attributeName);
+			if (existingAttrNames.contains(attributeNameEncoded))
 				continue;
 
 			Attribute attribute = TacticdslFactory.eINSTANCE.createAttribute();
-			attribute.setName(attrName);
+			attribute.setName(attributeNameEncoded);
 			attribute.setType("String");
 			addElementToEList(entity.getAttributes(), attribute);
 		}
+	}
+
+	private String encodeAttrName(String originalName) {
+		String name = originalName.trim();
+		name = name.substring(0, 1).toLowerCase() + name.substring(1);
+		return name;
 	}
 
 	private Service createService(String serviceName, String entityName, String verb) {
