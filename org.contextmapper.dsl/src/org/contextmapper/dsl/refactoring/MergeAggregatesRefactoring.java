@@ -32,7 +32,7 @@ import org.eclipse.xtext.EcoreUtil2;
 
 import com.google.common.collect.Lists;
 
-public class MergeAggregatesRefactoring extends AbstractRefactoring implements Refactoring {
+public class MergeAggregatesRefactoring extends AbstractRefactoring implements SemanticCMLRefactoring {
 
 	private String aggregate1;
 	private String aggregate2;

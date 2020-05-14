@@ -25,7 +25,7 @@ import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.LikelihoodForChange;
 
-public class ExtractAggregatesByVolatility extends AbstractRefactoring implements Refactoring {
+public class ExtractAggregatesByVolatility extends AbstractRefactoring implements SemanticCMLRefactoring {
 
 	private String boundedContextName;
 	private BoundedContext originalBC;

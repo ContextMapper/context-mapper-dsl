@@ -37,7 +37,7 @@ public class SwitchFromSharedKernelToPartnershipRefactoringTest extends Abstract
 		CMLResourceContainer input = getResourceCopyOfTestCML("switch-from-sharedkernel-to-partnership-test-1-input.cml");
 
 		// when
-		new SwitchFromSharedKernelToPartnershipRefactoring("CustomerManagement", "AnotherContext").doRefactor(input);
+		new SwitchFromSharedKernelToPartnershipRefactoring("CustomerManagement", "AnotherContext").refactor(input);
 
 		// then
 		ContextMappingModel model = input.getContextMappingModel();
@@ -60,7 +60,7 @@ public class SwitchFromSharedKernelToPartnershipRefactoringTest extends Abstract
 
 		// when, then
 		Assertions.assertThrows(RefactoringInputException.class, () -> {
-			new SwitchFromSharedKernelToPartnershipRefactoring(boundedContext1, boundedContext2).doRefactor(input);
+			new SwitchFromSharedKernelToPartnershipRefactoring(boundedContext1, boundedContext2).refactor(input);
 		});
 	}
 
@@ -73,7 +73,7 @@ public class SwitchFromSharedKernelToPartnershipRefactoringTest extends Abstract
 
 		// when, then
 		Assertions.assertThrows(RefactoringInputException.class, () -> {
-			new SwitchFromSharedKernelToPartnershipRefactoring(boundedContext1, boundedContext2).doRefactor(input);
+			new SwitchFromSharedKernelToPartnershipRefactoring(boundedContext1, boundedContext2).refactor(input);
 		});
 	}
 
@@ -86,7 +86,7 @@ public class SwitchFromSharedKernelToPartnershipRefactoringTest extends Abstract
 
 		// when, then
 		Assertions.assertThrows(RefactoringInputException.class, () -> {
-			new SwitchFromSharedKernelToPartnershipRefactoring(boundedContext1, boundedContext2).doRefactor(input);
+			new SwitchFromSharedKernelToPartnershipRefactoring(boundedContext1, boundedContext2).refactor(input);
 		});
 	}
 
@@ -99,7 +99,7 @@ public class SwitchFromSharedKernelToPartnershipRefactoringTest extends Abstract
 
 		// when, then
 		Assertions.assertThrows(RefactoringInputException.class, () -> {
-			new SwitchFromSharedKernelToPartnershipRefactoring(boundedContext1, boundedContext2).doRefactor(input);
+			new SwitchFromSharedKernelToPartnershipRefactoring(boundedContext1, boundedContext2).refactor(input);
 		});
 	}
 
@@ -112,7 +112,7 @@ public class SwitchFromSharedKernelToPartnershipRefactoringTest extends Abstract
 
 		// when, then
 		Assertions.assertThrows(RefactoringInputException.class, () -> {
-			new SwitchFromSharedKernelToPartnershipRefactoring(boundedContext1, boundedContext2).doRefactor(input);
+			new SwitchFromSharedKernelToPartnershipRefactoring(boundedContext1, boundedContext2).refactor(input);
 		});
 	}
 

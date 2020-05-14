@@ -32,7 +32,7 @@ public class MergeBoundedContextsTest extends AbstractRefactoringTest {
 		MergeBoundedContextsRefactoring refactoring = new MergeBoundedContextsRefactoring("CustomerManagement", "AnotherContext");
 
 		// when
-		refactoring.doRefactor(input);
+		refactoring.refactor(input);
 
 		// then
 		ContextMappingModel model = input.getContextMappingModel();
@@ -53,7 +53,7 @@ public class MergeBoundedContextsTest extends AbstractRefactoringTest {
 		MergeBoundedContextsRefactoring refactoring = new MergeBoundedContextsRefactoring("ThisBCDoesNotExist", "AnotherContext");
 
 		// when
-		refactoring.doRefactor(input);
+		refactoring.refactor(input);
 
 		// then
 		assertEquals(2, input.getContextMappingModel().getBoundedContexts().size());
@@ -67,7 +67,7 @@ public class MergeBoundedContextsTest extends AbstractRefactoringTest {
 		MergeBoundedContextsRefactoring refactoring = new MergeBoundedContextsRefactoring("CustomerManagement", "ThisBCDoesNotExist");
 
 		// when
-		refactoring.doRefactor(input);
+		refactoring.refactor(input);
 
 		// then
 		assertEquals(2, input.getContextMappingModel().getBoundedContexts().size());
@@ -81,7 +81,7 @@ public class MergeBoundedContextsTest extends AbstractRefactoringTest {
 		MergeBoundedContextsRefactoring refactoring = new MergeBoundedContextsRefactoring("CustomerManagement", "CustomerManagement");
 
 		// when
-		refactoring.doRefactor(input);
+		refactoring.refactor(input);
 
 		// then
 		assertEquals(2, input.getContextMappingModel().getBoundedContexts().size());
@@ -95,7 +95,7 @@ public class MergeBoundedContextsTest extends AbstractRefactoringTest {
 		MergeBoundedContextsRefactoring refactoring = new MergeBoundedContextsRefactoring("CustomerManagement", "AnotherContext");
 
 		// when
-		refactoring.doRefactor(input);
+		refactoring.refactor(input);
 
 		// then
 		ContextMappingModel model = input.getContextMappingModel();
@@ -115,7 +115,7 @@ public class MergeBoundedContextsTest extends AbstractRefactoringTest {
 		MergeBoundedContextsRefactoring refactoring = new MergeBoundedContextsRefactoring("CustomerManagement", "AnotherContext");
 
 		// when
-		refactoring.doRefactor(input);
+		refactoring.refactor(input);
 
 		// then
 		assertEquals(1, input.getContextMappingModel().getMap().getBoundedContexts().size());
@@ -129,7 +129,7 @@ public class MergeBoundedContextsTest extends AbstractRefactoringTest {
 		MergeBoundedContextsRefactoring refactoring = new MergeBoundedContextsRefactoring("CustomerManagement", "AnotherContext");
 
 		// when
-		refactoring.doRefactor(input);
+		refactoring.refactor(input);
 
 		// then
 		assertEquals(0, input.getContextMappingModel().getMap().getRelationships().size());
@@ -143,7 +143,7 @@ public class MergeBoundedContextsTest extends AbstractRefactoringTest {
 		MergeBoundedContextsRefactoring refactoring = new MergeBoundedContextsRefactoring("CustomerManagement", "AnotherContext");
 
 		// when
-		refactoring.doRefactor(input);
+		refactoring.refactor(input);
 
 		// then
 		ContextMappingModel model = input.getContextMappingModel();
@@ -165,7 +165,7 @@ public class MergeBoundedContextsTest extends AbstractRefactoringTest {
 		MergeBoundedContextsRefactoring refactoring = new MergeBoundedContextsRefactoring("CustomerManagement", "AnotherContext");
 
 		// when
-		refactoring.doRefactor(input);
+		refactoring.refactor(input);
 
 		// then
 		ContextMappingModel model = input.getContextMappingModel();
@@ -187,7 +187,7 @@ public class MergeBoundedContextsTest extends AbstractRefactoringTest {
 		MergeBoundedContextsRefactoring refactoring = new MergeBoundedContextsRefactoring("CustomerManagement", "AnotherContext");
 
 		// when
-		refactoring.doRefactor(input);
+		refactoring.refactor(input);
 
 		// then
 		ContextMappingModel model = input.getContextMappingModel();
@@ -204,7 +204,7 @@ public class MergeBoundedContextsTest extends AbstractRefactoringTest {
 		MergeBoundedContextsRefactoring refactoring = new MergeBoundedContextsRefactoring("CustomerManagement", "AnotherContext");
 
 		// when
-		refactoring.doRefactor(input);
+		refactoring.refactor(input);
 
 		// then
 		ContextMappingModel model = input.getContextMappingModel();
@@ -221,7 +221,7 @@ public class MergeBoundedContextsTest extends AbstractRefactoringTest {
 		MergeBoundedContextsRefactoring refactoring = new MergeBoundedContextsRefactoring("CustomerManagement", "AnotherContext");
 
 		// when
-		refactoring.doRefactor(input);
+		refactoring.refactor(input);
 
 		// then
 		ContextMappingModel model = input.getContextMappingModel();
@@ -238,7 +238,7 @@ public class MergeBoundedContextsTest extends AbstractRefactoringTest {
 		MergeBoundedContextsRefactoring refactoring = new MergeBoundedContextsRefactoring("TeamA", "TeamB");
 
 		// when
-		refactoring.doRefactor(input);
+		refactoring.refactor(input);
 
 		// then
 		ContextMappingModel model = input.getContextMappingModel();
@@ -258,7 +258,7 @@ public class MergeBoundedContextsTest extends AbstractRefactoringTest {
 		MergeBoundedContextsRefactoring refactoring = new MergeBoundedContextsRefactoring("CustomerManagement", "AnotherContext");
 
 		// when
-		refactoring.doRefactor(input);
+		refactoring.refactor(input);
 
 		// then
 		ContextMappingModel model = input.getContextMappingModel();
@@ -278,7 +278,7 @@ public class MergeBoundedContextsTest extends AbstractRefactoringTest {
 		MergeBoundedContextsRefactoring refactoring = new MergeBoundedContextsRefactoring("CustomerManagement", "AnotherContext", true);
 
 		// when
-		refactoring.doRefactor(input);
+		refactoring.refactor(input);
 
 		// then
 		ContextMappingModel model = input.getContextMappingModel();
@@ -298,7 +298,8 @@ public class MergeBoundedContextsTest extends AbstractRefactoringTest {
 
 		// when
 		MergeBoundedContextsRefactoring ar = new MergeBoundedContextsRefactoring("CustomerManagement", "AnotherContext");
-		ar.doRefactor(mainResource, additionalResources);
+		ar.refactor(mainResource, additionalResources);
+		ar.persistChanges();
 		mainResource = reloadResource(mainResource);
 
 		// then
@@ -323,7 +324,8 @@ public class MergeBoundedContextsTest extends AbstractRefactoringTest {
 
 		// when
 		MergeBoundedContextsRefactoring ar = new MergeBoundedContextsRefactoring("CustomerManagement", "AnotherContext");
-		ar.doRefactor(mainResource, additionalResources);
+		ar.refactor(mainResource, additionalResources);
+		ar.persistChanges();
 		mainResource = reloadResource(mainResource);
 
 		// then

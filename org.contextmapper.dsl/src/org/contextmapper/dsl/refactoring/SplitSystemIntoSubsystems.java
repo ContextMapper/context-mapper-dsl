@@ -34,7 +34,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import com.google.common.collect.Lists;
 
-public class SplitSystemIntoSubsystems extends AbstractRefactoring implements Refactoring {
+public class SplitSystemIntoSubsystems extends AbstractRefactoring implements SemanticCMLRefactoring {
 
 	private String systemExistingBoundedContextName;
 	private String existingSubsystemName;

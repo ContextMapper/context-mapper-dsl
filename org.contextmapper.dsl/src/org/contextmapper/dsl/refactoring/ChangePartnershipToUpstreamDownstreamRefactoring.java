@@ -34,7 +34,7 @@ import org.contextmapper.dsl.refactoring.exception.RefactoringInputException;
  * @author Stefan Kapferer
  *
  */
-public class ChangePartnershipToUpstreamDownstreamRefactoring extends AbstractRefactoring implements Refactoring {
+public class ChangePartnershipToUpstreamDownstreamRefactoring extends AbstractRefactoring implements SemanticCMLRefactoring {
 
 	protected String upstreamContext;
 	protected String downstreamContext;

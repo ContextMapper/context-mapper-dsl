@@ -32,7 +32,7 @@ import org.eclipse.emf.common.util.URI;
 
 import com.google.common.collect.Sets;
 
-public class MergeBoundedContextsRefactoring extends AbstractRefactoring implements Refactoring {
+public class MergeBoundedContextsRefactoring extends AbstractRefactoring implements SemanticCMLRefactoring {
 
 	private String boundedContext1;
 	private String boundedContext2;

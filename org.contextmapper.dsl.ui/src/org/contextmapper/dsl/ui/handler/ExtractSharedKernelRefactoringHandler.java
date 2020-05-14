@@ -27,7 +27,7 @@ public class ExtractSharedKernelRefactoringHandler extends AbstractRefactoringHa
 	@Override
 	protected void executeRefactoring(CMLResourceContainer resource, ExecutionEvent event) {
 		SharedKernel sk = (SharedKernel) getSelectedElement();
-		new ExtractSharedKernelRefactoring(sk.getParticipant1().getName(), sk.getParticipant2().getName()).doRefactor(resource);
+		new ExtractSharedKernelRefactoring(sk.getParticipant1().getName(), sk.getParticipant2().getName()).refactor(resource);
 	}
 
 	@Override

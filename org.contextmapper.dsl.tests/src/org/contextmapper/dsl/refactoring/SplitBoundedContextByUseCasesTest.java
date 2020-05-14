@@ -39,7 +39,7 @@ public class SplitBoundedContextByUseCasesTest extends AbstractRefactoringTest {
 
 		// when
 		SplitBoundedContextByUseCases ar = new SplitBoundedContextByUseCases("CustomerManagement");
-		ar.doRefactor(input);
+		ar.refactor(input);
 
 		// then
 		ContextMappingModel model = input.getContextMappingModel();
@@ -57,7 +57,7 @@ public class SplitBoundedContextByUseCasesTest extends AbstractRefactoringTest {
 
 		// when
 		SplitBoundedContextByUseCases ar = new SplitBoundedContextByUseCases("CustomerManagement");
-		ar.doRefactor(input);
+		ar.refactor(input);
 
 		// then
 		ContextMappingModel model = input.getContextMappingModel();
@@ -75,7 +75,7 @@ public class SplitBoundedContextByUseCasesTest extends AbstractRefactoringTest {
 
 		// when
 		SplitBoundedContextByUseCases ar = new SplitBoundedContextByUseCases("CustomerManagement");
-		ar.doRefactor(input);
+		ar.refactor(input);
 
 		// then
 		assertEquals(1, input.getContextMappingModel().getBoundedContexts().size());
@@ -89,7 +89,7 @@ public class SplitBoundedContextByUseCasesTest extends AbstractRefactoringTest {
 
 		// when
 		SplitBoundedContextByUseCases ar = new SplitBoundedContextByUseCases("CustomerManagement");
-		ar.doRefactor(input);
+		ar.refactor(input);
 
 		// then
 		ContextMappingModel model = input.getContextMappingModel();
@@ -113,7 +113,8 @@ public class SplitBoundedContextByUseCasesTest extends AbstractRefactoringTest {
 		
 		// when
 		SplitBoundedContextByUseCases ar = new SplitBoundedContextByUseCases("CustomerManagement");
-		ar.doRefactor(mainResource, additionalResources);
+		ar.refactor(mainResource, additionalResources);
+		ar.persistChanges();
 		CMLResourceContainer contextMapResource = new CMLResourceContainer(
 				additionalResources.getResources().stream().filter(r -> r.getURI().toString().endsWith("split-bc-by-use-cases-test-5-input-1.cml")).findFirst().get());
 		contextMapResource = reloadResource(contextMapResource);

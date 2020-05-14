@@ -41,7 +41,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import com.google.common.collect.Sets;
 
-public class DeriveBoundedContextFromSubdomains extends AbstractRefactoring implements Refactoring {
+public class DeriveBoundedContextFromSubdomains extends AbstractRefactoring implements SemanticCMLRefactoring {
 
 	private Set<String> subdomainIds = Sets.newHashSet();
 	private String boundedContextName;

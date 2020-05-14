@@ -43,7 +43,7 @@ public class ExtractAggregatesByVolatilityTest extends AbstractRefactoringTest {
 
 		// when
 		ExtractAggregatesByVolatility ar = new ExtractAggregatesByVolatility("CustomerManagement", LikelihoodForChange.OFTEN);
-		ar.doRefactor(input);
+		ar.refactor(input);
 
 		// then
 		ContextMappingModel model = input.getContextMappingModel();
@@ -65,7 +65,7 @@ public class ExtractAggregatesByVolatilityTest extends AbstractRefactoringTest {
 
 		// when
 		ExtractAggregatesByVolatility ar = new ExtractAggregatesByVolatility("CustomerManagement", LikelihoodForChange.OFTEN);
-		ar.doRefactor(input);
+		ar.refactor(input);
 
 		// then
 		ContextMappingModel model = input.getContextMappingModel();
@@ -93,7 +93,7 @@ public class ExtractAggregatesByVolatilityTest extends AbstractRefactoringTest {
 
 		// when
 		ExtractAggregatesByVolatility ar = new ExtractAggregatesByVolatility("CustomerManagement", LikelihoodForChange.OFTEN);
-		ar.doRefactor(input);
+		ar.refactor(input);
 
 		// then
 		assertEquals(1, input.getContextMappingModel().getBoundedContexts().size());
@@ -107,7 +107,7 @@ public class ExtractAggregatesByVolatilityTest extends AbstractRefactoringTest {
 
 		// when
 		ExtractAggregatesByVolatility ar = new ExtractAggregatesByVolatility("CustomerManagement", LikelihoodForChange.OFTEN);
-		ar.doRefactor(input);
+		ar.refactor(input);
 
 		// then
 		assertEquals(1, input.getContextMappingModel().getBoundedContexts().size());
@@ -121,7 +121,7 @@ public class ExtractAggregatesByVolatilityTest extends AbstractRefactoringTest {
 
 		// when
 		ExtractAggregatesByVolatility ar = new ExtractAggregatesByVolatility("CustomerManagement", LikelihoodForChange.OFTEN);
-		ar.doRefactor(input);
+		ar.refactor(input);
 
 		// then
 		assertEquals(1, input.getContextMappingModel().getBoundedContexts().size());
@@ -135,7 +135,8 @@ public class ExtractAggregatesByVolatilityTest extends AbstractRefactoringTest {
 
 		// when
 		ExtractAggregatesByVolatility ar = new ExtractAggregatesByVolatility("CustomerManagement", LikelihoodForChange.OFTEN);
-		ar.doRefactor(mainResource, additionalResources);
+		ar.refactor(mainResource, additionalResources);
+		ar.persistChanges();
 		CMLResourceContainer contextMapResource = new CMLResourceContainer(additionalResources.getResources().stream()
 				.filter(r -> r.getURI().toString().endsWith("extract-aggregates-likely-to-change-test-6-input-1.cml")).findFirst().get());
 		contextMapResource = reloadResource(contextMapResource);

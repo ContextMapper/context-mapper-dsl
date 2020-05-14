@@ -30,7 +30,7 @@ import org.contextmapper.dsl.refactoring.exception.RefactoringInputException;
  * @author Stefan Kapferer
  *
  */
-public abstract class AbstractToggleSymmetricRelationshipRefactoring extends AbstractRefactoring implements Refactoring {
+public abstract class AbstractToggleSymmetricRelationshipRefactoring extends AbstractRefactoring implements SemanticCMLRefactoring {
 
 	protected String boundedContext1;
 	protected String boundedContext2;

@@ -35,7 +35,7 @@ import org.contextmapper.tactic.dsl.tacticdsl.TacticdslFactory;
  * @author Stefan Kapferer
  *
  */
-public class ExtractSharedKernelRefactoring extends AbstractExtractSymmetricRelationshipRefactoring implements Refactoring {
+public class ExtractSharedKernelRefactoring extends AbstractExtractSymmetricRelationshipRefactoring implements SemanticCMLRefactoring {
 
 	public ExtractSharedKernelRefactoring(String boundedContext1, String boundedContext2) {
 		super(boundedContext1, boundedContext2);

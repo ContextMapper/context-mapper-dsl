@@ -36,7 +36,7 @@ import org.contextmapper.tactic.dsl.tacticdsl.TacticdslFactory;
  * @author Stefan Kapferer
  *
  */
-public class ExtractPartnershipRefactoring extends AbstractExtractSymmetricRelationshipRefactoring implements Refactoring {
+public class ExtractPartnershipRefactoring extends AbstractExtractSymmetricRelationshipRefactoring implements SemanticCMLRefactoring {
 
 	public ExtractPartnershipRefactoring(String boundedContext1, String boundedContext2) {
 		super(boundedContext1, boundedContext2);

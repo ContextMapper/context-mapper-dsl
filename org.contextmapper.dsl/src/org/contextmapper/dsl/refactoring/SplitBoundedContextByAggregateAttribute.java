@@ -32,7 +32,7 @@ import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 
 import com.google.common.collect.Lists;
 
-public class SplitBoundedContextByAggregateAttribute extends AbstractRefactoring implements Refactoring {
+public class SplitBoundedContextByAggregateAttribute extends AbstractRefactoring implements SemanticCMLRefactoring {
 
 	private String boundedContextName;
 	private BoundedContext originalBC;

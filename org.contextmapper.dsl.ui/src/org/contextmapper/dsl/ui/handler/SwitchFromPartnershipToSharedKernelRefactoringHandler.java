@@ -26,7 +26,7 @@ public class SwitchFromPartnershipToSharedKernelRefactoringHandler extends Abstr
 	@Override
 	protected void executeRefactoring(CMLResourceContainer resource, ExecutionEvent event) {
 		Partnership partnership = (Partnership) getSelectedElement();
-		new SwitchFromPartnershipToSharedKernelRefactoring(partnership.getParticipant1().getName(), partnership.getParticipant2().getName()).doRefactor(resource);
+		new SwitchFromPartnershipToSharedKernelRefactoring(partnership.getParticipant1().getName(), partnership.getParticipant2().getName()).refactor(resource);
 	}
 
 	@Override
