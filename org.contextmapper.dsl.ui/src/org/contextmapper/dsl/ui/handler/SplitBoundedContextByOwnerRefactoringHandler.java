@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.cml.CMLResourceContainer;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
+import org.contextmapper.dsl.refactoring.SemanticCMLRefactoring;
 import org.contextmapper.dsl.refactoring.SplitBoundedContextByOwner;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.emf.ecore.EObject;
@@ -29,7 +30,9 @@ public class SplitBoundedContextByOwnerRefactoringHandler extends AbstractRefact
 	@Override
 	protected void executeRefactoring(CMLResourceContainer resource, ExecutionEvent event) {
 		BoundedContext bc = (BoundedContext) getSelectedElement();
-		new SplitBoundedContextByOwner(bc.getName()).doRefactor(resource, getAllResources());
+		SemanticCMLRefactoring ar = new SplitBoundedContextByOwner(bc.getName());
+		ar.refactor(resource, getAllResources());
+		ar.persistChanges();
 	}
 
 	@Override

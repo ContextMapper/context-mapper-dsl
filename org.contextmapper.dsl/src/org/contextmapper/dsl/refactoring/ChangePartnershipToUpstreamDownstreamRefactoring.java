@@ -34,7 +34,7 @@ import org.contextmapper.dsl.refactoring.exception.RefactoringInputException;
  * @author Stefan Kapferer
  *
  */
-public class ChangePartnershipToUpstreamDownstreamRefactoring extends AbstractRefactoring implements Refactoring {
+public class ChangePartnershipToUpstreamDownstreamRefactoring extends AbstractRefactoring implements SemanticCMLRefactoring {
 
 	protected String upstreamContext;
 	protected String downstreamContext;
@@ -63,9 +63,6 @@ public class ChangePartnershipToUpstreamDownstreamRefactoring extends AbstractRe
 		relationship.setUpstream(getBoundedContext(upstreamContext));
 		relationship.setDownstream(getBoundedContext(downstreamContext));
 		addElementToEList(contextMap.getRelationships(), relationship);
-
-		// save model
-		saveResources();
 	}
 
 	List<SymmetricRelationship> getMatchingRelationships() {

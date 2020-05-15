@@ -38,7 +38,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-public abstract class AbstractRefactoring implements Refactoring {
+public abstract class AbstractRefactoring implements SemanticCMLRefactoring {
 
 	protected ContextMappingModel model;
 	protected CMLResourceContainer rootResource;
@@ -47,32 +47,63 @@ public abstract class AbstractRefactoring implements Refactoring {
 	private Map<ContextMap, CMLResourceContainer> contextMapMap = Maps.newHashMap();
 	private Map<Domain, CMLResourceContainer> domainMap = Maps.newHashMap();
 	private Map<UserRequirement, CMLResourceContainer> userRequirementMap = Maps.newHashMap();
-	private List<CMLResourceContainer> changedResources = Lists.newArrayList();
 
 	protected ResourceSet consistencyCheckResources;
 	protected Set<CMLResourceContainer> additionalResourcesToCheck = Sets.newHashSet();
 
 	@Override
-	public void doRefactor(CMLResourceContainer resource) {
+	public void refactor(CMLResourceContainer resource) {
 		this.rootResource = resource;
 		this.importedResources = new CMLImportResolver().resolveImportedResources(rootResource);
 		this.model = resource.getContextMappingModel();
+		enableModificationTracking(resource);
 		resolveRootElements();
 		doRefactor();
 	}
 
 	@Override
-	public void doRefactor(CMLResourceContainer resource, ResourceSet consistencyCheckResources) {
+	public void refactor(CMLResourceContainer resource, ResourceSet consistencyCheckResources) {
 		this.consistencyCheckResources = consistencyCheckResources;
+		enableModificationTracking(consistencyCheckResources);
 		for (Resource resourceToCheck : consistencyCheckResources.getResources()) {
 			if (resourceToCheck.getContents().isEmpty() || !(resourceToCheck.getContents().get(0) instanceof ContextMappingModel))
 				continue;
 			this.additionalResourcesToCheck.add(new CMLResourceContainer(resourceToCheck));
 		}
-		doRefactor(resource);
+		refactor(resource);
+	}
+
+	@Override
+	public void persistChanges() {
+		Resource rootResource = this.rootResource.getResource();
+		if (rootResource.isModified())
+			persistResource(rootResource);
+		if (rootResource.getResourceSet() != null)
+			persistChanges(rootResource.getResourceSet());
+		if (this.consistencyCheckResources != null)
+			persistChanges(consistencyCheckResources);
+	}
+
+	private void persistChanges(ResourceSet rs) {
+		for (Resource resource : rs.getResources()) {
+			if (resource.isModified())
+				persistResource(resource);
+		}
 	}
 
 	protected abstract void doRefactor();
+
+	private void enableModificationTracking(CMLResourceContainer cmlResource) {
+		cmlResource.getResource().setTrackingModification(true);
+		if (cmlResource.getResource().getResourceSet() != null)
+			enableModificationTracking(cmlResource.getResource().getResourceSet());
+	}
+
+	private void enableModificationTracking(ResourceSet rs) {
+		for (Resource resource : rs.getResources()) {
+			resource.setTrackingModification(true);
+		}
+	}
 
 	protected Set<BoundedContext> getAllBoundedContexts() {
 		return Sets.newHashSet(this.boundedContextsMap.keySet());
@@ -90,61 +121,17 @@ public abstract class AbstractRefactoring implements Refactoring {
 		return Sets.newHashSet(this.userRequirementMap.keySet());
 	}
 
-	protected void saveResource(Resource resource) {
+	private void persistResource(Resource resource) {
 		try {
 			resource.save(SaveOptions.newBuilder().format().getOptions().toOptionsMap());
 		} catch (IOException e) {
 			throw new RuntimeException("Document cannot be formatted.");
 		}
-	}
-
-	protected void saveResources() {
-		rootResource.getContextMappingModel().eAllContents();
-		saveResource(rootResource.getResource());
-		for (CMLResourceContainer changedResource : changedResources) {
-			changedResource.getContextMappingModel().eAllContents();
-			saveResource(changedResource.getResource());
-		}
-	}
-
-	protected void markResourceChanged(BoundedContext changedBoundedContext) {
-		CMLResourceContainer resource = getResource(changedBoundedContext);
-		markResourceChanged(resource);
-	}
-
-	protected void markResourceChanged(ContextMap changedContextMap) {
-		markResourceChanged(getResource(changedContextMap));
-	}
-
-	protected void markResourceChanged(Domain domain) {
-		markResourceChanged(getResource(domain));
-	}
-
-	protected void markResourceChanged(UserRequirement userRequirement) {
-		markResourceChanged(getResource(userRequirement));
-	}
-
-	protected void markResourceChanged(CMLResourceContainer resource) {
-		this.changedResources.add(resource);
-	}
-
+	} 
+	
 	protected CMLResourceContainer getResource(BoundedContext bc) {
 		CMLResourceContainer result = this.boundedContextsMap.get(bc);
 		return result;
-	}
-
-	protected CMLResourceContainer getResource(ContextMap contextMap) {
-		return this.contextMapMap.get(contextMap);
-	}
-
-	protected CMLResourceContainer getResource(Domain domain) {
-		if (!this.domainMap.containsKey(domain))
-			this.domainMap.put(domain, rootResource);
-		return this.domainMap.get(domain);
-	}
-
-	protected CMLResourceContainer getResource(UserRequirement userRequirement) {
-		return this.userRequirementMap.get(userRequirement);
 	}
 
 	private void resolveRootElements() {

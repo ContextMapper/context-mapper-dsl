@@ -34,7 +34,7 @@ import org.contextmapper.dsl.refactoring.exception.RefactoringInputException;
  * @author Stefan Kapferer
  *
  */
-public abstract class AbstractExtractSymmetricRelationshipRefactoring extends AbstractRefactoring implements Refactoring {
+public abstract class AbstractExtractSymmetricRelationshipRefactoring extends AbstractRefactoring implements SemanticCMLRefactoring {
 
 	protected String boundedContext1;
 	protected String boundedContext2;
@@ -68,9 +68,6 @@ public abstract class AbstractExtractSymmetricRelationshipRefactoring extends Ab
 		relationship2.setDownstream(getBoundedContext(boundedContext2));
 		contextMap.getRelationships().add(relationship1);
 		contextMap.getRelationships().add(relationship2);
-
-		// save model
-		saveResources();
 	}
 
 	abstract List<SymmetricRelationship> getMatchingRelationships();

@@ -44,7 +44,9 @@ public class ChangePartnershipToUpstreamDownstreamRefactoringTest extends Abstra
 		CMLResourceContainer input = getResourceCopyOfTestCML("change-partnership-to-upstream-downstream-test-1-input.cml");
 
 		// when
-		new ChangePartnershipToUpstreamDownstreamRefactoring("CustomerManagement", "AnotherContext").doRefactor(input);
+		SemanticCMLRefactoring ar = new ChangePartnershipToUpstreamDownstreamRefactoring("CustomerManagement", "AnotherContext");
+		ar.refactor(input);
+		ar.persistChanges();
 
 		// then
 		List<ContextMappingModel> contextMappingModels = IteratorExtensions
@@ -71,7 +73,7 @@ public class ChangePartnershipToUpstreamDownstreamRefactoringTest extends Abstra
 
 		// when, then
 		Assertions.assertThrows(RefactoringInputException.class, () -> {
-			new ChangePartnershipToUpstreamDownstreamRefactoring(boundedContext1, boundedContext2).doRefactor(input);
+			new ChangePartnershipToUpstreamDownstreamRefactoring(boundedContext1, boundedContext2).refactor(input);
 		});
 	}
 
@@ -84,7 +86,7 @@ public class ChangePartnershipToUpstreamDownstreamRefactoringTest extends Abstra
 
 		// when, then
 		Assertions.assertThrows(RefactoringInputException.class, () -> {
-			new ChangePartnershipToUpstreamDownstreamRefactoring(boundedContext1, boundedContext2).doRefactor(input);
+			new ChangePartnershipToUpstreamDownstreamRefactoring(boundedContext1, boundedContext2).refactor(input);
 		});
 	}
 
@@ -97,7 +99,7 @@ public class ChangePartnershipToUpstreamDownstreamRefactoringTest extends Abstra
 
 		// when, then
 		Assertions.assertThrows(RefactoringInputException.class, () -> {
-			new ChangePartnershipToUpstreamDownstreamRefactoring(boundedContext1, boundedContext2).doRefactor(input);
+			new ChangePartnershipToUpstreamDownstreamRefactoring(boundedContext1, boundedContext2).refactor(input);
 		});
 	}
 
@@ -110,7 +112,7 @@ public class ChangePartnershipToUpstreamDownstreamRefactoringTest extends Abstra
 
 		// when, then
 		Assertions.assertThrows(RefactoringInputException.class, () -> {
-			new ChangePartnershipToUpstreamDownstreamRefactoring(boundedContext1, boundedContext2).doRefactor(input);
+			new ChangePartnershipToUpstreamDownstreamRefactoring(boundedContext1, boundedContext2).refactor(input);
 		});
 	}
 
@@ -123,7 +125,7 @@ public class ChangePartnershipToUpstreamDownstreamRefactoringTest extends Abstra
 
 		// when, then
 		Assertions.assertThrows(RefactoringInputException.class, () -> {
-			new ChangePartnershipToUpstreamDownstreamRefactoring(boundedContext1, boundedContext2).doRefactor(input);
+			new ChangePartnershipToUpstreamDownstreamRefactoring(boundedContext1, boundedContext2).refactor(input);
 		});
 	}
 

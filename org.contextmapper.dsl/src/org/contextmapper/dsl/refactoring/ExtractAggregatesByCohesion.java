@@ -24,7 +24,7 @@ import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
 
-public class ExtractAggregatesByCohesion extends AbstractRefactoring implements Refactoring {
+public class ExtractAggregatesByCohesion extends AbstractRefactoring implements SemanticCMLRefactoring {
 
 	private String boundedContextName;
 	private BoundedContext originalBC;
@@ -55,15 +55,12 @@ public class ExtractAggregatesByCohesion extends AbstractRefactoring implements 
 
 			removeElementFromEList(originalBC.getAggregates(), aggregate.get());
 			addElementToEList(newBC.getAggregates(), aggregate.get());
-			markResourceChanged(originalBC);
 		}
 
 		getResource(originalBC).getContextMappingModel().getBoundedContexts().add(newBC);
 		for (ContextMap contextMap : getAllContextMaps()) {
 			new ContextMappingModelHelper(contextMap).moveExposedAggregatesToNewRelationshipsIfNeeded(aggregatesToExtract, newBC);
-			markResourceChanged(contextMap);
 		}
-		saveResources();
 	}
 
 	private BoundedContext createNewBoundedContext() {

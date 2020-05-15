@@ -55,7 +55,7 @@ public class SplitSystemIntoSubsystemsTest extends AbstractRefactoringTest {
 
 		// when, then
 		assertThrows(RefactoringInputException.class, () -> {
-			ar.doRefactor(input);
+			ar.refactor(input);
 		});
 	}
 
@@ -67,7 +67,7 @@ public class SplitSystemIntoSubsystemsTest extends AbstractRefactoringTest {
 
 		// when, then
 		assertThrows(RefactoringInputException.class, () -> {
-			ar.doRefactor(input);
+			ar.refactor(input);
 		});
 	}
 
@@ -79,7 +79,7 @@ public class SplitSystemIntoSubsystemsTest extends AbstractRefactoringTest {
 
 		// when, then
 		assertThrows(RefactoringInputException.class, () -> {
-			ar.doRefactor(input);
+			ar.refactor(input);
 		});
 	}
 
@@ -91,7 +91,7 @@ public class SplitSystemIntoSubsystemsTest extends AbstractRefactoringTest {
 
 		// when, then
 		assertThrows(RefactoringInputException.class, () -> {
-			ar.doRefactor(input);
+			ar.refactor(input);
 		});
 	}
 
@@ -102,7 +102,8 @@ public class SplitSystemIntoSubsystemsTest extends AbstractRefactoringTest {
 		SplitSystemIntoSubsystems ar = new SplitSystemIntoSubsystems("TestBackend", "TestBackendLogic", "TestBackendDatabase");
 
 		// when
-		ar.doRefactor(input);
+		ar.refactor(input);
+		ar.persistChanges();
 
 		// then
 		ContextMappingModel model = reloadResource(input).getContextMappingModel();
@@ -119,7 +120,8 @@ public class SplitSystemIntoSubsystemsTest extends AbstractRefactoringTest {
 		SplitSystemIntoSubsystems ar = new SplitSystemIntoSubsystems("TestBackend", "TestBackendLogic", "TestBackendDatabase");
 
 		// when
-		ar.doRefactor(input);
+		ar.refactor(input);
+		ar.persistChanges();
 
 		// then
 		ContextMappingModel model = reloadResource(input).getContextMappingModel();
@@ -140,7 +142,8 @@ public class SplitSystemIntoSubsystemsTest extends AbstractRefactoringTest {
 		ar.copyDomainModel(true);
 
 		// when
-		ar.doRefactor(input);
+		ar.refactor(input);
+		ar.persistChanges();
 
 		// then
 		ContextMappingModel model = reloadResource(input).getContextMappingModel();
@@ -159,7 +162,8 @@ public class SplitSystemIntoSubsystemsTest extends AbstractRefactoringTest {
 		ar.setRelationshipType(SplitBoundedContextRelationshipType.NEW_CONTEXT_BECOMES_UPSTREAM);
 
 		// when
-		ar.doRefactor(input);
+		ar.refactor(input);
+		ar.persistChanges();
 
 		// then
 		ContextMappingModel model = reloadResource(input).getContextMappingModel();
@@ -180,7 +184,8 @@ public class SplitSystemIntoSubsystemsTest extends AbstractRefactoringTest {
 		ar.setIntegrationType(ACL);
 
 		// when
-		ar.doRefactor(input);
+		ar.refactor(input);
+		ar.persistChanges();
 
 		// then
 		ContextMappingModel model = reloadResource(input).getContextMappingModel();
@@ -201,7 +206,8 @@ public class SplitSystemIntoSubsystemsTest extends AbstractRefactoringTest {
 		ar.copyDomainModel(true);
 
 		// when
-		ar.doRefactor(input);
+		ar.refactor(input);
+		ar.persistChanges();
 
 		// then
 		ContextMappingModel model = reloadResource(input).getContextMappingModel();
@@ -229,7 +235,8 @@ public class SplitSystemIntoSubsystemsTest extends AbstractRefactoringTest {
 		ar.setNewRelationshipImplementationTechnology("JDBC");
 
 		// when
-		ar.doRefactor(input);
+		ar.refactor(input);
+		ar.persistChanges();
 
 		// then
 		ContextMappingModel model = reloadResource(input).getContextMappingModel();
@@ -286,7 +293,8 @@ public class SplitSystemIntoSubsystemsTest extends AbstractRefactoringTest {
 		SplitSystemIntoSubsystems ar = new SplitSystemIntoSubsystems("TestBackend", "TestBackendLogic", "TestBackendDatabase");
 
 		// when
-		ar.doRefactor(input);
+		ar.refactor(input);
+		ar.persistChanges();
 
 		// then
 		ContextMappingModel model = reloadResource(input).getContextMappingModel();

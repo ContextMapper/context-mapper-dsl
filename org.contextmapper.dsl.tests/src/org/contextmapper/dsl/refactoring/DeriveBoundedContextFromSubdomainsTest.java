@@ -55,7 +55,8 @@ public class DeriveBoundedContextFromSubdomainsTest extends AbstractRefactoringT
 		// when
 		Set<String> subdomains = Sets.newHashSet(Arrays.asList(new String[] { "CustomerDomain" }));
 		DeriveBoundedContextFromSubdomains ar = new DeriveBoundedContextFromSubdomains("NewTestBC", subdomains);
-		ar.doRefactor(input);
+		ar.refactor(input);
+		ar.persistChanges();
 
 		// then
 		ContextMappingModel model = reloadResource(input).getContextMappingModel();
@@ -94,7 +95,8 @@ public class DeriveBoundedContextFromSubdomainsTest extends AbstractRefactoringT
 		// when
 		Set<String> subdomains = Sets.newHashSet(Arrays.asList(new String[] { "CustomerDomain" }));
 		DeriveBoundedContextFromSubdomains ar = new DeriveBoundedContextFromSubdomains("NewTestBC", subdomains);
-		ar.doRefactor(input);
+		ar.refactor(input);
+		ar.persistChanges();
 
 		// then
 		ContextMappingModel model = reloadResource(input).getContextMappingModel();
@@ -132,7 +134,8 @@ public class DeriveBoundedContextFromSubdomainsTest extends AbstractRefactoringT
 		// when
 		Set<String> subdomains = Sets.newHashSet(Arrays.asList(new String[] { "CustomerDomain" }));
 		DeriveBoundedContextFromSubdomains ar = new DeriveBoundedContextFromSubdomains("NewTestBC", subdomains);
-		ar.doRefactor(input);
+		ar.refactor(input);
+		ar.persistChanges();
 
 		// then
 		ContextMappingModel model = reloadResource(input).getContextMappingModel();
@@ -152,7 +155,8 @@ public class DeriveBoundedContextFromSubdomainsTest extends AbstractRefactoringT
 		// when
 		Set<String> subdomains = Sets.newHashSet(Arrays.asList(new String[] { "CustomerDomain" }));
 		DeriveBoundedContextFromSubdomains ar = new DeriveBoundedContextFromSubdomains("NewTestBC", subdomains);
-		ar.doRefactor(input);
+		ar.refactor(input);
+		ar.persistChanges();
 
 		// then
 		ContextMappingModel model = reloadResource(input).getContextMappingModel();
@@ -182,7 +186,7 @@ public class DeriveBoundedContextFromSubdomainsTest extends AbstractRefactoringT
 		Set<String> subdomains = Sets.newHashSet(Arrays.asList(new String[] { "JustSomeTestDomainNotExisting" }));
 		DeriveBoundedContextFromSubdomains ar = new DeriveBoundedContextFromSubdomains("NewTestBC", subdomains);
 		assertThrows(RefactoringInputException.class, () -> {
-			ar.doRefactor(input);
+			ar.refactor(input);
 		});
 	}
 

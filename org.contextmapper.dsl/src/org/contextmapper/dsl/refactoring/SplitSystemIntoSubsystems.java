@@ -34,7 +34,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import com.google.common.collect.Lists;
 
-public class SplitSystemIntoSubsystems extends AbstractRefactoring implements Refactoring {
+public class SplitSystemIntoSubsystems extends AbstractRefactoring implements SemanticCMLRefactoring {
 
 	private String systemExistingBoundedContextName;
 	private String existingSubsystemName;
@@ -68,9 +68,6 @@ public class SplitSystemIntoSubsystems extends AbstractRefactoring implements Re
 
 		addElementToEList(model.getBoundedContexts(), newSubsystemContext);
 		createUpstreamDownstreamRelationship(systemContext, newSubsystemContext);
-
-		markResourceChanged(rootResource);
-		saveResources();
 	}
 
 	private void renameBoundedContext(String currentName, String newName) {
@@ -78,11 +75,9 @@ public class SplitSystemIntoSubsystems extends AbstractRefactoring implements Re
 		for (ContextMap contextMap : getAllContextMaps()) {
 			allInstances.addAll(contextMap.getBoundedContexts().stream().filter(bc -> bc.getName().equals(systemExistingBoundedContextName)).collect(Collectors.toList()));
 			allInstances.addAll(getAllRelationshipContextsByName(contextMap, currentName));
-			markResourceChanged(contextMap);
 		}
 		for (BoundedContext bc : allInstances) {
 			bc.setName(newName);
-			markResourceChanged(bc);
 		}
 	}
 

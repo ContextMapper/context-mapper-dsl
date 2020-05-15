@@ -34,7 +34,7 @@ public class MergeAggregatesTest extends AbstractRefactoringTest {
 		MergeAggregatesRefactoring refactoring = new MergeAggregatesRefactoring("Customers", "Addresses");
 
 		// when
-		refactoring.doRefactor(input);
+		refactoring.refactor(input);
 
 		// then
 		ContextMappingModel model = input.getContextMappingModel();
@@ -63,7 +63,7 @@ public class MergeAggregatesTest extends AbstractRefactoringTest {
 		MergeAggregatesRefactoring refactoring = new MergeAggregatesRefactoring("Customers", "Addresses");
 
 		// when
-		refactoring.doRefactor(input);
+		refactoring.refactor(input);
 
 		// then
 		ContextMappingModel model = input.getContextMappingModel();
@@ -93,7 +93,7 @@ public class MergeAggregatesTest extends AbstractRefactoringTest {
 		MergeAggregatesRefactoring refactoring = new MergeAggregatesRefactoring("Customers", "Customers");
 
 		// when
-		refactoring.doRefactor(input);
+		refactoring.refactor(input);
 
 		// then
 		ContextMappingModel model = input.getContextMappingModel();
@@ -109,7 +109,7 @@ public class MergeAggregatesTest extends AbstractRefactoringTest {
 		MergeAggregatesRefactoring refactoring = new MergeAggregatesRefactoring("ThisAggregateDoesNotExist", "Customers");
 
 		// when
-		refactoring.doRefactor(input);
+		refactoring.refactor(input);
 
 		// then
 		ContextMappingModel model = input.getContextMappingModel();
@@ -125,7 +125,7 @@ public class MergeAggregatesTest extends AbstractRefactoringTest {
 		MergeAggregatesRefactoring refactoring = new MergeAggregatesRefactoring("Customers", "ThisAggregateDoesNotExist");
 
 		// when
-		refactoring.doRefactor(input);
+		refactoring.refactor(input);
 
 		// then
 		ContextMappingModel model = input.getContextMappingModel();
@@ -141,7 +141,7 @@ public class MergeAggregatesTest extends AbstractRefactoringTest {
 		MergeAggregatesRefactoring refactoring = new MergeAggregatesRefactoring("Customers", "Addresses");
 
 		// when
-		refactoring.doRefactor(input);
+		refactoring.refactor(input);
 
 		// then
 		ContextMappingModel model = input.getContextMappingModel();
@@ -181,7 +181,7 @@ public class MergeAggregatesTest extends AbstractRefactoringTest {
 
 		// when / then
 		Assertions.assertThrows(RefactoringInputException.class, () -> {
-			refactoring.doRefactor(input);
+			refactoring.refactor(input);
 		});
 	}
 
@@ -193,7 +193,7 @@ public class MergeAggregatesTest extends AbstractRefactoringTest {
 		MergeAggregatesRefactoring refactoring = new MergeAggregatesRefactoring("agg1", "agg2");
 
 		// when
-		refactoring.doRefactor(input);
+		refactoring.refactor(input);
 
 		// then
 		ContextMappingModel model = input.getContextMappingModel();
@@ -215,7 +215,7 @@ public class MergeAggregatesTest extends AbstractRefactoringTest {
 		MergeAggregatesRefactoring refactoring = new MergeAggregatesRefactoring("agg1", "agg2", true);
 
 		// when
-		refactoring.doRefactor(input);
+		refactoring.refactor(input);
 
 		// then
 		ContextMappingModel model = input.getContextMappingModel();
@@ -237,7 +237,7 @@ public class MergeAggregatesTest extends AbstractRefactoringTest {
 		MergeAggregatesRefactoring refactoring = new MergeAggregatesRefactoring("agg1", "agg2", true);
 
 		// when
-		refactoring.doRefactor(input);
+		refactoring.refactor(input);
 
 		// then
 		ContextMappingModel model = input.getContextMappingModel();
@@ -258,7 +258,8 @@ public class MergeAggregatesTest extends AbstractRefactoringTest {
 
 		// when
 		MergeAggregatesRefactoring ar = new MergeAggregatesRefactoring("Customers", "Addresses");
-		ar.doRefactor(mainResource, additionalResources);
+		ar.refactor(mainResource, additionalResources);
+		ar.persistChanges();
 		CMLResourceContainer contextMapResource = new CMLResourceContainer(
 				additionalResources.getResources().stream().filter(r -> r.getURI().toString().endsWith("merge-aggregates-test-7-input-1.cml")).findFirst().get());
 		contextMapResource = reloadResource(contextMapResource);

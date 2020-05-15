@@ -37,7 +37,7 @@ import org.contextmapper.tactic.dsl.tacticdsl.TacticdslFactory;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-public class DeriveSubdomainFromUserRequirements extends AbstractRefactoring implements Refactoring {
+public class DeriveSubdomainFromUserRequirements extends AbstractRefactoring implements SemanticCMLRefactoring {
 
 	private static final String BENEFIT_SEPARATOR_STRING = "; ";
 
@@ -78,9 +78,6 @@ public class DeriveSubdomainFromUserRequirements extends AbstractRefactoring imp
 		}
 
 		subdomain.setDomainVisionStatement(String.join(BENEFIT_SEPARATOR_STRING, benefits));
-
-		markResourceChanged(domain);
-		saveResources();
 	}
 
 	private boolean doesContainAtLeastOneEntity(UserRequirement ur) {

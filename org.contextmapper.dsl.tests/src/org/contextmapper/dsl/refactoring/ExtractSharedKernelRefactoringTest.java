@@ -45,7 +45,7 @@ public class ExtractSharedKernelRefactoringTest extends AbstractRefactoringTest 
 		CMLResourceContainer input = getResourceCopyOfTestCML(inputFile);
 
 		// when
-		new ExtractSharedKernelRefactoring("CustomerManagement", "AnotherContext").doRefactor(input);
+		new ExtractSharedKernelRefactoring("CustomerManagement", "AnotherContext").refactor(input);
 
 		// then
 		ContextMap map = input.getContextMappingModel().getMap();
@@ -79,7 +79,7 @@ public class ExtractSharedKernelRefactoringTest extends AbstractRefactoringTest 
 		CMLResourceContainer input = getResourceCopyOfTestCML("extract-shared-kernel-test-1-input.cml");
 
 		// when
-		new ExtractSharedKernelRefactoring("CustomerManagement", "AnotherContext").doRefactor(input);
+		new ExtractSharedKernelRefactoring("CustomerManagement", "AnotherContext").refactor(input);
 
 		// then
 		ContextMap map = input.getContextMappingModel().getMap();
@@ -101,7 +101,7 @@ public class ExtractSharedKernelRefactoringTest extends AbstractRefactoringTest 
 
 		// when, then
 		Assertions.assertThrows(RefactoringInputException.class, () -> {
-			new ExtractSharedKernelRefactoring(boundedContext1, boundedContext2).doRefactor(input);
+			new ExtractSharedKernelRefactoring(boundedContext1, boundedContext2).refactor(input);
 		});
 	}
 
@@ -114,7 +114,7 @@ public class ExtractSharedKernelRefactoringTest extends AbstractRefactoringTest 
 
 		// when, then
 		Assertions.assertThrows(RefactoringInputException.class, () -> {
-			new ExtractSharedKernelRefactoring(boundedContext1, boundedContext2).doRefactor(input);
+			new ExtractSharedKernelRefactoring(boundedContext1, boundedContext2).refactor(input);
 		});
 	}
 
@@ -127,7 +127,7 @@ public class ExtractSharedKernelRefactoringTest extends AbstractRefactoringTest 
 
 		// when, then
 		Assertions.assertThrows(RefactoringInputException.class, () -> {
-			new ExtractSharedKernelRefactoring(boundedContext1, boundedContext2).doRefactor(input);
+			new ExtractSharedKernelRefactoring(boundedContext1, boundedContext2).refactor(input);
 		});
 	}
 
@@ -140,7 +140,7 @@ public class ExtractSharedKernelRefactoringTest extends AbstractRefactoringTest 
 
 		// when, then
 		Assertions.assertThrows(RefactoringInputException.class, () -> {
-			new ExtractSharedKernelRefactoring(boundedContext1, boundedContext2).doRefactor(input);
+			new ExtractSharedKernelRefactoring(boundedContext1, boundedContext2).refactor(input);
 		});
 	}
 
@@ -153,7 +153,7 @@ public class ExtractSharedKernelRefactoringTest extends AbstractRefactoringTest 
 
 		// when, then
 		Assertions.assertThrows(RefactoringInputException.class, () -> {
-			new ExtractSharedKernelRefactoring(boundedContext1, boundedContext2).doRefactor(input);
+			new ExtractSharedKernelRefactoring(boundedContext1, boundedContext2).refactor(input);
 		});
 	}
 

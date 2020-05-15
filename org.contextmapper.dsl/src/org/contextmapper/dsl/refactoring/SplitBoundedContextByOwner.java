@@ -20,7 +20,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 
 import com.google.common.collect.Sets;
 
-public class SplitBoundedContextByOwner implements Refactoring {
+public class SplitBoundedContextByOwner implements SemanticCMLRefactoring {
 
 	private SplitBoundedContextByAggregateAttribute coreAR;
 
@@ -34,13 +34,18 @@ public class SplitBoundedContextByOwner implements Refactoring {
 	}
 
 	@Override
-	public void doRefactor(CMLResourceContainer resource) {
-		this.coreAR.doRefactor(resource);
+	public void refactor(CMLResourceContainer resource) {
+		this.coreAR.refactor(resource);
 	}
 
 	@Override
-	public void doRefactor(CMLResourceContainer resource, ResourceSet consistencyCheckResources) {
-		this.coreAR.doRefactor(resource, consistencyCheckResources);
+	public void refactor(CMLResourceContainer resource, ResourceSet consistencyCheckResources) {
+		this.coreAR.refactor(resource, consistencyCheckResources);
+	}
+
+	@Override
+	public void persistChanges() {
+		this.coreAR.persistChanges();
 	}
 
 }

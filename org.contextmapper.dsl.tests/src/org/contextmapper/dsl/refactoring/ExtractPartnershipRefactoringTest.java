@@ -45,7 +45,7 @@ public class ExtractPartnershipRefactoringTest extends AbstractRefactoringTest {
 		CMLResourceContainer input = getResourceCopyOfTestCML(inputFile);
 
 		// when
-		new ExtractPartnershipRefactoring("CustomerManagement", "AnotherContext").doRefactor(input);
+		new ExtractPartnershipRefactoring("CustomerManagement", "AnotherContext").refactor(input);
 
 		// then
 		ContextMap map = input.getContextMappingModel().getMap();
@@ -79,7 +79,7 @@ public class ExtractPartnershipRefactoringTest extends AbstractRefactoringTest {
 		CMLResourceContainer input = getResourceCopyOfTestCML("extract-partnership-test-1-input.cml");
 
 		// when
-		new ExtractPartnershipRefactoring("CustomerManagement", "AnotherContext").doRefactor(input);
+		new ExtractPartnershipRefactoring("CustomerManagement", "AnotherContext").refactor(input);
 
 		// then
 		ContextMap map = input.getContextMappingModel().getMap();
@@ -99,7 +99,7 @@ public class ExtractPartnershipRefactoringTest extends AbstractRefactoringTest {
 		
 		// then
 		Assertions.assertThrows(RefactoringInputException.class, () -> {
-			new ExtractPartnershipRefactoring("CustomerManagement", "AnotherContext").doRefactor(input);
+			new ExtractPartnershipRefactoring("CustomerManagement", "AnotherContext").refactor(input);
 		});
 	}
 
@@ -112,7 +112,7 @@ public class ExtractPartnershipRefactoringTest extends AbstractRefactoringTest {
 
 		// when, then
 		Assertions.assertThrows(RefactoringInputException.class, () -> {
-			new ExtractPartnershipRefactoring(boundedContext1, boundedContext2).doRefactor(input);
+			new ExtractPartnershipRefactoring(boundedContext1, boundedContext2).refactor(input);
 		});
 	}
 
@@ -125,7 +125,7 @@ public class ExtractPartnershipRefactoringTest extends AbstractRefactoringTest {
 
 		// when, then
 		Assertions.assertThrows(RefactoringInputException.class, () -> {
-			new ExtractPartnershipRefactoring(boundedContext1, boundedContext2).doRefactor(input);
+			new ExtractPartnershipRefactoring(boundedContext1, boundedContext2).refactor(input);
 		});
 	}
 
@@ -138,7 +138,7 @@ public class ExtractPartnershipRefactoringTest extends AbstractRefactoringTest {
 
 		// when, then
 		Assertions.assertThrows(RefactoringInputException.class, () -> {
-			new ExtractPartnershipRefactoring(boundedContext1, boundedContext2).doRefactor(input);
+			new ExtractPartnershipRefactoring(boundedContext1, boundedContext2).refactor(input);
 		});
 	}
 
@@ -151,7 +151,7 @@ public class ExtractPartnershipRefactoringTest extends AbstractRefactoringTest {
 
 		// when, then
 		Assertions.assertThrows(RefactoringInputException.class, () -> {
-			new ExtractPartnershipRefactoring(boundedContext1, boundedContext2).doRefactor(input);
+			new ExtractPartnershipRefactoring(boundedContext1, boundedContext2).refactor(input);
 		});
 	}
 
@@ -164,7 +164,7 @@ public class ExtractPartnershipRefactoringTest extends AbstractRefactoringTest {
 
 		// when, then
 		Assertions.assertThrows(RefactoringInputException.class, () -> {
-			new ExtractPartnershipRefactoring(boundedContext1, boundedContext2).doRefactor(input);
+			new ExtractPartnershipRefactoring(boundedContext1, boundedContext2).refactor(input);
 		});
 	}
 

@@ -55,7 +55,7 @@ public class DeriveFrontendAndBackendSystemsFromFeatureTest extends AbstractRefa
 
 		// when, then
 		assertThrows(RefactoringInputException.class, () -> {
-			ar.doRefactor(input);
+			ar.refactor(input);
 		});
 	}
 
@@ -67,7 +67,7 @@ public class DeriveFrontendAndBackendSystemsFromFeatureTest extends AbstractRefa
 
 		// when, then
 		assertThrows(RefactoringInputException.class, () -> {
-			ar.doRefactor(input);
+			ar.refactor(input);
 		});
 	}
 
@@ -80,7 +80,7 @@ public class DeriveFrontendAndBackendSystemsFromFeatureTest extends AbstractRefa
 
 		// when, then
 		assertThrows(RefactoringInputException.class, () -> {
-			ar.doRefactor(input);
+			ar.refactor(input);
 		});
 	}
 
@@ -95,7 +95,8 @@ public class DeriveFrontendAndBackendSystemsFromFeatureTest extends AbstractRefa
 		ar.setFrontendName("TestFrontend");
 
 		// when
-		ar.doRefactor(input);
+		ar.refactor(input);
+		ar.persistChanges();
 
 		// then
 		ContextMappingModel model = reloadResource(input).getContextMappingModel();
@@ -119,7 +120,8 @@ public class DeriveFrontendAndBackendSystemsFromFeatureTest extends AbstractRefa
 		DeriveFrontendAndBackendSystemsFromFeature ar = new DeriveFrontendAndBackendSystemsFromFeature("TestFeature", CONFORMIST);
 
 		// when
-		ar.doRefactor(input);
+		ar.refactor(input);
+		ar.persistChanges();
 
 		// then
 		ContextMappingModel model = reloadResource(input).getContextMappingModel();
@@ -145,7 +147,8 @@ public class DeriveFrontendAndBackendSystemsFromFeatureTest extends AbstractRefa
 		DeriveFrontendAndBackendSystemsFromFeature ar = new DeriveFrontendAndBackendSystemsFromFeature("TestFeature", ACL);
 
 		// when
-		ar.doRefactor(input);
+		ar.refactor(input);
+		ar.persistChanges();
 
 		// then
 		UpstreamDownstreamRelationship relationship = (UpstreamDownstreamRelationship) reloadResource(input).getContextMappingModel().getMap().getRelationships().get(0);
@@ -161,7 +164,8 @@ public class DeriveFrontendAndBackendSystemsFromFeatureTest extends AbstractRefa
 		ar.deriveViewModelInFronted(false);
 
 		// when
-		ar.doRefactor(input);
+		ar.refactor(input);
+		ar.persistChanges();
 
 		// then
 		BoundedContext backend = reloadResource(input).getContextMappingModel().getBoundedContexts().stream().filter(bc -> bc.getName().equals("TestFeatureBackend")).findFirst()
@@ -194,7 +198,8 @@ public class DeriveFrontendAndBackendSystemsFromFeatureTest extends AbstractRefa
 		DeriveFrontendAndBackendSystemsFromFeature ar = new DeriveFrontendAndBackendSystemsFromFeature("TestFeature", ACL);
 
 		// when
-		ar.doRefactor(input);
+		ar.refactor(input);
+		ar.persistChanges();
 
 		// then
 		BoundedContext frontend = reloadResource(input).getContextMappingModel().getBoundedContexts().stream().filter(bc -> bc.getName().equals("TestFeatureFrontend")).findFirst()
@@ -220,7 +225,8 @@ public class DeriveFrontendAndBackendSystemsFromFeatureTest extends AbstractRefa
 		DeriveFrontendAndBackendSystemsFromFeature ar = new DeriveFrontendAndBackendSystemsFromFeature("TestFeature", ACL);
 
 		// when
-		ar.doRefactor(input);
+		ar.refactor(input);
+		ar.persistChanges();
 
 		// then
 		UpstreamDownstreamRelationship relationship = (UpstreamDownstreamRelationship) reloadResource(input).getContextMappingModel().getMap().getRelationships().get(0);
@@ -239,7 +245,8 @@ public class DeriveFrontendAndBackendSystemsFromFeatureTest extends AbstractRefa
 		ar.deriveViewModelInFronted(false);
 
 		// when
-		ar.doRefactor(input);
+		ar.refactor(input);
+		ar.persistChanges();
 
 		// then
 		BoundedContext frontend = reloadResource(input).getContextMappingModel().getBoundedContexts().stream().filter(bc -> bc.getName().equals("TestFeatureFrontend")).findFirst()
@@ -260,7 +267,8 @@ public class DeriveFrontendAndBackendSystemsFromFeatureTest extends AbstractRefa
 		ar.setRelationshipImplTechnology("RESTful HTTP");
 
 		// when
-		ar.doRefactor(input);
+		ar.refactor(input);
+		ar.persistChanges();
 
 		// then
 		ContextMappingModel model = reloadResource(input).getContextMappingModel();

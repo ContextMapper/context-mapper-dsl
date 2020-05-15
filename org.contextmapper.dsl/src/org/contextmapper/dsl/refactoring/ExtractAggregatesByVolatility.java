@@ -25,7 +25,7 @@ import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.LikelihoodForChange;
 
-public class ExtractAggregatesByVolatility extends AbstractRefactoring implements Refactoring {
+public class ExtractAggregatesByVolatility extends AbstractRefactoring implements SemanticCMLRefactoring {
 
 	private String boundedContextName;
 	private BoundedContext originalBC;
@@ -53,15 +53,12 @@ public class ExtractAggregatesByVolatility extends AbstractRefactoring implement
 			// move the matching aggregates to the new Bounded Context
 			addElementToEList(newBC.getAggregates(), aggregate);
 			removeElementFromEList(originalBC.getAggregates(), aggregate);
-			markResourceChanged(originalBC);
 		}
 		addElementToEList(getResource(originalBC).getContextMappingModel().getBoundedContexts(), newBC);
 		for (ContextMap contextMap : getAllContextMaps()) {
 			new ContextMappingModelHelper(contextMap).moveExposedAggregatesToNewRelationshipsIfNeeded(aggregates.stream().map(a -> a.getName()).collect(Collectors.toList()),
 					newBC);
-			markResourceChanged(contextMap);
 		}
-		saveResources();
 	}
 
 	private BoundedContext createNewBoundedContext() {

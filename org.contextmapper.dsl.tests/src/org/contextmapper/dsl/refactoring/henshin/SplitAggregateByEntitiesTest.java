@@ -32,7 +32,8 @@ public class SplitAggregateByEntitiesTest extends AbstractRefactoringTest {
 		SplitAggregateByEntitiesRefactoring refactoring = new SplitAggregateByEntitiesRefactoring("Customers");
 
 		// when
-		refactoring.doRefactor(input);
+		refactoring.refactor(input);
+		refactoring.persistChanges();
 
 		// then
 		BoundedContext bc = reloadResource(input).getContextMappingModel().getBoundedContexts().get(0);
@@ -61,7 +62,7 @@ public class SplitAggregateByEntitiesTest extends AbstractRefactoringTest {
 		SplitAggregateByEntitiesRefactoring refactoring = new SplitAggregateByEntitiesRefactoring("ThisAggregateDoesNotExist");
 
 		// when
-		refactoring.doRefactor(input);
+		refactoring.refactor(input);
 
 		// then
 		BoundedContext bc = reloadResource(input).getContextMappingModel().getBoundedContexts().get(0);
@@ -78,7 +79,8 @@ public class SplitAggregateByEntitiesTest extends AbstractRefactoringTest {
 		SplitAggregateByEntitiesRefactoring refactoring = new SplitAggregateByEntitiesRefactoring("Customers");
 
 		// when
-		refactoring.doRefactor(input);
+		refactoring.refactor(input);
+		refactoring.persistChanges();
 
 		// then
 		BoundedContext bc = reloadResource(input).getContextMappingModel().getBoundedContexts().get(0);
@@ -104,7 +106,8 @@ public class SplitAggregateByEntitiesTest extends AbstractRefactoringTest {
 		SplitAggregateByEntitiesRefactoring refactoring = new SplitAggregateByEntitiesRefactoring("Customers");
 
 		// when
-		refactoring.doRefactor(input);
+		refactoring.refactor(input);
+		refactoring.persistChanges();
 
 		// then
 		ContextMappingModel model = reloadResource(input).getContextMappingModel();
@@ -132,11 +135,12 @@ public class SplitAggregateByEntitiesTest extends AbstractRefactoringTest {
 
 		// when
 		SplitAggregateByEntitiesRefactoring ar = new SplitAggregateByEntitiesRefactoring("Customers");
-		ar.doRefactor(mainResource, additionalResources);
+		ar.refactor(mainResource, additionalResources);
+		ar.persistChanges();
 		CMLResourceContainer contextMapResource = new CMLResourceContainer(
 				additionalResources.getResources().stream().filter(r -> r.getURI().toString().endsWith("split-agg-by-entities-test-4-input-1.cml")).findFirst().get());
 		contextMapResource = reloadResource(contextMapResource);
-
+		
 		// then
 		ContextMap contextMap = contextMapResource.getContextMappingModel().getMap();
 		assertEquals(2, contextMap.getBoundedContexts().size());

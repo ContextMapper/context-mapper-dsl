@@ -17,7 +17,7 @@ package org.contextmapper.dsl.refactoring.henshin;
 
 import org.contextmapper.dsl.cml.CMLResourceContainer;
 import org.contextmapper.dsl.refactoring.AbstractRefactoring;
-import org.contextmapper.dsl.refactoring.Refactoring;
+import org.contextmapper.dsl.refactoring.SemanticCMLRefactoring;
 import org.eclipse.emf.henshin.interpreter.EGraph;
 import org.eclipse.emf.henshin.interpreter.Engine;
 import org.eclipse.emf.henshin.interpreter.UnitApplication;
@@ -27,7 +27,7 @@ import org.eclipse.emf.henshin.interpreter.impl.UnitApplicationImpl;
 import org.eclipse.emf.henshin.model.Module;
 import org.eclipse.emf.henshin.model.resource.HenshinResourceSet;
 
-public abstract class AbstractHenshinRefactoring extends AbstractRefactoring implements Refactoring {
+public abstract class AbstractHenshinRefactoring extends AbstractRefactoring implements SemanticCMLRefactoring {
 
 	@Override
 	protected void doRefactor() {
@@ -63,10 +63,6 @@ public abstract class AbstractHenshinRefactoring extends AbstractRefactoring imp
 
 		// post-processing
 		postProcessing(transformationResource);
-
-		// save all changed resources
-		markResourceChanged(transformationResource);
-		saveResources();
 	}
 
 	/**

@@ -46,7 +46,7 @@ public class ExtractAggregatesByCohesionTest extends AbstractRefactoringTest {
 		// when
 		List<String> aggregatesToExtract = Arrays.asList(new String[] { "Customers", "Addresses" });
 		ExtractAggregatesByCohesion ar = new ExtractAggregatesByCohesion("CustomerManagement", "CustomerManagement_Extracted", aggregatesToExtract);
-		ar.doRefactor(input);
+		ar.refactor(input);
 
 		// then
 		ContextMappingModel model = input.getContextMappingModel();
@@ -69,7 +69,7 @@ public class ExtractAggregatesByCohesionTest extends AbstractRefactoringTest {
 		// when
 		List<String> aggregatesToExtract = Arrays.asList(new String[] { "Addresses" });
 		ExtractAggregatesByCohesion ar = new ExtractAggregatesByCohesion("CustomerManagement", "CustomerManagement_Extracted", aggregatesToExtract);
-		ar.doRefactor(input);
+		ar.refactor(input);
 
 		// then
 		ContextMappingModel model = input.getContextMappingModel();
@@ -107,7 +107,7 @@ public class ExtractAggregatesByCohesionTest extends AbstractRefactoringTest {
 		// when
 		List<String> aggregatesToExtract = Lists.newArrayList();
 		ExtractAggregatesByCohesion ar = new ExtractAggregatesByCohesion("CustomerManagement", "CustomerManagement_Extracted", aggregatesToExtract);
-		ar.doRefactor(input);
+		ar.refactor(input);
 
 		// then
 		ContextMappingModel model = input.getContextMappingModel();
@@ -127,7 +127,7 @@ public class ExtractAggregatesByCohesionTest extends AbstractRefactoringTest {
 		// when
 		List<String> aggregatesToExtract = Arrays.asList(new String[] { "Customers", "Addresses" });
 		ExtractAggregatesByCohesion ar = new ExtractAggregatesByCohesion("CustomerManagement", "CustomerManagement_Extracted", aggregatesToExtract);
-		ar.doRefactor(input);
+		ar.refactor(input);
 
 		// then
 		ContextMappingModel model = input.getContextMappingModel();
@@ -150,7 +150,7 @@ public class ExtractAggregatesByCohesionTest extends AbstractRefactoringTest {
 		// when
 		List<String> aggregatesToExtract = Arrays.asList(new String[] { "Customers", "Addresses", "ThisAggregateDoesNotExist" });
 		ExtractAggregatesByCohesion ar = new ExtractAggregatesByCohesion("CustomerManagement", "CustomerManagement_Extracted", aggregatesToExtract);
-		ar.doRefactor(input);
+		ar.refactor(input);
 
 		// then
 		ContextMappingModel model = input.getContextMappingModel();
@@ -173,7 +173,8 @@ public class ExtractAggregatesByCohesionTest extends AbstractRefactoringTest {
 		// when
 		List<String> aggregatesToExtract = Arrays.asList(new String[] { "Addresses" });
 		ExtractAggregatesByCohesion ar = new ExtractAggregatesByCohesion("CustomerManagement", "CustomerManagement_Extracted", aggregatesToExtract);
-		ar.doRefactor(mainResource, additionalResources);
+		ar.refactor(mainResource, additionalResources);
+		ar.persistChanges();
 		CMLResourceContainer contextMapResource = new CMLResourceContainer(
 				additionalResources.getResources().stream().filter(r -> r.getURI().toString().endsWith("extract-aggregates-by-nfr-test-4-input-1.cml")).findFirst().get());
 		contextMapResource = reloadResource(contextMapResource);

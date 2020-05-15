@@ -30,7 +30,7 @@ import org.contextmapper.dsl.contextMappingDSL.UpstreamRole;
 import org.contextmapper.dsl.refactoring.exception.RefactoringInputException;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
-public class DeriveFrontendAndBackendSystemsFromFeature extends AbstractRefactoring implements Refactoring {
+public class DeriveFrontendAndBackendSystemsFromFeature extends AbstractRefactoring implements SemanticCMLRefactoring {
 
 	private String featureBoundedContextName;
 	private ContextSplittingIntegrationType relationshipType;
@@ -88,9 +88,6 @@ public class DeriveFrontendAndBackendSystemsFromFeature extends AbstractRefactor
 		addElementToEList(map.getBoundedContexts(), frontend);
 		addElementToEList(map.getBoundedContexts(), backend);
 		addElementToEList(map.getRelationships(), relationship);
-
-		markResourceChanged(rootResource);
-		saveResources();
 	}
 
 	private Aggregate createSampleViewModelAggregate() {

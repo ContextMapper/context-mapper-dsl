@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 The Context Mapper Project Team
+ * Copyright 2018-2020 The Context Mapper Project Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 import org.contextmapper.dsl.cml.CMLResourceContainer;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 
-public class SplitBoundedContextByUseCases implements Refactoring {
+public class SplitBoundedContextByUseCases implements SemanticCMLRefactoring {
 
 	private SplitBoundedContextByAggregateAttribute coreAR;
 
@@ -30,13 +30,18 @@ public class SplitBoundedContextByUseCases implements Refactoring {
 	}
 
 	@Override
-	public void doRefactor(CMLResourceContainer resource) {
-		this.coreAR.doRefactor(resource);
+	public void refactor(CMLResourceContainer resource) {
+		this.coreAR.refactor(resource);
 	}
 
 	@Override
-	public void doRefactor(CMLResourceContainer resource, ResourceSet consistencyCheckResources) {
-		this.coreAR.doRefactor(resource, consistencyCheckResources);
+	public void refactor(CMLResourceContainer resource, ResourceSet consistencyCheckResources) {
+		this.coreAR.refactor(resource, consistencyCheckResources);
+	}
+
+	@Override
+	public void persistChanges() {
+		this.coreAR.persistChanges();
 	}
 
 }
