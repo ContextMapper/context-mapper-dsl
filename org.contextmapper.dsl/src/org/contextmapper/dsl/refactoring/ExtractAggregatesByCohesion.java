@@ -55,15 +55,12 @@ public class ExtractAggregatesByCohesion extends AbstractRefactoring implements 
 
 			removeElementFromEList(originalBC.getAggregates(), aggregate.get());
 			addElementToEList(newBC.getAggregates(), aggregate.get());
-			markResourceChanged(originalBC);
 		}
 
 		getResource(originalBC).getContextMappingModel().getBoundedContexts().add(newBC);
 		for (ContextMap contextMap : getAllContextMaps()) {
 			new ContextMappingModelHelper(contextMap).moveExposedAggregatesToNewRelationshipsIfNeeded(aggregatesToExtract, newBC);
-			markResourceChanged(contextMap);
 		}
-		saveResources();
 	}
 
 	private BoundedContext createNewBoundedContext() {

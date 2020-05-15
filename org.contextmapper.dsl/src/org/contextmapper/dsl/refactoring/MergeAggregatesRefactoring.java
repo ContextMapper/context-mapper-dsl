@@ -88,20 +88,15 @@ public class MergeAggregatesRefactoring extends AbstractRefactoring implements S
 		// update context maps
 		for (ContextMap contextMap : getAllContextMaps()) {
 			handleContextMapChanges(contextMap, agg1, agg2);
-			markResourceChanged(contextMap);
 		}
 
 		// remove agg2 from its container
 		if (agg2.eContainer() instanceof BoundedContext) {
 			BoundedContext container = (BoundedContext) agg2.eContainer();
 			removeElementFromEList(container.getAggregates(), agg2);
-			markResourceChanged(container);
 		} else if (agg2.eContainer() instanceof SculptorModule) {
-			BoundedContext container = (BoundedContext) ((SculptorModule) agg2.eContainer()).eContainer();
 			removeElementFromEList(((SculptorModule) agg2.eContainer()).getAggregates(), agg2);
-			markResourceChanged(container);
 		}
-		saveResources();
 	}
 
 	private void checkForPossibleDomainObjectNameClashes(Aggregate aggregate1, Aggregate aggregate2) {

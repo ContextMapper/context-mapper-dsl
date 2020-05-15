@@ -89,10 +89,6 @@ public class MergeBoundedContextsRefactoring extends AbstractRefactoring impleme
 		// create comment if BC2 file is empty
 		if (bc2Model.getMap() == null && bc2Model.getBoundedContexts().isEmpty())
 			bc2Model.setFirstLineComment("// Due to the application of 'Merge Bounded Contexts' this file no longer contains any Bounded Contexts.");
-
-		markResourceChanged(bc1);
-		markResourceChanged(bc2);
-		saveResources();
 	}
 
 	private String mergeImplementationTechnologies(String implementationTechnology1, String implementationTechnology2) {
@@ -118,7 +114,6 @@ public class MergeBoundedContextsRefactoring extends AbstractRefactoring impleme
 				BoundedContext bcToRemove = map.getBoundedContexts().stream().filter(bc -> bc.getName().equals(removedBC.getName())).findFirst().get();
 				removeElementFromEList(map.getBoundedContexts(), bcToRemove);
 			}
-			markResourceChanged(map);
 		}
 	}
 
@@ -148,7 +143,6 @@ public class MergeBoundedContextsRefactoring extends AbstractRefactoring impleme
 				Import importToAdd = ContextMappingDSLFactory.eINSTANCE.createImport();
 				importToAdd.setImportURI(mergedBCURI.toString());
 				resource.getContextMappingModel().getImports().add(importToAdd);
-				markResourceChanged(resource);
 			}
 		}
 	}

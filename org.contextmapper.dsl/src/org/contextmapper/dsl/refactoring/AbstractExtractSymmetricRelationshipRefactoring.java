@@ -68,9 +68,6 @@ public abstract class AbstractExtractSymmetricRelationshipRefactoring extends Ab
 		relationship2.setDownstream(getBoundedContext(boundedContext2));
 		contextMap.getRelationships().add(relationship1);
 		contextMap.getRelationships().add(relationship2);
-
-		// save model
-		saveResources();
 	}
 
 	abstract List<SymmetricRelationship> getMatchingRelationships();

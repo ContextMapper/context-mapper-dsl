@@ -47,7 +47,6 @@ public abstract class AbstractRefactoring implements SemanticCMLRefactoring {
 	private Map<ContextMap, CMLResourceContainer> contextMapMap = Maps.newHashMap();
 	private Map<Domain, CMLResourceContainer> domainMap = Maps.newHashMap();
 	private Map<UserRequirement, CMLResourceContainer> userRequirementMap = Maps.newHashMap();
-	private List<CMLResourceContainer> changedResources = Lists.newArrayList();
 
 	protected ResourceSet consistencyCheckResources;
 	protected Set<CMLResourceContainer> additionalResourcesToCheck = Sets.newHashSet();
@@ -130,61 +129,9 @@ public abstract class AbstractRefactoring implements SemanticCMLRefactoring {
 		}
 	} 
 	
-	protected void saveResource(Resource resource) {
-//		try {
-//			resource.save(SaveOptions.newBuilder().format().getOptions().toOptionsMap());
-//		} catch (IOException e) {
-//			throw new RuntimeException("Document cannot be formatted.");
-//		}
-	}
-
-	protected void saveResources() {
-		rootResource.getContextMappingModel().eAllContents();
-		saveResource(rootResource.getResource());
-		for (CMLResourceContainer changedResource : changedResources) {
-			changedResource.getContextMappingModel().eAllContents();
-			saveResource(changedResource.getResource());
-		}
-	}
-
-	protected void markResourceChanged(BoundedContext changedBoundedContext) {
-		CMLResourceContainer resource = getResource(changedBoundedContext);
-		markResourceChanged(resource);
-	}
-
-	protected void markResourceChanged(ContextMap changedContextMap) {
-		markResourceChanged(getResource(changedContextMap));
-	}
-
-	protected void markResourceChanged(Domain domain) {
-		markResourceChanged(getResource(domain));
-	}
-
-	protected void markResourceChanged(UserRequirement userRequirement) {
-		markResourceChanged(getResource(userRequirement));
-	}
-
-	protected void markResourceChanged(CMLResourceContainer resource) {
-		this.changedResources.add(resource);
-	}
-
 	protected CMLResourceContainer getResource(BoundedContext bc) {
 		CMLResourceContainer result = this.boundedContextsMap.get(bc);
 		return result;
-	}
-
-	protected CMLResourceContainer getResource(ContextMap contextMap) {
-		return this.contextMapMap.get(contextMap);
-	}
-
-	protected CMLResourceContainer getResource(Domain domain) {
-		if (!this.domainMap.containsKey(domain))
-			this.domainMap.put(domain, rootResource);
-		return this.domainMap.get(domain);
-	}
-
-	protected CMLResourceContainer getResource(UserRequirement userRequirement) {
-		return this.userRequirementMap.get(userRequirement);
 	}
 
 	private void resolveRootElements() {

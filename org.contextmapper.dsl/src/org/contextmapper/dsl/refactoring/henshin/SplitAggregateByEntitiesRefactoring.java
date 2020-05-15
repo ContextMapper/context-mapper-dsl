@@ -125,7 +125,6 @@ public class SplitAggregateByEntitiesRefactoring extends AbstractHenshinRefactor
 				addElementsToEList(upDownRelationship.getUpstreamExposedAggregates(), newAggregates);
 			}
 		}
-		markResourceChanged(contextMap);
 	}
 
 	@Override

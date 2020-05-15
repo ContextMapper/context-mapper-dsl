@@ -63,10 +63,6 @@ public abstract class AbstractHenshinRefactoring extends AbstractRefactoring imp
 
 		// post-processing
 		postProcessing(transformationResource);
-
-		// save all changed resources
-		markResourceChanged(transformationResource);
-		saveResources();
 	}
 
 	/**

@@ -65,11 +65,6 @@ public class DeriveBoundedContextFromSubdomains extends AbstractRefactoring impl
 			addElementToEList(bc.getImplementedDomainParts(), (DomainPart) subdomain);
 			createAggregate4Subdomain(subdomain, bc);
 		}
-
-		if (getResource(bc) != null)
-			markResourceChanged(bc);
-
-		saveResources();
 	}
 
 	private void createAggregate4Subdomain(Subdomain subdomain, BoundedContext bc) {
@@ -193,7 +188,6 @@ public class DeriveBoundedContextFromSubdomains extends AbstractRefactoring impl
 		BoundedContext newBC = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
 		newBC.setName(boundedContextName);
 		addElementToEList(rootResource.getContextMappingModel().getBoundedContexts(), newBC);
-		markResourceChanged(rootResource);
 		return newBC;
 	}
 

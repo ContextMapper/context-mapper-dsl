@@ -88,9 +88,6 @@ public class DeriveFrontendAndBackendSystemsFromFeature extends AbstractRefactor
 		addElementToEList(map.getBoundedContexts(), frontend);
 		addElementToEList(map.getBoundedContexts(), backend);
 		addElementToEList(map.getRelationships(), relationship);
-
-		markResourceChanged(rootResource);
-		saveResources();
 	}
 
 	private Aggregate createSampleViewModelAggregate() {

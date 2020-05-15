@@ -50,7 +50,6 @@ public class SplitBoundedContextByAggregateAttribute extends AbstractRefactoring
 		initOriginalBC();
 		createAggregateMapping();
 		splitOriginalBC();
-		saveResources();
 	}
 
 	private void createAggregateMapping() {
@@ -86,7 +85,6 @@ public class SplitBoundedContextByAggregateAttribute extends AbstractRefactoring
 			newBC.setName("NewBoundedContext" + i++);
 			addElementsToEList(newBC.getAggregates(), aggregates);
 			addElementToEList(bcModel.getBoundedContexts(), newBC);
-			markResourceChanged(originalBC);
 			adjustContextMaps(newBC, aggregates);
 		}
 	}
@@ -103,7 +101,6 @@ public class SplitBoundedContextByAggregateAttribute extends AbstractRefactoring
 		for (ContextMap contextMap : getAllContextMaps()) {
 			new ContextMappingModelHelper(contextMap)
 					.moveExposedAggregatesToNewRelationshipsIfNeeded(extractedAggregates.stream().map(agg -> agg.getName()).collect(Collectors.toList()), newBC);
-			markResourceChanged(contextMap);
 		}
 	}
 

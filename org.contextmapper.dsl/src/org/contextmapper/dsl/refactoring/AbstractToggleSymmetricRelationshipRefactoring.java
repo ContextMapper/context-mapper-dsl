@@ -61,9 +61,6 @@ public abstract class AbstractToggleSymmetricRelationshipRefactoring extends Abs
 
 		removeElementFromEList(contextMap.getRelationships(), originalRelationship);
 		addElementToEList(contextMap.getRelationships(), newRelationship);
-
-		// save model
-		saveResources();
 	}
 
 	abstract String getRelationshipType();

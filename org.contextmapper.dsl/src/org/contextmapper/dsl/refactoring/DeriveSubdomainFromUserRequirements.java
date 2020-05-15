@@ -78,9 +78,6 @@ public class DeriveSubdomainFromUserRequirements extends AbstractRefactoring imp
 		}
 
 		subdomain.setDomainVisionStatement(String.join(BENEFIT_SEPARATOR_STRING, benefits));
-
-		markResourceChanged(domain);
-		saveResources();
 	}
 
 	private boolean doesContainAtLeastOneEntity(UserRequirement ur) {

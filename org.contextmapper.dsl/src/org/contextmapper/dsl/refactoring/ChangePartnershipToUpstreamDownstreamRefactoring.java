@@ -63,9 +63,6 @@ public class ChangePartnershipToUpstreamDownstreamRefactoring extends AbstractRe
 		relationship.setUpstream(getBoundedContext(upstreamContext));
 		relationship.setDownstream(getBoundedContext(downstreamContext));
 		addElementToEList(contextMap.getRelationships(), relationship);
-
-		// save model
-		saveResources();
 	}
 
 	List<SymmetricRelationship> getMatchingRelationships() {
