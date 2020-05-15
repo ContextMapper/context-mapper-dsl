@@ -9,7 +9,7 @@ dependencies {
 	compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.9'
 	compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.9.9'
 	compile group: 'org.contextmapper', name: 'henshin-interpreter', version: '1.4.0'
-	compile group: 'org.contextmapper', name: 'context-map-generator', version: '1.1.0'
+	compile group: 'org.contextmapper', name: 'context-map-generator', version: '1.1.1'
 	compile group: 'org.contextmapper', name: 'service-cutter-library', version: '1.1.4'
 }
 configurations {
@@ -19,7 +19,7 @@ configurations {
 }
 
 dependencies {
-	mwe2 "org.eclipse.emf:org.eclipse.emf.mwe2.launch:2.11.1"
+	mwe2 "org.eclipse.emf:org.eclipse.emf.mwe2.launch:2.11.2"
 	mwe2 "org.eclipse.xtext:org.eclipse.xtext.common.types:${xtextVersion}"
 	mwe2 "org.eclipse.xtext:org.eclipse.xtext.xtext.generator:${xtextVersion}"
 	mwe2 "org.eclipse.xtext:xtext-antlr-generator:[2.1.1, 3)"

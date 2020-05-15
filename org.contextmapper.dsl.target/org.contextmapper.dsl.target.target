@@ -8,37 +8,37 @@
 			<unit id="org.eclipse.pde.feature.group" version="0.0.0"/>
 			<unit id="org.eclipse.draw2d.feature.group" version="0.0.0"/>
 			<unit id="org.eclipse.emf.sdk.feature.group" version="0.0.0"/>
-			<repository location="http://download.eclipse.org/releases/2019-12"/>
+			<repository location="https://download.eclipse.org/releases/2020-03"/>
 		</location>
 		<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 			<unit id="org.eclipse.emf.mwe2.launcher.feature.group" version="0.0.0"/>
-			<repository location="https://download.eclipse.org/modeling/emft/mwe/updates/releases/2.11.1/"/>
+			<repository location="https://download.eclipse.org/modeling/emft/mwe/updates/releases/2.11.2/"/>
 		</location>
 		<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 			<unit id="org.eclipse.xtext.sdk.feature.group" version="0.0.0"/>
-			<repository location="https://download.eclipse.org/modeling/tmf/xtext/updates/releases/2.20.0/"/>
+			<repository location="https://download.eclipse.org/modeling/tmf/xtext/updates/releases/2.21.0/"/>
 		</location>
 		<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 			<unit id="com.google.gson" version="2.8.2.v20180104-1110"/>
 			<unit id="org.antlr.runtime" version="3.2.0.v201101311130"/>
 			<unit id="org.junit" version="4.12.0.v201504281640"/>
-			<unit id="org.junit.jupiter.api" version="5.5.1.v20190826-0900"/>
-			<unit id="org.junit.jupiter.engine" version="5.5.1.v20190826-0900"/>
-			<unit id="org.junit.platform.commons" version="1.5.1.v20190826-0900"/>
-			<unit id="org.junit.platform.engine" version="1.5.1.v20190826-0900"/>
-			<unit id="org.junit.platform.launcher" version="1.5.1.v20190826-0900"/>
-			<unit id="org.junit.platform.runner" version="1.5.1.v20190826-0900"/>
+			<unit id="org.junit.jupiter.api" version="5.6.0.v20200203-2009"/>
+			<unit id="org.junit.jupiter.engine" version="5.6.0.v20200203-2009"/>
+			<unit id="org.junit.platform.commons" version="1.6.0.v20200203-2009"/>
+			<unit id="org.junit.platform.engine" version="1.6.0.v20200203-2009"/>
+			<unit id="org.junit.platform.launcher" version="1.6.0.v20200203-2009"/>
+			<unit id="org.junit.platform.runner" version="1.6.0.v20200203-2009"/>
 			<unit id="org.opentest4j" version="1.2.0.v20190826-0900"/>
 			<unit id="org.objectweb.asm" version="7.2.0.v20191010-1910"/>
 			<unit id="org.objectweb.asm.tree" version="7.2.0.v20191010-1910"/>
 			<unit id="io.github.classgraph" version="4.8.35.v20190528-1517"/>
-			<repository location="https://download.eclipse.org/tools/orbit/downloads/2019-12"/>
+			<repository location="https://download.eclipse.org/tools/orbit/downloads/2020-03"/>
 		</location>
 		<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-			<unit id="com.fasterxml.jackson.core.jackson-databind" version="2.9.2.v20180207-1730"/>
-			<unit id="com.fasterxml.jackson.core.jackson-annotations" version="2.9.2.v20180207-1730"/>
+			<unit id="com.fasterxml.jackson.core.jackson-databind" version="2.9.93.v20190906-1522"/>
+			<unit id="com.fasterxml.jackson.core.jackson-annotations" version="2.9.9.v20190906-1522"/>
 			<unit id="org.apache.commons.io" version="2.2.0.v201405211200"/>
-			<repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20180905201904/repository/"/>
+			<repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20200224183213/repository/"/>
 		</location>
 		<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 			<unit id="org.eclipse.emf.henshin.sdk.feature.group" version="1.6.0.202001052147"/>
@@ -46,7 +46,7 @@
 		</location>
 		<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 			<repository location="https://dl.bintray.com/contextmapper/context-map-generator-releases/"/>
-			<unit id="org.contextmapper.contextmap.generator.feature.feature.group" version="1.1.0"/>
+			<unit id="org.contextmapper.contextmap.generator.feature.feature.group" version="1.1.1"/>
 		</location>
 		<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 			<repository location="https://dl.bintray.com/contextmapper/service-cutter-library-releases/"/>

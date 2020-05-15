@@ -6,8 +6,8 @@
 	<packaging>pom</packaging>
 
 	<properties>
-		<xtextVersion>2.20.0</xtextVersion>
-		<mwe2Version>2.11.1</mwe2Version>
+		<xtextVersion>2.21.0</xtextVersion>
+		<mwe2Version>2.11.2</mwe2Version>
 		<jacoco-version>0.8.5</jacoco-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
