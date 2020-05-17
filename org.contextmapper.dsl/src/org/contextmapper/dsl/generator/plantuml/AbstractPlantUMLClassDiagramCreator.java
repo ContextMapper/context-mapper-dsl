@@ -68,11 +68,11 @@ abstract public class AbstractPlantUMLClassDiagramCreator<T extends EObject> ext
 	}
 
 	private void printEntity(Entity entity, int indentation) {
-		printStereotypedClass("Entity", entity, indentation);
+		printStereotypedClass("(E,DarkSeaGreen) Entity", entity, indentation);
 	}
 
 	private void printValueObject(ValueObject valueObject, int indentation) {
-		printStereotypedClass("Value Object", valueObject, indentation);
+		printStereotypedClass("(V,DarkSeaGreen) Value Object", valueObject, indentation);
 	}
 
 	private void printEvent(Event event, int indentation) {
