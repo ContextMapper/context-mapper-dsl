@@ -254,6 +254,27 @@ class UseCaseDSLParsingTest {
 		assertTrue(feature.entityAttributes.contains("firstname"));
 		assertTrue(feature.entityAttributes.contains("lastname"));
 	}
+	
+	@Test
+	def void canDefineEntityAttributesInPluralSentence() {
+		// given
+		val String dslSnippet = '''
+			UseCase testUsecase {
+				actor = "Insurance Employee"
+				interactions = create "Customers" with their "firstname", "lastname"
+				benefit = "I can manage the customers data and ..."
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+
+		val feature = result.userRequirements.get(0).features.get(0);
+		assertTrue(feature.entityAttributes.contains("firstname"));
+		assertTrue(feature.entityAttributes.contains("lastname"));
+	}
 
 	@Test
 	def void canDefineContainmentRelationshipSyntaxVariant1() {
