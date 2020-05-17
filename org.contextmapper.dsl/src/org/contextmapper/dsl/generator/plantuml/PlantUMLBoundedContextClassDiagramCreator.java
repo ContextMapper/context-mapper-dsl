@@ -124,7 +124,7 @@ public class PlantUMLBoundedContextClassDiagramCreator extends AbstractPlantUMLC
 	private void printService(Service service, int indentation) {
 		printIndentation(indentation);
 		sb.append("class").append(" ").append(service.getName());
-		sb.append(" <<Service>> ");
+		sb.append(" <<(S,DarkSeaGreen) Service>> ");
 		sb.append("{");
 		linebreak();
 		printServiceOperations(service.getName(), service.getOperations(), indentation + 1);

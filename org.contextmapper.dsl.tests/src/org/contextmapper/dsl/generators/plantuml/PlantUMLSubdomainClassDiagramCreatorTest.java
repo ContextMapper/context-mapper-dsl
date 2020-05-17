@@ -87,7 +87,7 @@ class PlantUMLSubdomainClassDiagramCreatorTest extends AbstractCMLInputFileTest 
 		String plantUML = this.creator.createDiagram(subdomain);
 
 		// then
-		assertTrue(plantUML.contains("	class Test <<Entity>> {" + System.lineSeparator() + "		int amount" + System.lineSeparator() + "		List<String> myList"
+		assertTrue(plantUML.contains("	class Test <<(E,DarkSeaGreen) Entity>> {" + System.lineSeparator() + "		int amount" + System.lineSeparator() + "		List<String> myList"
 				+ System.lineSeparator() + "	}" + System.lineSeparator()));
 	}
 
