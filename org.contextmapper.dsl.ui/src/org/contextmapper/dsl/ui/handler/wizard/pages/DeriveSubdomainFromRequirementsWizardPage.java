@@ -48,7 +48,8 @@ public class DeriveSubdomainFromRequirementsWizardPage extends ContextMapperWiza
 
 	private boolean hasError = true;
 
-	public DeriveSubdomainFromRequirementsWizardPage(String initialDomain, Map<String, Set<String>> domainSubdomainMapping) {
+	public DeriveSubdomainFromRequirementsWizardPage(String initialDomain,
+			Map<String, Set<String>> domainSubdomainMapping) {
 		super("Subdomain Definition Page");
 		this.initialDomain = initialDomain;
 		this.domainSubdomainMapping = domainSubdomainMapping;
@@ -77,7 +78,8 @@ public class DeriveSubdomainFromRequirementsWizardPage extends ContextMapperWiza
 		// domain selection field
 		comboDomains = new Combo(container, SWT.DROP_DOWN);
 		comboDomains.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		comboDomains.setItems(this.domainSubdomainMapping.keySet().toArray(new String[this.domainSubdomainMapping.size()]));
+		comboDomains
+				.setItems(this.domainSubdomainMapping.keySet().toArray(new String[this.domainSubdomainMapping.size()]));
 		comboDomains.select(new ArrayList<String>(this.domainSubdomainMapping.keySet()).indexOf(this.initialDomain));
 		comboDomains.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -94,7 +96,8 @@ public class DeriveSubdomainFromRequirementsWizardPage extends ContextMapperWiza
 				setPageComplete(isPageComplete());
 			}
 		});
-		new AutoCompleteField(comboDomains, new ComboContentAdapter(), this.domainSubdomainMapping.keySet().toArray(new String[domainSubdomainMapping.size()]));
+		new AutoCompleteField(comboDomains, new ComboContentAdapter(),
+				this.domainSubdomainMapping.keySet().toArray(new String[domainSubdomainMapping.size()]));
 
 		Label subdomainNameLabel = new Label(container, SWT.NONE);
 		subdomainNameLabel.setText("Subdomain name:");
@@ -118,7 +121,8 @@ public class DeriveSubdomainFromRequirementsWizardPage extends ContextMapperWiza
 				setPageComplete(isPageComplete());
 			}
 		});
-		this.subdomainAutoCompleteField = new AutoCompleteField(comboSubdomain, new ComboContentAdapter(), initialSubdomains.toArray(new String[initialSubdomains.size()]));
+		this.subdomainAutoCompleteField = new AutoCompleteField(comboSubdomain, new ComboContentAdapter(),
+				initialSubdomains.toArray(new String[initialSubdomains.size()]));
 		updateSubdomainCombo(initialSubdomains);
 
 		setControl(container);
@@ -130,12 +134,22 @@ public class DeriveSubdomainFromRequirementsWizardPage extends ContextMapperWiza
 		setErrorMessage(null);
 		hasError = false;
 
+		if (comboDomains.getText() == null || "".equals(comboDomains.getText())) {
+			setError("Please provide a name for the domain.");
+			return;
+		}
 		if (!comboDomains.getText().matches(AbstractCMLValidator.ID_VALIDATION_PATTERN)) {
-			setError("The domain name '" + comboDomains.getText() + "' is not valid. Allowed characters are: a-z, A-Z, 0-9, _");
+			setError("The domain name \"" + comboDomains.getText()
+					+ "\" is not valid. Allowed characters are: a-z, A-Z, 0-9, _");
+			return;
+		}
+		if (comboSubdomain.getText() == null || "".equals(comboSubdomain.getText())) {
+			setError("Please provide a name for the subdomain.");
 			return;
 		}
 		if (!comboSubdomain.getText().matches(AbstractCMLValidator.ID_VALIDATION_PATTERN)) {
-			setError("The domain name '" + comboSubdomain.getText() + "' is not valid. Allowed characters are: a-z, A-Z, 0-9, _");
+			setError("The subdomain name \"" + comboSubdomain.getText()
+					+ "\" is not valid. Allowed characters are: a-z, A-Z, 0-9, _");
 			return;
 		}
 	}
@@ -175,7 +189,8 @@ public class DeriveSubdomainFromRequirementsWizardPage extends ContextMapperWiza
 
 	@Override
 	public boolean isPageComplete() {
-		return !hasError && comboDomains.getText() != null && !"".equals(comboDomains.getText()) && comboSubdomain.getText() != null && !"".equals(comboSubdomain.getText());
+		return !hasError && comboDomains.getText() != null && !"".equals(comboDomains.getText())
+				&& comboSubdomain.getText() != null && !"".equals(comboSubdomain.getText());
 	}
 
 	@Override
