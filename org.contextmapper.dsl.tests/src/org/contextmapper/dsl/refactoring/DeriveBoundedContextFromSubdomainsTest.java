@@ -31,6 +31,7 @@ import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContextType;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
+import org.contextmapper.dsl.exception.ContextMapperApplicationException;
 import org.contextmapper.dsl.refactoring.exception.RefactoringInputException;
 import org.contextmapper.tactic.dsl.tacticdsl.Attribute;
 import org.contextmapper.tactic.dsl.tacticdsl.Entity;
@@ -186,6 +187,19 @@ public class DeriveBoundedContextFromSubdomainsTest extends AbstractRefactoringT
 		Set<String> subdomains = Sets.newHashSet(Arrays.asList(new String[] { "JustSomeTestDomainNotExisting" }));
 		DeriveBoundedContextFromSubdomains ar = new DeriveBoundedContextFromSubdomains("NewTestBC", subdomains);
 		assertThrows(RefactoringInputException.class, () -> {
+			ar.refactor(input);
+		});
+	}
+
+	@Test
+	public void canThrowExceptionIfEntityAlreadyExistsInOtherBoundedContext() throws IOException {
+		// given
+		CMLResourceContainer input = getResourceCopyOfTestCML("derive-bc-from-subdomain-test-8-input.cml");
+
+		// when, then
+		Set<String> subdomains = Sets.newHashSet(Arrays.asList(new String[] { "CustomerDomain" }));
+		DeriveBoundedContextFromSubdomains ar = new DeriveBoundedContextFromSubdomains("CustomerManagementContext", subdomains);
+		assertThrows(ContextMapperApplicationException.class, () -> {
 			ar.refactor(input);
 		});
 	}

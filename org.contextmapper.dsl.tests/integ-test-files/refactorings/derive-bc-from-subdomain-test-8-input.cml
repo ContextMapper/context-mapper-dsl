@@ -1,0 +1,16 @@
+BoundedContext ExistingContext {
+	Aggregate ExistingAggregate {
+		Entity Customer // a context with a Customer entity already exists here
+	}
+}
+
+Domain InsuranceDomain {
+	Subdomain CustomerDomain {
+		Entity Customer
+		
+		Service CustomerService {
+			createCustomer;
+			testMethod;
+		}
+	}
+}
