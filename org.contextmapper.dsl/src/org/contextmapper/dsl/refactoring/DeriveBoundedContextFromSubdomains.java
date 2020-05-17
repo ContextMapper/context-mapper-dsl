@@ -27,6 +27,7 @@ import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
 import org.contextmapper.dsl.contextMappingDSL.Domain;
 import org.contextmapper.dsl.contextMappingDSL.DomainPart;
 import org.contextmapper.dsl.contextMappingDSL.Subdomain;
+import org.contextmapper.dsl.exception.ContextMapperApplicationException;
 import org.contextmapper.dsl.refactoring.exception.RefactoringInputException;
 import org.contextmapper.tactic.dsl.tacticdsl.Attribute;
 import org.contextmapper.tactic.dsl.tacticdsl.ComplexType;
@@ -38,6 +39,8 @@ import org.contextmapper.tactic.dsl.tacticdsl.ServiceOperation;
 import org.contextmapper.tactic.dsl.tacticdsl.SimpleDomainObject;
 import org.contextmapper.tactic.dsl.tacticdsl.TacticdslFactory;
 import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.eclipse.xtext.EcoreUtil2;
+import org.eclipse.xtext.xbase.lib.IteratorExtensions;
 
 import com.google.common.collect.Sets;
 
@@ -104,6 +107,10 @@ public class DeriveBoundedContextFromSubdomains extends AbstractRefactoring impl
 
 	private void createEntities(Subdomain subdomain, Aggregate aggregate) {
 		for (Entity sdEntity : subdomain.getEntities()) {
+			if (entityAlreadyExistsInOtherContext(sdEntity.getName()))
+				throw new ContextMapperApplicationException(
+						"Cannot derive Bounded Context. Another context with an Entity of the name \"" + sdEntity.getName() + "\" already exists.");
+
 			Entity bcEntity = createOrGetEntity(aggregate, sdEntity.getName());
 			bcEntity.setAggregateRoot(false);
 
@@ -121,6 +128,17 @@ public class DeriveBoundedContextFromSubdomains extends AbstractRefactoring impl
 			Entity bcEntity = createOrGetEntity(aggregate, sdEntity.getName());
 			copyReferences(sdEntity, bcEntity, aggregate.getDomainObjects());
 		}
+	}
+
+	private boolean entityAlreadyExistsInOtherContext(String entityName) {
+		Set<String> existingEntities = Sets.newHashSet();
+		Set<BoundedContext> boundedContexts = getAllBoundedContexts().stream().filter(bc -> !bc.getName().equals(boundedContextName)).collect(Collectors.toSet());
+		for (BoundedContext bc : boundedContexts) {
+			existingEntities.addAll(Sets.newHashSet(IteratorExtensions.filter(EcoreUtil2.eAll(bc), Entity.class)).stream().map(e -> e.getName()).collect(Collectors.toSet()));
+		}
+		if (existingEntities.contains(entityName))
+			return true;
+		return false;
 	}
 
 	private void copyAttributes(Entity source, Entity target) {

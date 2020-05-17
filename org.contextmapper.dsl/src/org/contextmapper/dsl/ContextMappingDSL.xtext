@@ -185,10 +185,6 @@ UserRequirement:
 	UseCase | UserStory
 ;
 
-/** 
- * Unfortunately there seems to be no mechanism to reuse identical attributes here.
- * Always ensure that UseCase and UserStory is kept in sync!
- */
 UseCase:
 	'UseCase' name=ID 
 	(OPEN
@@ -214,7 +210,7 @@ UserStory:
 ;
 
 Feature:
-	verb=(UserActivityDefaultVerb | STRING) ('a' | 'an')? entity=STRING ('with its' entityAttributes+=STRING ("," entityAttributes+=STRING)*)? (('in a' | 'in an' | 'for a' | 'for an') containerEntity=STRING)?
+	verb=(UserActivityDefaultVerb | STRING) ('a' | 'an')? entity=STRING (('with its' | 'with their') entityAttributes+=STRING ("," entityAttributes+=STRING)*)? (('in' | 'for')('a' | 'an')? containerEntity=STRING)?
 ;
 
 UserActivityDefaultVerb:
