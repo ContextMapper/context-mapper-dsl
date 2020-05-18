@@ -1,0 +1,34 @@
+dependencies {
+	compile project(':context-mapper-dsl')
+	compile project(':context-mapper-lsp')
+	testCompile "org.junit.jupiter:junit-jupiter-api:5.5.1"
+	testRuntime "org.junit.jupiter:junit-jupiter-engine:5.5.1"
+	testCompile 'org.junit.jupiter:junit-jupiter-params:5.5.1'
+	testCompile "org.eclipse.xtext:org.eclipse.xtext.testing:${xtextVersion}"
+	testCompile "org.eclipse.xtext:org.eclipse.xtext.xbase.testing:${xtextVersion}"
+}
+test {
+	useJUnitPlatform()
+}
+//this is an eclipse plugin project
+eclipseClasspath.enabled=false
+cleanEclipseClasspath.enabled=false
+
+jacocoTestReport {
+	FileTree sourceTree = files().asFileTree
+	FileTree classTree = files().asFileTree
+	
+	sourceTree += project(':context-mapper-lsp').sourceSets.main.allJava
+	classTree += project(':context-mapper-lsp').sourceSets.main.output.asFileTree
+	
+	additionalSourceDirs = sourceTree
+	additionalClassDirs = classTree
+	
+	reports {
+		html.enabled = true
+		xml.enabled = true
+		csv.enabled = false
+	}
+}
+
+check.dependsOn jacocoTestReport
