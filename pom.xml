@@ -8,18 +8,15 @@
 	<properties>
 		<xtextVersion>2.21.0</xtextVersion>
 		<mwe2Version>2.11.2</mwe2Version>
-		<jacoco-version>0.8.5</jacoco-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<!-- Tycho settings -->
-		<tycho-version>1.5.1</tycho-version>
+		<tycho-version>1.7.0</tycho-version>
 		<!-- Define overridable properties for tycho-surefire-plugin -->
 		<platformSystemProperties />
 		<moduleProperties />
 		<systemProperties />
-		<tycho.testArgLine />
-		<jacoco.reportPath>./target/jacoco.exec</jacoco.reportPath>
 		<maven-antrun-plugin.version>1.7</maven-antrun-plugin.version>
 	</properties>
 	<modules>
@@ -146,18 +143,6 @@
 							<excludes>**/target/**</excludes>
 							<message>[Tycho] Prepare for release: v${project.version}</message>
 						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>prepare-agent</id>
-						<goals>
-							<goal>prepare-agent</goal>
-						</goals>
 					</execution>
 				</executions>
 			</plugin>
@@ -315,40 +300,9 @@
 					<version>${tycho-version}</version>
 					<configuration>
 						<!-- THE FOLLOWING LINE MUST NOT BE BROKEN BY AUTOFORMATTING -->
-						<argLine>${jacoco.argLine} ${platformSystemProperties} ${systemProperties} ${moduleProperties}</argLine>
+						<argLine>${platformSystemProperties} ${systemProperties} ${moduleProperties}</argLine>
 						<failIfNoTests>false</failIfNoTests>
 						<useUIHarness>false</useUIHarness>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.jacoco</groupId>
-					<artifactId>jacoco-maven-plugin</artifactId>
-					<version>${jacoco-version}</version>
-					<executions>
-						<execution>
-							<id>prepare-agent</id>
-							<goals>
-								<goal>prepare-agent</goal>
-							</goals>
-							<configuration>
-								<propertyName>jacoco.argLine</propertyName>
-							</configuration>
-						</execution>
-					</executions>
-					<configuration>
-						<excludes>
-							<!-- Exclude ANTRL internals -->
-							<exclude>**/dsl/parser/antlr/internal/*.class</exclude>
-							<exclude>**/org/contextmapper/dsl/serializer/*.class</exclude>
-							<exclude>**/org/contextmapper/tactic/dsl/parser/antlr/*.class</exclude>
-							<exclude>**/org/contextmapper/servicecutter/dsl/parser/antlr/*.class</exclude>
-							
-							<!-- Exclude Xtext formatters -->
-							<exclude>**/formatting2/*.class</exclude>
-							
-							<!-- Exclude Sculptor Code -->
-							<exclude>**/org/contextmapper/tactic/dsl/scoping/*.class</exclude>
-						</excludes>
 					</configuration>
 				</plugin>
 			</plugins>

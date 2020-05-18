@@ -22,6 +22,7 @@ subprojects {
 	apply from: "${rootDir}/gradle/source-layout.gradle"
 	apply from: "${rootDir}/gradle/maven-deployment.gradle"
 	apply plugin: 'eclipse'
+	apply plugin: 'jacoco'
 	
 	group = 'org.contextmapper'
 	version = pomXml.version
