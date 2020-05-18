@@ -9,8 +9,6 @@ install: "/bin/true"
 jobs:
   include:
   - script: xvfb-run ./mvnw --settings ./.travis/settings.xml clean verify $(if [[ $TRAVIS_TAG =~ ^v.* ]]; then echo "-Prelease-composite"; fi) -B
-    after_success:
-    - bash <(curl -s https://codecov.io/bash)
     before_deploy:
     - mvn help:evaluate -N -Dexpression=project.version|grep -v '\['
     - export project_version=v$(mvn help:evaluate -N -Dexpression=project.version|grep -v '\[')
@@ -27,6 +25,8 @@ jobs:
         tags: true
       name: "$project_version"
   - script: ./gradlew clean build $(if [[ $TRAVIS_TAG =~ ^v.* || ($TRAVIS_BRANCH == "master" && $TRAVIS_PULL_REQUEST == 'false') ]]; then echo "publish -Psigning.keyId=${GPG_KEY_ID} -Psigning.password=${GPG_KEY_PASSPHRASE}"; fi)
+    after_success:
+    - bash <(curl -s https://codecov.io/bash)
 
 before_install:
 - sudo apt-get -y install graphviz
