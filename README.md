@@ -25,6 +25,7 @@ The Context Mapper project has been developed as part of research projects at [H
 * Generate [PlantUML](http://plantuml.com/) component diagram from context map
 * Generate [PlantUML](http://plantuml.com/) class diagram from bounded context and/or subdomain (tactic DDD)
 * Generate [MDSL](https://socadk.github.io/MDSL/) (micro-) service contracts out of DDD context maps
+* Generate [generic text files](https://contextmapper.org/docs/generic-freemarker-generator/) using [Freemarker](https://freemarker.apache.org/) templates
 * Generate [ServiceCutter](https://github.com/ServiceCutter/ServiceCutter) input files for service decomposition proposals
 * Convert [ServiceCutter](https://github.com/ServiceCutter/ServiceCutter) output back into context map (CML)
 
