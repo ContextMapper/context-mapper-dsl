@@ -1,7 +1,9 @@
 include 'context-mapper-dsl'
 include 'context-mapper-dsl-tests'
 include 'context-mapper-lsp'
+include 'context-mapper-lsp-tests'
 
 project(":context-mapper-dsl").projectDir = file("org.contextmapper.dsl")
-project(":context-mapper-lsp").projectDir = file("org.contextmapper.dsl.ide")
 project(":context-mapper-dsl-tests").projectDir = file("org.contextmapper.dsl.tests")
+project(":context-mapper-lsp").projectDir = file("org.contextmapper.dsl.ide")
+project(":context-mapper-lsp-tests").projectDir = file("org.contextmapper.dsl.ide.tests")

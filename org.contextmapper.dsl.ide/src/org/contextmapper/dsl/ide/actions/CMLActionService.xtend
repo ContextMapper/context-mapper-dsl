@@ -31,10 +31,11 @@ class CMLActionService implements ICodeActionService2 {
 		val startPosition = currentSelectionRange.start;
 		val endPosition = currentSelectionRange.end;
 
-		val selectedObjects = selectionResolver.resolveAllSelectedEObjects(new CMLResourceContainer(options.resource),
+		val resource = new CMLResourceContainer(options.resource);
+		val selectedObjects = selectionResolver.resolveAllSelectedEObjects(resource,
 			options.document.getOffSet(startPosition), options.document.getOffSet(endPosition));
 
-		return actionRegistry.getApplicableActions(selectedObjects).map[Either.forLeft(it)]
+		return actionRegistry.getApplicableActionCommands(resource, selectedObjects).map[Either.forLeft(it)]
 	}
 
 }

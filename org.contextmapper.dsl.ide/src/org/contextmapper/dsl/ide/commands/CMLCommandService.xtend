@@ -29,6 +29,9 @@ class CMLCommandService implements IExecutableCommandService {
 
 	static final Logger LOG = Logger.getLogger(CMLCommandService);
 
+	public static final String COMMAND_EXECUTED_RETURN_VALUE = "Command executed.";
+	public static final String COMMAND_EXECUTION_ERROR_PREFIX = "Error occurred:";
+
 	@Inject CMLCommandRegistry commandRegistry
 
 	override initialize() {
@@ -48,14 +51,16 @@ class CMLCommandService implements IExecutableCommandService {
 					"CML LSP command has been called: " + params.getCommand() + " (" + params.getArguments().get(0) +
 						")");
 				try {
-					command.executeCommand(new CMLResourceContainer(resource), params);
+					command.executeCommand(new CMLResourceContainer(resource), document, access, params);
 				} catch (Exception e) {
 					LOG.error("The command '" + command + "' resulted in an error", e);
 					e.printStackTrace(System.out);
-					return "Error occurred: " + e.message;
+					return COMMAND_EXECUTION_ERROR_PREFIX + " " + e.message;
 				}
-				return "Command executed."
+				return COMMAND_EXECUTED_RETURN_VALUE
 			].get
+		} else {
+			return COMMAND_EXECUTION_ERROR_PREFIX + " No resource URI found in command arguments!"
 		}
 	}
 }

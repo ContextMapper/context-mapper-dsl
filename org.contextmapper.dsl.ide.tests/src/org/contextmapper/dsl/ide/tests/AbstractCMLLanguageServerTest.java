@@ -13,26 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.contextmapper.dsl.ide.actions;
+package org.contextmapper.dsl.ide.tests;
 
-import org.eclipse.lsp4j.Command;
+import org.contextmapper.dsl.ContextMappingDSLStandaloneSetup;
+import org.eclipse.xtext.testing.AbstractLanguageServerTest;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
- * A CML refactoring or transformation (code action that calls a command).
+ * AbstractLanguageServerTest for the Context Mapper DSL (CML) language.
  * 
  * @author Stefan Kapferer
  *
  */
-public interface CMLCodeAction {
+public abstract class AbstractCMLLanguageServerTest extends AbstractLanguageServerTest {
 
-	/**
-	 * Defines whether the action is applicable or not.
-	 */
-	public boolean isApplicable();
-
-	/**
-	 * The command that shall be called.
-	 */
-	public Command getCommand();
+	public AbstractCMLLanguageServerTest() {
+		super("cml");
+	}
 
 }

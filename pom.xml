@@ -27,6 +27,7 @@
 		<module>org.contextmapper.dsl.feature</module>
 		<module>org.contextmapper.dsl.repository</module>
 		<module>org.contextmapper.dsl.tests</module>
+		<module>org.contextmapper.dsl.ide.tests</module>
 		<module>org.contextmapper.dsl.ui.tests</module>
 	</modules>
 

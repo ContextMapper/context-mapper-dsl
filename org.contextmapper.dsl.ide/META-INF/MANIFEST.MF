@@ -20,5 +20,5 @@ Export-Package: org.contextmapper.dsl.ide.contentassist.antlr.internal,
  org.contextmapper.tactic.dsl.ide.contentassist.antlr.internal,
  org.contextmapper.tactic.dsl.ide.contentassist.antlr,
  org.contextmapper.servicecutter.dsl.ide.contentassist.antlr,
- org.contextmapper.servicecutter.dsl.ide.contentassist.antlr.internal
-
+ org.contextmapper.servicecutter.dsl.ide.contentassist.antlr.internal,
+ org.contextmapper.dsl.ide.commands

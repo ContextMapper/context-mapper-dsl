@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.contextmapper.dsl.cml.CMLResourceContainer;
 import org.contextmapper.dsl.ide.actions.impl.SplitBoundedContextByOwnerAction;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.lsp4j.Command;
@@ -35,22 +36,18 @@ import com.google.common.collect.Sets;
  */
 public class CMLActionRegistry {
 
-	private Set<CMLCodeAction> codeActions = Sets.newHashSet();
+	private Set<CMLCodeAction> getAllActions(CMLResourceContainer resource, List<EObject> selectedObjects) {
+		Set<CMLCodeAction> codeActions = Sets.newHashSet();
 
-	public CMLActionRegistry() {
-		registerActions();
+		// add new AR here:
+		codeActions.add(new SplitBoundedContextByOwnerAction(resource, selectedObjects));
+
+		return Sets.newHashSet(codeActions);
 	}
 
-	private void registerActions() {
-		this.codeActions.add(new SplitBoundedContextByOwnerAction());
-	}
-
-	public Set<CMLCodeAction> getAllActions() {
-		return Sets.newHashSet(this.codeActions);
-	}
-
-	public List<? extends Command> getApplicableActions(List<EObject> selectedObjects) {
-		List<? extends Command> result = this.codeActions.stream().filter(a -> a.isApplicable(selectedObjects)).collect(Collectors.toList());
+	public List<? extends Command> getApplicableActionCommands(CMLResourceContainer resource, List<EObject> selectedObjects) {
+		List<? extends Command> result = getAllActions(resource, selectedObjects).stream().filter(a -> a.isApplicable()).map(a -> a.getCommand())
+				.collect(Collectors.toList());
 		return result;
 	}
 

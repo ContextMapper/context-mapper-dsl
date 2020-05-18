@@ -13,15 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.contextmapper.dsl.ide.commands.impl;
+package org.contextmapper.dsl.ide.commands.impl.generation;
 
 import org.contextmapper.dsl.cml.CMLResourceContainer;
-import org.contextmapper.dsl.ide.commands.CMLCommandContext;
 import org.contextmapper.dsl.ide.commands.CMLResourceCommand;
 import org.eclipse.lsp4j.ExecuteCommandParams;
 import org.eclipse.xtext.generator.GeneratorContext;
 import org.eclipse.xtext.generator.IGenerator2;
 import org.eclipse.xtext.generator.JavaIoFileSystemAccess;
+import org.eclipse.xtext.ide.server.Document;
+import org.eclipse.xtext.ide.server.ILanguageServerAccess;
 import org.eclipse.xtext.parser.IEncodingProvider;
 import org.eclipse.xtext.service.AbstractGenericModule;
 
@@ -41,7 +42,7 @@ public abstract class AbstractGenerationCommand implements CMLResourceCommand {
 	abstract IGenerator2 getGenerator();
 
 	@Override
-	public void executeCommand(CMLResourceContainer cmlResource, ExecuteCommandParams params) {
+	public void executeCommand(CMLResourceContainer cmlResource, Document document, ILanguageServerAccess access, ExecuteCommandParams params) {
 		JavaIoFileSystemAccess javaIoFileSystemAccess = getFileSystemAccess();
 		javaIoFileSystemAccess.setOutputPath("./src-gen");
 		getGenerator().doGenerate(cmlResource.getResource(), javaIoFileSystemAccess, new GeneratorContext());		

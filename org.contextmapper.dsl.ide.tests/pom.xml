@@ -7,7 +7,7 @@
 		<artifactId>org.contextmapper.dsl.parent</artifactId>
 		<version>5.11.1-SNAPSHOT</version>
 	</parent>
-	<artifactId>org.contextmapper.dsl.tests</artifactId>
+	<artifactId>org.contextmapper.dsl.ide.tests</artifactId>
 	<packaging>eclipse-test-plugin</packaging>
 
 	<build>
@@ -15,6 +15,22 @@
 			<plugin>
 				<groupId>org.eclipse.xtend</groupId>
 				<artifactId>xtend-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-surefire-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<!-- 
+						LANGUAGE SERVER TESTS DO NO RUN IN MAVEN BUILD :(
+						
+						TODO: check if there is a way to fix it as described by Christian here:
+						https://www.eclipse.org/forums/index.php/t/1103807/
+						
+						For the moment, LSP tests are executed in the Gradle build only!
+					-->
+					<skip>true</skip>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

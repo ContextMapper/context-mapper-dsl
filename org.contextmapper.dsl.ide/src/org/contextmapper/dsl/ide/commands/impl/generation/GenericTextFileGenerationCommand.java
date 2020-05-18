@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.contextmapper.dsl.ide.commands.impl;
+package org.contextmapper.dsl.ide.commands.impl.generation;
 
-import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.contextmapper.dsl.cml.CMLResourceContainer;
@@ -27,6 +25,8 @@ import org.contextmapper.dsl.generator.GenericContentGenerator;
 import org.contextmapper.dsl.generator.exception.GeneratorInputException;
 import org.eclipse.lsp4j.ExecuteCommandParams;
 import org.eclipse.xtext.generator.IGenerator2;
+import org.eclipse.xtext.ide.server.Document;
+import org.eclipse.xtext.ide.server.ILanguageServerAccess;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -48,10 +48,10 @@ public class GenericTextFileGenerationCommand extends AbstractGenerationCommand 
 	}
 
 	@Override
-	public void executeCommand(CMLResourceContainer cmlResource, ExecuteCommandParams params) {
-		if (params.getArguments().size() > 2 || params.getArguments().get(1).getClass() != JsonArray.class)
+	public void executeCommand(CMLResourceContainer cmlResource, Document document, ILanguageServerAccess access, ExecuteCommandParams params) {
+		if (params.getArguments().size() != 2 || params.getArguments().get(1).getClass() != JsonArray.class)
 			throw new ContextMapperApplicationException(
-					"This comment expects a JSON array with the following values as second parameter: URI to Freemarker template, filename string for output file");
+					"This command expects a JSON array with the following values as second parameter: URI to Freemarker template, filename string for output file");
 
 		JsonArray paramArray = (JsonArray) params.getArguments().get(1);
 		JsonObject paramObject = paramArray.get(0).getAsJsonObject();
@@ -64,7 +64,7 @@ public class GenericTextFileGenerationCommand extends AbstractGenerationCommand 
 		} catch (URISyntaxException e) {
 			throw new ContextMapperApplicationException("The passed template URI is not a valid URI.", e);
 		}
-		super.executeCommand(cmlResource, params);
+		super.executeCommand(cmlResource, document, access, params);
 	}
 
 }

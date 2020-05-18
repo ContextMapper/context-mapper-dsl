@@ -13,23 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.contextmapper.dsl.ide.commands.impl;
+package org.contextmapper.dsl.ide.commands.impl.generation;
 
-import org.contextmapper.dsl.generator.MDSLContractsGenerator;
+import org.contextmapper.dsl.generator.PlantUMLGenerator;
 import org.eclipse.xtext.generator.IGenerator2;
 
 /**
- * This command calls the MDSL generator that generates all MDSL
- * service contracts.
+ * This command calls the PlantUML generator that generates all PlantUML
+ * diagrams.
  * 
  * @author Stefan Kapferer
  *
  */
-public class MDSLGenerationCommand extends AbstractGenerationCommand {
+public class PlantUMLGenerationCommand extends AbstractGenerationCommand {
 
 	@Override
 	IGenerator2 getGenerator() {
-		return new MDSLContractsGenerator();
+		return new PlantUMLGenerator();
 	}
 
 }

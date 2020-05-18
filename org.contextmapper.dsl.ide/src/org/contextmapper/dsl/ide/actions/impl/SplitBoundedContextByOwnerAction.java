@@ -19,9 +19,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.contextmapper.dsl.cml.CMLResourceContainer;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.ide.actions.CMLCodeAction;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.lsp4j.Command;
+
+import com.google.common.collect.Lists;
 
 /**
  * Action that calls the "Split Bounded Context by Owner" refactoring.
@@ -29,16 +33,19 @@ import org.eclipse.emf.ecore.EObject;
  * @author Stefan Kapferer
  *
  */
-public class SplitBoundedContextByOwnerAction extends CMLCodeAction {
+public class SplitBoundedContextByOwnerAction implements CMLCodeAction {
 
-	public SplitBoundedContextByOwnerAction() {
-		this.setTitle("Split Bounded Context by Owner");
-		this.setCommand("cml.ar.splitBCByOwner");
+	private CMLResourceContainer cmlResource;
+	private List<EObject> editorSelection;
+
+	public SplitBoundedContextByOwnerAction(CMLResourceContainer cmlResource, List<EObject> editorSelection) {
+		this.cmlResource = cmlResource;
+		this.editorSelection = editorSelection;
 	}
 
 	@Override
-	public boolean isApplicable(List<EObject> editorSelection) {
-		Set<BoundedContext> boundedContexts = editorSelection.stream().filter(o -> o instanceof BoundedContext).map(o -> (BoundedContext) o).collect(Collectors.toSet());
+	public boolean isApplicable() {
+		Set<BoundedContext> boundedContexts = getSelectedBoundedContexts();
 
 		if (boundedContexts.isEmpty() || boundedContexts.size() > 1)
 			return false;
@@ -46,6 +53,23 @@ public class SplitBoundedContextByOwnerAction extends CMLCodeAction {
 		BoundedContext selectedContext = boundedContexts.iterator().next();
 		Set<String> owners = selectedContext.getAggregates().stream().map(agg -> agg.getOwner() == null ? "" : agg.getOwner().getName()).collect(Collectors.toSet());
 		return owners.size() > 1;
+	}
+
+	@Override
+	public Command getCommand() {
+		List<Object> commandArguments = Lists.newLinkedList();
+		commandArguments.add(cmlResource.getResource().getURI().toString());
+		commandArguments.add(getSelectedBoundedContext().getName());
+		return new Command("Split Bounded Context by Owner", "cml.ar.splitBCByOwner", commandArguments);
+	}
+
+	private BoundedContext getSelectedBoundedContext() {
+		Set<BoundedContext> boundedContexts = getSelectedBoundedContexts();
+		return boundedContexts.iterator().next();
+	}
+
+	private Set<BoundedContext> getSelectedBoundedContexts() {
+		return editorSelection.stream().filter(o -> o instanceof BoundedContext).map(o -> (BoundedContext) o).collect(Collectors.toSet());
 	}
 
 }

@@ -18,12 +18,16 @@ package org.contextmapper.dsl.ide.commands;
 import java.util.Map;
 import java.util.Set;
 
-import org.contextmapper.dsl.ide.commands.impl.GenericTextFileGenerationCommand;
-import org.contextmapper.dsl.ide.commands.impl.MDSLGenerationCommand;
-import org.contextmapper.dsl.ide.commands.impl.PlantUMLGenerationCommand;
+import org.contextmapper.dsl.ide.commands.impl.generation.GenericTextFileGenerationCommand;
+import org.contextmapper.dsl.ide.commands.impl.generation.MDSLGenerationCommand;
+import org.contextmapper.dsl.ide.commands.impl.generation.PlantUMLGenerationCommand;
+import org.contextmapper.dsl.ide.commands.impl.refactoring.SplitBoundedContextByOwnerRefactoringCommand;
+import org.eclipse.xtext.ide.serializer.IChangeSerializer;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 /**
  * Registers all commands that can be called on LSP command service.
@@ -34,8 +38,13 @@ import com.google.common.collect.Sets;
 public class CMLCommandRegistry {
 
 	private Map<String, CMLResourceCommand> commandMap = Maps.newHashMap();
+	@SuppressWarnings("restriction")
+	private Provider<IChangeSerializer> serializerProvider;
 
-	public CMLCommandRegistry() {
+	@SuppressWarnings("restriction")
+	@Inject
+	public CMLCommandRegistry(Provider<IChangeSerializer> serializerProvider) {
+		this.serializerProvider = serializerProvider;
 		registerCommands();
 	}
 
@@ -43,6 +52,7 @@ public class CMLCommandRegistry {
 		commandMap.put("cml.generate.puml", new PlantUMLGenerationCommand());
 		commandMap.put("cml.generate.mdsl", new MDSLGenerationCommand());
 		commandMap.put("cml.generate.generic.text.file", new GenericTextFileGenerationCommand());
+		commandMap.put("cml.ar.splitBCByOwner", new SplitBoundedContextByOwnerRefactoringCommand(serializerProvider));
 	}
 
 	public CMLResourceCommand getCommand(String commandId) {
