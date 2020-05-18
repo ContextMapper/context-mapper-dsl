@@ -19,7 +19,6 @@
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-surefire-plugin</artifactId>
-				<version>${tycho-version}</version>
 				<configuration>
 					<!-- 
 						LANGUAGE SERVER TESTS DO NO RUN IN MAVEN BUILD :(

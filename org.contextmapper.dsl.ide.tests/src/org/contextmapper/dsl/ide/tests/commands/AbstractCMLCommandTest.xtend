@@ -49,7 +49,10 @@ abstract class AbstractCMLCommandTest extends AbstractCMLLanguageServerTest {
 	}
 
 	def File srcGenFolder() {
-		return new File("src-gen")
+		val srcGenFolder =  new File("src-gen")
+		if(!srcGenFolder.exists)
+			srcGenFolder.mkdir
+		return srcGenFolder
 	}
 
 }
