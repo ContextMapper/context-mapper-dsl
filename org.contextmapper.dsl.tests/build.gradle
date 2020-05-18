@@ -12,3 +12,22 @@ test {
 //this is an eclipse plugin project
 eclipseClasspath.enabled=false
 cleanEclipseClasspath.enabled=false
+
+jacocoTestReport {
+	FileTree sourceTree = files().asFileTree
+	FileTree classTree = files().asFileTree
+	
+	sourceTree += project(':context-mapper-dsl').sourceSets.main.allJava
+	classTree += project(':context-mapper-dsl').sourceSets.main.output.asFileTree
+	
+	additionalSourceDirs = sourceTree
+	additionalClassDirs = classTree
+	
+	reports {
+		html.enabled = true
+		xml.enabled = true
+		csv.enabled = false
+	}
+}
+
+check.dependsOn jacocoTestReport
