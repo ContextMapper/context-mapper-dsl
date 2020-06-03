@@ -18,6 +18,7 @@ package org.contextmapper.dsl.ide.commands;
 import java.util.Map;
 import java.util.Set;
 
+import org.contextmapper.dsl.ide.commands.impl.generation.ContextMapGenerationCommand;
 import org.contextmapper.dsl.ide.commands.impl.generation.GenericTextFileGenerationCommand;
 import org.contextmapper.dsl.ide.commands.impl.generation.MDSLGenerationCommand;
 import org.contextmapper.dsl.ide.commands.impl.generation.PlantUMLGenerationCommand;
@@ -49,6 +50,7 @@ public class CMLCommandRegistry {
 	}
 
 	private void registerCommands() {
+		commandMap.put("cml.generate.contextmap", new ContextMapGenerationCommand());
 		commandMap.put("cml.generate.puml", new PlantUMLGenerationCommand());
 		commandMap.put("cml.generate.mdsl", new MDSLGenerationCommand());
 		commandMap.put("cml.generate.generic.text.file", new GenericTextFileGenerationCommand());
