@@ -22,6 +22,8 @@ import org.contextmapper.dsl.ide.commands.impl.generation.ContextMapGenerationCo
 import org.contextmapper.dsl.ide.commands.impl.generation.GenericTextFileGenerationCommand;
 import org.contextmapper.dsl.ide.commands.impl.generation.MDSLGenerationCommand;
 import org.contextmapper.dsl.ide.commands.impl.generation.PlantUMLGenerationCommand;
+import org.contextmapper.dsl.ide.commands.impl.refactoring.DeriveBoundedContextFromSubdomainsCommand;
+import org.contextmapper.dsl.ide.commands.impl.refactoring.DeriveSubdomainFromUserRequirementsCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.SplitBoundedContextByOwnerRefactoringCommand;
 import org.eclipse.xtext.ide.serializer.IChangeSerializer;
 
@@ -55,6 +57,8 @@ public class CMLCommandRegistry {
 		commandMap.put("cml.generate.mdsl", new MDSLGenerationCommand());
 		commandMap.put("cml.generate.generic.text.file", new GenericTextFileGenerationCommand());
 		commandMap.put("cml.ar.splitBCByOwner", new SplitBoundedContextByOwnerRefactoringCommand(serializerProvider));
+		commandMap.put("cml.ar.deriveSubdomainFromURs", new DeriveSubdomainFromUserRequirementsCommand(serializerProvider));
+		commandMap.put("cml.ar.deriveBoundedContextFromSDs", new DeriveBoundedContextFromSubdomainsCommand(serializerProvider));
 	}
 
 	public CMLResourceCommand getCommand(String commandId) {

@@ -20,6 +20,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.ide.actions.impl.DeriveBoundedContextFromSubdomainsAction;
+import org.contextmapper.dsl.ide.actions.impl.DeriveSubdomainFromUserRequirementsAction;
 import org.contextmapper.dsl.ide.actions.impl.SplitBoundedContextByOwnerAction;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.lsp4j.Command;
@@ -41,6 +43,8 @@ public class CMLActionRegistry {
 
 		// add new AR here:
 		codeActions.add(new SplitBoundedContextByOwnerAction(resource, selectedObjects));
+		codeActions.add(new DeriveSubdomainFromUserRequirementsAction(resource, selectedObjects));
+		codeActions.add(new DeriveBoundedContextFromSubdomainsAction(resource, selectedObjects));
 
 		return Sets.newHashSet(codeActions);
 	}
