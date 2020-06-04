@@ -9,9 +9,13 @@ With the ContextMapper DSL language you can express DDD context maps. Once you h
 Checkout our website [https://contextmapper.org/](https://contextmapper.org/) to get started.
 The Context Mapper project has been developed as part of research projects at [HSR](https://www.hsr.ch) and you can find the project reports and further background information [here](https://contextmapper.org/background-and-publications/).
 
- * **Installation:**
-    * [Eclipse Marketplace](https://marketplace.eclipse.org/content/context-mapper)
-    * Update Site: **https://dl.bintray.com/contextmapper/context-mapping-dsl/updates/**
+ * **Installation links:**
+ Context Mapper is available for Visual Studio Code and Eclipse:
+   * VS Code:
+     * [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=contextmapper.context-mapper-vscode-extension)
+   * Eclipse:
+     * [Eclipse Marketplace](https://marketplace.eclipse.org/content/context-mapper)
+     * Update Site: https://dl.bintray.com/contextmapper/context-mapping-dsl/updates/
  * [Release notes for latest releases](https://github.com/ContextMapper/context-mapper-dsl/releases)
 
 ## Features
@@ -33,10 +37,7 @@ The Context Mapper project has been developed as part of research projects at [H
 To use the ContextMapper DSL (CML) you need the following tools:
 
 * [Java JDK](https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) (JDK 8 or newer)
-* [Eclipse](https://www.eclipse.org/downloads/packages/)
-* ContextMapper Eclipse Plugin
-  * [Eclipse Marketplace](https://marketplace.eclipse.org/content/context-mapper)
-  * Update Site: **https://dl.bintray.com/contextmapper/context-mapping-dsl/updates/**
+* [Eclipse](https://www.eclipse.org/downloads/packages/) or [Visual Studio Code](https://code.visualstudio.com/)
 * If you want to use our [Context Map generator](https://contextmapper.org/docs/context-map-generator/) you need to have [Graphviz](https://www.graphviz.org/) installed on your system.
     * Ensure that the binaries are part of the _PATH_ environment variable and can be called from the terminal.
     * Especially on Windows this is not the case after the installation of [Graphviz](https://www.graphviz.org/). The default installation path is
