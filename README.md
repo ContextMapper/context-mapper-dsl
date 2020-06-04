@@ -48,11 +48,11 @@ To use the ContextMapper DSL (CML) you need the following tools:
     * **Note:** Both plugins require [Graphviz](http://www.graphviz.org/) to be installed on your machine!
     * Alternatively you can use the [plantUML online server](http://www.plantuml.com/plantuml/uml).
 
-## Getting Started (Eclipse)
-If you want to use our Context Mapper tool (Eclipse plugin), these are the steps to get started:
- 1. Install the Eclipse plugin for creating context maps with ContextMapper DSL via Eclipse Marketspace or the following update site: 
+## Getting Started
+If you want to use our Context Mapper tool, install the plugin in Eclipse or the extension in VS Code:
+ 1. Installation of Context Mapper:
      * [Eclipse Marketplace](https://marketplace.eclipse.org/content/context-mapper) 
-     * Update Site: https://dl.bintray.com/contextmapper/context-mapping-dsl/updates/
+     * [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=contextmapper.context-mapper-vscode-extension)
  2. Find a detailed manual how to create your first CML project [here](https://contextmapper.org/docs/getting-started-create-project/).
  3. Examples which introduce the language (CML) capabilities can be found here: [https://github.com/ContextMapper/context-mapper-examples](https://github.com/ContextMapper/context-mapper-examples)
  4. Further instructions, user guides and documentation can be found on our website [https://contextmapper.org/](https://contextmapper.org/).
