@@ -19,6 +19,8 @@ import org.contextmapper.dsl.ui.hover.CMLHoverProvider
 import org.contextmapper.dsl.ui.hover.CMLXbaseDispatchingEObjectTextHover
 import org.eclipse.xtend.lib.annotations.FinalFieldsConstructor
 import org.eclipse.xtext.ui.editor.hover.IEObjectHoverProvider
+import org.eclipse.xtext.ui.editor.model.edit.ITextEditComposer
+import org.contextmapper.dsl.ui.quickfix.CMLTextEditComposer
 
 /**
  * Use this class to register components to be used within the Eclipse IDE.
@@ -32,6 +34,10 @@ class ContextMappingDSLUiModule extends AbstractContextMappingDSLUiModule {
 
 	def Class<? extends IEObjectHoverProvider> bindIEObjectHoverProvider() {
 		return CMLHoverProvider
+	}
+	
+	def Class<? extends ITextEditComposer> bindITextEditComposer() {
+		return CMLTextEditComposer
 	}
 
 }

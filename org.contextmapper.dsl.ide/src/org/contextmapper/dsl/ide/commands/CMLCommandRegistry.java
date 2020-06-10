@@ -25,6 +25,7 @@ import org.contextmapper.dsl.ide.commands.impl.generation.PlantUMLGenerationComm
 import org.contextmapper.dsl.ide.commands.impl.refactoring.DeriveBoundedContextFromSubdomainsCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.DeriveSubdomainFromUserRequirementsCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.SplitBoundedContextByOwnerRefactoringCommand;
+import org.contextmapper.dsl.ide.edit.WorkspaceEditRecorder;
 import org.eclipse.xtext.ide.serializer.IChangeSerializer;
 
 import com.google.common.collect.Maps;
@@ -41,13 +42,11 @@ import com.google.inject.Provider;
 public class CMLCommandRegistry {
 
 	private Map<String, CMLResourceCommand> commandMap = Maps.newHashMap();
-	@SuppressWarnings("restriction")
-	private Provider<IChangeSerializer> serializerProvider;
+	private WorkspaceEditRecorder editRecorder;
 
-	@SuppressWarnings("restriction")
 	@Inject
-	public CMLCommandRegistry(Provider<IChangeSerializer> serializerProvider) {
-		this.serializerProvider = serializerProvider;
+	public CMLCommandRegistry(WorkspaceEditRecorder editRecorder) {
+		this.editRecorder = editRecorder;
 		registerCommands();
 	}
 
@@ -56,9 +55,9 @@ public class CMLCommandRegistry {
 		commandMap.put("cml.generate.puml", new PlantUMLGenerationCommand());
 		commandMap.put("cml.generate.mdsl", new MDSLGenerationCommand());
 		commandMap.put("cml.generate.generic.text.file", new GenericTextFileGenerationCommand());
-		commandMap.put("cml.ar.splitBCByOwner", new SplitBoundedContextByOwnerRefactoringCommand(serializerProvider));
-		commandMap.put("cml.ar.deriveSubdomainFromURs", new DeriveSubdomainFromUserRequirementsCommand(serializerProvider));
-		commandMap.put("cml.ar.deriveBoundedContextFromSDs", new DeriveBoundedContextFromSubdomainsCommand(serializerProvider));
+		commandMap.put("cml.ar.splitBCByOwner", new SplitBoundedContextByOwnerRefactoringCommand(editRecorder));
+		commandMap.put("cml.ar.deriveSubdomainFromURs", new DeriveSubdomainFromUserRequirementsCommand(editRecorder));
+		commandMap.put("cml.ar.deriveBoundedContextFromSDs", new DeriveBoundedContextFromSubdomainsCommand(editRecorder));
 	}
 
 	public CMLResourceCommand getCommand(String commandId) {

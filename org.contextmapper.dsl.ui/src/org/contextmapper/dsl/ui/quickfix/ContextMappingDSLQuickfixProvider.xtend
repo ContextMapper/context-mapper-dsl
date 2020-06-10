@@ -1,12 +1,12 @@
 /*
- * Copyright 2018 The Context Mapper Project Team
- *
+ * Copyright 2020 The Context Mapper Project Team
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *    http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,22 +15,37 @@
  */
 package org.contextmapper.dsl.ui.quickfix
 
+import org.contextmapper.dsl.quickfixes.CMLQuickFix
+import org.contextmapper.dsl.quickfixes.tactic.ExtractIDValueObjectQuickFix
+import org.contextmapper.dsl.validation.DomainObjectValidator
+import org.eclipse.emf.ecore.EObject
+import org.eclipse.jface.text.source.ISourceViewer
+import org.eclipse.jface.text.source.SourceViewer
+import org.eclipse.xtext.ui.editor.model.edit.IModificationContext
 import org.eclipse.xtext.ui.editor.quickfix.DefaultQuickfixProvider
+import org.eclipse.xtext.ui.editor.quickfix.Fix
+import org.eclipse.xtext.ui.editor.quickfix.IssueResolutionAcceptor
+import org.eclipse.xtext.ui.editor.utils.EditorUtils
+import org.eclipse.xtext.validation.Issue
 
 /**
- * Custom quickfixes.
- *
- * See https://www.eclipse.org/Xtext/documentation/310_eclipse_support.html#quick-fixes
+ * Custom quickfix registry.
  */
 class ContextMappingDSLQuickfixProvider extends DefaultQuickfixProvider {
 
-//	@Fix(ContextMappingDSLValidator.INVALID_NAME)
-//	def capitalizeName(Issue issue, IssueResolutionAcceptor acceptor) {
-//		acceptor.accept(issue, 'Capitalize name', 'Capitalize the name.', 'upcase.png') [
-//			context |
-//			val xtextDocument = context.xtextDocument
-//			val firstLetter = xtextDocument.get(issue.offset, 1)
-//			xtextDocument.replace(issue.offset, 1, firstLetter.toUpperCase)
-//		]
-//	}
+	@Fix(DomainObjectValidator.ID_IS_PRIMITIVE_CODE)
+	def extractValueObject(Issue issue, IssueResolutionAcceptor acceptor) {
+		applyCMLQuickfix(issue, acceptor, new ExtractIDValueObjectQuickFix());
+	}
+
+	def applyCMLQuickfix(Issue issue, IssueResolutionAcceptor acceptor, CMLQuickFix<? extends EObject> quickfix) {
+		acceptor.accept(issue, quickfix.name, quickfix.description,
+			"upcase.png", [ EObject element, IModificationContext context |
+				quickfix.applyQuickfix2EObject(element)
+			]);
+		val xEditor = EditorUtils.getActiveXtextEditor();
+		if (xEditor !== null) {
+			(xEditor.internalSourceViewer as SourceViewer).doOperation(ISourceViewer.FORMAT);
+		}
+	}
 }

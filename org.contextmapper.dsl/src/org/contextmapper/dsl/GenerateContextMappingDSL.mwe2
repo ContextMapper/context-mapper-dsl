@@ -139,6 +139,7 @@ Workflow {
 				composedCheck = "org.eclipse.xtext.validation.ImportUriValidator"
 				composedCheck = "org.contextmapper.dsl.validation.UserRequirementsValidator"
 				composedCheck = "org.contextmapper.dsl.validation.TacticDDDModuleValidator"
+				composedCheck = "org.contextmapper.dsl.validation.DomainObjectValidator"
 
 				// Generates checks for @Deprecated grammar annotations, an IssueProvider and a corresponding PropertyPage
 				generateDeprecationValidation = true

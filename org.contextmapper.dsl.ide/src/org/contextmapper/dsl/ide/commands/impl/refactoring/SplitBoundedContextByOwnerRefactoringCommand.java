@@ -15,19 +15,17 @@
  */
 package org.contextmapper.dsl.ide.commands.impl.refactoring;
 
+import org.contextmapper.dsl.ide.edit.WorkspaceEditRecorder;
 import org.contextmapper.dsl.refactoring.SemanticCMLRefactoring;
 import org.contextmapper.dsl.refactoring.SplitBoundedContextByOwner;
 import org.eclipse.lsp4j.ExecuteCommandParams;
-import org.eclipse.xtext.ide.serializer.IChangeSerializer;
 
 import com.google.gson.JsonPrimitive;
-import com.google.inject.Provider;
 
 public class SplitBoundedContextByOwnerRefactoringCommand extends AbstractRefactoringCommand {
 
-	@SuppressWarnings("restriction")
-	public SplitBoundedContextByOwnerRefactoringCommand(Provider<IChangeSerializer> serializerProvider) {
-		super(serializerProvider);
+	public SplitBoundedContextByOwnerRefactoringCommand(WorkspaceEditRecorder editRecorder) {
+		super(editRecorder);
 	}
 
 	@Override
