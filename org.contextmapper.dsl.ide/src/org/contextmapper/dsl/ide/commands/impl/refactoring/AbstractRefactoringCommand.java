@@ -15,41 +15,22 @@
  */
 package org.contextmapper.dsl.ide.commands.impl.refactoring;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.contextmapper.dsl.cml.CMLResourceContainer;
 import org.contextmapper.dsl.ide.commands.CMLResourceCommand;
+import org.contextmapper.dsl.ide.edit.WorkspaceEditRecorder;
 import org.contextmapper.dsl.refactoring.SemanticCMLRefactoring;
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.lsp4j.ApplyWorkspaceEditParams;
 import org.eclipse.lsp4j.ExecuteCommandParams;
-import org.eclipse.lsp4j.Range;
-import org.eclipse.lsp4j.TextEdit;
-import org.eclipse.lsp4j.WorkspaceEdit;
-import org.eclipse.xtext.formatting2.regionaccess.ITextReplacement;
-import org.eclipse.xtext.ide.serializer.IChangeSerializer;
-import org.eclipse.xtext.ide.serializer.IEmfResourceChange;
-import org.eclipse.xtext.ide.serializer.ITextDocumentChange;
 import org.eclipse.xtext.ide.server.Document;
 import org.eclipse.xtext.ide.server.ILanguageServerAccess;
-import org.eclipse.xtext.util.CollectionBasedAcceptor;
-import org.eclipse.xtext.xbase.lib.ListExtensions;
-
-import com.google.common.collect.Iterables;
-import com.google.inject.Provider;
 
 public abstract class AbstractRefactoringCommand implements CMLResourceCommand {
 
-	@SuppressWarnings("restriction")
-	private Provider<IChangeSerializer> serializerProvider;
+	private WorkspaceEditRecorder editRecorder;
 
-	@SuppressWarnings("restriction")
-	public AbstractRefactoringCommand(Provider<IChangeSerializer> serializerProvider) {
-		this.serializerProvider = serializerProvider;
+	public AbstractRefactoringCommand(WorkspaceEditRecorder editRecorder) {
+		this.editRecorder = editRecorder;
 	}
 
 	/**
@@ -59,33 +40,12 @@ public abstract class AbstractRefactoringCommand implements CMLResourceCommand {
 
 	@Override
 	public void executeCommand(CMLResourceContainer cmlResource, Document document, ILanguageServerAccess access, ExecuteCommandParams params) {
-		access.getLanguageClient().applyEdit(new ApplyWorkspaceEditParams(recordWorkspaceEdit(access, cmlResource.getResource().getURI(), document, (Resource copiedResource) -> {
-			CMLResourceContainer copiedCMLResource = new CMLResourceContainer(copiedResource);
-			SemanticCMLRefactoring ar = getRefactoring(params);
-			ar.refactor(copiedCMLResource);
-		}), "Apply Architectural Refactoring (AR)"));
-	}
-
-	@SuppressWarnings("restriction")
-	private WorkspaceEdit recordWorkspaceEdit(ILanguageServerAccess access, URI resourceURI, Document document, IChangeSerializer.IModification<Resource> mod) {
-		ResourceSet rs = access.newLiveScopeResourceSet(resourceURI);
-		Resource copy = rs.getResource(resourceURI, true);
-		IChangeSerializer serializer = serializerProvider.get();
-		EcoreUtil.resolveAll(copy);
-		serializer.addModification(copy, mod);
-		List<IEmfResourceChange> documentchanges = new ArrayList<>();
-		serializer.applyModifications(CollectionBasedAcceptor.of(documentchanges));
-		WorkspaceEdit workspaceEdit = new WorkspaceEdit();
-		for (ITextDocumentChange documentchange : Iterables.filter(documentchanges, ITextDocumentChange.class)) {
-			List<TextEdit> edits = ListExtensions.map(documentchange.getReplacements(), (ITextReplacement replacement) -> {
-				TextEdit textEdit = new TextEdit();
-				textEdit.setNewText(replacement.getReplacementText());
-				textEdit.setRange(new Range(document.getPosition(replacement.getOffset()), document.getPosition(replacement.getEndOffset())));
-				return textEdit;
-			});
-			workspaceEdit.getChanges().put(documentchange.getNewURI().toString(), edits);
-		}
-		return workspaceEdit;
+		access.getLanguageClient()
+				.applyEdit(new ApplyWorkspaceEditParams(editRecorder.recordWorkspaceEdit(access, cmlResource.getResource().getURI(), document, (Resource copiedResource) -> {
+					CMLResourceContainer copiedCMLResource = new CMLResourceContainer(copiedResource);
+					SemanticCMLRefactoring ar = getRefactoring(params);
+					ar.refactor(copiedCMLResource);
+				}), "Apply Architectural Refactoring (AR)"));
 	}
 
 }

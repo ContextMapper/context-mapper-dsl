@@ -17,37 +17,35 @@ package org.contextmapper.dsl.ide.commands.impl.refactoring;
 
 import java.util.Set;
 
+import org.contextmapper.dsl.ide.edit.WorkspaceEditRecorder;
 import org.contextmapper.dsl.refactoring.DeriveSubdomainFromUserRequirements;
 import org.contextmapper.dsl.refactoring.SemanticCMLRefactoring;
 import org.eclipse.lsp4j.ExecuteCommandParams;
-import org.eclipse.xtext.ide.serializer.IChangeSerializer;
 
 import com.google.common.collect.Sets;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
-import com.google.inject.Provider;
 
 public class DeriveSubdomainFromUserRequirementsCommand extends AbstractRefactoringCommand {
 
-	@SuppressWarnings("restriction")
-	public DeriveSubdomainFromUserRequirementsCommand(Provider<IChangeSerializer> serializerProvider) {
-		super(serializerProvider);
+	public DeriveSubdomainFromUserRequirementsCommand(WorkspaceEditRecorder editRecorder) {
+		super(editRecorder);
 	}
 
 	@Override
 	protected SemanticCMLRefactoring getRefactoring(ExecuteCommandParams params) {
 		JsonArray refactoringParams = (JsonArray) params.getArguments().get(1);
-		
+
 		JsonPrimitive domainName = (JsonPrimitive) refactoringParams.get(0);
 		JsonPrimitive subDomainName = (JsonPrimitive) refactoringParams.get(1);
 		JsonArray selectedRequirementsArray = (JsonArray) refactoringParams.get(2);
-		
+
 		Set<String> selectedRequirements = Sets.newHashSet();
 		for (JsonElement element : selectedRequirementsArray) {
 			selectedRequirements.add(element.getAsString());
 		}
-		
+
 		return new DeriveSubdomainFromUserRequirements(domainName.getAsString(), subDomainName.getAsString(), selectedRequirements);
 	}
 

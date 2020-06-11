@@ -16,9 +16,11 @@
 package org.contextmapper.dsl.ide.actions
 
 import com.google.inject.Inject
+import java.util.stream.Collectors
 import org.contextmapper.dsl.cml.CMLResourceContainer
 import org.eclipse.lsp4j.jsonrpc.messages.Either
 import org.eclipse.xtext.ide.server.codeActions.ICodeActionService2
+import com.google.common.collect.Lists
 
 class CMLActionService implements ICodeActionService2 {
 
@@ -35,7 +37,22 @@ class CMLActionService implements ICodeActionService2 {
 		val selectedObjects = selectionResolver.resolveAllSelectedEObjects(resource,
 			options.document.getOffSet(startPosition), options.document.getOffSet(endPosition));
 
-		return actionRegistry.getApplicableActionCommands(resource, selectedObjects).map[Either.forLeft(it)]
+		val allActions = Lists.newLinkedList
+
+		// general actions that can be applied (such as refactorings)
+		allActions.addAll(actionRegistry.getApplicableActionCommands(resource, selectedObjects).map [
+			Either.forLeft(it)
+		]);
+
+		// quick fix commands (actions bound to validation message)
+		if (!params.context.diagnostics.isEmpty) {
+			for (d : params.context.diagnostics) {
+				allActions.addAll(actionRegistry.getApplicableQuickfixes(d, options).stream.map [
+					Either.forRight(it)
+				].collect(Collectors.toList));
+			}
+		}
+		return allActions;
 	}
 
 }

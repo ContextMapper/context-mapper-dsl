@@ -17,22 +17,20 @@ package org.contextmapper.dsl.ide.commands.impl.refactoring;
 
 import java.util.Set;
 
+import org.contextmapper.dsl.ide.edit.WorkspaceEditRecorder;
 import org.contextmapper.dsl.refactoring.DeriveBoundedContextFromSubdomains;
 import org.contextmapper.dsl.refactoring.SemanticCMLRefactoring;
 import org.eclipse.lsp4j.ExecuteCommandParams;
-import org.eclipse.xtext.ide.serializer.IChangeSerializer;
 
 import com.google.common.collect.Sets;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
-import com.google.inject.Provider;
 
 public class DeriveBoundedContextFromSubdomainsCommand extends AbstractRefactoringCommand {
 
-	@SuppressWarnings("restriction")
-	public DeriveBoundedContextFromSubdomainsCommand(Provider<IChangeSerializer> serializerProvider) {
-		super(serializerProvider);
+	public DeriveBoundedContextFromSubdomainsCommand(WorkspaceEditRecorder editRecorder) {
+		super(editRecorder);
 	}
 
 	@Override

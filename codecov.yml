@@ -2,4 +2,5 @@ coverage:
   status:
     project: on
     patch: off
+  precision: 1
 

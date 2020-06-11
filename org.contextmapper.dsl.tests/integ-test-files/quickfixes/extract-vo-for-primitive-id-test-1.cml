@@ -1,0 +1,9 @@
+BoundedContext TestContext {
+	Aggregate TestAggregate {
+		Entity Customer { 
+			String customerId
+			String firstname
+			String lastname
+		}
+	}
+}
