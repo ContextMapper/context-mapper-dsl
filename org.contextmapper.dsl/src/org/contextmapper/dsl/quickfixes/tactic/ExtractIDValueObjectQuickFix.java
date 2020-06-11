@@ -54,7 +54,7 @@ public class ExtractIDValueObjectQuickFix implements CMLQuickFix<Attribute> {
 		Attribute idAttribute = TacticdslFactory.eINSTANCE.createAttribute();
 		idAttribute.setName("id");
 		idAttribute.setType(attribute.getType());
-		vo.getAttributes().add(attribute);
+		vo.getAttributes().add(idAttribute);
 		return vo;
 	}
 
