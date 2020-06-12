@@ -18,10 +18,12 @@ package org.contextmapper.dsl.refactoring;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.cml.CMLResourceContainer;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
@@ -67,6 +69,8 @@ public class DeriveSubdomainFromUserRequirementsTest extends AbstractRefactoring
 		assertNotNull(domain.getSubdomains().get(0));
 
 		Subdomain subdomain = domain.getSubdomains().get(0);
+		Set<String> supportedFeatures = subdomain.getSupportedFeatures().stream().map(f -> f.getName()).collect(Collectors.toSet());
+		assertTrue(supportedFeatures.contains("US1_Create"));
 		assertEquals("Customers", subdomain.getName());
 		assertEquals("Aims at promoting the following benefit for a Insurance Employee: I am able to manage the customer data and offer contracts.",
 				subdomain.getDomainVisionStatement());
