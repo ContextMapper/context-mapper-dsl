@@ -1,4 +1,4 @@
-BoundedContext NewTestBC implements CustomerDomain {
+BoundedContext NewTestBC implements CustomerDomain, JustAnotherDomain {
 	Module TestModule {
 		Aggregate CustomerDomainAggregate {
 			
@@ -16,6 +16,8 @@ Domain InsuranceDomain {
 		}
 	}
 }
+
+Domain JustAnotherDomain
 
 UserStory Customer_Creation {
 	As a "Insurance Employee" 

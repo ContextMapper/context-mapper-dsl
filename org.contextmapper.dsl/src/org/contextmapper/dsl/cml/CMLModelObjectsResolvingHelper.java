@@ -49,18 +49,14 @@ public class CMLModelObjectsResolvingHelper {
 	}
 
 	public BoundedContext resolveBoundedContext(Aggregate aggregate) {
-		if (aggregate.eContainer() != null && aggregate.eContainer() instanceof SculptorModule) {
+		if (aggregate.eContainer() != null && aggregate.eContainer() instanceof SculptorModule)
 			return resolveBoundedContext((SculptorModule) aggregate.eContainer());
-		} else if (aggregate.eContainer() != null && aggregate.eContainer() instanceof BoundedContext) {
+		else
 			return (BoundedContext) aggregate.eContainer();
-		}
-		return null;
 	}
 
 	public BoundedContext resolveBoundedContext(SculptorModule module) {
-		if (module.eContainer() != null && module.eContainer() instanceof BoundedContext)
-			return (BoundedContext) module.eContainer();
-		return null;
+		return (BoundedContext) module.eContainer();
 	}
 
 	public Set<UserRequirement> resolveUserRequirements(BoundedContext boundedContext) {
