@@ -79,7 +79,7 @@ Domain:
 ;
 
 Subdomain:
-	'Subdomain' name=ID
+	'Subdomain' name=ID ('supports' (supportedFeatures+=[UserRequirement]) ("," supportedFeatures+=[UserRequirement])*)?
 	(
 		OPEN
 			(('type' ('=')? type=SubDomainType)? &

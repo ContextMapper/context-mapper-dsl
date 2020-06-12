@@ -303,4 +303,52 @@ class DomainDSLParsingTest {
 		assertEquals("my domain vision for this subdomain", result.domains.get(0).subdomains.get(0).domainVisionStatement);
 		assertEquals(SubDomainType.CORE_DOMAIN, result.domains.get(0).subdomains.get(0).type);
 	}
+	
+	@Test
+	def void canReferenceSupportedFeature() {
+		// given
+		val String dslSnippet = '''
+			Domain Insurance {
+				Subdomain CustomerManagement supports Manage_Customers {
+					type CORE_DOMAIN
+				}
+			}
+			UserStory Manage_Customers
+		''';
+		
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		var subdomain = result.domains.get(0).subdomains.get(0);
+		assertEquals(1, subdomain.supportedFeatures.size);
+		assertEquals("Manage_Customers", subdomain.supportedFeatures.get(0).name);
+	}
+	
+	@Test
+	def void canReferenceSupportedFeatures() {
+		// given
+		val String dslSnippet = '''
+			Domain Insurance {
+				Subdomain CustomerManagement supports Manage_Customers, Manage_Contracts {
+					type CORE_DOMAIN
+				}
+			}
+			UserStory Manage_Customers
+			UserStory Manage_Contracts
+		''';
+		
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		var subdomain = result.domains.get(0).subdomains.get(0);
+		assertEquals(2, subdomain.supportedFeatures.size);
+		assertEquals("Manage_Customers", subdomain.supportedFeatures.get(0).name);
+		assertEquals("Manage_Contracts", subdomain.supportedFeatures.get(1).name);
+	}
 }
