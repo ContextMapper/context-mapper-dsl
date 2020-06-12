@@ -178,6 +178,104 @@ public class DeriveBoundedContextFromSubdomainsTest extends AbstractRefactoringT
 		assertEquals(2, entity.getReferences().size());
 	}
 
+	@ParameterizedTest
+	@ValueSource(strings = { "derive-bc-from-subdomain-test-9-input.cml" })
+	public void canCreateServiceOperationParametersFromFeatures(String inputFile) throws IOException {
+		// given
+		CMLResourceContainer input = getResourceCopyOfTestCML(inputFile);
+
+		// when
+		Set<String> subdomains = Sets.newHashSet(Arrays.asList(new String[] { "CustomerDomain" }));
+		DeriveBoundedContextFromSubdomains ar = new DeriveBoundedContextFromSubdomains("NewTestBC", subdomains);
+		ar.refactor(input);
+		ar.persistChanges();
+
+		// then
+		ContextMappingModel model = reloadResource(input).getContextMappingModel();
+		assertEquals(1, model.getBoundedContexts().size());
+		assertNotNull(model.getBoundedContexts().get(0));
+
+		BoundedContext bc = model.getBoundedContexts().get(0);
+		assertEquals("NewTestBC", bc.getName());
+		assertEquals(BoundedContextType.FEATURE, bc.getType());
+		assertEquals(1, bc.getAggregates().size());
+		assertNotNull(bc.getAggregates().get(0));
+
+		Aggregate aggregate = bc.getAggregates().get(0);
+		assertEquals(1, aggregate.getServices().size());
+
+		Service service = aggregate.getServices().get(0);
+		assertEquals("CustomerService", service.getName());
+		assertEquals(2, service.getOperations().size());
+
+		ServiceOperation createOperation = service.getOperations().stream().filter(o -> o.getName().equals("createCustomer")).findFirst().get();
+		assertEquals("createCustomer", createOperation.getName());
+		assertEquals("CustomerId", createOperation.getReturnType().getType());
+		assertEquals(1, createOperation.getParameters().size());
+
+		Parameter parameter = createOperation.getParameters().get(0);
+		assertEquals("input", parameter.getName());
+		assertEquals("Customer", parameter.getParameterType().getDomainObjectType().getName());
+
+		ServiceOperation readOperation = service.getOperations().stream().filter(o -> o.getName().equals("readCustomer")).findFirst().get();
+		assertEquals("readCustomer", readOperation.getName());
+		assertEquals("Customer", readOperation.getReturnType().getDomainObjectType().getName());
+		assertEquals(1, readOperation.getParameters().size());
+
+		parameter = readOperation.getParameters().get(0);
+		assertEquals("input", parameter.getName());
+		assertEquals("CustomerId", parameter.getParameterType().getType());
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = { "derive-bc-from-subdomain-test-10-input.cml" })
+	public void canCreateServiceOperationParametersFromFeaturesInModule(String inputFile) throws IOException {
+		// given
+		CMLResourceContainer input = getResourceCopyOfTestCML(inputFile);
+
+		// when
+		Set<String> subdomains = Sets.newHashSet(Arrays.asList(new String[] { "CustomerDomain" }));
+		DeriveBoundedContextFromSubdomains ar = new DeriveBoundedContextFromSubdomains("NewTestBC", subdomains);
+		ar.refactor(input);
+		ar.persistChanges();
+
+		// then
+		ContextMappingModel model = reloadResource(input).getContextMappingModel();
+		assertEquals(1, model.getBoundedContexts().size());
+		assertNotNull(model.getBoundedContexts().get(0));
+
+		BoundedContext bc = model.getBoundedContexts().get(0);
+		assertEquals("NewTestBC", bc.getName());
+		assertEquals(BoundedContextType.FEATURE, bc.getType());
+		assertEquals(1, bc.getModules().get(0).getAggregates().size());
+		assertNotNull(bc.getModules().get(0).getAggregates().get(0));
+
+		Aggregate aggregate = bc.getModules().get(0).getAggregates().get(0);
+		assertEquals(1, aggregate.getServices().size());
+
+		Service service = aggregate.getServices().get(0);
+		assertEquals("CustomerService", service.getName());
+		assertEquals(2, service.getOperations().size());
+
+		ServiceOperation createOperation = service.getOperations().stream().filter(o -> o.getName().equals("createCustomer")).findFirst().get();
+		assertEquals("createCustomer", createOperation.getName());
+		assertEquals("CustomerId", createOperation.getReturnType().getType());
+		assertEquals(1, createOperation.getParameters().size());
+
+		Parameter parameter = createOperation.getParameters().get(0);
+		assertEquals("input", parameter.getName());
+		assertEquals("Customer", parameter.getParameterType().getDomainObjectType().getName());
+
+		ServiceOperation readOperation = service.getOperations().stream().filter(o -> o.getName().equals("readCustomer")).findFirst().get();
+		assertEquals("readCustomer", readOperation.getName());
+		assertEquals("Customer", readOperation.getReturnType().getDomainObjectType().getName());
+		assertEquals(1, readOperation.getParameters().size());
+
+		parameter = readOperation.getParameters().get(0);
+		assertEquals("input", parameter.getName());
+		assertEquals("CustomerId", parameter.getParameterType().getType());
+	}
+
 	@Test
 	public void canThrowExceptionIfNoCorrectSubdomainNameIsProvided() throws IOException {
 		// given

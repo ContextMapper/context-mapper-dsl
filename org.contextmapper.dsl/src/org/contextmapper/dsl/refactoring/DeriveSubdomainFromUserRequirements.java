@@ -61,6 +61,7 @@ public class DeriveSubdomainFromUserRequirements extends AbstractRefactoring imp
 
 		Domain domain = getOrCreateDomain();
 		Subdomain subdomain = getOrCreateSubdomain(domain);
+		addElementsToEList(subdomain.getSupportedFeatures(), Lists.newLinkedList(selectedUserRequirements));
 		List<String> benefits = Lists.newLinkedList();
 		if (subdomain.getDomainVisionStatement() != null && !"".equals(subdomain.getDomainVisionStatement()))
 			benefits.addAll(List.of(subdomain.getDomainVisionStatement().split(BENEFIT_SEPARATOR_STRING)));
