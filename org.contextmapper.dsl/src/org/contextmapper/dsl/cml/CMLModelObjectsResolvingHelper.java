@@ -18,7 +18,14 @@ package org.contextmapper.dsl.cml;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.contextmapper.dsl.contextMappingDSL.Aggregate;
+import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
+import org.contextmapper.dsl.contextMappingDSL.DomainPart;
+import org.contextmapper.dsl.contextMappingDSL.Feature;
+import org.contextmapper.dsl.contextMappingDSL.SculptorModule;
+import org.contextmapper.dsl.contextMappingDSL.Subdomain;
+import org.contextmapper.dsl.contextMappingDSL.UserRequirement;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.EcoreUtil2;
 import org.eclipse.xtext.xbase.lib.IteratorExtensions;
@@ -39,6 +46,41 @@ public class CMLModelObjectsResolvingHelper {
 			resultSet.addAll(Sets.newHashSet(IteratorExtensions.filter(EcoreUtil2.eAll(model), type)));
 		}
 		return resultSet;
+	}
+
+	public BoundedContext resolveBoundedContext(Aggregate aggregate) {
+		if (aggregate.eContainer() != null && aggregate.eContainer() instanceof SculptorModule) {
+			return resolveBoundedContext((SculptorModule) aggregate.eContainer());
+		} else if (aggregate.eContainer() != null && aggregate.eContainer() instanceof BoundedContext) {
+			return (BoundedContext) aggregate.eContainer();
+		}
+		return null;
+	}
+
+	public BoundedContext resolveBoundedContext(SculptorModule module) {
+		if (module.eContainer() != null && module.eContainer() instanceof BoundedContext)
+			return (BoundedContext) module.eContainer();
+		return null;
+	}
+
+	public Set<UserRequirement> resolveUserRequirements(BoundedContext boundedContext) {
+		Set<UserRequirement> requirements = Sets.newHashSet();
+		for (DomainPart domainPart : boundedContext.getImplementedDomainParts()) {
+			if (!(domainPart instanceof Subdomain))
+				continue;
+
+			Subdomain subdomain = (Subdomain) domainPart;
+			requirements.addAll(subdomain.getSupportedFeatures());
+		}
+		return requirements;
+	}
+
+	public Set<Feature> resolveFeatures(BoundedContext boundedContext) {
+		Set<Feature> features = Sets.newHashSet();
+		resolveUserRequirements(boundedContext).forEach(ur -> {
+			features.addAll(ur.getFeatures());
+		});
+		return features;
 	}
 
 }

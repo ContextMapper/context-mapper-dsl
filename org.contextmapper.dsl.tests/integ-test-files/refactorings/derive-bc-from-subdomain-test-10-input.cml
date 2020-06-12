@@ -1,0 +1,25 @@
+BoundedContext NewTestBC implements CustomerDomain {
+	Module TestModule {
+		Aggregate CustomerDomainAggregate {
+			
+		}
+	}
+}
+
+Domain InsuranceDomain {
+	Subdomain CustomerDomain supports Customer_Creation {
+		Entity Customer
+		
+		Service CustomerService {
+			createCustomer;
+			readCustomer;
+		}
+	}
+}
+
+UserStory Customer_Creation {
+	As a "Insurance Employee" 
+		I want to "create" a "Customer"
+		I want to "read" a "Customer" 
+	so that ""
+}
