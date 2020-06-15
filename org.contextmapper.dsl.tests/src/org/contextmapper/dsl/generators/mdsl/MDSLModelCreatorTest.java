@@ -41,7 +41,7 @@ public class MDSLModelCreatorTest extends AbstractCMLInputFileTest {
 		// given
 		String inputModelName = "basic-mdsl-model-test.cml";
 		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
-		MDSLModelCreator mdslCreator = new MDSLModelCreator(input.getContextMappingModel().getMap());
+		MDSLModelCreator mdslCreator = new MDSLModelCreator(input.getContextMappingModel());
 
 		// when
 		List<ServiceSpecification> serviceSpecifications = mdslCreator.createServiceSpecifications();
@@ -100,7 +100,7 @@ public class MDSLModelCreatorTest extends AbstractCMLInputFileTest {
 		// given
 		String inputModelName = "same-data-type-in-multiple-methods.cml";
 		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
-		MDSLModelCreator mdslCreator = new MDSLModelCreator(input.getContextMappingModel().getMap());
+		MDSLModelCreator mdslCreator = new MDSLModelCreator(input.getContextMappingModel());
 
 		// when
 		List<ServiceSpecification> serviceSpecifications = mdslCreator.createServiceSpecifications();
@@ -116,7 +116,7 @@ public class MDSLModelCreatorTest extends AbstractCMLInputFileTest {
 		// given
 		String inputModelName = "context-is-upstream-in-multiple-relationships.cml";
 		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
-		MDSLModelCreator mdslCreator = new MDSLModelCreator(input.getContextMappingModel().getMap());
+		MDSLModelCreator mdslCreator = new MDSLModelCreator(input.getContextMappingModel());
 
 		// when
 		List<ServiceSpecification> serviceSpecifications = mdslCreator.createServiceSpecifications();
@@ -131,7 +131,7 @@ public class MDSLModelCreatorTest extends AbstractCMLInputFileTest {
 		// given
 		String inputModelName = "use-references-in-methods.cml";
 		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
-		MDSLModelCreator mdslCreator = new MDSLModelCreator(input.getContextMappingModel().getMap());
+		MDSLModelCreator mdslCreator = new MDSLModelCreator(input.getContextMappingModel());
 
 		// when
 		List<ServiceSpecification> serviceSpecifications = mdslCreator.createServiceSpecifications();
@@ -151,7 +151,7 @@ public class MDSLModelCreatorTest extends AbstractCMLInputFileTest {
 		// given
 		String inputModelName = "mdsl-can-handle-keyword-clashes.cml";
 		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
-		MDSLModelCreator mdslCreator = new MDSLModelCreator(input.getContextMappingModel().getMap());
+		MDSLModelCreator mdslCreator = new MDSLModelCreator(input.getContextMappingModel());
 
 		// when
 		List<ServiceSpecification> serviceSpecifications = mdslCreator.createServiceSpecifications();
@@ -167,37 +167,11 @@ public class MDSLModelCreatorTest extends AbstractCMLInputFileTest {
 	}
 
 	@Test
-	void throwExceptionIfThereIsNoUpstreamDownstreamRelationship() throws IOException {
-		// given
-		String inputModelName = "no-upstream-downstream-relationship.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
-		MDSLModelCreator mdslCreator = new MDSLModelCreator(input.getContextMappingModel().getMap());
-
-		// when -> then throw exception
-		assertThrows(GeneratorInputException.class, () -> {
-			mdslCreator.createServiceSpecifications();
-		});
-	}
-
-	@Test
-	void throwExceptionIfThereAreNoExposedAggregates() throws IOException {
-		// given
-		String inputModelName = "no-exposed-aggregates.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
-		MDSLModelCreator mdslCreator = new MDSLModelCreator(input.getContextMappingModel().getMap());
-
-		// when -> then throw exception
-		assertThrows(GeneratorInputException.class, () -> {
-			mdslCreator.createServiceSpecifications();
-		});
-	}
-
-	@Test
 	void throwExceptionIfThereAreNoOperations() throws IOException {
 		// given
 		String inputModelName = "no-operation.cml";
 		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
-		MDSLModelCreator mdslCreator = new MDSLModelCreator(input.getContextMappingModel().getMap());
+		MDSLModelCreator mdslCreator = new MDSLModelCreator(input.getContextMappingModel());
 
 		// when -> then throw exception
 		assertThrows(GeneratorInputException.class, () -> {

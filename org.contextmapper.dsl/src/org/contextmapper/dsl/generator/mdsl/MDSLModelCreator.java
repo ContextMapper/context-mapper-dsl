@@ -21,7 +21,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
-import org.contextmapper.dsl.contextMappingDSL.ContextMap;
+import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
+import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamRole;
 import org.contextmapper.dsl.generator.exception.GeneratorInputException;
@@ -57,13 +58,13 @@ public class MDSLModelCreator {
 	private static final String PROTOCOL_STRING_IF_NOT_DEFINED = "tbd";
 	private static final String PROTOCOL_NOT_DEFINED_COMMENT = "The protocol is generated if you specify the implementation technology in CML";
 
-	private ContextMap contextMap;
+	private ContextMappingModel model;
 	private int initialPort = 8000;
 	private MDSLDataTypeCreator dataTypeCreator;
 	private MDSLNameEncoder mdslEncoder;
 
-	public MDSLModelCreator(ContextMap contextMap) {
-		this.contextMap = contextMap;
+	public MDSLModelCreator(ContextMappingModel model) {
+		this.model = model;
 		this.dataTypeCreator = new MDSLDataTypeCreator();
 		this.mdslEncoder = new MDSLNameEncoder();
 	}
@@ -227,8 +228,10 @@ public class MDSLModelCreator {
 
 	private Map<String, UpstreamAPIContext> collectUpstreamContexts() {
 		Map<String, UpstreamAPIContext> upstreamContextMap = Maps.newHashMap();
-		List<UpstreamDownstreamRelationship> upstreamDownstreamRelationships = contextMap.getRelationships().stream().filter(rel -> rel instanceof UpstreamDownstreamRelationship)
-				.map(rel -> (UpstreamDownstreamRelationship) rel).collect(Collectors.toList());
+		List<UpstreamDownstreamRelationship> upstreamDownstreamRelationships = Lists.newLinkedList();
+		if (model.getMap() != null)
+			upstreamDownstreamRelationships = model.getMap().getRelationships().stream().filter(rel -> rel instanceof UpstreamDownstreamRelationship)
+					.map(rel -> (UpstreamDownstreamRelationship) rel).collect(Collectors.toList());
 		for (UpstreamDownstreamRelationship relationship : upstreamDownstreamRelationships) {
 			if (relationship.getUpstreamExposedAggregates().isEmpty())
 				continue;
@@ -253,20 +256,27 @@ public class MDSLModelCreator {
 			if (relationship.getImplementationTechnology() != null && !"".equals(relationship.getImplementationTechnology()))
 				context.getImplementationTechnologies().add(relationship.getImplementationTechnology());
 		}
+		// add all contexts that are not upstream in an upstream-downstream relationship
+		for (BoundedContext bc : model.getBoundedContexts()) {
+			String apiName = bc.getName() + API_NAME_EXTENSION;
+			if (upstreamContextMap.containsKey(apiName) || bc.getAggregates().isEmpty())
+				continue;
+
+			UpstreamAPIContext context = new UpstreamAPIContext();
+			context.setApiName(apiName);
+			context.setUpstreamContext(bc);
+			context.getExposedAggregates().addAll(bc.getAggregates());
+			upstreamContextMap.put(apiName, context);
+		}
 		return upstreamContextMap;
 	}
 
 	private void checkPreconditions() {
-		List<UpstreamDownstreamRelationship> upstreamDownstreamRelationships = contextMap.getRelationships().stream().filter(rel -> rel instanceof UpstreamDownstreamRelationship)
-				.map(rel -> (UpstreamDownstreamRelationship) rel).collect(Collectors.toList());
-
-		if (upstreamDownstreamRelationships.isEmpty())
-			throw new GeneratorInputException(
-					"Your model does not contain any upstream-downstream relationships. Therefore there is nothing to generate. Create an upstream-downstream relationship in your Context Map to get a result.");
+		Map<String, UpstreamAPIContext> upstreamContexts = collectUpstreamContexts();
 
 		List<Aggregate> exposedAggregates = Lists.newArrayList();
-		for (UpstreamDownstreamRelationship rel : upstreamDownstreamRelationships) {
-			exposedAggregates.addAll(rel.getUpstreamExposedAggregates());
+		for (UpstreamAPIContext context : upstreamContexts.values()) {
+			exposedAggregates.addAll(context.getExposedAggregates());
 		}
 
 		if (exposedAggregates.isEmpty())

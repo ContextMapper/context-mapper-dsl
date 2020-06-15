@@ -15,7 +15,7 @@
  */
 package org.contextmapper.dsl.generator;
 
-import org.contextmapper.dsl.contextMappingDSL.ContextMap;
+import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.generator.mdsl.MDSLAPIDescriptionCreator;
 import org.contextmapper.dsl.generator.mdsl.MDSLModelCreator;
 import org.contextmapper.dsl.generator.mdsl.ProtectedRegionContext;
@@ -24,13 +24,13 @@ import org.contextmapper.dsl.generator.mdsl.model.ServiceSpecification;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.xtext.generator.IFileSystemAccess2;
 
-public class MDSLContractsGenerator extends AbstractContextMapGenerator {
+public class MDSLContractsGenerator extends AbstractContextMappingModelGenerator {
 
 	private static final String MDSL_FILE_EXT = "mdsl";
 
 	@Override
-	protected void generateFromContextMap(ContextMap contextMap, IFileSystemAccess2 fsa, URI inputFileURI) {
-		MDSLModelCreator mdslModelCreator = new MDSLModelCreator(contextMap);
+	protected void generateFromContextMappingModel(ContextMappingModel model, IFileSystemAccess2 fsa, URI inputFileURI) {
+		MDSLModelCreator mdslModelCreator = new MDSLModelCreator(model);
 		for (ServiceSpecification serviceSpecification : mdslModelCreator.createServiceSpecifications()) {
 			String mdslFileName = inputFileURI.trimFileExtension().lastSegment() + "_" + serviceSpecification.getName() + "." + MDSL_FILE_EXT;
 			ProtectedRegionContext protectedRegionContext = createProtectedRegionContext(mdslFileName, fsa);
