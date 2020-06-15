@@ -105,7 +105,7 @@ public class MDSLAPIDescriptionCreatorTest extends AbstractCMLInputFileTest {
 		String baseFilename = "mdsl-no-operation-in-one-api";
 		String inputModelName = baseFilename + ".cml";
 		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
-		MDSLModelCreator mdslCreator = new MDSLModelCreator(input.getContextMappingModel().getMap());
+		MDSLModelCreator mdslCreator = new MDSLModelCreator(input.getContextMappingModel());
 
 		// when
 		List<ServiceSpecification> serviceSpecifications = mdslCreator.createServiceSpecifications();
@@ -203,7 +203,7 @@ public class MDSLAPIDescriptionCreatorTest extends AbstractCMLInputFileTest {
 		// given
 		String inputModelName = baseFilename + ".cml";
 		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
-		MDSLModelCreator mdslCreator = new MDSLModelCreator(input.getContextMappingModel().getMap());
+		MDSLModelCreator mdslCreator = new MDSLModelCreator(input.getContextMappingModel());
 
 		// when
 		List<ServiceSpecification> serviceSpecifications = mdslCreator.createServiceSpecifications();
