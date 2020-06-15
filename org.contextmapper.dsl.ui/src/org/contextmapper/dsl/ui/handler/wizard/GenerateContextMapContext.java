@@ -19,15 +19,17 @@ import java.util.Set;
 
 import org.contextmapper.dsl.generator.contextmap.ContextMapFormat;
 
+import com.google.common.collect.Sets;
+
 public class GenerateContextMapContext {
 
-	private Set<ContextMapFormat> formats;
-	private int labelSpacingFactor;
-	private boolean fixWidth;
-	private boolean fixHeight;
-	private int width;
-	private int height;
-	private boolean generateAdditionalLabels;
+	private Set<ContextMapFormat> formats = Sets.newHashSet(ContextMapFormat.values());
+	private int labelSpacingFactor = 5;
+	private boolean fixWidth = false;
+	private boolean fixHeight = false;
+	private int width = 1500;
+	private int height = 1000;
+	private boolean generateAdditionalLabels = false;
 
 	public void setFormats(Set<ContextMapFormat> formats) {
 		this.formats = formats;

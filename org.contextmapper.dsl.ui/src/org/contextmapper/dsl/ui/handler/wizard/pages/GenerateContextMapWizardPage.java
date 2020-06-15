@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.contextmapper.dsl.generator.contextmap.ContextMapFormat;
+import org.contextmapper.dsl.ui.handler.wizard.GenerateContextMapContext;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -44,17 +45,20 @@ public class GenerateContextMapWizardPage extends ContextMapperWizardPage {
 	private Spinner heightSpinner;
 	private Button generateLabelsCheckBox;
 
+	private GenerateContextMapContext context;
 	private Set<ContextMapFormat> selectedFormats;
-	private int labelSpacingFactor = 5;
-	private int width = 2000;
-	private int height = 1000;
+	private int labelSpacingFactor;
+	private int width;
+	private int height;
 
-	public GenerateContextMapWizardPage() {
+	public GenerateContextMapWizardPage(GenerateContextMapContext context) {
 		super("Generate Context Map Configuration Page");
+		this.context = context;
 		this.selectedFormats = new HashSet<>();
-		this.selectedFormats.add(ContextMapFormat.PNG);
-		this.selectedFormats.add(ContextMapFormat.SVG);
-		this.selectedFormats.add(ContextMapFormat.DOT);
+		this.selectedFormats.addAll(context.getFormats());
+		this.labelSpacingFactor = context.getLabelSpacingFactor();
+		this.width = context.getWidth();
+		this.height = context.getHeight();
 	}
 
 	@Override
@@ -108,6 +112,7 @@ public class GenerateContextMapWizardPage extends ContextMapperWizardPage {
 		// fix width to custom value
 		widthCheckBox = new Button(container, SWT.CHECK);
 		widthCheckBox.setText("Fix image width:    ");
+		widthCheckBox.setSelection(context.isFixWidth());
 		widthCheckBox.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event event) {
 				widthSpinner.setEnabled(widthCheckBox.getSelection());
@@ -122,7 +127,7 @@ public class GenerateContextMapWizardPage extends ContextMapperWizardPage {
 		widthSpinner.setMaximum(20000);
 		widthSpinner.setSelection(width);
 		widthSpinner.setIncrement(100);
-		widthSpinner.setEnabled(false);
+		widthSpinner.setEnabled(context.isFixWidth());
 		widthSpinner.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event event) {
 				width = widthSpinner.getSelection();
@@ -132,6 +137,7 @@ public class GenerateContextMapWizardPage extends ContextMapperWizardPage {
 		// fix height to custom value
 		heightCheckBox = new Button(container, SWT.CHECK);
 		heightCheckBox.setText("Fix image height:");
+		heightCheckBox.setSelection(context.isFixHeight());
 		heightCheckBox.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event event) {
 				heightSpinner.setEnabled(heightCheckBox.getSelection());
@@ -146,7 +152,7 @@ public class GenerateContextMapWizardPage extends ContextMapperWizardPage {
 		heightSpinner.setMaximum(20000);
 		heightSpinner.setSelection(height);
 		heightSpinner.setIncrement(100);
-		heightSpinner.setEnabled(false);
+		heightSpinner.setEnabled(context.isFixHeight());
 		heightSpinner.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event event) {
 				height = heightSpinner.getSelection();
@@ -158,7 +164,7 @@ public class GenerateContextMapWizardPage extends ContextMapperWizardPage {
 		generateLabelsLabel.setText("Generate labels:");
 		generateLabelsCheckBox = new Button(container, SWT.CHECK);
 		generateLabelsCheckBox.setText("Labels for relationship names and implementation technologies");
-		generateLabelsCheckBox.setSelection(false);
+		generateLabelsCheckBox.setSelection(context.generateAdditionalLabels());
 
 		// spacing factor label
 		Label labelSpacingFactorLabel = new Label(container, SWT.NONE);

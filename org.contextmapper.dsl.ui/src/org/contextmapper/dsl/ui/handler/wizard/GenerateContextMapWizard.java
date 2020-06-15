@@ -40,7 +40,7 @@ public class GenerateContextMapWizard extends Wizard {
 
 	@Override
 	public void addPages() {
-		page = new GenerateContextMapWizardPage();
+		page = new GenerateContextMapWizardPage(this.context);
 		addPage(page);
 	}
 

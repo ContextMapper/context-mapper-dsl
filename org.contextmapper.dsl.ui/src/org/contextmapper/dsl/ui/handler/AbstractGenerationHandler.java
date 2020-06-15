@@ -27,12 +27,15 @@ import org.eclipse.core.commands.IHandler;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -172,12 +175,48 @@ public abstract class AbstractGenerationHandler extends AbstractHandler implemen
 		}
 		return new MultiStatus("org.contextmapper.dsl.ui", IStatus.ERROR, childStatuses.toArray(new Status[] {}), t.toString(), t);
 	}
-	
+
 	protected IFile findFileInContainer(IContainer container, String path) {
 		IResource resource = container.findMember(path);
 		if (resource != null && resource instanceof IFile)
 			return (IFile) resource;
 		return null;
+	}
+
+	protected void persistWorkspaceProperty(ExecutionEvent event, String property, String value) {
+		IWorkspaceRoot workspaceRoot = getWorkspaceRoot(event);
+		try {
+			workspaceRoot.setPersistentProperty(getQualifiedName4File(workspaceRoot, property), value);
+		} catch (CoreException e) {
+			throw new ContextMapperApplicationException("Could not store workspace property.", e);
+		}
+	}
+
+	protected String getWorkspaceProperty(ExecutionEvent event, String property) {
+		IWorkspaceRoot workspaceRoot = getWorkspaceRoot(event);
+		try {
+			return workspaceRoot.getPersistentProperty(getQualifiedName4File(workspaceRoot, property));
+		} catch (CoreException e) {
+			throw new ContextMapperApplicationException("Could not read workspace property", e);
+		}
+	}
+
+	protected boolean isWorkspacePropertySet(ExecutionEvent event, String property) {
+		IWorkspaceRoot workspaceRoot = getWorkspaceRoot(event);
+		try {
+			return workspaceRoot.getPersistentProperties().containsKey(getQualifiedName4File(workspaceRoot, property));
+		} catch (CoreException e) {
+			throw new ContextMapperApplicationException("Cannot read workspace properties.", e);
+		}
+	}
+
+	private IWorkspaceRoot getWorkspaceRoot(ExecutionEvent event) {
+		IProject project = getSelectedFile(event).getProject();
+		return project.getWorkspace().getRoot();
+	}
+
+	private QualifiedName getQualifiedName4File(IResource resource, String property) {
+		return new QualifiedName(getGenerator().getClass().getName() + "." + property, resource.getLocation().toString());
 	}
 
 	@Override

@@ -30,6 +30,7 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.statushandlers.StatusManager;
+import org.eclipse.xtext.builder.impl.SetWithProjectNames;
 import org.eclipse.xtext.generator.GeneratorContext;
 import org.eclipse.xtext.generator.IFileSystemAccess2;
 import org.eclipse.xtext.generator.IGenerator2;
@@ -62,8 +63,9 @@ public class ContextMapGenerationHandler extends AbstractGenerationHandler {
 					"Your PATH variable could not be parsed to check if Graphviz is installed. The generator may not work if Graphviz is not available.");
 		}
 
-		GenerateContextMapContext context = new GenerateContextMapContext();
+		GenerateContextMapContext context = createContext(event);
 		new WizardDialog(HandlerUtil.getActiveShell(event), new GenerateContextMapWizard(context, executionContext -> {
+			persistContext(event, executionContext);
 			generator.setContextMapFormats(context.getFormats().toArray(new ContextMapFormat[context.getFormats().size()]));
 			generator.setLabelSpacingFactor(context.getLabelSpacingFactor());
 			if (context.isFixWidth())
@@ -83,6 +85,32 @@ public class ContextMapGenerationHandler extends AbstractGenerationHandler {
 			});
 			return true;
 		})).open();
+	}
+
+	private GenerateContextMapContext createContext(ExecutionEvent event) {
+		GenerateContextMapContext context = new GenerateContextMapContext();
+		if (isWorkspacePropertySet(event, "fixHeight"))
+			context.setFixHeight(Boolean.valueOf(getWorkspaceProperty(event, "fixHeight")));
+		if (isWorkspacePropertySet(event, "fixWidth"))
+			context.setFixHeight(Boolean.valueOf(getWorkspaceProperty(event, "fixWidth")));
+		if (isWorkspacePropertySet(event, "generateAdditionalLabels"))
+			context.setGenerateAdditionalLabels(Boolean.valueOf(getWorkspaceProperty(event, "generateAdditionalLabels")));
+		if (context.isFixWidth() && isWorkspacePropertySet(event, "width"))
+			context.setWidth(Integer.valueOf(getWorkspaceProperty(event, "width")));
+		if (context.isFixHeight() && isWorkspacePropertySet(event, "height"))
+			context.setHeight(Integer.valueOf(getWorkspaceProperty(event, "height")));
+		if (isWorkspacePropertySet(event, "labelSpacingFactor"))
+			context.setLabelSpacingFactor(Integer.valueOf(getWorkspaceProperty(event, "labelSpacingFactor")));
+		return context;
+	}
+
+	private void persistContext(ExecutionEvent event, GenerateContextMapContext context) {
+		persistWorkspaceProperty(event, "fixHeight", String.valueOf(context.isFixHeight()));
+		persistWorkspaceProperty(event, "fixWidth", String.valueOf(context.isFixWidth()));
+		persistWorkspaceProperty(event, "generateAdditionalLabels", String.valueOf(context.generateAdditionalLabels()));
+		persistWorkspaceProperty(event, "labelSpacingFactor", String.valueOf(context.getLabelSpacingFactor()));
+		persistWorkspaceProperty(event, "width", String.valueOf(context.getWidth()));
+		persistWorkspaceProperty(event, "height", String.valueOf(context.getHeight()));
 	}
 
 }

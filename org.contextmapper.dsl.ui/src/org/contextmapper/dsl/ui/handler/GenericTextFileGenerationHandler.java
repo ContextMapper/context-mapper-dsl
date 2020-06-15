@@ -25,6 +25,7 @@ import org.contextmapper.dsl.ui.handler.wizard.GenerateGenericTextFileWizard;
 import org.contextmapper.dsl.ui.internal.DslActivator;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
@@ -118,7 +119,7 @@ public class GenericTextFileGenerationHandler extends AbstractGenerationHandler 
 			StatusManager.getManager().handle(new Status(IStatus.ERROR, DslActivator.PLUGIN_ID, "Could not persist template file location.", e));
 		}
 	}
-
+	
 	private QualifiedName getQualifiedName4File(IFile file, String property) {
 		return new QualifiedName("org.contextmapper.genericGenerator." + property, file.getProjectRelativePath().toString());
 	}
