@@ -39,8 +39,7 @@ public class MDSLModelCreatorTest extends AbstractCMLInputFileTest {
 	@Test
 	void canCreateMDSLModel() throws IOException {
 		// given
-		String inputModelName = "basic-mdsl-model-test.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResourceContainer input = getResourceCopyOfTestCML("basic-mdsl-model-test.cml");
 		MDSLModelCreator mdslCreator = new MDSLModelCreator(input.getContextMappingModel());
 
 		// when
@@ -93,6 +92,57 @@ public class MDSLModelCreatorTest extends AbstractCMLInputFileTest {
 		assertEquals("ContractManagementContextClient", client.getName());
 		assertEquals(1, client.getConsumedOfferNames().size());
 		assertEquals("CustomersAggregate", client.getConsumedOfferNames().get(0));
+	}
+
+	@Test
+	void canCreateMDSLModelWithoutContextMap() throws IOException {
+		// given
+		CMLResourceContainer input = getResourceCopyOfTestCML("basic-mdsl-model-test-without-contextmap.cml");
+		MDSLModelCreator mdslCreator = new MDSLModelCreator(input.getContextMappingModel());
+
+		// when
+		List<ServiceSpecification> serviceSpecifications = mdslCreator.createServiceSpecifications();
+
+		// then
+		assertEquals(1, serviceSpecifications.size());
+
+		ServiceSpecification spec = serviceSpecifications.get(0);
+		assertEquals("CustomerManagementContextAPI", spec.getName());
+		assertEquals(1, spec.getEndpoints().size());
+
+		EndpointContract endpoint = spec.getEndpoints().get(0);
+		assertEquals("CustomersAggregate", endpoint.getName());
+		assertEquals(2, endpoint.getOperations().size());
+
+		EndpointOperation operation1 = endpoint.getOperations().get(0);
+		assertEquals("updateAddress", operation1.getName());
+
+		EndpointOperation operation2 = endpoint.getOperations().get(1);
+		assertEquals("anotherMethod", operation2.getName());
+
+		assertEquals(5, spec.getDataTypes().size());
+		DataType dataType1 = spec.getDataTypes().get(0);
+		assertEquals("Address", dataType1.getName());
+		DataType dataType2 = spec.getDataTypes().get(1);
+		assertEquals("Parameter1Type", dataType2.getName());
+		DataType dataType3 = spec.getDataTypes().get(2);
+		assertEquals("Parameter2Type", dataType3.getName());
+		DataType dataType4 = spec.getDataTypes().get(3);
+		assertEquals("ReturnType", dataType4.getName());
+		DataType dataType5 = spec.getDataTypes().get(4);
+		assertEquals("anotherMethodParameter", dataType5.getName());
+
+		assertEquals("Address", operation1.getExpectingPayload().getName());
+		assertEquals("ReturnType", operation1.getDeliveringPayload().getName());
+		assertEquals("anotherMethodParameter", operation2.getExpectingPayload().getName());
+
+		assertEquals(1, spec.getProviders().size());
+		EndpointProvider provider = spec.getProviders().get(0);
+		assertEquals("CustomerManagementContextProvider", provider.getName());
+		assertEquals(1, provider.getEndpointOffers().size());
+		EndpointOffer contractOffered = provider.getEndpointOffers().get(0);
+		assertEquals("CustomersAggregate", contractOffered.getOfferedEndpoint().getName());
+		assertEquals("http://localhost:8000", contractOffered.getLocation());
 	}
 
 	@Test
