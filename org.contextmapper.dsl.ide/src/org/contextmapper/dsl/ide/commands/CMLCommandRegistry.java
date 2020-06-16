@@ -24,14 +24,13 @@ import org.contextmapper.dsl.ide.commands.impl.generation.MDSLGenerationCommand;
 import org.contextmapper.dsl.ide.commands.impl.generation.PlantUMLGenerationCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.DeriveBoundedContextFromSubdomainsCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.DeriveSubdomainFromUserRequirementsCommand;
+import org.contextmapper.dsl.ide.commands.impl.refactoring.SplitAggregateByEntitiesRefactoringCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.SplitBoundedContextByOwnerRefactoringCommand;
 import org.contextmapper.dsl.ide.edit.WorkspaceEditRecorder;
-import org.eclipse.xtext.ide.serializer.IChangeSerializer;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 
 /**
  * Registers all commands that can be called on LSP command service.
@@ -56,6 +55,7 @@ public class CMLCommandRegistry {
 		commandMap.put("cml.generate.mdsl", new MDSLGenerationCommand());
 		commandMap.put("cml.generate.generic.text.file", new GenericTextFileGenerationCommand());
 		commandMap.put("cml.ar.splitBCByOwner", new SplitBoundedContextByOwnerRefactoringCommand(editRecorder));
+		commandMap.put("cml.ar.splitAggregateByEntities", new SplitAggregateByEntitiesRefactoringCommand(editRecorder));
 		commandMap.put("cml.ar.deriveSubdomainFromURs", new DeriveSubdomainFromUserRequirementsCommand(editRecorder));
 		commandMap.put("cml.ar.deriveBoundedContextFromSDs", new DeriveBoundedContextFromSubdomainsCommand(editRecorder));
 	}
