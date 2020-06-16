@@ -25,6 +25,7 @@ import org.contextmapper.dsl.ide.commands.impl.generation.PlantUMLGenerationComm
 import org.contextmapper.dsl.ide.commands.impl.refactoring.DeriveBoundedContextFromSubdomainsCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.DeriveSubdomainFromUserRequirementsCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.SplitAggregateByEntitiesRefactoringCommand;
+import org.contextmapper.dsl.ide.commands.impl.refactoring.SplitBoundedContextByFeaturesRefactoringCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.SplitBoundedContextByOwnerRefactoringCommand;
 import org.contextmapper.dsl.ide.edit.WorkspaceEditRecorder;
 
@@ -55,6 +56,7 @@ public class CMLCommandRegistry {
 		commandMap.put("cml.generate.mdsl", new MDSLGenerationCommand());
 		commandMap.put("cml.generate.generic.text.file", new GenericTextFileGenerationCommand());
 		commandMap.put("cml.ar.splitBCByOwner", new SplitBoundedContextByOwnerRefactoringCommand(editRecorder));
+		commandMap.put("cml.ar.splitBCByFeature", new SplitBoundedContextByFeaturesRefactoringCommand(editRecorder));
 		commandMap.put("cml.ar.splitAggregateByEntities", new SplitAggregateByEntitiesRefactoringCommand(editRecorder));
 		commandMap.put("cml.ar.deriveSubdomainFromURs", new DeriveSubdomainFromUserRequirementsCommand(editRecorder));
 		commandMap.put("cml.ar.deriveBoundedContextFromSDs", new DeriveBoundedContextFromSubdomainsCommand(editRecorder));

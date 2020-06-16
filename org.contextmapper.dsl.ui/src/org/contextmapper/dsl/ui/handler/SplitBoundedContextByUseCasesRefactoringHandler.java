@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 import org.contextmapper.dsl.cml.CMLResourceContainer;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.refactoring.SemanticCMLRefactoring;
-import org.contextmapper.dsl.refactoring.SplitBoundedContextByUseCases;
+import org.contextmapper.dsl.refactoring.SplitBoundedContextByFeatures;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.emf.ecore.EObject;
 
@@ -30,7 +30,7 @@ public class SplitBoundedContextByUseCasesRefactoringHandler extends AbstractRef
 	@Override
 	protected void executeRefactoring(CMLResourceContainer resource, ExecutionEvent event) {
 		BoundedContext bc = (BoundedContext) getSelectedElement();
-		SemanticCMLRefactoring ar = new SplitBoundedContextByUseCases(bc.getName());
+		SemanticCMLRefactoring ar = new SplitBoundedContextByFeatures(bc.getName());
 		ar.refactor(resource, getAllResources());
 		ar.persistChanges();
 	}
