@@ -36,12 +36,6 @@
 			<repository location="https://download.eclipse.org/tools/orbit/downloads/2020-03"/>
 		</location>
 		<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-			<unit id="com.fasterxml.jackson.core.jackson-databind" version="2.9.93.v20190906-1522"/>
-			<unit id="com.fasterxml.jackson.core.jackson-annotations" version="2.9.9.v20190906-1522"/>
-			<unit id="org.apache.commons.io" version="2.2.0.v201405211200"/>
-			<repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20200224183213/repository/"/>
-		</location>
-		<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 			<unit id="org.eclipse.emf.henshin.sdk.feature.group" version="1.6.0.202001052147"/>
 			<repository location="https://download.eclipse.org/modeling/emft/henshin/updates/1.6.0/"/>
 		</location>
@@ -54,8 +48,15 @@
 			<unit id="org.contextmapper.servicecutter.feature.feature.group" version="1.1.4"/>
 		</location>
 		<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-			<repository location="https://dl.bintray.com/contextmapper/context-mapper-osgi-bundles/1.0.0/"/>
+			<repository location="https://dl.bintray.com/contextmapper/context-mapper-osgi-bundles/"/>
 			<unit id="contextmapper.freemarker.feature.group" version="2.3.30"/>
+		</location>
+		<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+			<repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20200224183213/repository/"/>
+			<unit id="com.fasterxml.jackson.core.jackson-annotations" version="2.9.9.v20190906-1522"/>
+			<unit id="com.fasterxml.jackson.core.jackson-core" version="2.9.9.v20190906-1522"/>
+			<unit id="com.fasterxml.jackson.core.jackson-databind" version="2.9.93.v20190906-1522"/>
+			<unit id="org.apache.commons.io" version="2.2.0.v201405211200"/>
 		</location>
 	</locations>
 </target>
