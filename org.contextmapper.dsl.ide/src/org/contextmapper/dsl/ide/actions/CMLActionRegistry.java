@@ -26,6 +26,7 @@ import org.contextmapper.dsl.exception.ContextMapperApplicationException;
 import org.contextmapper.dsl.ide.actions.impl.DeriveBoundedContextFromSubdomainsAction;
 import org.contextmapper.dsl.ide.actions.impl.DeriveSubdomainFromUserRequirementsAction;
 import org.contextmapper.dsl.ide.actions.impl.SplitAggregateByEntitiesAction;
+import org.contextmapper.dsl.ide.actions.impl.SplitBoundedContextByFeaturesAction;
 import org.contextmapper.dsl.ide.actions.impl.SplitBoundedContextByOwnerAction;
 import org.contextmapper.dsl.ide.edit.WorkspaceEditRecorder;
 import org.contextmapper.dsl.quickfixes.CMLQuickFix;
@@ -71,6 +72,7 @@ public class CMLActionRegistry {
 
 		// add new AR here:
 		codeActions.add(new SplitBoundedContextByOwnerAction(resource, selectedObjects));
+		codeActions.add(new SplitBoundedContextByFeaturesAction(resource, selectedObjects));
 		codeActions.add(new SplitAggregateByEntitiesAction(resource, selectedObjects));
 		codeActions.add(new DeriveSubdomainFromUserRequirementsAction(resource, selectedObjects));
 		codeActions.add(new DeriveBoundedContextFromSubdomainsAction(resource, selectedObjects));

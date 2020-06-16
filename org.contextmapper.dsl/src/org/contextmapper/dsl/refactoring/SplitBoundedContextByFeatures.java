@@ -20,11 +20,11 @@ import java.util.stream.Collectors;
 import org.contextmapper.dsl.cml.CMLResourceContainer;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 
-public class SplitBoundedContextByUseCases implements SemanticCMLRefactoring {
+public class SplitBoundedContextByFeatures implements SemanticCMLRefactoring {
 
 	private SplitBoundedContextByAggregateAttribute coreAR;
 
-	public SplitBoundedContextByUseCases(String boundedContextName) {
+	public SplitBoundedContextByFeatures(String boundedContextName) {
 		this.coreAR = new SplitBoundedContextByAggregateAttribute(
 				aggregate -> new CompoundKey(aggregate.getUserRequirements().stream().map(uc -> uc.getName()).collect(Collectors.toSet())), boundedContextName);
 	}
