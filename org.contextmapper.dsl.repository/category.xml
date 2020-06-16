@@ -37,5 +37,5 @@
    <repository-reference location="https://download.eclipse.org/modeling/emft/henshin/updates/1.6.0/" enabled="true" />
    <repository-reference location="https://dl.bintray.com/contextmapper/context-map-generator-releases/" enabled="true" />
    <repository-reference location="https://dl.bintray.com/contextmapper/service-cutter-library-releases/" enabled="true" />
-   <repository-reference location="https://dl.bintray.com/contextmapper/context-mapper-osgi-bundles/" enabled="true" />
+   <repository-reference location="https://dl.bintray.com/contextmapper/context-mapper-osgi-bundles/1.0.0/" enabled="true" />
 </site>
