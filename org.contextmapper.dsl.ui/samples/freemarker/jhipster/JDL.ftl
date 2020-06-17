@@ -54,6 +54,7 @@ application {
 		packageName org.contextmapper.generated.${bc.name?lower_case},
 		applicationType microservice
 		serverPort ${portCounter?int?c}
+		enableSwaggerCodegen true
 	}
 	<#if entityNames?has_content>
 	entities ${entityNames?join(", ")}
