@@ -24,9 +24,9 @@ Require-Bundle: org.eclipse.xtext,
  guru.nidi.com.kitfox.svgSalamander;bundle-version="1.1.2",
  org.contextmapper.servicecutter.library;bundle-version="1.1.4",
  org.freemarker.freemarker;bundle-version="2.3.30",
- com.fasterxml.jackson.core.jackson-annotations;bundle-version="2.9.9",
- com.fasterxml.jackson.core.jackson-core;bundle-version="2.9.9",
- com.fasterxml.jackson.core.jackson-databind;bundle-version="2.9.93"
+ com.fasterxml.jackson.core.jackson-annotations,
+ com.fasterxml.jackson.core.jackson-core,
+ com.fasterxml.jackson.core.jackson-databind
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.contextmapper.dsl,
  org.contextmapper.dsl.cml,

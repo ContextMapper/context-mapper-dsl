@@ -33,19 +33,9 @@
    <bundle id="org.eclipse.emf.henshin.editor" version="1.6.0.202001052147">
       <category name="main"/>
    </bundle>
-   <bundle id="com.fasterxml.jackson.core.jackson-annotations" version="2.9.9.v20190906-1522">
-      <category name="main"/>
-   </bundle>
-   <bundle id="com.fasterxml.jackson.core.jackson-core" version="2.9.9.v20190906-1522">
-      <category name="main"/>
-   </bundle>
-   <bundle id="com.fasterxml.jackson.core.jackson-databind" version="2.9.93.v20190906-1522">
-      <category name="main"/>
-   </bundle>
    <category-def name="main" label="Context Mapper"/>
    <repository-reference location="https://download.eclipse.org/modeling/emft/henshin/updates/1.6.0/" enabled="true" />
    <repository-reference location="https://dl.bintray.com/contextmapper/context-map-generator-releases/" enabled="true" />
    <repository-reference location="https://dl.bintray.com/contextmapper/service-cutter-library-releases/" enabled="true" />
-   <repository-reference location="https://dl.bintray.com/contextmapper/context-mapper-osgi-bundles/" enabled="true" />
-   <repository-reference location="http://download.eclipse.org/tools/orbit/downloads/drops/R20200224183213/repository/" enabled="true" />
+   <repository-reference location="https://dl.bintray.com/contextmapper/context-mapper-osgi-bundles/1.0.0/" enabled="true" />
 </site>
