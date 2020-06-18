@@ -42,5 +42,3 @@ API client ContractManagementContextClient
 API client YetAnotherClient
 	consumes YetAnotherEnpoint
 // ** END PROTECTED REGION for API clients
-
-IPA

@@ -33,5 +33,3 @@ API provider CustomerManagementContextProvider
 
 API client ContractManagementContextClient
 	consumes CustomersAggregate
-
-IPA

@@ -102,5 +102,3 @@ API client ${client.name}
 	consumes ${offername}
 	</#list>
 </#list>
-
-IPA

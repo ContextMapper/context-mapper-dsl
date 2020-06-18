@@ -32,5 +32,3 @@ API provider CustomerManagementContextProvider
 // Generated from DDD downstream Bounded Context 'ContractManagementContext' implementing ANTICORRUPTION_LAYER (ACL).
 API client ContractManagementContextClient
 	consumes CustomersAggregate
-
-IPA

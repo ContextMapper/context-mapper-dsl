@@ -31,5 +31,3 @@ API provider CustomerManagementContextProvider
 API client ContractManagementContextClient
 	// Contracts vision statement ...
 	consumes CustomersAggregate
-
-IPA
