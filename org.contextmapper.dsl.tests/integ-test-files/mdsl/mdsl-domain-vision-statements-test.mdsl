@@ -9,7 +9,7 @@ data type ReturnType P // the type ReturnType has not been specified or does not
 data type anotherMethodParameter { "param1":Parameter1Type, "param2":Parameter2Type }
 
 
-endpoint type CustomersAggregate
+endpoint type Customers
 	exposes
 		operation updateAddress
 			expecting
@@ -23,11 +23,11 @@ endpoint type CustomersAggregate
 
 API provider CustomerManagementContextProvider
 	// Customers vision statement ...
-	offers CustomersAggregate
+	offers Customers
 	at endpoint location "http://localhost:8000"
 		via protocol "RESTful HTTP"
 
 
 API client ContractManagementContextClient
 	// Contracts vision statement ...
-	consumes CustomersAggregate
+	consumes Customers

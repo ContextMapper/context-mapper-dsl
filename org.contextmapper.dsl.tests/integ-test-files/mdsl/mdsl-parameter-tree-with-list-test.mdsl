@@ -8,7 +8,7 @@ data type Customer { "firstName":D<string>, "lastName":D<string>, "account":Bank
 data type ReturnType P // the type ReturnType has not been specified or does not contain any attributes in CML
 
 
-endpoint type CustomersAggregate
+endpoint type Customers
 	exposes
 		operation updateCustomer
 			expecting
@@ -18,10 +18,10 @@ endpoint type CustomersAggregate
 
 
 API provider CustomerManagementContextProvider
-	offers CustomersAggregate
+	offers Customers
 	at endpoint location "http://localhost:8000"
 		via protocol "RESTful HTTP"
 
 
 API client ContractManagementContextClient
-	consumes CustomersAggregate
+	consumes Customers

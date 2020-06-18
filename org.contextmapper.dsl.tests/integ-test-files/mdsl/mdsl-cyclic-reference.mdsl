@@ -6,7 +6,7 @@ data type CyclicVO { "name":D<string>, "refToMyself":CyclicVO }
 data type CyclicVO2 { "name":D<string>, "refToMyself":CyclicVO2* }
 
 
-endpoint type CustomersAggregate
+endpoint type Customers
 	exposes
 		operation myMethod
 			expecting
@@ -26,10 +26,10 @@ endpoint type CustomersAggregate
 
 
 API provider CustomerManagementContextProvider
-	offers CustomersAggregate
+	offers Customers
 	at endpoint location "http://localhost:8000"
 		via protocol "RESTful HTTP"
 
 
 API client ContractManagementContextClient
-	consumes CustomersAggregate
+	consumes Customers

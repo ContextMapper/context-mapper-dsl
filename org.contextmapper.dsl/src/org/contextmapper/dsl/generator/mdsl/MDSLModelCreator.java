@@ -49,7 +49,6 @@ import com.google.common.collect.Maps;
 
 public class MDSLModelCreator {
 
-	private static final String AGGREGATE_NAME_EXTENSION = "Aggregate";
 	private static final String API_NAME_EXTENSION = "API";
 	private static final String PROVIDER_NAME_EXTENSION = "Provider";
 	private static final String CLIENT_NAME_EXTENSION = "Client";
@@ -107,7 +106,7 @@ public class MDSLModelCreator {
 
 	private EndpointContract createEndpoint(Aggregate aggregate, ServiceSpecification specification) {
 		EndpointContract endpoint = new EndpointContract();
-		String endpointName = mdslEncoder.encodeName(aggregate.getName().endsWith(AGGREGATE_NAME_EXTENSION) ? aggregate.getName() : aggregate.getName() + AGGREGATE_NAME_EXTENSION);
+		String endpointName = mdslEncoder.encodeName(aggregate.getName());
 		endpoint.setName(endpointName);
 		Optional<DomainObject> aggregateRoot = aggregate.getDomainObjects().stream().filter(o -> o instanceof DomainObject).map(o -> (DomainObject) o)
 				.filter(o -> o.isAggregateRoot()).findFirst();
@@ -211,8 +210,7 @@ public class MDSLModelCreator {
 	private EndpointClient createClient(DownstreamContext downstreamContext) {
 		EndpointClient client = new EndpointClient();
 		client.setName(mdslEncoder.encodeName(downstreamContext.getDownstreamName() + CLIENT_NAME_EXTENSION));
-		List<String> endpoints = downstreamContext.getConsumedAggregates().stream()
-				.map(agg -> agg.getName().endsWith(AGGREGATE_NAME_EXTENSION) ? agg.getName() : agg.getName() + AGGREGATE_NAME_EXTENSION).collect(Collectors.toList());
+		List<String> endpoints = downstreamContext.getConsumedAggregates().stream().map(agg -> agg.getName()).collect(Collectors.toList());
 		for (String offer : endpoints) {
 			client.addConsumedOffer(offer);
 		}

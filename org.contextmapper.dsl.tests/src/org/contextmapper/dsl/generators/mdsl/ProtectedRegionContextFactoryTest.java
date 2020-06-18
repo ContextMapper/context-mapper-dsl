@@ -61,14 +61,12 @@ public class ProtectedRegionContextFactoryTest {
 		// then
 		assertEquals("data type Address P\ndata type Parameter1Type P", context.getProtectedDataTypeRegion());
 		assertEquals(
-				"endpoint type CustomersAggregate\n	exposes\n" + "		operation updateAddress\n			expecting\n				payload Address\n			delivering\n"
+				"endpoint type Customers\n	exposes\n		operation updateAddress\n			expecting\n				payload Address\n			delivering\n"
 						+ "				payload ReturnType\n		operation anotherMethod\n			expecting\n				payload anotherMethodParameter",
 				context.getProtectedEndpointRegion());
-		assertEquals(
-				"API provider CustomerManagementContextProvider\n"
-						+ "	offers CustomersAggregate\n	at endpoint location \"http://localhost:8000\"\n		via protocol \"RESTful HTTP\"",
+		assertEquals("API provider CustomerManagementContextProvider\n	offers Customers\n	at endpoint location \"http://localhost:8000\"\n		via protocol \"RESTful HTTP\"",
 				context.getProtectedProviderRegion());
-		assertEquals("API client ContractManagementContextClient\n" + "	consumes CustomersAggregate", context.getProtectedClientRegion());
+		assertEquals("API client ContractManagementContextClient\n	consumes Customers", context.getProtectedClientRegion());
 		assertEquals(2, context.getDataTypeIdentifiers().size());
 		assertEquals(1, context.getEndpointIdentifiers().size());
 		assertEquals(1, context.getProviderIdentifiers().size());
@@ -84,7 +82,7 @@ public class ProtectedRegionContextFactoryTest {
 
 		// when
 		ProtectedRegionContext context = factory.createProtectedRegionContextForExistingMDSLFile(mdslInputFile);
-		
+
 		// then
 		assertNull(context.getProtectedDataTypeRegion());
 		assertNull(context.getProtectedEndpointRegion());
