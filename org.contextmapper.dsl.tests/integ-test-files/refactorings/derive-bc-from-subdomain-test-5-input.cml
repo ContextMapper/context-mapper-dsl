@@ -1,7 +1,10 @@
 BoundedContext NewTestBC {
 	Aggregate CustomerDomainAggregate {
 		Entity Customer {
-			CustomerID customerId // id attr already existing
+			@CustomerId customerId // id attr already existing
+		}
+		ValueObject CustomerId {
+			Long id
 		}
 	}
 }

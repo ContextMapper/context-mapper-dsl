@@ -42,6 +42,7 @@ import org.contextmapper.tactic.dsl.tacticdsl.Service;
 import org.contextmapper.tactic.dsl.tacticdsl.ServiceOperation;
 import org.contextmapper.tactic.dsl.tacticdsl.SimpleDomainObject;
 import org.contextmapper.tactic.dsl.tacticdsl.TacticdslFactory;
+import org.contextmapper.tactic.dsl.tacticdsl.ValueObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.xtext.EcoreUtil2;
 import org.eclipse.xtext.xbase.lib.IteratorExtensions;
@@ -125,10 +126,10 @@ public class DeriveBoundedContextFromSubdomains extends AbstractRefactoring impl
 
 			String idAttributeName = sdEntity.getName().toLowerCase() + "Id";
 			if (!bcEntity.getAttributes().stream().filter(a -> idAttributeName.equals(a.getName())).findFirst().isPresent()) {
-				Attribute idAttribute = TacticdslFactory.eINSTANCE.createAttribute();
-				idAttribute.setType(sdEntity.getName() + "ID");
-				idAttribute.setName(idAttributeName);
-				addElementToEList(bcEntity.getAttributes(), idAttribute);
+				Reference idReference = TacticdslFactory.eINSTANCE.createReference();
+				idReference.setDomainObjectType(createOrGetValueObject4ID(aggregate, sdEntity.getName() + "Id", idAttributeName));
+				idReference.setName(idAttributeName);
+				addElementToEList(bcEntity.getReferences(), idReference);
 			}
 		}
 		for (Entity sdEntity : subdomain.getEntities()) {
@@ -246,6 +247,22 @@ public class DeriveBoundedContextFromSubdomains extends AbstractRefactoring impl
 		return newEntity;
 	}
 
+	private ValueObject createOrGetValueObject4ID(Aggregate aggregate, String voName, String idName) {
+		Optional<ValueObject> optValueObject = aggregate.getDomainObjects().stream().filter(o -> o instanceof ValueObject && voName.equals(o.getName())).map(o -> (ValueObject) o)
+				.findFirst();
+		if (optValueObject.isPresent())
+			return optValueObject.get();
+
+		ValueObject vo = TacticdslFactory.eINSTANCE.createValueObject();
+		vo.setName(voName);
+		Attribute idAttr = TacticdslFactory.eINSTANCE.createAttribute();
+		idAttr.setName(idName);
+		idAttr.setType("Long");
+		addElementToEList(vo.getAttributes(), idAttr);
+		addElementToEList(aggregate.getDomainObjects(), vo);
+		return vo;
+	}
+
 	private Service createOrGetService(Aggregate aggregate, String serviceName) {
 		Optional<Service> optService = aggregate.getServices().stream().filter(s -> serviceName.equals(s.getName())).findFirst();
 		if (optService.isPresent())
@@ -260,11 +277,11 @@ public class DeriveBoundedContextFromSubdomains extends AbstractRefactoring impl
 	private ComplexType getReturnType4Operation(Aggregate aggregate, String operationName) {
 		Entity correspondingEntity = resolveEntity4OperationByFeatures(aggregate, operationName);
 		if (correspondingEntity != null && operationName.startsWith("create")) {
-			return createComplexType(correspondingEntity.getName() + "Id");
+			return createComplexType(createOrGetValueObject4ID(aggregate, correspondingEntity.getName() + "Id", "id"));
 		} else if (correspondingEntity != null && (operationName.startsWith("read") || operationName.startsWith("get"))) {
 			return createComplexType(correspondingEntity, CollectionType.SET);
 		} else if (correspondingEntity != null && operationName.startsWith("update")) {
-			return createComplexType(correspondingEntity.getName() + "Id");
+			return createComplexType(createOrGetValueObject4ID(aggregate, correspondingEntity.getName() + "Id", "id"));
 		}
 		return createComplexType("boolean");
 	}
@@ -272,7 +289,7 @@ public class DeriveBoundedContextFromSubdomains extends AbstractRefactoring impl
 	private ComplexType getParameterType4Operation(Aggregate aggregate, String operationName) {
 		Entity correspondingEntity = resolveEntity4OperationByFeatures(aggregate, operationName);
 		if (correspondingEntity != null && (operationName.startsWith("read") || operationName.startsWith("get"))) {
-			return createComplexType(correspondingEntity.getName() + "Id", CollectionType.SET);
+			return createComplexType(createOrGetValueObject4ID(aggregate, correspondingEntity.getName() + "Id", "id"), CollectionType.SET);
 		} else if (correspondingEntity != null) {
 			return createComplexType(correspondingEntity);
 		}
@@ -288,12 +305,6 @@ public class DeriveBoundedContextFromSubdomains extends AbstractRefactoring impl
 	private ComplexType createComplexType(SimpleDomainObject object) {
 		ComplexType complexType = TacticdslFactory.eINSTANCE.createComplexType();
 		complexType.setDomainObjectType(object);
-		return complexType;
-	}
-
-	private ComplexType createComplexType(String type, CollectionType collectionType) {
-		ComplexType complexType = createComplexType(type);
-		complexType.setCollectionType(collectionType);
 		return complexType;
 	}
 

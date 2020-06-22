@@ -16,40 +16,55 @@ BoundedContext ClaimsManagement implements ClaimsManagement {
 			boolean verifyPolicy (@Policy policy);
 			boolean payClaimant (@Claimant claimant);
 			boolean closeClaim (@Claim claim);
-			ClaimId createClaim (@Claim claim);
+			@ClaimId createClaim (@Claim claim);
 			boolean deleteClaim (@Claim claim);
-			ClaimId updateClaim (@Claim claim);
-			Set<@Claim> readClaim (Set<ClaimId> claimId);
+			@ClaimId updateClaim (@Claim claim);
+			Set<@Claim> readClaim (Set<@ClaimId> claimId);
 			boolean justDoSomethingWithClaim (@Claim claim);
 		}
 		Entity Claim {
 			Date date
 			Double amountClaimed
 			String description
-			ClaimID claimId
+			- ClaimId claimId
 			- Agent agent
+		}
+		ValueObject ClaimId {
+			Long claimId
 		}
 		Entity Policy {
 			Date startDate
 			Date endDate
-			PolicyID policyId
+			- PolicyId policyId
 			- List<Claim> claims
 		}
+		ValueObject PolicyId {
+			Long policyId
+		}
 		Entity Contract {
-			ContractID contractId
+			- ContractId contractId
 			- List<Policy> policies
+		}
+		ValueObject ContractId {
+			Long contractId
 		}
 		Entity Agent {
 			Long personalID
 			String firstName
 			String lastName
-			AgentID agentId
+			- AgentId agentId
+		}
+		ValueObject AgentId {
+			Long agentId
 		}
 		Entity Claimant {
 			String firstName
 			String lastName
-			ClaimantID claimantId
+			- ClaimantId claimantId
 			- List<Claim> claims
+		}
+		ValueObject ClaimantId {
+			Long claimantId
 		}
 	}
 }
