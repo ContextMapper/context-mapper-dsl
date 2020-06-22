@@ -21,11 +21,15 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.io.FileUtils;
 import org.contextmapper.dsl.cml.CMLResourceContainer;
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
@@ -119,11 +123,11 @@ public class DeriveBoundedContextFromSubdomainsTest extends AbstractRefactoringT
 
 		ServiceOperation operation = service.getOperations().stream().filter(o -> o.getName().equals("createCustomer")).findFirst().get();
 		assertEquals("createCustomer", operation.getName());
-		assertEquals("CreateCustomerOutput", operation.getReturnType().getType());
+		assertEquals("boolean", operation.getReturnType().getType());
 		assertEquals(1, operation.getParameters().size());
 
 		Parameter parameter = operation.getParameters().get(0);
-		assertEquals("input", parameter.getName());
+		assertEquals("createCustomerInput", parameter.getName());
 		assertEquals("CreateCustomerInput", parameter.getParameterType().getType());
 	}
 
@@ -214,7 +218,7 @@ public class DeriveBoundedContextFromSubdomainsTest extends AbstractRefactoringT
 		assertEquals(1, createOperation.getParameters().size());
 
 		Parameter parameter = createOperation.getParameters().get(0);
-		assertEquals("input", parameter.getName());
+		assertEquals("customer", parameter.getName());
 		assertEquals("Customer", parameter.getParameterType().getDomainObjectType().getName());
 
 		ServiceOperation readOperation = service.getOperations().stream().filter(o -> o.getName().equals("readCustomer")).findFirst().get();
@@ -223,7 +227,7 @@ public class DeriveBoundedContextFromSubdomainsTest extends AbstractRefactoringT
 		assertEquals(1, readOperation.getParameters().size());
 
 		parameter = readOperation.getParameters().get(0);
-		assertEquals("input", parameter.getName());
+		assertEquals("customerId", parameter.getName());
 		assertEquals("CustomerId", parameter.getParameterType().getType());
 	}
 
@@ -263,7 +267,7 @@ public class DeriveBoundedContextFromSubdomainsTest extends AbstractRefactoringT
 		assertEquals(1, createOperation.getParameters().size());
 
 		Parameter parameter = createOperation.getParameters().get(0);
-		assertEquals("input", parameter.getName());
+		assertEquals("customer", parameter.getName());
 		assertEquals("Customer", parameter.getParameterType().getDomainObjectType().getName());
 
 		ServiceOperation readOperation = service.getOperations().stream().filter(o -> o.getName().equals("readCustomer")).findFirst().get();
@@ -272,7 +276,7 @@ public class DeriveBoundedContextFromSubdomainsTest extends AbstractRefactoringT
 		assertEquals(1, readOperation.getParameters().size());
 
 		parameter = readOperation.getParameters().get(0);
-		assertEquals("input", parameter.getName());
+		assertEquals("customerId", parameter.getName());
 		assertEquals("CustomerId", parameter.getParameterType().getType());
 	}
 
@@ -300,6 +304,24 @@ public class DeriveBoundedContextFromSubdomainsTest extends AbstractRefactoringT
 		assertThrows(ContextMapperApplicationException.class, () -> {
 			ar.refactor(input);
 		});
+	}
+
+	@Test
+	public void canHandleClaimsIntegrationTest() throws IOException {
+		// given
+		CMLResourceContainer input = getResourceCopyOfTestCML("derive-bc-from-subdomain-test-11-input.cml");
+
+		// when
+		Set<String> subdomains = Sets.newHashSet(Arrays.asList(new String[] { "ClaimsManagement" }));
+		DeriveBoundedContextFromSubdomains ar = new DeriveBoundedContextFromSubdomains("ClaimsManagement", subdomains);
+		ar.refactor(input);
+		ar.persistChanges();
+
+		// then
+		String dslText = FileUtils.readFileToString(new File(input.getResource().getURI().toFileString()), "UTF-8");
+		String expectedResult = FileUtils.readFileToString(
+				new File(Paths.get("").toAbsolutePath().toString(), "/integ-test-files/refactorings/derive-bc-from-subdomain-test-11-output.cml"), Charset.forName("UTF-8"));
+		assertEquals(expectedResult, dslText);
 	}
 
 }

@@ -33,6 +33,7 @@ import org.contextmapper.dsl.contextMappingDSL.Subdomain;
 import org.contextmapper.dsl.exception.ContextMapperApplicationException;
 import org.contextmapper.dsl.refactoring.exception.RefactoringInputException;
 import org.contextmapper.tactic.dsl.tacticdsl.Attribute;
+import org.contextmapper.tactic.dsl.tacticdsl.CollectionType;
 import org.contextmapper.tactic.dsl.tacticdsl.ComplexType;
 import org.contextmapper.tactic.dsl.tacticdsl.Entity;
 import org.contextmapper.tactic.dsl.tacticdsl.Parameter;
@@ -197,9 +198,10 @@ public class DeriveBoundedContextFromSubdomains extends AbstractRefactoring impl
 			if (sourceOperation.getReturnType() == null)
 				targetOperation.setReturnType(getReturnType4Operation(aggregate, sourceOperation.getName()));
 
-			if (sourceOperation.getParameters().isEmpty())
-				addElementToEList(targetOperation.getParameters(), createParameter("input", getParameterType4Operation(aggregate, sourceOperation.getName())));
-
+			if (sourceOperation.getParameters().isEmpty()) {
+				ComplexType parameterType = getParameterType4Operation(aggregate, sourceOperation.getName());
+				addElementToEList(targetOperation.getParameters(), createParameter(getParameterName4ComplexType(parameterType), parameterType));
+			}
 			addElementToEList(target.getOperations(), targetOperation);
 		}
 	}
@@ -260,15 +262,17 @@ public class DeriveBoundedContextFromSubdomains extends AbstractRefactoring impl
 		if (correspondingEntity != null && operationName.startsWith("create")) {
 			return createComplexType(correspondingEntity.getName() + "Id");
 		} else if (correspondingEntity != null && (operationName.startsWith("read") || operationName.startsWith("get"))) {
-			return createComplexType(correspondingEntity);
+			return createComplexType(correspondingEntity, CollectionType.SET);
+		} else if (correspondingEntity != null && operationName.startsWith("update")) {
+			return createComplexType(correspondingEntity.getName() + "Id");
 		}
-		return createComplexType(operationName.substring(0, 1).toUpperCase() + operationName.substring(1) + "Output");
+		return createComplexType("boolean");
 	}
 
 	private ComplexType getParameterType4Operation(Aggregate aggregate, String operationName) {
 		Entity correspondingEntity = resolveEntity4OperationByFeatures(aggregate, operationName);
 		if (correspondingEntity != null && (operationName.startsWith("read") || operationName.startsWith("get"))) {
-			return createComplexType(correspondingEntity.getName() + "Id");
+			return createComplexType(correspondingEntity.getName() + "Id", CollectionType.SET);
 		} else if (correspondingEntity != null) {
 			return createComplexType(correspondingEntity);
 		}
@@ -285,6 +289,27 @@ public class DeriveBoundedContextFromSubdomains extends AbstractRefactoring impl
 		ComplexType complexType = TacticdslFactory.eINSTANCE.createComplexType();
 		complexType.setDomainObjectType(object);
 		return complexType;
+	}
+
+	private ComplexType createComplexType(String type, CollectionType collectionType) {
+		ComplexType complexType = createComplexType(type);
+		complexType.setCollectionType(collectionType);
+		return complexType;
+	}
+
+	private ComplexType createComplexType(SimpleDomainObject object, CollectionType collectionType) {
+		ComplexType complexType = createComplexType(object);
+		complexType.setCollectionType(collectionType);
+		return complexType;
+	}
+
+	private String getParameterName4ComplexType(ComplexType complexType) {
+		String parameterName = "input";
+		if (complexType.getDomainObjectType() != null)
+			parameterName = complexType.getDomainObjectType().getName();
+		if (complexType.getType() != null && !"".equals(complexType.getType()))
+			parameterName = complexType.getType();
+		return parameterName.substring(0, 1).toLowerCase() + parameterName.substring(1);
 	}
 
 	private Parameter createParameter(String name, ComplexType type) {
@@ -312,7 +337,7 @@ public class DeriveBoundedContextFromSubdomains extends AbstractRefactoring impl
 		BoundedContext bc = objectResolver.resolveBoundedContext(aggregate2Search);
 		Set<Feature> features = objectResolver.resolveFeatures(bc);
 		for (Feature feature : features) {
-			if (operationName.equals(feature.getVerb() + feature.getEntity())) {
+			if (operationName.equals(feature.getVerb() + feature.getEntity()) || operationName.endsWith(feature.getEntity())) {
 				return aggregate2Search.getDomainObjects().stream().filter(o -> o instanceof Entity).map(o -> (Entity) o).filter(o -> o.getName().equals(feature.getEntity()))
 						.findFirst().get();
 			}
