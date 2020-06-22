@@ -1,0 +1,117 @@
+
+
+BoundedContext ClaimsManagement implements ClaimsManagement {
+	domainVisionStatement "This Bounded Context realizes the following subdomains: ClaimsManagement"
+	type FEATURE
+	/* This Aggregate contains the entities and services of the 'ClaimsManagement' subdomain.
+	 * TODO: You can now refactor the Aggregate, for example by using the 'Split Aggregate by Entities' architectural refactoring.
+	 * TODO: Add attributes and operations to the entities.
+	 * TODO: Add operations to the services.
+	 * Find examples and further instructions on our website: https://contextmapper.org/docs/rapid-ooad/ */
+	Aggregate ClaimsManagementAggregate {
+		Service AccidentService {
+			boolean submitClaim (@Claim claim);
+			boolean verifyExistanceOfPolicy (@Policy policy);
+			boolean assignAgent (@Agent agent);
+			boolean verifyPolicy (@Policy policy);
+			boolean payClaimant (@Claimant claimant);
+			boolean closeClaim (@Claim claim);
+			ClaimId createClaim (@Claim claim);
+			boolean deleteClaim (@Claim claim);
+			ClaimId updateClaim (@Claim claim);
+			Set<@Claim> readClaim (Set<ClaimId> claimId);
+			boolean justDoSomethingWithClaim (@Claim claim);
+		}
+		Entity Claim {
+			Date date
+			Double amountClaimed
+			String description
+			ClaimID claimId
+			- Agent agent
+		}
+		Entity Policy {
+			Date startDate
+			Date endDate
+			PolicyID policyId
+			- List<Claim> claims
+		}
+		Entity Contract {
+			ContractID contractId
+			- List<Policy> policies
+		}
+		Entity Agent {
+			Long personalID
+			String firstName
+			String lastName
+			AgentID agentId
+		}
+		Entity Claimant {
+			String firstName
+			String lastName
+			ClaimantID claimantId
+			- List<Claim> claims
+		}
+	}
+}
+
+Domain Insurance_Application {
+	Subdomain ClaimsManagement supports Get_paid_for_car_accident {
+		Entity Claim {
+			Date date
+			Double amountClaimed
+			String description
+			- Agent agent
+		}
+		Entity Policy {
+			Date startDate
+			Date endDate
+			- List<Claim> claims
+		}
+		Entity Contract {
+			- List<Policy> policies
+		}
+		Entity Agent {
+			Long personalID
+			String firstName
+			String lastName
+		}
+		Entity Claimant {
+			String firstName
+			String lastName
+			- List<Claim> claims
+		}
+		Service AccidentService {
+			submitClaim;
+			verifyExistanceOfPolicy;
+			assignAgent;
+			verifyPolicy;
+			payClaimant;
+			closeClaim;
+			createClaim;
+			deleteClaim;
+			updateClaim;
+			readClaim;
+			justDoSomethingWithClaim;
+		}
+	}
+
+}
+
+UseCase Get_paid_for_car_accident { // title
+	actor "Claimant" // primary actor
+	interactions
+    	"submit" a "Claim" with its "date", "amountClaimed", "description" for a "Policy", // step 1: claimant submits claim
+    	"verifyExistanceOf" "Policy" with its "startDate", "endDate" for a "Contract",     // step 2: insurance company verifies that valid policy exists
+    	"assign" an "Agent" with its "personalID", "firstName", "lastName" for "Claim",    // step 3: agent is assigned to claim
+    	"verify" "Policy" for a "Contract",                                                // step 4: agent verifies all details are within policy guidelines
+    	"pay" "Claimant" with its "firstName", "lastName",                                 // step 5 (1): claimant gets paid
+    	"close" "Claim" for "Claimant",                                                    // step 5 (2): file/claim gets closed
+    	"create" a "Claim",                                                                // addition for integration test
+    	"delete" a "Claim",                                                                // addition for integration test
+    	"update" a "Claim",                                                                // addition for integration test
+    	"read" a "Claim",                                                                  // addition for integration test
+    	"justDoSomethingWith" a "Claim"                                                    // addition for integration test
+	benefit "A claimant submits a claim and and gets paid from the insurance company." // story (brief summary)
+	scope "Insurance company" // scope
+	level "Summary" // level
+}
