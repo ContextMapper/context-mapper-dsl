@@ -7,6 +7,8 @@ ContextMap {
 		exposedAggregates TestAggregate
 	}
 
+	TestBackendLogic [ P ] <-> [ P ] TestBackendDatabase // will be removed ...
+
 }
 
 BoundedContext TestBackendLogic {
