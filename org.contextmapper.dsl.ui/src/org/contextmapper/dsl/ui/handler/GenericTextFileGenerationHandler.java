@@ -25,7 +25,6 @@ import org.contextmapper.dsl.ui.handler.wizard.GenerateGenericTextFileWizard;
 import org.contextmapper.dsl.ui.internal.DslActivator;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
@@ -63,7 +62,7 @@ public class GenericTextFileGenerationHandler extends AbstractGenerationHandler 
 	@Override
 	protected void runGeneration(Resource resource, ExecutionEvent event, IFileSystemAccess2 fsa) {
 		selectedCmlFile = getSelectedFile(event);
-		GenerateGenericTextFileContext context = getLastStoredContext(event);
+		GenerateGenericTextFileContext context = getLastStoredContext(event, resource.getURI().lastSegment());
 		registerCustomGenerationVariables(event);
 		new WizardDialog(HandlerUtil.getActiveShell(event), new GenerateGenericTextFileWizard(context, executionContext -> {
 			generator.setFreemarkerTemplateFile(new File(context.getFreemarkerTemplateFile().getLocationURI()));
@@ -92,8 +91,8 @@ public class GenericTextFileGenerationHandler extends AbstractGenerationHandler 
 			generator.registerCustomModelProperty("contextMapperVersion", contextMapperBundle.getVersion().toString());
 	}
 
-	private GenerateGenericTextFileContext getLastStoredContext(ExecutionEvent event) {
-		GenerateGenericTextFileContext context = new GenerateGenericTextFileContext();
+	private GenerateGenericTextFileContext getLastStoredContext(ExecutionEvent event, String inputFileName) {
+		GenerateGenericTextFileContext context = new GenerateGenericTextFileContext(inputFileName);
 		try {
 			Map<QualifiedName, String> properties = selectedCmlFile.getPersistentProperties();
 			if (!properties.containsKey(getQualifiedName4File(selectedCmlFile, LAST_SELECTED_TEMPLATE_PROPERTY)))
@@ -119,7 +118,7 @@ public class GenericTextFileGenerationHandler extends AbstractGenerationHandler 
 			StatusManager.getManager().handle(new Status(IStatus.ERROR, DslActivator.PLUGIN_ID, "Could not persist template file location.", e));
 		}
 	}
-	
+
 	private QualifiedName getQualifiedName4File(IFile file, String property) {
 		return new QualifiedName("org.contextmapper.genericGenerator." + property, file.getProjectRelativePath().toString());
 	}

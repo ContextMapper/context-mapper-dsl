@@ -22,6 +22,10 @@ public class GenerateGenericTextFileContext {
 	private IFile freemarkerTemplateFile;
 	private String targetFileName;
 
+	public GenerateGenericTextFileContext(String inputFileName) {
+		this.targetFileName = inputFileName.replace(".cml", ".tbd");
+	}
+	
 	public void setFreemarkerTemplateFile(IFile freemarkerTemplateFile) {
 		this.freemarkerTemplateFile = freemarkerTemplateFile;
 	}
