@@ -16,5 +16,3 @@ API provider MyBoundedContextProvider
 
 API client MyDownstreamContextClient
 	consumes myAggregate
-
-IPA

@@ -11,7 +11,7 @@ data type ReturnType P
 data type anotherMethodParameter { "param1":Parameter1Type, "param2":Parameter2Type }
 
 // ** BEGIN PROTECTED REGION for endpoint types
-endpoint type CustomersAggregate
+endpoint type Customers
 	exposes
 		operation updateAddressChanged
 			expecting
@@ -28,7 +28,7 @@ endpoint type YetAnotherEnpoint
 
 // ** BEGIN PROTECTED REGION for API providers
 API provider CustomerManagementContextProvider
-	offers CustomersAggregate
+	offers Customers
 	at endpoint location "http://localhost:8001"
 		via protocol "RESTful HTTP"
 
@@ -39,11 +39,9 @@ API provider YetAnotherProvider
 
 // ** BEGIN PROTECTED REGION for API clients
 API client ContractManagementContextClient
-	consumes CustomersAggregate
+	consumes Customers
 
 API client YetAnotherClient
 	consumes YetAnotherEnpoint
 // ** END PROTECTED REGION for API clients
 
-
-IPA

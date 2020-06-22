@@ -91,7 +91,7 @@ public class ProtectedRegionReaderTest {
 
 		// then
 		assertEquals(1, identifiers.size());
-		assertTrue(identifiers.contains("CustomersAggregate"));
+		assertTrue(identifiers.contains("Customers"));
 	}
 	
 	@Test

@@ -8,7 +8,7 @@ data type TestEnum {"VAL1"|"VAL2"}
 data type TestEnum2 {"VAL1"|"VAL2"}
 
 
-endpoint type CustomersAggregate
+endpoint type Customers
 	serves as INFORMATION_HOLDER_RESOURCE
 	exposes
 		operation updateAddress
@@ -24,12 +24,10 @@ endpoint type CustomersAggregate
 
 
 API provider CustomerManagementContextProvider
-	offers CustomersAggregate
+	offers Customers
 	at endpoint location "http://localhost:8000"
 		via protocol "RESTful HTTP"
 
 
 API client ContractManagementContextClient
-	consumes CustomersAggregate
-
-IPA
+	consumes Customers
