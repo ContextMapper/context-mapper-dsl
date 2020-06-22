@@ -1,6 +1,6 @@
 ContextMap {
-	contains TestBackendDatabase
 	contains TestBackendLogic
+	contains TestBackendDatabase
 
 	TestBackendLogic [ PL ] -> [ CF ] TestBackendDatabase {
 		implementationTechnology ""

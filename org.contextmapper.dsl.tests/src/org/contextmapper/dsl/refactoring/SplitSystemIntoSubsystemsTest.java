@@ -22,11 +22,15 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.io.FileUtils;
 import org.contextmapper.dsl.cml.CMLResourceContainer;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
@@ -72,30 +76,6 @@ public class SplitSystemIntoSubsystemsTest extends AbstractRefactoringTest {
 	}
 
 	@Test
-	public void canCheckThatName4ExistingContextNotAlreadyExists() throws IOException {
-		// given
-		CMLResourceContainer input = getResourceCopyOfTestCML("split-system-tier-test-3-input.cml");
-		SplitSystemIntoSubsystems ar = new SplitSystemIntoSubsystems("TestBackend", "TestBackendLogic", "TestBackendDatabase");
-
-		// when, then
-		assertThrows(RefactoringInputException.class, () -> {
-			ar.refactor(input);
-		});
-	}
-
-	@Test
-	public void canCheckThatName4NewTierNotAlreadyExists() throws IOException {
-		// given
-		CMLResourceContainer input = getResourceCopyOfTestCML("split-system-tier-test-4-input.cml");
-		SplitSystemIntoSubsystems ar = new SplitSystemIntoSubsystems("TestBackend", "TestBackendLogic", "TestBackendDatabase");
-
-		// when, then
-		assertThrows(RefactoringInputException.class, () -> {
-			ar.refactor(input);
-		});
-	}
-
-	@Test
 	public void canSplitTier() throws IOException {
 		// given
 		CMLResourceContainer input = getResourceCopyOfTestCML("split-system-tier-test-1-input.cml");
@@ -111,6 +91,42 @@ public class SplitSystemIntoSubsystemsTest extends AbstractRefactoringTest {
 		Set<String> contextNames = model.getBoundedContexts().stream().map(bc -> bc.getName()).collect(Collectors.toSet());
 		assertTrue(contextNames.contains("TestBackendLogic"));
 		assertTrue(contextNames.contains("TestBackendDatabase"));
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = { "split-system-tier-test-3" })
+	public void canSplitTierIfNewSystemNamesAlreadyExist(String testBasefileName) throws IOException {
+		// given
+		CMLResourceContainer input = getResourceCopyOfTestCML(testBasefileName + "-input.cml");
+		SplitSystemIntoSubsystems ar = new SplitSystemIntoSubsystems("TestBackend", "TestBackendLogic", "TestBackendDatabase");
+
+		// when
+		ar.refactor(input);
+		ar.persistChanges();
+
+		// then
+		String dslText = FileUtils.readFileToString(new File(input.getResource().getURI().toFileString()), "UTF-8");
+		String expectedResult = FileUtils.readFileToString(
+				new File(Paths.get("").toAbsolutePath().toString(), "/integ-test-files/refactorings/" + testBasefileName + "-output.cml"), Charset.forName("UTF-8"));
+		assertEquals(expectedResult, dslText);
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = { "split-system-tier-test-4" })
+	public void canSplitTierIfNewSystemNamesAndContextMapAlreadyExist(String testBasefileName) throws IOException {
+		// given
+		CMLResourceContainer input = getResourceCopyOfTestCML(testBasefileName + "-input.cml");
+		SplitSystemIntoSubsystems ar = new SplitSystemIntoSubsystems("TestBackendLogic", "TestBackendLogic", "TestBackendDatabase");
+
+		// when
+		ar.refactor(input);
+		ar.persistChanges();
+
+		// then
+		String dslText = FileUtils.readFileToString(new File(input.getResource().getURI().toFileString()), "UTF-8");
+		String expectedResult = FileUtils.readFileToString(
+				new File(Paths.get("").toAbsolutePath().toString(), "/integ-test-files/refactorings/" + testBasefileName + "-output.cml"), Charset.forName("UTF-8"));
+		assertEquals(expectedResult, dslText);
 	}
 
 	@Test
@@ -133,7 +149,7 @@ public class SplitSystemIntoSubsystemsTest extends AbstractRefactoringTest {
 		assertTrue(relationship.getUpstreamRoles().contains(UpstreamRole.PUBLISHED_LANGUAGE));
 		assertTrue(relationship.getDownstreamRoles().contains(DownstreamRole.CONFORMIST));
 	}
-	
+
 	@Test
 	public void canAddExposedAggregatesToRelationship() throws IOException {
 		// given

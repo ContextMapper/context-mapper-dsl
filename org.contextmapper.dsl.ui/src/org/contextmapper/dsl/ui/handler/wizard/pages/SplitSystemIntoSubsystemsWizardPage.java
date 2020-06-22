@@ -244,14 +244,6 @@ public class SplitSystemIntoSubsystemsWizardPage extends ContextMapperWizardPage
 			setError("The Bounded Context name '" + newSubsystemNameText.getText() + "' is not valid. Allowed characters are: a-z, A-Z, 0-9, _");
 			return;
 		}
-		if (!existingSubsystemNameText.getText().equals(context.getOriginalSystemName()) && context.getExistingBoundedContexts().contains(existingSubsystemNameText.getText())) {
-			setError("A Bounded Context with the name '" + existingSubsystemNameText.getText() + "' already exists.");
-			return;
-		}
-		if (this.context.getExistingBoundedContexts().contains(newSubsystemNameText.getText())) {
-			setError("A Bounded Context with the name '" + newSubsystemNameText.getText() + "' already exists.");
-			return;
-		}
 	}
 
 	private void setError(String message) {

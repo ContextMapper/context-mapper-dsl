@@ -1,0 +1,20 @@
+ContextMap {
+	contains TestFrontend
+	contains TestBackend
+
+	TestBackend [ PL ] -> [ ACL ] TestFrontend
+
+}
+
+BoundedContext TestSystem {
+	type APPLICATION
+}
+
+BoundedContext TestBackend {
+	type SYSTEM
+}
+
+BoundedContext TestFrontend {
+	type SYSTEM
+}
+

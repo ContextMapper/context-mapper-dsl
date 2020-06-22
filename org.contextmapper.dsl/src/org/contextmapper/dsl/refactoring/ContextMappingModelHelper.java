@@ -59,6 +59,25 @@ public class ContextMappingModelHelper {
 	}
 
 	/**
+	 * Finds all relationships that involve a specific Bounded Context.
+	 */
+	public List<Relationship> findAnyRelationshipsInvolvingContext(BoundedContext bc) {
+		List<Relationship> relationships = Lists.newArrayList();
+		for (Relationship relationship : contextMap.getRelationships()) {
+			if (relationship instanceof SymmetricRelationship) {
+				SymmetricRelationship symRelationship = (SymmetricRelationship) relationship;
+				if (symRelationship.getParticipant1().getName().endsWith(bc.getName()) || symRelationship.getParticipant2().getName().equals(bc.getName()))
+					relationships.add(symRelationship);
+			} else if (relationship instanceof UpstreamDownstreamRelationship) {
+				UpstreamDownstreamRelationship upDownRelationship = (UpstreamDownstreamRelationship) relationship;
+				if (upDownRelationship.getUpstream().getName().equals(bc.getName()) || upDownRelationship.getDownstream().getName().equals(bc.getName()))
+					relationships.add(upDownRelationship);
+			}
+		}
+		return relationships;
+	}
+
+	/**
 	 * Replaces the bounded context 'originalBC' in all relationships on the context
 	 * map with the bounded context 'replacementBC'. Returns true if a replacement
 	 * has been done, false otherwise.

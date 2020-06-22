@@ -16,8 +16,6 @@
 package org.contextmapper.dsl.refactoring;
 
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
@@ -25,6 +23,7 @@ import org.contextmapper.dsl.contextMappingDSL.BoundedContextType;
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
 import org.contextmapper.dsl.contextMappingDSL.DownstreamRole;
+import org.contextmapper.dsl.contextMappingDSL.Relationship;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamRole;
 import org.contextmapper.dsl.refactoring.exception.RefactoringInputException;
@@ -54,6 +53,7 @@ public class DeriveFrontendAndBackendSystemsFromFeature extends AbstractRefactor
 	@Override
 	protected void doRefactor() {
 		checkPreconditions();
+		deleteExistingContexts();
 
 		BoundedContext featureContext = getAllBoundedContexts().stream().filter(bc -> bc.getName().equals(featureBoundedContextName)).findFirst().get();
 
@@ -90,6 +90,27 @@ public class DeriveFrontendAndBackendSystemsFromFeature extends AbstractRefactor
 		addElementToEList(map.getRelationships(), relationship);
 	}
 
+	private void deleteExistingContexts() {
+		Optional<BoundedContext> optFrontend = model.getBoundedContexts().stream().filter(bc -> bc.getName().equals(frontendName)).findFirst();
+		Optional<BoundedContext> optBackend = model.getBoundedContexts().stream().filter(bc -> bc.getName().equals(backendName)).findFirst();
+		if (optFrontend.isPresent())
+			removeContextFromMap(optFrontend.get());
+		if (optBackend.isPresent())
+			removeContextFromMap(optBackend.get());
+	}
+
+	private void removeContextFromMap(BoundedContext bc) {
+		if (model.getMap() != null) {
+			ContextMappingModelHelper mappingHelper = new ContextMappingModelHelper(model.getMap());
+			for (Relationship relationship : mappingHelper.findAnyRelationshipsInvolvingContext(bc)) {
+				removeElementFromEList(model.getMap().getRelationships(), relationship);
+			}
+			if (model.getMap().getBoundedContexts().contains(bc))
+				removeElementFromEList(model.getMap().getBoundedContexts(), bc);
+		}
+		removeElementFromEList(model.getBoundedContexts(), bc);
+	}
+
 	private Aggregate createSampleViewModelAggregate() {
 		Aggregate aggregate = ContextMappingDSLFactory.eINSTANCE.createAggregate();
 		aggregate.setName("ViewModel");
@@ -120,11 +141,6 @@ public class DeriveFrontendAndBackendSystemsFromFeature extends AbstractRefactor
 		BoundedContext featureBC = optFeatureBC.get();
 		if (featureBC.getType() != BoundedContextType.FEATURE && featureBC.getType() != BoundedContextType.APPLICATION)
 			throw new RefactoringInputException("The Bounded Context '" + featureBoundedContextName + "' is not of the type FEATURE!");
-		Set<String> allBCNames = getAllBoundedContexts().stream().map(bc -> bc.getName()).collect(Collectors.toSet());
-		if (allBCNames.contains(frontendName))
-			throw new RefactoringInputException("A Bounded Context with the name '" + frontendName + "' already exists in your model!");
-		if (allBCNames.contains(backendName))
-			throw new RefactoringInputException("A Bounded Context with the name '" + backendName + "' already exists in your model!");
 	}
 
 	public void deriveViewModelInFronted(boolean derive) {
