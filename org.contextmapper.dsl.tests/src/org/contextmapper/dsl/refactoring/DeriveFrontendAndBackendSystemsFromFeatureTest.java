@@ -23,10 +23,14 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Paths;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.io.FileUtils;
 import org.contextmapper.dsl.cml.CMLResourceContainer;
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
@@ -72,21 +76,7 @@ public class DeriveFrontendAndBackendSystemsFromFeatureTest extends AbstractRefa
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = { "derive-frontend-backend-from-feature-test-3-input.cml", "derive-frontend-backend-from-feature-test-4-input.cml" })
-	public void canCheckThatFrontendNameNotAlreadyExists(String inputFile) throws IOException {
-		// given
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputFile);
-		DeriveFrontendAndBackendSystemsFromFeature ar = new DeriveFrontendAndBackendSystemsFromFeature("TestSystem", ACL);
-
-		// when, then
-		assertThrows(RefactoringInputException.class, () -> {
-			ar.refactor(input);
-		});
-	}
-
-	@ParameterizedTest
-	@ValueSource(strings = { "derive-frontend-backend-from-feature-test-3-input.cml", "derive-frontend-backend-from-feature-test-4-input.cml",
-			"derive-frontend-backend-from-feature-test-6-input.cml" })
+	@ValueSource(strings = { "derive-frontend-backend-from-feature-test-6-input.cml" })
 	public void canDeriveFrontendAndBackendSystemContexts(String inputFile) throws IOException {
 		// given
 		CMLResourceContainer input = getResourceCopyOfTestCML(inputFile);
@@ -111,6 +101,26 @@ public class DeriveFrontendAndBackendSystemsFromFeatureTest extends AbstractRefa
 
 		BoundedContext backend = model.getBoundedContexts().stream().filter(bc -> bc.getName().equals("TestBackend")).findFirst().get();
 		assertEquals(BoundedContextType.SYSTEM, backend.getType());
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = { "derive-frontend-backend-from-feature-test-6", "derive-frontend-backend-from-feature-test-7" })
+	public void canDeriveFrontedAndBackendSystemRepeatable(String testBasefileName) throws IOException {
+		// given
+		CMLResourceContainer input = getResourceCopyOfTestCML(testBasefileName + "-input.cml");
+		DeriveFrontendAndBackendSystemsFromFeature ar = new DeriveFrontendAndBackendSystemsFromFeature("TestSystem", ACL);
+		ar.setBackendName("TestBackend");
+		ar.setFrontendName("TestFrontend");
+
+		// when
+		ar.refactor(input);
+		ar.persistChanges();
+
+		// then
+		String dslText = FileUtils.readFileToString(new File(input.getResource().getURI().toFileString()), "UTF-8");
+		String expectedResult = FileUtils.readFileToString(
+				new File(Paths.get("").toAbsolutePath().toString(), "/integ-test-files/refactorings/" + testBasefileName + "-output.cml"), Charset.forName("UTF-8"));
+		assertEquals(expectedResult, dslText);
 	}
 
 	@Test

@@ -1,5 +1,10 @@
 BoundedContext TestBackend {
 	type SYSTEM
+	
+	Aggregate TestAggregate {
+		Entity TestEntity
+	}
 }
 
-BoundedContext TestBackendDatabase // already existing name
+BoundedContext TestBackendLogic
+BoundedContext TestBackendDatabase

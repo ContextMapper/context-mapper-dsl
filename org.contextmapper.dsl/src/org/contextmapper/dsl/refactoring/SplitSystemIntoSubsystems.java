@@ -17,7 +17,6 @@ package org.contextmapper.dsl.refactoring;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
@@ -57,6 +56,7 @@ public class SplitSystemIntoSubsystems extends AbstractRefactoring implements Se
 	@Override
 	protected void doRefactor() {
 		checkPreconditions();
+		deleteExistingContexts();
 
 		BoundedContext systemContext = getAllBoundedContexts().stream().filter(bc -> bc.getName().equals(systemExistingBoundedContextName)).findFirst().get();
 		renameBoundedContext(systemContext.getName(), existingSubsystemName);
@@ -68,6 +68,27 @@ public class SplitSystemIntoSubsystems extends AbstractRefactoring implements Se
 
 		addElementToEList(model.getBoundedContexts(), newSubsystemContext);
 		createUpstreamDownstreamRelationship(systemContext, newSubsystemContext);
+	}
+
+	private void deleteExistingContexts() {
+		Optional<BoundedContext> optNewSubsystem = model.getBoundedContexts().stream().filter(bc -> bc.getName().equals(newSubsystemName)).findFirst();
+		Optional<BoundedContext> optExistingSubsystem = model.getBoundedContexts().stream().filter(bc -> bc.getName().equals(existingSubsystemName)).findFirst();
+		if (optNewSubsystem.isPresent())
+			removeContextFromMap(optNewSubsystem.get());
+		if (!systemExistingBoundedContextName.equals(existingSubsystemName) && optExistingSubsystem.isPresent())
+			removeContextFromMap(optExistingSubsystem.get());
+	}
+
+	private void removeContextFromMap(BoundedContext bc) {
+		if (model.getMap() != null) {
+			ContextMappingModelHelper mappingHelper = new ContextMappingModelHelper(model.getMap());
+			for (Relationship relationship : mappingHelper.findAnyRelationshipsInvolvingContext(bc)) {
+				removeElementFromEList(model.getMap().getRelationships(), relationship);
+			}
+			if (model.getMap().getBoundedContexts().contains(bc))
+				removeElementFromEList(model.getMap().getBoundedContexts(), bc);
+		}
+		removeElementFromEList(model.getBoundedContexts(), bc);
 	}
 
 	private void renameBoundedContext(String currentName, String newName) {
@@ -150,11 +171,6 @@ public class SplitSystemIntoSubsystems extends AbstractRefactoring implements Se
 		BoundedContext systemBC = optSystemBC.get();
 		if (systemBC.getType() != BoundedContextType.SYSTEM)
 			throw new RefactoringInputException("The Bounded Context '" + systemExistingBoundedContextName + "' is not of the type FEATURE!");
-		Set<String> allBCNames = getAllBoundedContexts().stream().map(bc -> bc.getName()).collect(Collectors.toSet());
-		if (!existingSubsystemName.equals(systemExistingBoundedContextName) && allBCNames.contains(existingSubsystemName))
-			throw new RefactoringInputException("A Bounded Context with the name '" + existingSubsystemName + "' already exists in your model!");
-		if (allBCNames.contains(newSubsystemName))
-			throw new RefactoringInputException("A Bounded Context with the name '" + newSubsystemName + "' already exists in your model!");
 	}
 
 	public void setRelationshipType(SplitBoundedContextRelationshipType relationshipType) {

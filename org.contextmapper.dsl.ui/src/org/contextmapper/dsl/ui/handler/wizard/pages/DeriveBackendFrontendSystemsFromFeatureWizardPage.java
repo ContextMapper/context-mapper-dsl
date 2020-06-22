@@ -230,14 +230,6 @@ public class DeriveBackendFrontendSystemsFromFeatureWizardPage extends ContextMa
 			setError("The Bounded Context name '" + frontendNameText.getText() + "' is not valid. Allowed characters are: a-z, A-Z, 0-9, _");
 			return;
 		}
-		if (this.context.getAllBoundedContextNames().contains(backendNameText.getText())) {
-			setError("A Bounded Context with the name '" + backendNameText.getText() + "' already exists.");
-			return;
-		}
-		if (this.context.getAllBoundedContextNames().contains(frontendNameText.getText())) {
-			setError("A Bounded Context with the name '" + frontendNameText.getText() + "' already exists.");
-			return;
-		}
 	}
 
 	private void setError(String message) {

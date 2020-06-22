@@ -1,0 +1,22 @@
+ContextMap {
+	contains TestFrontend
+	contains TestBackend
+
+	TestBackend [ PL ] -> [ ACL ] TestFrontend
+
+}
+
+BoundedContext TestSystem {
+	type APPLICATION
+}
+
+BoundedContext TestSystemFrontend // default frontend name already exists
+
+BoundedContext TestBackend {
+	type SYSTEM
+}
+
+BoundedContext TestFrontend {
+	type SYSTEM
+}
+

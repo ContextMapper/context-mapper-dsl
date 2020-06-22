@@ -1,13 +1,11 @@
 ContextMap {
-	contains TestBackendDatabase
 	contains TestBackendLogic
+	contains TestBackendDatabase
 
 	TestBackendLogic [ PL ] -> [ CF ] TestBackendDatabase {
 		implementationTechnology ""
 		exposedAggregates TestAggregate
 	}
-
-	TestBackendLogic [ P ] <-> [ P ] TestBackendDatabase // will be removed ...
 
 }
 
