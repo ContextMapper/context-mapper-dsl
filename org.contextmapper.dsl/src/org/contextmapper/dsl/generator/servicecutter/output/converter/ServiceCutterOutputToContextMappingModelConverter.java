@@ -28,8 +28,10 @@ import org.contextmapper.dsl.contextMappingDSL.Relationship;
 import org.contextmapper.dsl.contextMappingDSL.SharedKernel;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
 import org.contextmapper.tactic.dsl.tacticdsl.Attribute;
+import org.contextmapper.tactic.dsl.tacticdsl.DomainObject;
 import org.contextmapper.tactic.dsl.tacticdsl.Entity;
 import org.contextmapper.tactic.dsl.tacticdsl.TacticdslFactory;
+import org.eclipse.xtext.EcoreUtil2;
 
 import com.google.common.collect.Lists;
 
@@ -49,10 +51,20 @@ public class ServiceCutterOutputToContextMappingModelConverter {
 	private TacticdslFactory tacticDDDFactory = TacticdslFactory.eINSTANCE;
 	private Map<String, Entity> entityMap;
 	private Map<String, BoundedContext> boundedContextMap;
+	private Map<String, String> attributeTypes;
 
-	public ContextMappingModel convert(SolverResult serviceCutterResult) {
+	public ServiceCutterOutputToContextMappingModelConverter() {
 		this.entityMap = new HashMap<>();
 		this.boundedContextMap = new HashMap<>();
+		this.attributeTypes = new HashMap<>();
+	}
+
+	public ServiceCutterOutputToContextMappingModelConverter(ContextMappingModel originalModel) {
+		this();
+		initializeTypeMapByOriginalCMLModel(originalModel);
+	}
+
+	public ContextMappingModel convert(SolverResult serviceCutterResult) {
 		initializeEntityMap(serviceCutterResult);
 		ContextMappingModel contextMappingModel = contextMappingFactory.createContextMappingModel();
 		ContextMap contextMap = contextMappingFactory.createContextMap();
@@ -79,9 +91,14 @@ public class ServiceCutterOutputToContextMappingModelConverter {
 			String nanoEntityName = nanoEntity.split("\\.")[1];
 			Entity entity = this.entityMap.get(entityName);
 			entities.add(entity);
+			
 			Attribute attribute = tacticDDDFactory.createAttribute();
-			attribute.setType("UnknownType");
+			if (attributeTypes.containsKey(nanoEntity))
+				attribute.setType(attributeTypes.get(nanoEntity));
+			else
+				attribute.setType("UnknownType");
 			attribute.setName(nanoEntityName);
+			
 			entity.getAttributes().add(attribute);
 		}
 		return entities;
@@ -91,23 +108,17 @@ public class ServiceCutterOutputToContextMappingModelConverter {
 		List<Relationship> relationships = Lists.newArrayList();
 		for (ServiceRelation relation : serviceRelations) {
 			if ("OUTGOING".equals(relation.getDirection().toString())) {
-				relationships
-						.add(createUpstreamDownstreamRelationship(createOrGetBoundedContext(relation.getServiceA()),
-								createOrGetBoundedContext(relation.getServiceB())));
+				relationships.add(createUpstreamDownstreamRelationship(createOrGetBoundedContext(relation.getServiceA()), createOrGetBoundedContext(relation.getServiceB())));
 			} else if ("INCOMING".equals(relation.getDirection().toString())) {
-				relationships
-						.add(createUpstreamDownstreamRelationship(createOrGetBoundedContext(relation.getServiceB()),
-								createOrGetBoundedContext(relation.getServiceA())));
+				relationships.add(createUpstreamDownstreamRelationship(createOrGetBoundedContext(relation.getServiceB()), createOrGetBoundedContext(relation.getServiceA())));
 			} else if ("BIDIRECTIONAL".equals(relation.getDirection().toString())) {
-				relationships.add(createSharedKernelRelationship(createOrGetBoundedContext(relation.getServiceA()),
-						createOrGetBoundedContext(relation.getServiceB())));
+				relationships.add(createSharedKernelRelationship(createOrGetBoundedContext(relation.getServiceA()), createOrGetBoundedContext(relation.getServiceB())));
 			}
 		}
 		return relationships;
 	}
 
-	private UpstreamDownstreamRelationship createUpstreamDownstreamRelationship(BoundedContext source,
-			BoundedContext target) {
+	private UpstreamDownstreamRelationship createUpstreamDownstreamRelationship(BoundedContext source, BoundedContext target) {
 		UpstreamDownstreamRelationship relationship = contextMappingFactory.createUpstreamDownstreamRelationship();
 		relationship.setUpstream(target);
 		relationship.setDownstream(source);
@@ -131,6 +142,15 @@ public class ServiceCutterOutputToContextMappingModelConverter {
 		for (String nanoEntity : service.getNanoentities()) {
 			String entityName = nanoEntity.split("\\.")[0];
 			addEntityToEntityMapIfNotExisting(service.getId() + "_" + entityName);
+		}
+	}
+
+	private void initializeTypeMapByOriginalCMLModel(ContextMappingModel model) {
+		List<DomainObject> domainObjects = EcoreUtil2.getAllContentsOfType(model, DomainObject.class);
+		for (DomainObject domainObject : domainObjects) {
+			domainObject.getAttributes().stream().forEach(a -> {
+				this.attributeTypes.put(domainObject.getName() + "." + a.getName(), a.getType());
+			});
 		}
 	}
 

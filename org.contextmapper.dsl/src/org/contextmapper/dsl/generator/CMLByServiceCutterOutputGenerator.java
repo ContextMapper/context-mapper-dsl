@@ -28,14 +28,8 @@ import ch.hsr.servicecutter.api.model.SolverResult;
 
 public class CMLByServiceCutterOutputGenerator {
 
-	private ServiceCutterOutputToContextMappingModelConverter converter;
-
-	public CMLByServiceCutterOutputGenerator() {
-		this.converter = new ServiceCutterOutputToContextMappingModelConverter();
-	}
-
 	public void doGenerate(final ResourceSet resourceSet, final URI jsonFileURI, final SolverResult serviceCutterResult) {
-		ContextMappingModel model = this.converter.convert(serviceCutterResult);
+		ContextMappingModel model = new ServiceCutterOutputToContextMappingModelConverter().convert(serviceCutterResult);
 
 		EcoreUtil.resolveAll(model);
 		Resource cmlResource = resourceSet.createResource(jsonFileURI.trimFileExtension().appendFileExtension("cml"));

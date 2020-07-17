@@ -95,7 +95,7 @@ public class NewServiceCutContextMapGenerator extends AbstractContextMapGenerato
 
 		// calculate new service cut
 		SolverResult result = new ServiceCutter(context).generateDecomposition();
-		ContextMappingModel newServiceCutModel = new ServiceCutterOutputToContextMappingModelConverter().convert(result);
+		ContextMappingModel newServiceCutModel = new ServiceCutterOutputToContextMappingModelConverter(contextMappingModel).convert(result);
 
 		// save new CML file
 		int counter = 1;
