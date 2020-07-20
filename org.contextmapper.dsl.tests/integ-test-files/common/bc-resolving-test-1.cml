@@ -1,0 +1,20 @@
+BoundedContext TestContext {
+    Module TestModule {
+        Aggregate TestAggregateInModule {
+            Entity TestEntity1
+        }
+
+        Entity TestEntity4
+    }
+    
+    Aggregate TestAggregate {
+        Entity TestEntity2
+    }
+    
+}
+
+Domain TestDomain {
+    Subdomain TestSubdomain {
+        Entity TestEntity3
+    }
+}

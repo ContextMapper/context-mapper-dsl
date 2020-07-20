@@ -18,7 +18,10 @@ package org.contextmapper.dsl.generator.servicecutter.output.converter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+import org.contextmapper.dsl.cml.CMLModelObjectsResolvingHelper;
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
@@ -28,10 +31,14 @@ import org.contextmapper.dsl.contextMappingDSL.Relationship;
 import org.contextmapper.dsl.contextMappingDSL.SharedKernel;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
 import org.contextmapper.tactic.dsl.tacticdsl.Attribute;
+import org.contextmapper.tactic.dsl.tacticdsl.DomainObject;
 import org.contextmapper.tactic.dsl.tacticdsl.Entity;
+import org.contextmapper.tactic.dsl.tacticdsl.Reference;
 import org.contextmapper.tactic.dsl.tacticdsl.TacticdslFactory;
+import org.eclipse.xtext.EcoreUtil2;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import ch.hsr.servicecutter.api.model.Service;
 import ch.hsr.servicecutter.api.model.ServiceRelation;
@@ -47,15 +54,34 @@ public class ServiceCutterOutputToContextMappingModelConverter {
 
 	private ContextMappingDSLFactory contextMappingFactory = ContextMappingDSLFactory.eINSTANCE;
 	private TacticdslFactory tacticDDDFactory = TacticdslFactory.eINSTANCE;
-	private Map<String, Entity> entityMap;
 	private Map<String, BoundedContext> boundedContextMap;
+	private Map<String, String> attributeTypes;
+	private ContextMappingModel originalModelState;
+	private ContextMappingModel model;
+
+	private CMLModelObjectsResolvingHelper resolvingHelper;
+
+	public ServiceCutterOutputToContextMappingModelConverter() {
+		this.boundedContextMap = new HashMap<>();
+		this.attributeTypes = new HashMap<>();
+
+		this.resolvingHelper = new CMLModelObjectsResolvingHelper();
+	}
+
+	public ServiceCutterOutputToContextMappingModelConverter(ContextMappingModel originalModel) {
+		this();
+		this.originalModelState = originalModel;
+		initializeTypeMapByOriginalCMLModel(originalModel);
+	}
 
 	public ContextMappingModel convert(SolverResult serviceCutterResult) {
-		this.entityMap = new HashMap<>();
-		this.boundedContextMap = new HashMap<>();
-		initializeEntityMap(serviceCutterResult);
-		ContextMappingModel contextMappingModel = contextMappingFactory.createContextMappingModel();
+		model = contextMappingFactory.createContextMappingModel();
 		ContextMap contextMap = contextMappingFactory.createContextMap();
+		if (originalModelState != null && originalModelState.getMap() != null) {
+			contextMap.setName(originalModelState.getMap().getName());
+			contextMap.setState(originalModelState.getMap().getState());
+			contextMap.setType(originalModelState.getMap().getType());
+		}
 		for (Service service : serviceCutterResult.getServices()) {
 			BoundedContext bc = createOrGetBoundedContext(service.getName());
 
@@ -64,50 +90,68 @@ public class ServiceCutterOutputToContextMappingModelConverter {
 			aggregate.getDomainObjects().addAll(convertEntities(service.getId(), service.getNanoentities()));
 			bc.getAggregates().add(aggregate);
 
-			contextMappingModel.getBoundedContexts().add(bc);
+			model.getBoundedContexts().add(bc);
 			contextMap.getBoundedContexts().add(bc);
 		}
 		contextMap.getRelationships().addAll(convertRelationships(serviceCutterResult.getRelations()));
-		contextMappingModel.setMap(contextMap);
-		return contextMappingModel;
+		model.setMap(contextMap);
+		reconstructReferencesIfPossible();
+		copyRootElementsNotAffected();
+		return model;
+	}
+
+	private void copyRootElementsNotAffected() {
+		if (originalModelState == null)
+			return;
+
+		model.getUserRequirements().addAll(EcoreUtil2.copyAll(originalModelState.getUserRequirements()));
+		model.getImports().addAll(EcoreUtil2.copyAll(originalModelState.getImports()));
+		model.getDomains().addAll(EcoreUtil2.copyAll(originalModelState.getDomains()));
 	}
 
 	private List<Entity> convertEntities(char serviceId, List<String> nanoEntities) {
-		List<Entity> entities = Lists.newArrayList();
+		Map<String, Entity> entities = Maps.newHashMap();
 		for (String nanoEntity : nanoEntities) {
-			String entityName = serviceId + "_" + nanoEntity.split("\\.")[0];
+			String entityName = nanoEntity.split("\\.")[0];
 			String nanoEntityName = nanoEntity.split("\\.")[1];
-			Entity entity = this.entityMap.get(entityName);
-			entities.add(entity);
+			Entity entity = createOrGetEntity(entities, entityName);
+
 			Attribute attribute = tacticDDDFactory.createAttribute();
-			attribute.setType("UnknownType");
+			if (attributeTypes.containsKey(nanoEntity))
+				attribute.setType(attributeTypes.get(nanoEntity));
+			else
+				attribute.setType("UnknownType");
 			attribute.setName(nanoEntityName);
+
 			entity.getAttributes().add(attribute);
 		}
-		return entities;
+		return Lists.newLinkedList(entities.values());
+	}
+
+	private Entity createOrGetEntity(Map<String, Entity> entities, String entityName) {
+		if (entities.containsKey(entityName))
+			return entities.get(entityName);
+		Entity entity = TacticdslFactory.eINSTANCE.createEntity();
+		entity.setName(entityName);
+		entities.put(entityName, entity);
+		return entity;
 	}
 
 	private List<Relationship> convertRelationships(List<ServiceRelation> serviceRelations) {
 		List<Relationship> relationships = Lists.newArrayList();
 		for (ServiceRelation relation : serviceRelations) {
 			if ("OUTGOING".equals(relation.getDirection().toString())) {
-				relationships
-						.add(createUpstreamDownstreamRelationship(createOrGetBoundedContext(relation.getServiceA()),
-								createOrGetBoundedContext(relation.getServiceB())));
+				relationships.add(createUpstreamDownstreamRelationship(createOrGetBoundedContext(relation.getServiceA()), createOrGetBoundedContext(relation.getServiceB())));
 			} else if ("INCOMING".equals(relation.getDirection().toString())) {
-				relationships
-						.add(createUpstreamDownstreamRelationship(createOrGetBoundedContext(relation.getServiceB()),
-								createOrGetBoundedContext(relation.getServiceA())));
+				relationships.add(createUpstreamDownstreamRelationship(createOrGetBoundedContext(relation.getServiceB()), createOrGetBoundedContext(relation.getServiceA())));
 			} else if ("BIDIRECTIONAL".equals(relation.getDirection().toString())) {
-				relationships.add(createSharedKernelRelationship(createOrGetBoundedContext(relation.getServiceA()),
-						createOrGetBoundedContext(relation.getServiceB())));
+				relationships.add(createSharedKernelRelationship(createOrGetBoundedContext(relation.getServiceA()), createOrGetBoundedContext(relation.getServiceB())));
 			}
 		}
 		return relationships;
 	}
 
-	private UpstreamDownstreamRelationship createUpstreamDownstreamRelationship(BoundedContext source,
-			BoundedContext target) {
+	private UpstreamDownstreamRelationship createUpstreamDownstreamRelationship(BoundedContext source, BoundedContext target) {
 		UpstreamDownstreamRelationship relationship = contextMappingFactory.createUpstreamDownstreamRelationship();
 		relationship.setUpstream(target);
 		relationship.setDownstream(source);
@@ -121,24 +165,12 @@ public class ServiceCutterOutputToContextMappingModelConverter {
 		return sharedKernel;
 	}
 
-	private void initializeEntityMap(SolverResult serviceCutterResult) {
-		for (Service service : serviceCutterResult.getServices()) {
-			initializeEntityMap(service);
-		}
-	}
-
-	private void initializeEntityMap(Service service) {
-		for (String nanoEntity : service.getNanoentities()) {
-			String entityName = nanoEntity.split("\\.")[0];
-			addEntityToEntityMapIfNotExisting(service.getId() + "_" + entityName);
-		}
-	}
-
-	private void addEntityToEntityMapIfNotExisting(String entityName) {
-		if (!this.entityMap.containsKey(entityName)) {
-			Entity entity = tacticDDDFactory.createEntity();
-			entity.setName(entityName);
-			this.entityMap.put(entityName, entity);
+	private void initializeTypeMapByOriginalCMLModel(ContextMappingModel model) {
+		List<DomainObject> domainObjects = EcoreUtil2.getAllContentsOfType(model, DomainObject.class);
+		for (DomainObject domainObject : domainObjects) {
+			domainObject.getAttributes().stream().forEach(a -> {
+				this.attributeTypes.put(domainObject.getName() + "." + a.getName(), a.getType());
+			});
 		}
 	}
 
@@ -154,6 +186,46 @@ public class ServiceCutterOutputToContextMappingModelConverter {
 
 	private String getBoundedContextName(String serviceName) {
 		return serviceName.replace(" ", "_");
+	}
+
+	private void reconstructReferencesIfPossible() {
+		if (originalModelState == null)
+			return;
+
+		List<Reference> originalReferences = EcoreUtil2.eAllOfType(originalModelState, Reference.class);
+		for (Reference originalReference : originalReferences) {
+			DomainObject sourceObject = (DomainObject) originalReference.eContainer();
+			Set<DomainObject> matchingObjectsInNewModel = findDomainObjectByName(sourceObject.getName());
+			if (matchingObjectsInNewModel.size() != 1)
+				continue;
+
+			reconstructReference(matchingObjectsInNewModel.iterator().next(), originalReference, originalReference.getDomainObjectType().getName());
+		}
+	}
+
+	private void reconstructReference(DomainObject sourceObject, Reference originalReference, String targetTypeName) {
+		BoundedContext parentBC = resolvingHelper.resolveBoundedContext(sourceObject);
+		if (parentBC == null)
+			return; // in case this source object is not part of a Bounded Context
+
+		List<DomainObject> targetDomainObjects = EcoreUtil2.eAllOfType(model, DomainObject.class).stream().filter(obj -> obj.getName().equals(targetTypeName))
+				.collect(Collectors.toList());
+		if (targetDomainObjects.size() == 1) {
+			Reference reference = TacticdslFactory.eINSTANCE.createReference();
+			reference.setName(originalReference.getName());
+			reference.setDomainObjectType(targetDomainObjects.get(0));
+			reference.setCollectionType(originalReference.getCollectionType());
+			reference.setDoc(originalReference.getDoc());
+			sourceObject.getReferences().add(reference);
+		} else {
+			sourceObject.setComment("/* Service Cut generator: it was not possible to reconstruct the reference '" + originalReference.getName() + "' from "
+					+ sourceObject.getName() + " to " + targetTypeName + ". Please re-create that reference manually. */");
+		}
+	}
+
+	private Set<DomainObject> findDomainObjectByName(String domainObjectName) {
+		List<DomainObject> domainObjects = EcoreUtil2.eAllOfType(model, DomainObject.class);
+		return domainObjects.stream().filter(obj -> obj.getName().equals(domainObjectName)).collect(Collectors.toSet());
 	}
 
 }

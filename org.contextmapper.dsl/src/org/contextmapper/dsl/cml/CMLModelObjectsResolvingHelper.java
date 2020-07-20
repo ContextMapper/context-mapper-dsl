@@ -26,6 +26,7 @@ import org.contextmapper.dsl.contextMappingDSL.Feature;
 import org.contextmapper.dsl.contextMappingDSL.SculptorModule;
 import org.contextmapper.dsl.contextMappingDSL.Subdomain;
 import org.contextmapper.dsl.contextMappingDSL.UserRequirement;
+import org.contextmapper.tactic.dsl.tacticdsl.DomainObject;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.EcoreUtil2;
 import org.eclipse.xtext.xbase.lib.IteratorExtensions;
@@ -57,6 +58,15 @@ public class CMLModelObjectsResolvingHelper {
 
 	public BoundedContext resolveBoundedContext(SculptorModule module) {
 		return (BoundedContext) module.eContainer();
+	}
+
+	public BoundedContext resolveBoundedContext(DomainObject domainObject) {
+		if (domainObject.eContainer() != null && domainObject.eContainer() instanceof Aggregate)
+			return resolveBoundedContext((Aggregate) domainObject.eContainer());
+		else if (domainObject.eContainer() != null && domainObject.eContainer() instanceof SculptorModule)
+			return resolveBoundedContext((SculptorModule) domainObject.eContainer());
+		else
+			return null; // can happen if domain object is not part of Bounded Context but Subdomain
 	}
 
 	public Set<UserRequirement> resolveUserRequirements(BoundedContext boundedContext) {
