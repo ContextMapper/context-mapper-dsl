@@ -20,12 +20,17 @@ import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
+import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.DomainPart;
 import org.contextmapper.dsl.contextMappingDSL.Feature;
+import org.contextmapper.dsl.contextMappingDSL.Relationship;
 import org.contextmapper.dsl.contextMappingDSL.SculptorModule;
 import org.contextmapper.dsl.contextMappingDSL.Subdomain;
+import org.contextmapper.dsl.contextMappingDSL.SymmetricRelationship;
+import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
 import org.contextmapper.dsl.contextMappingDSL.UserRequirement;
+import org.contextmapper.tactic.dsl.tacticdsl.DomainObject;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.EcoreUtil2;
 import org.eclipse.xtext.xbase.lib.IteratorExtensions;
@@ -57,6 +62,38 @@ public class CMLModelObjectsResolvingHelper {
 
 	public BoundedContext resolveBoundedContext(SculptorModule module) {
 		return (BoundedContext) module.eContainer();
+	}
+
+	public BoundedContext resolveBoundedContext(DomainObject domainObject) {
+		if (domainObject.eContainer() != null && domainObject.eContainer() instanceof Aggregate)
+			return resolveBoundedContext((Aggregate) domainObject.eContainer());
+		else if (domainObject.eContainer() != null && domainObject.eContainer() instanceof SculptorModule)
+			return resolveBoundedContext((SculptorModule) domainObject.eContainer());
+		else
+			return null; // can happen if domain object is not part of Bounded Context but Subdomain
+	}
+
+	/**
+	 * Resolves all Bounded Contexts one specific context has access to. Concretely:
+	 * contexts that are in a symmetric relationship with 'bc'; or contexts that are
+	 * upstreams of 'bc'.
+	 */
+	public Set<BoundedContext> resolveSharedDomainModels(ContextMap contextMap, BoundedContext bc) {
+		Set<BoundedContext> boundedContexts = Sets.newHashSet();
+		for (Relationship relationship : contextMap.getRelationships()) {
+			if (relationship instanceof SymmetricRelationship) {
+				SymmetricRelationship symRel = (SymmetricRelationship) relationship;
+				if (symRel.getParticipant1().getName().equals(bc.getName()))
+					boundedContexts.add(symRel.getParticipant2());
+				if (symRel.getParticipant2().getName().equals(bc.getName()))
+					boundedContexts.add(symRel.getParticipant1());
+			} else if (relationship instanceof UpstreamDownstreamRelationship) {
+				UpstreamDownstreamRelationship upDownRel = (UpstreamDownstreamRelationship) relationship;
+				if (upDownRel.getDownstream().getName().equals(bc.getName()))
+					boundedContexts.add(upDownRel.getUpstream());
+			}
+		}
+		return boundedContexts;
 	}
 
 	public Set<UserRequirement> resolveUserRequirements(BoundedContext boundedContext) {

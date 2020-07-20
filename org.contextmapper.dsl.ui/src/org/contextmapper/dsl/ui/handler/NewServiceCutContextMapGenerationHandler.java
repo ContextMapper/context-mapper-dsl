@@ -104,6 +104,10 @@ public class NewServiceCutContextMapGenerationHandler extends AbstractGeneration
 					} catch (GeneratorInputException e) {
 						MessageDialog.openInformation(HandlerUtil.getActiveShell(event), "Model Input", e.getMessage());
 					} catch (Exception e) {
+						String message = e.getMessage() != null && !"".equals(e.getMessage()) ? e.getMessage()
+								: e.getClass().getName() + " occurred in " + this.getClass().getName();
+						Status status = new Status(IStatus.ERROR, DslActivator.PLUGIN_ID, message, e);
+						StatusManager.getManager().handle(status);
 						ErrorDialog.openError(HandlerUtil.getActiveShell(event), "Error", "Exception occured during execution of command!",
 								createMultiStatus(e.getLocalizedMessage(), e));
 					}
@@ -159,21 +163,21 @@ public class NewServiceCutContextMapGenerationHandler extends AbstractGeneration
 	private SolverConfiguration createSolverConfiguration() {
 		SolverConfiguration solverConfiguration = new SolverConfigurationFactory().createDefaultConfiguration();
 		solverConfiguration.setPriority(IDENTITY_LIFECYCLE, M);
-        solverConfiguration.setPriority(SEMANTIC_PROXIMITY, M);
-        solverConfiguration.setPriority(SHARED_OWNER, M);
-        solverConfiguration.setPriority(STRUCTURAL_VOLATILITY, M);
-        solverConfiguration.setPriority(IDENTITY_LIFECYCLE, M);
-        solverConfiguration.setPriority(LATENCY, M);
-        solverConfiguration.setPriority(CONSISTENCY, M);
-        solverConfiguration.setPriority(AVAILABILITY, M);
-        solverConfiguration.setPriority(CONTENT_VOLATILITY, M);
-        solverConfiguration.setPriority(CONSISTENCY_CONSTRAINT, M);
-        solverConfiguration.setPriority(STORAGE_SIMILARITY, M);
-        solverConfiguration.setPriority(PREDEFINED_SERVICE, M);
-        solverConfiguration.setPriority(SECURITY_CONTEXUALITY, M);
-        solverConfiguration.setPriority(SECURITY_CRITICALITY, M);
-        solverConfiguration.setPriority(SECURITY_CONSTRAINT, M);
-		
+		solverConfiguration.setPriority(SEMANTIC_PROXIMITY, M);
+		solverConfiguration.setPriority(SHARED_OWNER, M);
+		solverConfiguration.setPriority(STRUCTURAL_VOLATILITY, M);
+		solverConfiguration.setPriority(IDENTITY_LIFECYCLE, M);
+		solverConfiguration.setPriority(LATENCY, M);
+		solverConfiguration.setPriority(CONSISTENCY, M);
+		solverConfiguration.setPriority(AVAILABILITY, M);
+		solverConfiguration.setPriority(CONTENT_VOLATILITY, M);
+		solverConfiguration.setPriority(CONSISTENCY_CONSTRAINT, M);
+		solverConfiguration.setPriority(STORAGE_SIMILARITY, M);
+		solverConfiguration.setPriority(PREDEFINED_SERVICE, M);
+		solverConfiguration.setPriority(SECURITY_CONTEXUALITY, M);
+		solverConfiguration.setPriority(SECURITY_CRITICALITY, M);
+		solverConfiguration.setPriority(SECURITY_CONSTRAINT, M);
+
 		IEclipsePreferences preferencesRoot = InstanceScope.INSTANCE.getNode(PREFERENCES_QUALIFIER);
 		Preferences filePreferences = preferencesRoot.node(cmlFile.getProjectRelativePath().toString());
 		solverConfiguration.setAlgorithm(SolverAlgorithm.valueOf(filePreferences.get("algorithm", solverConfiguration.getAlgorithm().name())));
