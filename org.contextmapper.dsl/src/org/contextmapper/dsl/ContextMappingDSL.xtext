@@ -251,7 +251,7 @@ enum BoundedContextType:
 ;
 
 enum SubDomainType:
-	CORE_DOMAIN | SUPPORTING_DOMAIN | GENERIC_SUBDOMAIN
+	UNDEFINED | CORE_DOMAIN | SUPPORTING_DOMAIN | GENERIC_SUBDOMAIN
 ;
 
 enum DownstreamGovernanceRights:

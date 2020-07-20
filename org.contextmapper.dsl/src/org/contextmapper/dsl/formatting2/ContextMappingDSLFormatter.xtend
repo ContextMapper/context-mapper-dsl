@@ -59,6 +59,9 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 			contextMap.regionFor.ruleCallTo(CLOSERule).prepend[newLines = 2].append[newLines = 2]
 		)[indent]
 
+		contextMap.regionFor.keyword("type").prepend[newLine]
+		contextMap.regionFor.keyword("state").prepend[newLine]
+
 		contextMap.regionFor.keywords('contains').forEach[
 			prepend[newLines = 1]
 		]
@@ -98,6 +101,8 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 			domain.regionFor.ruleCallTo(CLOSERule).prepend[newLines = 2].append[newLines = 2]
 		)[indent]
 		
+		domain.regionFor.keyword("domainVisionStatement").prepend[newLine]
+		
 		for (subdomain : domain.subdomains) {
 			subdomain.format
 		}
@@ -108,6 +113,9 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 			subdomain.regionFor.ruleCallTo(OPENRule).append[newLine],
 			subdomain.regionFor.ruleCallTo(CLOSERule).prepend[newLines = 1].append[newLines = 2]
 		)[indent]
+		
+		subdomain.regionFor.keyword("domainVisionStatement").prepend[newLine]
+		subdomain.regionFor.keyword("type").prepend[newLine]
 		
 		for (entity : subdomain.entities) {
 			entity.format

@@ -18,7 +18,6 @@ package org.contextmapper.dsl.generator.servicecutter.output.converter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -78,6 +77,11 @@ public class ServiceCutterOutputToContextMappingModelConverter {
 	public ContextMappingModel convert(SolverResult serviceCutterResult) {
 		model = contextMappingFactory.createContextMappingModel();
 		ContextMap contextMap = contextMappingFactory.createContextMap();
+		if (originalModelState != null && originalModelState.getMap() != null) {
+			contextMap.setName(originalModelState.getMap().getName());
+			contextMap.setState(originalModelState.getMap().getState());
+			contextMap.setType(originalModelState.getMap().getType());
+		}
 		for (Service service : serviceCutterResult.getServices()) {
 			BoundedContext bc = createOrGetBoundedContext(service.getName());
 
@@ -92,7 +96,17 @@ public class ServiceCutterOutputToContextMappingModelConverter {
 		contextMap.getRelationships().addAll(convertRelationships(serviceCutterResult.getRelations()));
 		model.setMap(contextMap);
 		reconstructReferencesIfPossible();
+		copyRootElementsNotAffected();
 		return model;
+	}
+
+	private void copyRootElementsNotAffected() {
+		if (originalModelState == null)
+			return;
+
+		model.getUserRequirements().addAll(EcoreUtil2.copyAll(originalModelState.getUserRequirements()));
+		model.getImports().addAll(EcoreUtil2.copyAll(originalModelState.getImports()));
+		model.getDomains().addAll(EcoreUtil2.copyAll(originalModelState.getDomains()));
 	}
 
 	private List<Entity> convertEntities(char serviceId, List<String> nanoEntities) {
@@ -194,27 +208,12 @@ public class ServiceCutterOutputToContextMappingModelConverter {
 		if (parentBC == null)
 			return; // in case this source object is not part of a Bounded Context
 
-		DomainObject targetType = null;
-
-		// try to find type of reference inside Bounded Context
-		Optional<DomainObject> optTargetType = EcoreUtil2.eAllOfType(parentBC, DomainObject.class).stream().filter(obj -> obj.getName().equals(targetTypeName)).findFirst();
-		if (optTargetType.isPresent())
-			targetType = optTargetType.get();
-
-		// try to find type of reference in upstream contexts
-		if (targetType == null) {
-			for (BoundedContext bc : resolvingHelper.resolveSharedDomainModels(model.getMap(), parentBC)) {
-				optTargetType = EcoreUtil2.eAllOfType(bc, DomainObject.class).stream().filter(obj -> obj.getName().equals(targetTypeName)).findFirst();
-				if (optTargetType.isPresent())
-					targetType = optTargetType.get();
-			}
-		}
-
-		// create reference, in case we have found the target type
-		if (targetType != null) {
+		List<DomainObject> targetDomainObjects = EcoreUtil2.eAllOfType(model, DomainObject.class).stream().filter(obj -> obj.getName().equals(targetTypeName))
+				.collect(Collectors.toList());
+		if (targetDomainObjects.size() == 1) {
 			Reference reference = TacticdslFactory.eINSTANCE.createReference();
 			reference.setName(originalReference.getName());
-			reference.setDomainObjectType(targetType);
+			reference.setDomainObjectType(targetDomainObjects.get(0));
 			reference.setCollectionType(originalReference.getCollectionType());
 			reference.setDoc(originalReference.getDoc());
 			sourceObject.getReferences().add(reference);
