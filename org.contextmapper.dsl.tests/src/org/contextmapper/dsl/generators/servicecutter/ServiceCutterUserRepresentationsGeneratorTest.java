@@ -54,7 +54,7 @@ class ServiceCutterUserRepresentationsGeneratorTest extends AbstractCMLInputFile
 
 		// then
 		assertTrue(sclFile.exists());
-		Resource sclResource = new ResourceSetImpl().getResource(URI.createURI(sclFile.toString()), true);
+		Resource sclResource = new ResourceSetImpl().getResource(URI.createFileURI(sclFile.getAbsolutePath()), true);
 		ServiceCutterUserRepresentationsModel sclModel = (ServiceCutterUserRepresentationsModel) sclResource.getContents().get(0);
 		assertNotNull(sclModel);
 		assertEquals(1, sclModel.getUseCases().size());
@@ -70,7 +70,7 @@ class ServiceCutterUserRepresentationsGeneratorTest extends AbstractCMLInputFile
 		IGenerator2 generator = new ServiceCutterUserRepresentationsGenerator();
 		generator.doGenerate(inputResource, getFileSystemAccess(), new GeneratorContext());
 		sclResource = new ResourceSetImpl()
-				.getResource(URI.createURI(new File(new File(inputResource.getURI().toFileString()).getParentFile(), "user-representations-generation-test-1.scl").toString()), true);
+				.getResource(URI.createFileURI(new File(new File(inputResource.getURI().toFileString()).getParentFile(), "user-representations-generation-test-1.scl").getAbsolutePath()), true);
 		ServiceCutterUserRepresentationsModel sclModel = (ServiceCutterUserRepresentationsModel) sclResource.getContents().get(0);
 
 		// then
