@@ -1,0 +1,19 @@
+UseCase Get_paid_for_car_accident { // title
+	actor "Claimant" // primary actor
+	interactions
+    	"submit" a "Claim" with its "date", "amountClaimed", "description" for a "Policy", // step 1: claimant submits claim
+    	"verifyExistanceOf" "Policy" with its "startDate", "endDate" for a "Contract",     // step 2: insurance company verifies that valid policy exists
+    	"assign" an "Agent" with its "personalID", "firstName", "lastName" for "Claim",    // step 3: agent is assigned to claim
+    	"verify" "Policy" for a "Contract",                                                // step 4: agent verifies all details are within policy guidelines
+    	"pay" "Claimant" with its "firstName", "lastName",                                 // step 5 (1): claimant gets paid
+    	"close" "Claim" for "Claimant"                                                     // step 5 (2): file/claim gets closed
+	benefit "A claimant submits a claim and and gets paid from the insurance company." // story (brief summary)
+	scope "Insurance company" // scope
+	level "Summary" // level
+	reads "Claimant.firstName", "Claimant.lastName"
+	writes "Claim.date", "Claim.amountClaimed"
+}
+
+UseCase AnotherUseCase {
+	// use cases without 'reads' and/or 'writes' are ignored
+}

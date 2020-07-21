@@ -1,0 +1,14 @@
+Compatibilities {
+	ContentVolatility {
+		characteristic Often
+		"HandlingEvent.handlingType", "HandlingEvent.completionTime", "HandlingEvent.registrationTime", "Location.name", "Delivery.transportStatus"
+	}
+	ContentVolatility {
+		characteristic Rarely
+		"UnLocode.unLocode", "Location.name"
+	}
+	StructuralVolatility {
+		characteristic Rarely
+		"UnLocode.unLocode", "Location.name"
+	}
+}

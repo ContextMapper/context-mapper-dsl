@@ -1,0 +1,32 @@
+Compatibilities {
+	/* See: https://github.com/ServiceCutter/ServiceCutter/wiki/CC-7-Availability-Criticality */
+	AvailabilityCriticality {
+		characteristic Normal // Allowed characteristics: Critical, Normal, Low
+		"Risk.likelihood" , "Offer.price"
+	}
+	/* See: https://github.com/ServiceCutter/ServiceCutter/wiki/CC-6-Consistency-Criticality */
+	ConsistencyCriticality {
+		characteristic Eventually // Allowed characteristics: High, Eventually, Weak
+		"ProductId.productId" , "Address.street"
+	}
+	/* See: https://github.com/ServiceCutter/ServiceCutter/wiki/CC-8-Content-Volatility */
+	ContentVolatility {
+		characteristic Often // Allowed characteristics: Often, Regularly, Rarely
+		"Product.productName" , "Customer.lastname"
+	}
+	/* See: https://github.com/ServiceCutter/ServiceCutter/wiki/CC-15-Security-Criticality */
+	SecurityCriticality {
+		characteristic Internal // Allowed characteristics: Critical, Internal, Public
+		"Offer.price" , "UserAccount.username"
+	}
+	/* See: https://github.com/ServiceCutter/ServiceCutter/wiki/CC-11-Storage-Similarity */
+	StorageSimilarity {
+		characteristic Normal // Allowed characteristics: Tiny, Normal, Huge
+		"Address.city" , "Template.templateId"
+	}
+	/* See: https://github.com/ServiceCutter/ServiceCutter/wiki/CC-4-Structural-Volatility */
+	StructuralVolatility {
+		characteristic Normal // Allowed characteristics: Often, Normal, Rarely
+		"ProductId.productId" , "Offer.offerId"
+	}
+}

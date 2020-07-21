@@ -26,7 +26,6 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
-import org.contextmapper.dsl.ContextMappingDSLStandaloneSetup;
 import org.contextmapper.dsl.cml.CMLResourceContainer;
 import org.contextmapper.servicecutter.dsl.ServiceCutterConfigurationDSLStandaloneSetup;
 import org.eclipse.emf.common.util.URI;

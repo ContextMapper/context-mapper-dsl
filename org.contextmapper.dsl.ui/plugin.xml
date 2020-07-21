@@ -760,6 +760,9 @@
 		<handler class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.contextmapper.dsl.ui.handler.CMLByServiceCutterOutputGenerationHandler"
 			commandId="org.contextmapper.dsl.ui.handler.CMLByServiceCutterOutputGenerationCommand">
 		</handler>
+		<handler class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.contextmapper.dsl.ui.handler.ServiceCutterUserRepresentationsGenerationHandler"
+			commandId="org.contextmapper.dsl.ui.handler.ServiceCutterUserRepresentationsGenerationCommand">
+		</handler>
 		<handler class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.contextmapper.dsl.ui.handler.ServiceCutterUserRepresentationsExampleGenerationHandler"
 			commandId="org.contextmapper.dsl.ui.handler.ServiceCutterUserRepresentationsExampleGenerationCommand">
 		</handler>
@@ -780,6 +783,7 @@
 		<command name="Save Model as XMI" id="org.contextmapper.dsl.ui.handler.XMIGenerationCommand"></command>
 		<command name="ServiceCutter: Generate User Representations File (JSON)" id="org.contextmapper.servicecutter.dsl.ui.handler.ServiceCutterUserRepresentationsJSONGenerationCommand"></command>
 		<command name="Generate ContextMap by ServiceCutter Output" id="org.contextmapper.dsl.ui.handler.CMLByServiceCutterOutputGenerationCommand"></command>
+		<command name="ServiceCutter: Initialize User Representations File" id="org.contextmapper.dsl.ui.handler.ServiceCutterUserRepresentationsGenerationCommand"></command>
 		<command name="ServiceCutter: Initialize User Representations File (Exemplary)" id="org.contextmapper.dsl.ui.handler.ServiceCutterUserRepresentationsExampleGenerationCommand"></command>
 		<command name="MDSL: Generate Service Contracts" id="org.contextmapper.dsl.ui.handler.MDSLGenerationCommand"></command>
 		<command name="ServiceCutter: Generate New Service Cut" id="org.contextmapper.dsl.ui.handler.NewServiceCutContextMapGenerationCommand"></command>
@@ -862,6 +866,15 @@
 						<iterate>
 							<adapt type="org.eclipse.core.resources.IResource">
 								<test property="org.eclipse.core.resources.name" value="*.json"/>
+							</adapt>
+						</iterate>
+					</visibleWhen>
+				</command>
+				<command defaultHandler="org.contextmapper.dsl.ui.handler.ServiceCutterUserRepresentationsGenerationHandler" commandId="org.contextmapper.dsl.ui.handler.ServiceCutterUserRepresentationsGenerationCommand" style="push">
+					<visibleWhen checkEnabled="false">
+						<iterate>
+							<adapt type="org.eclipse.core.resources.IResource">
+								<test property="org.eclipse.core.resources.name" value="*.cml"/>
 							</adapt>
 						</iterate>
 					</visibleWhen>

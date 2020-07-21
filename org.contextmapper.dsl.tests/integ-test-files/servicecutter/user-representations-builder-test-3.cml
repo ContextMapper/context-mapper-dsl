@@ -1,0 +1,25 @@
+BoundedContext TestContext {
+
+    Aggregate TestAggregate {
+        Entity Customer {
+            String firstName
+        }
+
+        Entity Contract {
+            String contractId
+        }
+    }
+
+    Aggregate OwnedAggregate {
+        owner TeamA
+
+        Entity TestEntity {
+            String attribute1
+        }
+    }
+
+}
+
+BoundedContext TeamA {
+    type TEAM
+}

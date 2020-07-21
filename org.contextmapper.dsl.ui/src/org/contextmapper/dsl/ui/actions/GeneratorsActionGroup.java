@@ -83,6 +83,7 @@ public class GeneratorsActionGroup extends ActionGroup {
 		generatorSubmenu.add(new Separator());
 		added += addAction(generatorSubmenu, createAction("org.contextmapper.dsl.ui.handler.NewServiceCutContextMapGenerationCommand"));
 		added += addAction(generatorSubmenu, createAction("org.contextmapper.dsl.ui.handler.ServiceCutterGenerationCommand"));
+		added += addAction(generatorSubmenu, createAction("org.contextmapper.dsl.ui.handler.ServiceCutterUserRepresentationsGenerationCommand"));
 		added += addAction(generatorSubmenu, createAction("org.contextmapper.dsl.ui.handler.ServiceCutterUserRepresentationsExampleGenerationCommand"));
 		generatorSubmenu.add(new Separator());
 		added += addAction(generatorSubmenu, createAction("org.contextmapper.dsl.ui.handler.XMIGenerationCommand"));
