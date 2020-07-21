@@ -52,13 +52,16 @@ class ContextMappingModelToServiceCutterERDConverterTest {
 	@Test
 	public void canCreateEntity4BoundedContext() {
 		// given
+		ContextMappingModel model = ContextMappingDSLFactory.eINSTANCE.createContextMappingModel();
 		ContextMap contextMap = ContextMappingDSLFactory.eINSTANCE.createContextMap();
 		BoundedContext boundedContext = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
 		boundedContext.setName("testBC");
 		contextMap.getBoundedContexts().add(boundedContext);
+		model.getBoundedContexts().add(boundedContext);
+		model.setMap(contextMap);
 
 		// when
-		EntityRelationDiagram scDiagram = this.converter.convert("TestModel", contextMap);
+		EntityRelationDiagram scDiagram = this.converter.convert("TestModel", model);
 
 		// then
 		assertEquals("TestModel", scDiagram.getName());
@@ -70,16 +73,19 @@ class ContextMappingModelToServiceCutterERDConverterTest {
 	@Test
 	public void canCreateEntity4Aggregate() {
 		// given
+		ContextMappingModel model = ContextMappingDSLFactory.eINSTANCE.createContextMappingModel();
 		ContextMap contextMap = ContextMappingDSLFactory.eINSTANCE.createContextMap();
 		BoundedContext boundedContext = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
 		boundedContext.setName("testBC");
 		contextMap.getBoundedContexts().add(boundedContext);
+		model.getBoundedContexts().add(boundedContext);
 		Aggregate aggregate = ContextMappingDSLFactory.eINSTANCE.createAggregate();
 		aggregate.setName("testAggregate");
 		boundedContext.getAggregates().add(aggregate);
+		model.setMap(contextMap);
 
 		// when
-		EntityRelationDiagram scDiagram = this.converter.convert("TestModel", contextMap);
+		EntityRelationDiagram scDiagram = this.converter.convert("TestModel", model);
 
 		// then
 		assertEquals(2, scDiagram.getEntities().size());
@@ -93,10 +99,12 @@ class ContextMappingModelToServiceCutterERDConverterTest {
 	@Test
 	public void canCreateEntity4Entity() {
 		// given
+		ContextMappingModel model = ContextMappingDSLFactory.eINSTANCE.createContextMappingModel();
 		ContextMap contextMap = ContextMappingDSLFactory.eINSTANCE.createContextMap();
 		BoundedContext boundedContext = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
 		boundedContext.setName("testBC");
 		contextMap.getBoundedContexts().add(boundedContext);
+		model.getBoundedContexts().add(boundedContext);
 		Aggregate aggregate = ContextMappingDSLFactory.eINSTANCE.createAggregate();
 		aggregate.setName("testAggregate");
 		boundedContext.getAggregates().add(aggregate);
@@ -106,9 +114,10 @@ class ContextMappingModelToServiceCutterERDConverterTest {
 		attribute.setName("attribute1");
 		aggregate.getDomainObjects().add(entity);
 		entity.getAttributes().add(attribute);
+		model.setMap(contextMap);
 
 		// when
-		EntityRelationDiagram scDiagram = this.converter.convert("TestModel", contextMap);
+		EntityRelationDiagram scDiagram = this.converter.convert("TestModel", model);
 
 		// then
 		List<String> entityNames = scDiagram.getEntities().stream().map(e -> e.getName()).collect(Collectors.toList());
@@ -121,10 +130,12 @@ class ContextMappingModelToServiceCutterERDConverterTest {
 	@Test
 	public void canCreateEntity4DomainEvent() {
 		// given
+		ContextMappingModel model = ContextMappingDSLFactory.eINSTANCE.createContextMappingModel();
 		ContextMap contextMap = ContextMappingDSLFactory.eINSTANCE.createContextMap();
 		BoundedContext boundedContext = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
 		boundedContext.setName("testBC");
 		contextMap.getBoundedContexts().add(boundedContext);
+		model.getBoundedContexts().add(boundedContext);
 		Aggregate aggregate = ContextMappingDSLFactory.eINSTANCE.createAggregate();
 		aggregate.setName("testAggregate");
 		boundedContext.getAggregates().add(aggregate);
@@ -134,9 +145,10 @@ class ContextMappingModelToServiceCutterERDConverterTest {
 		attribute.setName("attribute1");
 		aggregate.getDomainObjects().add(domainEvent);
 		domainEvent.getAttributes().add(attribute);
+		model.setMap(contextMap);
 
 		// when
-		EntityRelationDiagram scDiagram = this.converter.convert("TestModel", contextMap);
+		EntityRelationDiagram scDiagram = this.converter.convert("TestModel", model);
 
 		// then
 		List<String> entityNames = scDiagram.getEntities().stream().map(e -> e.getName()).collect(Collectors.toList());
@@ -149,10 +161,12 @@ class ContextMappingModelToServiceCutterERDConverterTest {
 	@Test
 	public void canCreateEntity4ValueObject() {
 		// given
+		ContextMappingModel model = ContextMappingDSLFactory.eINSTANCE.createContextMappingModel();
 		ContextMap contextMap = ContextMappingDSLFactory.eINSTANCE.createContextMap();
 		BoundedContext boundedContext = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
 		boundedContext.setName("testBC");
 		contextMap.getBoundedContexts().add(boundedContext);
+		model.getBoundedContexts().add(boundedContext);
 		Aggregate aggregate = ContextMappingDSLFactory.eINSTANCE.createAggregate();
 		aggregate.setName("testAggregate");
 		boundedContext.getAggregates().add(aggregate);
@@ -162,9 +176,10 @@ class ContextMappingModelToServiceCutterERDConverterTest {
 		attribute.setName("attribute1");
 		aggregate.getDomainObjects().add(valueObject);
 		valueObject.getAttributes().add(attribute);
+		model.setMap(contextMap);
 
 		// when
-		EntityRelationDiagram scDiagram = this.converter.convert("TestModel", contextMap);
+		EntityRelationDiagram scDiagram = this.converter.convert("TestModel", model);
 
 		// then
 		List<String> entityNames = scDiagram.getEntities().stream().map(e -> e.getName()).collect(Collectors.toList());
@@ -200,15 +215,14 @@ class ContextMappingModelToServiceCutterERDConverterTest {
 		EcoreUtil.resolveAll(contextMap);
 
 		// when
-		EntityRelationDiagram scDiagram = this.converter.convert("TestModel", contextMap);
+		EntityRelationDiagram scDiagram = this.converter.convert("TestModel", model);
 
 		// then
 		List<String> relationStrings = scDiagram.getRelations().stream().map(r -> r.getOrigin().getName() + "_" + r.getDestination().getName() + "_" + r.getType()).collect(Collectors.toList());
 		assertTrue(relationStrings.contains("Entity1_Entity2_" + RelationType.AGGREGATION));
 	}
 
-	private ch.hsr.servicecutter.api.model.Entity getEntity(List<ch.hsr.servicecutter.api.model.Entity> entities,
-			String name) {
+	private ch.hsr.servicecutter.api.model.Entity getEntity(List<ch.hsr.servicecutter.api.model.Entity> entities, String name) {
 		for (ch.hsr.servicecutter.api.model.Entity entity : entities) {
 			if (name.equals(entity.getName()))
 				return entity;

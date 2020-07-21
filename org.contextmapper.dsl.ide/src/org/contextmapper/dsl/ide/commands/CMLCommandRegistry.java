@@ -21,7 +21,11 @@ import java.util.Set;
 import org.contextmapper.dsl.ide.commands.impl.generation.ContextMapGenerationCommand;
 import org.contextmapper.dsl.ide.commands.impl.generation.GenericTextFileGenerationCommand;
 import org.contextmapper.dsl.ide.commands.impl.generation.MDSLGenerationCommand;
+import org.contextmapper.dsl.ide.commands.impl.generation.NewServiceCutGenerationCommand;
 import org.contextmapper.dsl.ide.commands.impl.generation.PlantUMLGenerationCommand;
+import org.contextmapper.dsl.ide.commands.impl.generation.ServiceCutterInputGenerationCommand;
+import org.contextmapper.dsl.ide.commands.impl.generation.ServiceCutterUserRepresentationExampleFileGenerationCommand;
+import org.contextmapper.dsl.ide.commands.impl.generation.ServiceCutterUserRepresentationsGenerationCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.DeriveBoundedContextFromSubdomainsCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.DeriveSubdomainFromUserRequirementsCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.SplitAggregateByEntitiesRefactoringCommand;
@@ -34,7 +38,8 @@ import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 
 /**
- * Registers all commands that can be called on LSP command service.
+ * Registers all commands that can be called on LSP command service (for CML
+ * language).
  * 
  * @author Stefan Kapferer
  *
@@ -55,6 +60,10 @@ public class CMLCommandRegistry {
 		commandMap.put("cml.generate.puml", new PlantUMLGenerationCommand());
 		commandMap.put("cml.generate.mdsl", new MDSLGenerationCommand());
 		commandMap.put("cml.generate.generic.text.file", new GenericTextFileGenerationCommand());
+		commandMap.put("cml.generate.new.service.cut", new NewServiceCutGenerationCommand());
+		commandMap.put("cml.generate.servicecutter.input", new ServiceCutterInputGenerationCommand());
+		commandMap.put("cml.generate.servicecutter.user.representations", new ServiceCutterUserRepresentationsGenerationCommand());
+		commandMap.put("cml.generate.servicecutter.user.representation.example.file", new ServiceCutterUserRepresentationExampleFileGenerationCommand());
 		commandMap.put("cml.ar.splitBCByOwner", new SplitBoundedContextByOwnerRefactoringCommand(editRecorder));
 		commandMap.put("cml.ar.splitBCByFeature", new SplitBoundedContextByFeaturesRefactoringCommand(editRecorder));
 		commandMap.put("cml.ar.splitAggregateByEntities", new SplitAggregateByEntitiesRefactoringCommand(editRecorder));

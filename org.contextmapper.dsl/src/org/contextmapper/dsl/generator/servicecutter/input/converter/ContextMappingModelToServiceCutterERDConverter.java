@@ -22,7 +22,7 @@ import java.util.Map;
 
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
-import org.contextmapper.dsl.contextMappingDSL.ContextMap;
+import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.tactic.dsl.tacticdsl.Attribute;
 import org.contextmapper.tactic.dsl.tacticdsl.DomainEvent;
 import org.contextmapper.tactic.dsl.tacticdsl.DomainObject;
@@ -49,13 +49,13 @@ public class ContextMappingModelToServiceCutterERDConverter {
 	private Map<String, DomainObject> dslEntityLookupTable = new HashMap<>();
 	private Map<String, Entity> entityLookupTable = new HashMap<>();
 
-	public EntityRelationDiagram convert(String modelName, ContextMap contextMap) {
+	public EntityRelationDiagram convert(String modelName, ContextMappingModel cmlModel) {
 		this.target = new EntityRelationDiagram();
 		this.target.setName(modelName);
 		this.target.setEntities(new ArrayList<>());
 		this.target.setRelations(new ArrayList<>());
-		initializeEntityLookupTable(contextMap);
-		for (BoundedContext bc : contextMap.getBoundedContexts()) {
+		initializeEntityLookupTable(cmlModel);
+		for (BoundedContext bc : cmlModel.getBoundedContexts()) {
 			mapBoundedContext(bc);
 		}
 		return target;
@@ -93,8 +93,7 @@ public class ContextMappingModelToServiceCutterERDConverter {
 	}
 
 	private boolean isDomainObjectUsed4ServiceCutter(SimpleDomainObject simpleDomainObject) {
-		return simpleDomainObject instanceof org.contextmapper.tactic.dsl.tacticdsl.Entity
-				|| simpleDomainObject instanceof Event || simpleDomainObject instanceof ValueObject;
+		return simpleDomainObject instanceof org.contextmapper.tactic.dsl.tacticdsl.Entity || simpleDomainObject instanceof Event || simpleDomainObject instanceof ValueObject;
 	}
 
 	private Entity mapDomainObject(DomainObject dslDomainObject) {
@@ -123,18 +122,15 @@ public class ContextMappingModelToServiceCutterERDConverter {
 		return entityEntity;
 	}
 
-	private void initializeEntityLookupTable(ContextMap contextMap) {
+	private void initializeEntityLookupTable(ContextMappingModel cmlModel) {
 		// use Entities
-		addDomainObjectToLookupTable(EcoreUtil2.<org.contextmapper.tactic.dsl.tacticdsl.Entity>getAllContentsOfType(
-				EcoreUtil2.getRootContainer(contextMap), org.contextmapper.tactic.dsl.tacticdsl.Entity.class));
+		addDomainObjectToLookupTable(EcoreUtil2.<org.contextmapper.tactic.dsl.tacticdsl.Entity>getAllContentsOfType(cmlModel, org.contextmapper.tactic.dsl.tacticdsl.Entity.class));
 
 		// use Domain Events
-		addDomainObjectToLookupTable(EcoreUtil2
-				.<DomainEvent>getAllContentsOfType(EcoreUtil2.getRootContainer(contextMap), DomainEvent.class));
+		addDomainObjectToLookupTable(EcoreUtil2.<DomainEvent>getAllContentsOfType(cmlModel, DomainEvent.class));
 
 		// use Value Objects
-		addDomainObjectToLookupTable(EcoreUtil2
-				.<ValueObject>getAllContentsOfType(EcoreUtil2.getRootContainer(contextMap), ValueObject.class));
+		addDomainObjectToLookupTable(EcoreUtil2.<ValueObject>getAllContentsOfType(cmlModel, ValueObject.class));
 	}
 
 	private void addDomainObjectToLookupTable(List<? extends DomainObject> domainObjects) {

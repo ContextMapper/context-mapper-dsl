@@ -15,11 +15,10 @@
  */
 package org.contextmapper.dsl.cml;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 
-import org.contextmapper.dsl.cml.CMLResourceContainer;
 import org.contextmapper.dsl.cml.exception.ResourceIsNoCMLModelException;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;

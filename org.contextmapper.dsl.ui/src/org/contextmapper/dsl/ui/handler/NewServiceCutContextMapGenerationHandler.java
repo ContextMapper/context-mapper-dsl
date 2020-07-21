@@ -15,70 +15,23 @@
  */
 package org.contextmapper.dsl.ui.handler;
 
-import static ch.hsr.servicecutter.model.criteria.CouplingCriterion.AVAILABILITY;
-import static ch.hsr.servicecutter.model.criteria.CouplingCriterion.CONSISTENCY;
-import static ch.hsr.servicecutter.model.criteria.CouplingCriterion.CONSISTENCY_CONSTRAINT;
-import static ch.hsr.servicecutter.model.criteria.CouplingCriterion.CONTENT_VOLATILITY;
-import static ch.hsr.servicecutter.model.criteria.CouplingCriterion.IDENTITY_LIFECYCLE;
-import static ch.hsr.servicecutter.model.criteria.CouplingCriterion.LATENCY;
-import static ch.hsr.servicecutter.model.criteria.CouplingCriterion.PREDEFINED_SERVICE;
-import static ch.hsr.servicecutter.model.criteria.CouplingCriterion.SECURITY_CONSTRAINT;
-import static ch.hsr.servicecutter.model.criteria.CouplingCriterion.SECURITY_CONTEXUALITY;
-import static ch.hsr.servicecutter.model.criteria.CouplingCriterion.SECURITY_CRITICALITY;
-import static ch.hsr.servicecutter.model.criteria.CouplingCriterion.SEMANTIC_PROXIMITY;
-import static ch.hsr.servicecutter.model.criteria.CouplingCriterion.SHARED_OWNER;
-import static ch.hsr.servicecutter.model.criteria.CouplingCriterion.STORAGE_SIMILARITY;
-import static ch.hsr.servicecutter.model.criteria.CouplingCriterion.STRUCTURAL_VOLATILITY;
-import static ch.hsr.servicecutter.solver.SolverPriority.M;
-
-import java.util.Map;
+import java.io.File;
 
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.generator.NewServiceCutContextMapGenerator;
-import org.contextmapper.dsl.generator.exception.GeneratorInputException;
-import org.contextmapper.dsl.generator.servicecutter.input.converter.SCLToUserRepresentationsConverter;
-import org.contextmapper.dsl.ui.handler.wizard.GenerateNewServiceCutContextMapContext;
-import org.contextmapper.dsl.ui.handler.wizard.GenerateNewServiceCutContextMapWizard;
-import org.contextmapper.dsl.ui.internal.DslActivator;
-import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.ServiceCutterUserRepresentationsModel;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.QualifiedName;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.jface.dialogs.ErrorDialog;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.handlers.HandlerUtil;
-import org.eclipse.ui.statushandlers.StatusManager;
-import org.eclipse.xtext.generator.GeneratorContext;
 import org.eclipse.xtext.generator.IFileSystemAccess2;
 import org.eclipse.xtext.generator.IGenerator2;
-import org.osgi.service.prefs.BackingStoreException;
-import org.osgi.service.prefs.Preferences;
 
 import com.google.inject.Inject;
 
-import ch.hsr.servicecutter.api.SolverConfigurationFactory;
-import ch.hsr.servicecutter.api.model.UserRepresentationContainer;
-import ch.hsr.servicecutter.solver.SolverAlgorithm;
-import ch.hsr.servicecutter.solver.SolverConfiguration;
-import ch.hsr.servicecutter.solver.SolverPriority;
-
 public class NewServiceCutContextMapGenerationHandler extends AbstractGenerationHandler {
-
-	private static final String PREFERENCES_QUALIFIER = "org.contextmapper.servicecutter.solverconfiguration";
 
 	@Inject
 	private NewServiceCutContextMapGenerator generator;
-
-	private IFile cmlFile;
 
 	@Override
 	protected IGenerator2 getGenerator() {
@@ -87,34 +40,10 @@ public class NewServiceCutContextMapGenerationHandler extends AbstractGeneration
 
 	@Override
 	protected void runGeneration(Resource resource, ExecutionEvent event, IFileSystemAccess2 fsa) {
+		String projectDir = getSelectedFile(event).getProject().getLocation().toOSString();
+		this.generator.setProjectDirectory(new File(projectDir));
 		checkPreconditions(resource);
-		cmlFile = getSelectedFile(event);
-		GenerateNewServiceCutContextMapContext context = new GenerateNewServiceCutContextMapContext();
-		context.setSolverConfiguration(createSolverConfiguration());
-		context.setSclFile(getLastSelectedOrDefaultSCLFile(event));
-		new WizardDialog(HandlerUtil.getActiveShell(event), new GenerateNewServiceCutContextMapWizard(context, executionContext -> {
-			generator.setSolverConfiguration(executionContext.getSolverConfiguration());
-			generator.setUserRepresentationContainer(getUserRepresentations(executionContext.getSclFile()));
-			persistSolverConfiguration(executionContext.getSolverConfiguration());
-			Display.getDefault().asyncExec(new Runnable() {
-				@Override
-				public void run() {
-					try {
-						getGenerator().doGenerate(resource, fsa, new GeneratorContext());
-					} catch (GeneratorInputException e) {
-						MessageDialog.openInformation(HandlerUtil.getActiveShell(event), "Model Input", e.getMessage());
-					} catch (Exception e) {
-						String message = e.getMessage() != null && !"".equals(e.getMessage()) ? e.getMessage()
-								: e.getClass().getName() + " occurred in " + this.getClass().getName();
-						Status status = new Status(IStatus.ERROR, DslActivator.PLUGIN_ID, message, e);
-						StatusManager.getManager().handle(status);
-						ErrorDialog.openError(HandlerUtil.getActiveShell(event), "Error", "Exception occured during execution of command!",
-								createMultiStatus(e.getLocalizedMessage(), e));
-					}
-				}
-			});
-			return true;
-		})).open();
+		super.runGeneration(resource, event, fsa);
 	}
 
 	private void checkPreconditions(Resource resource) {
@@ -125,84 +54,6 @@ public class NewServiceCutContextMapGenerationHandler extends AbstractGeneration
 	@Override
 	protected IPath getGenFolder(IFile file) {
 		return file.getParent().getProjectRelativePath();
-	}
-
-	private IFile getLastSelectedOrDefaultSCLFile(ExecutionEvent event) {
-		// check if last selection is stored
-		try {
-			Map<QualifiedName, String> properties = cmlFile.getPersistentProperties();
-			if (properties.containsKey(getQualifiedName4File(cmlFile)) && findFileInContainer(cmlFile.getProject(), properties.get(getQualifiedName4File(cmlFile))) != null) {
-				return findFileInContainer(cmlFile.getProject(), properties.get(getQualifiedName4File(cmlFile)));
-			}
-		} catch (CoreException e) {
-			StatusManager.getManager().handle(new Status(IStatus.ERROR, DslActivator.PLUGIN_ID, "Could not read persisted SCL file location.", e));
-		}
-
-		// check if default file exists
-		String defaultSCLFileName = cmlFile.getName().replace(".cml", "") + "_User_Representations.scl";
-		return findFileInContainer(cmlFile.getParent(), defaultSCLFileName);
-	}
-
-	private UserRepresentationContainer getUserRepresentations(IFile sclFile) {
-		if (sclFile == null)
-			return null;
-		Resource resource = getResource(sclFile);
-		ServiceCutterUserRepresentationsModel model = (ServiceCutterUserRepresentationsModel) resource.getContents().get(0);
-		persistSelectedUserRepresentationsFile(sclFile);
-		return new SCLToUserRepresentationsConverter().convert(model);
-	}
-
-	private void persistSelectedUserRepresentationsFile(IFile sclFile) {
-		try {
-			cmlFile.setPersistentProperty(getQualifiedName4File(cmlFile), sclFile.getProjectRelativePath().toString());
-		} catch (CoreException e) {
-			StatusManager.getManager().handle(new Status(IStatus.ERROR, DslActivator.PLUGIN_ID, "Could not persist SCL file location.", e));
-		}
-	}
-
-	private SolverConfiguration createSolverConfiguration() {
-		SolverConfiguration solverConfiguration = new SolverConfigurationFactory().createDefaultConfiguration();
-		solverConfiguration.setPriority(IDENTITY_LIFECYCLE, M);
-		solverConfiguration.setPriority(SEMANTIC_PROXIMITY, M);
-		solverConfiguration.setPriority(SHARED_OWNER, M);
-		solverConfiguration.setPriority(STRUCTURAL_VOLATILITY, M);
-		solverConfiguration.setPriority(IDENTITY_LIFECYCLE, M);
-		solverConfiguration.setPriority(LATENCY, M);
-		solverConfiguration.setPriority(CONSISTENCY, M);
-		solverConfiguration.setPriority(AVAILABILITY, M);
-		solverConfiguration.setPriority(CONTENT_VOLATILITY, M);
-		solverConfiguration.setPriority(CONSISTENCY_CONSTRAINT, M);
-		solverConfiguration.setPriority(STORAGE_SIMILARITY, M);
-		solverConfiguration.setPriority(PREDEFINED_SERVICE, M);
-		solverConfiguration.setPriority(SECURITY_CONTEXUALITY, M);
-		solverConfiguration.setPriority(SECURITY_CRITICALITY, M);
-		solverConfiguration.setPriority(SECURITY_CONSTRAINT, M);
-
-		IEclipsePreferences preferencesRoot = InstanceScope.INSTANCE.getNode(PREFERENCES_QUALIFIER);
-		Preferences filePreferences = preferencesRoot.node(cmlFile.getProjectRelativePath().toString());
-		solverConfiguration.setAlgorithm(SolverAlgorithm.valueOf(filePreferences.get("algorithm", solverConfiguration.getAlgorithm().name())));
-		for (Map.Entry<String, SolverPriority> entry : solverConfiguration.getPriorities().entrySet()) {
-			entry.setValue(SolverPriority.valueOf(filePreferences.get(entry.getKey(), entry.getValue().name())));
-		}
-		return solverConfiguration;
-	}
-
-	private void persistSolverConfiguration(SolverConfiguration solverConfiguration) {
-		IEclipsePreferences preferencesRoot = InstanceScope.INSTANCE.getNode(PREFERENCES_QUALIFIER);
-		Preferences filePreferences = preferencesRoot.node(cmlFile.getProjectRelativePath().toString());
-		filePreferences.put("algorithm", solverConfiguration.getAlgorithm().name());
-		for (Map.Entry<String, SolverPriority> entry : solverConfiguration.getPriorities().entrySet()) {
-			filePreferences.put(entry.getKey(), entry.getValue().name());
-		}
-		try {
-			preferencesRoot.flush();
-		} catch (BackingStoreException e) {
-			StatusManager.getManager().handle(new Status(IStatus.ERROR, DslActivator.PLUGIN_ID, "Could not persist solver priorities.", e));
-		}
-	}
-
-	private QualifiedName getQualifiedName4File(IFile file) {
-		return new QualifiedName("org.contextmapper.servicecutterconfig", file.getProjectRelativePath().toString());
 	}
 
 }

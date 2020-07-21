@@ -58,10 +58,11 @@ class ServiceCutterConfigurationDSLFormatter extends AbstractFormatter2 {
 	def dispatch void format(UseCase useCase, extension IFormattableDocument document) {
 		interior(
 			useCase.regionFor.ruleCallTo(OPENRule).append[newLine],
-			useCase.regionFor.ruleCallTo(CLOSERule).prepend[newLine].append[setNewLines(2)]
+			useCase.regionFor.ruleCallTo(CLOSERule).prepend[newLine].append[newLine]
 		)[indent]
 		
 		useCase.regionFor.assignment(useCaseAccess.docAssignment_0).append[newLine]		
+		useCase.regionFor.keyword('UseCase').prepend[newLine]
 		useCase.regionFor.keyword('reads').prepend[newLine]
 		useCase.regionFor.keyword('writes').prepend[newLine]
 	}
@@ -69,14 +70,16 @@ class ServiceCutterConfigurationDSLFormatter extends AbstractFormatter2 {
 	def dispatch void format(Entity entity, extension IFormattableDocument document) {
 		interior(
 			entity.regionFor.ruleCallTo(OPENRule).append[newLine],
-			entity.regionFor.ruleCallTo(CLOSERule).prepend[newLine].append[setNewLines(2)]
+			entity.regionFor.ruleCallTo(CLOSERule).prepend[newLine].append[newLine]
 		)[indent]
+		
+		entity.regionFor.keyword('Entity').prepend[newLine]
 	}
 	
 	def dispatch void format(RelatedGroup relatedGroup, extension IFormattableDocument document) {
 		interior(
 			relatedGroup.regionFor.ruleCallTo(OPENRule).append[newLine],
-			relatedGroup.regionFor.ruleCallTo(CLOSERule).prepend[newLine].append[setNewLines(2)]
+			relatedGroup.regionFor.ruleCallTo(CLOSERule).prepend[newLine].append[newLine]
 		)[indent]
 		
 		relatedGroup.regionFor.assignment(aggregateAccess.docAssignment_0).append[newLine]
@@ -111,7 +114,7 @@ class ServiceCutterConfigurationDSLFormatter extends AbstractFormatter2 {
 	def dispatch void format(Compatibilities compatibilities, extension IFormattableDocument document) {
 		interior(
 			compatibilities.regionFor.ruleCallTo(OPENRule).append[newLine],
-			compatibilities.regionFor.ruleCallTo(CLOSERule).prepend[newLine].append[setNewLines(2)]
+			compatibilities.regionFor.ruleCallTo(CLOSERule).prepend[newLine].append[newLine]
 		)[indent]
 		
 		compatibilities.regionFor.assignment(compatibilitiesAccess.docAssignment_1).append[newLine]

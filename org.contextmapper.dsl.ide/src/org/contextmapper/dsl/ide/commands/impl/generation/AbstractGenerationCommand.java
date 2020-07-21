@@ -43,12 +43,10 @@ public abstract class AbstractGenerationCommand implements CMLResourceCommand {
 
 	@Override
 	public void executeCommand(CMLResourceContainer cmlResource, Document document, ILanguageServerAccess access, ExecuteCommandParams params) {
-		JavaIoFileSystemAccess javaIoFileSystemAccess = getFileSystemAccess();
-		javaIoFileSystemAccess.setOutputPath("./src-gen");
-		getGenerator().doGenerate(cmlResource.getResource(), javaIoFileSystemAccess, new GeneratorContext());		
+		getGenerator().doGenerate(cmlResource.getResource(), getFileSystemAccess(), new GeneratorContext());
 	}
-	
-	private JavaIoFileSystemAccess getFileSystemAccess() {
+
+	protected JavaIoFileSystemAccess getFileSystemAccess() {
 		JavaIoFileSystemAccess fsa = new JavaIoFileSystemAccess();
 		Guice.createInjector(new AbstractGenericModule() {
 			@SuppressWarnings("unused")
@@ -56,6 +54,7 @@ public abstract class AbstractGenerationCommand implements CMLResourceCommand {
 				return IEncodingProvider.Runtime.class;
 			}
 		}).injectMembers(fsa);
+		fsa.setOutputPath("./src-gen");
 		return fsa;
 	}
 }

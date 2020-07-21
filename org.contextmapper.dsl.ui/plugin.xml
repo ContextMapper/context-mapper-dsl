@@ -16,7 +16,7 @@
 	<extension
 		point="org.eclipse.ui.editors">
 		<editor
-			class="org.contextmapper.servicecutter.dsl.ui.ServiceCutterConfigurationDSLExecutableExtensionFactory:org.contextmapper.dsl.ui.editor.CMLEditor"
+			class="org.contextmapper.servicecutter.dsl.ui.ServiceCutterConfigurationDSLExecutableExtensionFactory:org.contextmapper.servicecutter.dsl.ui.editor.SCLEditor"
 			contributorClass="org.eclipse.ui.editors.text.TextEditorActionContributor"
 			default="true"
 			extensions="scl"
@@ -374,6 +374,12 @@
             description="Open the generators quick menu."
             categoryId="org.eclipse.xtext.ui.category.refactoring"
             id="org.contextmapper.ui.edit.cml.generator.quickMenu">
+		</command>
+		<command
+            name="Generators Quick Menu"
+            description="Open the generators quick menu."
+            categoryId="org.eclipse.xtext.ui.category.refactoring"
+            id="org.contextmapper.servicecutter.dsl.ui.edit.scl.generator.quickMenu">
 		</command>
 	</extension>
 	<extension point="org.eclipse.ui.menus">
@@ -760,6 +766,9 @@
 		<handler class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.contextmapper.dsl.ui.handler.CMLByServiceCutterOutputGenerationHandler"
 			commandId="org.contextmapper.dsl.ui.handler.CMLByServiceCutterOutputGenerationCommand">
 		</handler>
+		<handler class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.contextmapper.dsl.ui.handler.ServiceCutterUserRepresentationsGenerationHandler"
+			commandId="org.contextmapper.dsl.ui.handler.ServiceCutterUserRepresentationsGenerationCommand">
+		</handler>
 		<handler class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.contextmapper.dsl.ui.handler.ServiceCutterUserRepresentationsExampleGenerationHandler"
 			commandId="org.contextmapper.dsl.ui.handler.ServiceCutterUserRepresentationsExampleGenerationCommand">
 		</handler>
@@ -780,6 +789,7 @@
 		<command name="Save Model as XMI" id="org.contextmapper.dsl.ui.handler.XMIGenerationCommand"></command>
 		<command name="ServiceCutter: Generate User Representations File (JSON)" id="org.contextmapper.servicecutter.dsl.ui.handler.ServiceCutterUserRepresentationsJSONGenerationCommand"></command>
 		<command name="Generate ContextMap by ServiceCutter Output" id="org.contextmapper.dsl.ui.handler.CMLByServiceCutterOutputGenerationCommand"></command>
+		<command name="ServiceCutter: Initialize User Representations File" id="org.contextmapper.dsl.ui.handler.ServiceCutterUserRepresentationsGenerationCommand"></command>
 		<command name="ServiceCutter: Initialize User Representations File (Exemplary)" id="org.contextmapper.dsl.ui.handler.ServiceCutterUserRepresentationsExampleGenerationCommand"></command>
 		<command name="MDSL: Generate Service Contracts" id="org.contextmapper.dsl.ui.handler.MDSLGenerationCommand"></command>
 		<command name="ServiceCutter: Generate New Service Cut" id="org.contextmapper.dsl.ui.handler.NewServiceCutContextMapGenerationCommand"></command>
@@ -862,6 +872,15 @@
 						<iterate>
 							<adapt type="org.eclipse.core.resources.IResource">
 								<test property="org.eclipse.core.resources.name" value="*.json"/>
+							</adapt>
+						</iterate>
+					</visibleWhen>
+				</command>
+				<command defaultHandler="org.contextmapper.dsl.ui.handler.ServiceCutterUserRepresentationsGenerationHandler" commandId="org.contextmapper.dsl.ui.handler.ServiceCutterUserRepresentationsGenerationCommand" style="push">
+					<visibleWhen checkEnabled="false">
+						<iterate>
+							<adapt type="org.eclipse.core.resources.IResource">
+								<test property="org.eclipse.core.resources.name" value="*.cml"/>
 							</adapt>
 						</iterate>
 					</visibleWhen>
@@ -952,6 +971,17 @@
             platform="carbon"
             sequence="COMMAND+ALT+G"
             commandId="org.contextmapper.ui.edit.cml.generator.quickMenu"
+            contextId="org.eclipse.xtext.ui.XtextEditorScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+         <key
+            sequence="M2+M3+G"
+            commandId="org.contextmapper.servicecutter.dsl.ui.edit.scl.generator.quickMenu"
+            contextId="org.eclipse.xtext.ui.XtextEditorScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+         <key
+            platform="carbon"
+            sequence="COMMAND+ALT+G"
+            commandId="org.contextmapper.servicecutter.dsl.ui.edit.scl.generator.quickMenu"
             contextId="org.eclipse.xtext.ui.XtextEditorScope"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
     </extension>

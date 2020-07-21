@@ -45,7 +45,7 @@ class ServiceCutterUserRepresentationsJSONGeneratorTest {
 		this.generator.doGenerate(new ServiceCutterConfigurationModelResourceMock(model, "testmodel", "scl"), filesystem, new IGeneratorContextMock());
 
 		// then
-		assertTrue(filesystem.getGeneratedFilesSet().contains("testmodel.json"));
+		assertTrue(filesystem.getGeneratedFilesSet().contains("testmodel_user-representations.json"));
 	}
 
 }

@@ -57,6 +57,7 @@
 			<unit id="com.fasterxml.jackson.core.jackson-core" version="2.9.9.v20190906-1522"/>
 			<unit id="com.fasterxml.jackson.core.jackson-databind" version="2.9.93.v20190906-1522"/>
 			<unit id="org.apache.commons.io" version="2.2.0.v201405211200"/>
+			<unit id="org.yaml.snakeyaml" version="1.14.0.v201604211500"/>
 		</location>
 	</locations>
 </target>

@@ -15,13 +15,11 @@
  */
 package org.contextmapper.dsl.cml;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.contextmapper.dsl.cml.exception.ResourceIsNoCMLModelException;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.xtext.resource.SaveOptions;
 import org.eclipse.xtext.xbase.lib.IteratorExtensions;
 
 import com.google.common.collect.Iterators;

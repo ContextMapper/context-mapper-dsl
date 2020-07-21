@@ -15,28 +15,23 @@
  */
 package org.contextmapper.dsl.ui.actions;
 
-import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 
 import org.contextmapper.dsl.exception.ContextMapperApplicationException;
 import org.contextmapper.dsl.ui.editor.CMLQuickMenuCreator;
 import org.contextmapper.dsl.ui.images.CMLImageDescriptionFactory;
-import org.contextmapper.dsl.ui.internal.DslActivator;
 import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.IHandler;
 import org.eclipse.core.commands.common.NotDefinedException;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.xtext.ui.editor.XtextEditor;
-import org.osgi.framework.Bundle;
 
 import com.google.common.collect.Lists;
 
@@ -83,6 +78,7 @@ public class GeneratorsActionGroup extends ActionGroup {
 		generatorSubmenu.add(new Separator());
 		added += addAction(generatorSubmenu, createAction("org.contextmapper.dsl.ui.handler.NewServiceCutContextMapGenerationCommand"));
 		added += addAction(generatorSubmenu, createAction("org.contextmapper.dsl.ui.handler.ServiceCutterGenerationCommand"));
+		added += addAction(generatorSubmenu, createAction("org.contextmapper.dsl.ui.handler.ServiceCutterUserRepresentationsGenerationCommand"));
 		added += addAction(generatorSubmenu, createAction("org.contextmapper.dsl.ui.handler.ServiceCutterUserRepresentationsExampleGenerationCommand"));
 		generatorSubmenu.add(new Separator());
 		added += addAction(generatorSubmenu, createAction("org.contextmapper.dsl.ui.handler.XMIGenerationCommand"));

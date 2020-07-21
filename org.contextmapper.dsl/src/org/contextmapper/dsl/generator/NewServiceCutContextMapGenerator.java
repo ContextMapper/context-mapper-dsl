@@ -15,22 +15,23 @@
  */
 package org.contextmapper.dsl.generator;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
+import org.contextmapper.dsl.config.ServiceCutterConfigHandler;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
-import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
+import org.contextmapper.dsl.exception.ContextMapperApplicationException;
 import org.contextmapper.dsl.generator.exception.GeneratorInputException;
-import org.contextmapper.dsl.generator.exception.NoContextMapDefinedException;
 import org.contextmapper.dsl.generator.servicecutter.input.converter.ContextMappingModelToServiceCutterERDConverter;
+import org.contextmapper.dsl.generator.servicecutter.input.converter.SCLToUserRepresentationsConverter;
 import org.contextmapper.dsl.generator.servicecutter.output.converter.ServiceCutterOutputToContextMappingModelConverter;
+import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.ServiceCutterUserRepresentationsModel;
 import org.contextmapper.tactic.dsl.tacticdsl.Attribute;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.xtext.EcoreUtil2;
 import org.eclipse.xtext.generator.IFileSystemAccess2;
 
@@ -39,6 +40,7 @@ import com.google.common.collect.Lists;
 import ch.hsr.servicecutter.api.ServiceCutter;
 import ch.hsr.servicecutter.api.ServiceCutterContext;
 import ch.hsr.servicecutter.api.ServiceCutterContextBuilder;
+import ch.hsr.servicecutter.api.SolverConfigurationFactory;
 import ch.hsr.servicecutter.api.model.EntityRelationDiagram;
 import ch.hsr.servicecutter.api.model.SolverResult;
 import ch.hsr.servicecutter.api.model.UserRepresentationContainer;
@@ -51,46 +53,20 @@ import ch.hsr.servicecutter.solver.SolverConfiguration;
  * 
  * @author Stefan Kapferer
  */
-public class NewServiceCutContextMapGenerator extends AbstractContextMapGenerator {
+public class NewServiceCutContextMapGenerator extends AbstractContextMappingModelGenerator {
 
-	private SolverConfiguration solverConfiguration;
-	private UserRepresentationContainer userRepresentationContainer;
-
-	/**
-	 * Sets a custom {@link SolverConfiguration}. If not called, a default
-	 * configuration will be created.
-	 * 
-	 * @param solverConfiguration the {@link SolverConfiguration} to be used to
-	 *                            create the service cut.
-	 */
-	public NewServiceCutContextMapGenerator setSolverConfiguration(SolverConfiguration solverConfiguration) {
-		this.solverConfiguration = solverConfiguration;
-		return this;
-	}
-
-	/**
-	 * Sets the user representations for the Service Cutter solver.
-	 * 
-	 * @param userRepresentationContainer the container with the user
-	 *                                    representations
-	 */
-	public NewServiceCutContextMapGenerator setUserRepresentationContainer(UserRepresentationContainer userRepresentationContainer) {
-		this.userRepresentationContainer = userRepresentationContainer;
-		return this;
-	}
+	private File projectDir;
 
 	@Override
-	protected void generateFromContextMap(ContextMap contextMap, IFileSystemAccess2 fsa, URI inputFileURI) {
-		checkPreconditions(contextMappingModel);
+	protected void generateFromContextMappingModel(ContextMappingModel model, IFileSystemAccess2 fsa, URI inputFileURI) {
+		checkPreconditions(model);
 		String fileBaseName = inputFileURI.trimFileExtension().lastSegment();
 
 		// prepare service cutter input
-		EntityRelationDiagram erdInput = new ContextMappingModelToServiceCutterERDConverter().convert(fileBaseName, contextMap);
+		EntityRelationDiagram erdInput = new ContextMappingModelToServiceCutterERDConverter().convert(fileBaseName, model);
 		ServiceCutterContextBuilder contextBuilder = new ServiceCutterContextBuilder(erdInput);
-		if (solverConfiguration != null)
-			contextBuilder.withCustomSolverConfiguration(solverConfiguration);
-		if (userRepresentationContainer != null)
-			contextBuilder.withUserRepresentations(userRepresentationContainer);
+		contextBuilder.withCustomSolverConfiguration(getSolverConfiguration());
+		contextBuilder.withUserRepresentations(getUserRepresentations(inputFileURI));
 		ServiceCutterContext context = contextBuilder.build();
 
 		// calculate new service cut
@@ -99,30 +75,56 @@ public class NewServiceCutContextMapGenerator extends AbstractContextMapGenerato
 
 		// save new CML file
 		int counter = 1;
-		String fileName = inputFileURI.trimFileExtension().lastSegment() + "_NewCut_" + counter + ".cml";
+		String baseFileName = inputFileURI.trimFileExtension().lastSegment();
+		URI fileName = inputFileURI.trimFileExtension().trimSegments(1).appendSegment(baseFileName + "_NewCut_" + counter).appendFileExtension("cml");
 
-		if (fsa.isFile(fileName)) {
-			while (fsa.isFile(fileName)) {
-				counter++;
-				fileName = inputFileURI.trimFileExtension().lastSegment() + "_NewCut_" + counter + ".cml";
-			}
+		while (resourceSet.getURIConverter().exists(fileName, null)) {
+			counter++;
+			fileName = inputFileURI.trimFileExtension().trimSegments(1).appendSegment(baseFileName + "_NewCut_" + counter).appendFileExtension("cml");
 		}
-		Resource resource = resourceSet.createResource(URI.createURI(fileName));
+		Resource resource = resourceSet.createResource(fileName);
 		resource.getContents().add(newServiceCutModel);
-		try (ByteArrayOutputStream outputstream = new ByteArrayOutputStream()) {
-			resource.save(outputstream, null);
-			try (InputStream inputstream = new ByteArrayInputStream(outputstream.toByteArray())) {
-				fsa.generateFile(fileName, inputstream);
-			}
+		try {
+			resource.save(null);
 		} catch (IOException e) {
 			throw new RuntimeException("Saving CML model was not possible.", e);
 		}
 	}
 
+	/**
+	 * Sets the root directory of the project. Must be set if a .servicecutter.yml
+	 * file shall be created. Otherwise the user is not able to change the Service
+	 * Cutter input parameters.
+	 */
+	public void setProjectDirectory(File projectDir) {
+		if (!projectDir.exists())
+			throw new ContextMapperApplicationException("The project directory '" + projectDir.getAbsolutePath() + "' does not exist!");
+		this.projectDir = projectDir;
+	}
+
+	private SolverConfiguration getSolverConfiguration() {
+		if (this.projectDir != null) {
+			ServiceCutterConfigHandler configHandler = new ServiceCutterConfigHandler(projectDir);
+			return configHandler.getServiceCutterSolverConfiguration();
+		} else {
+			return new SolverConfigurationFactory().createDefaultConfiguration();
+		}
+	}
+
+	private UserRepresentationContainer getUserRepresentations(URI inputFileURI) {
+		ResourceSet resourceSet = contextMappingModel.eResource().getResourceSet();
+		URI sclURI = inputFileURI.trimFileExtension().appendFileExtension("scl");
+
+		if (!resourceSet.getURIConverter().exists(sclURI, null)) {
+			new ServiceCutterUserRepresentationsGenerator().doGenerate(contextMappingModel.eResource(), fsa, context);
+		}
+
+		Resource sclResource = resourceSet.getResource(sclURI, true);
+		ServiceCutterUserRepresentationsModel sclModel = (ServiceCutterUserRepresentationsModel) sclResource.getContents().get(0);
+		return new SCLToUserRepresentationsConverter().convert(sclModel);
+	}
+
 	public void checkPreconditions(ContextMappingModel model) {
-		if(model.getMap() == null)
-			throw new NoContextMapDefinedException();
-		
 		if (collectAttributes(model).isEmpty())
 			throw new GeneratorInputException(
 					"Your model should at least contain one Bounded Context with entities and some attributes. Without attributes (Service Cutter nanoentities) we cannot calculate service cuts.");
@@ -130,7 +132,7 @@ public class NewServiceCutContextMapGenerator extends AbstractContextMapGenerato
 
 	private List<Attribute> collectAttributes(ContextMappingModel model) {
 		List<Attribute> attributes = Lists.newArrayList();
-		for(BoundedContext bc : model.getMap().getBoundedContexts()) {
+		for (BoundedContext bc : model.getBoundedContexts()) {
 			attributes.addAll(EcoreUtil2.getAllContentsOfType(bc, Attribute.class));
 		}
 		return attributes;
