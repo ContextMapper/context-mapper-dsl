@@ -34,12 +34,15 @@ public abstract class AbstractContextMappingModelGenerator extends AbstractGener
 
 	protected ContextMappingModel contextMappingModel;
 	protected ResourceSet resourceSet;
+	protected IFileSystemAccess2 fsa;
+	protected IGeneratorContext context;
 
 	@Override
 	public void doGenerate(Resource resource, IFileSystemAccess2 fsa, IGeneratorContext context) {
 		this.resourceSet = resource.getResourceSet();
-		List<ContextMappingModel> contextMappingModels = IteratorExtensions.<ContextMappingModel>toList(
-				Iterators.<ContextMappingModel>filter(resource.getAllContents(), ContextMappingModel.class));
+		this.fsa = fsa;
+		this.context = context;
+		List<ContextMappingModel> contextMappingModels = IteratorExtensions.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(resource.getAllContents(), ContextMappingModel.class));
 
 		if (contextMappingModels.isEmpty())
 			throw new NoContextMappingModelDefinedException();

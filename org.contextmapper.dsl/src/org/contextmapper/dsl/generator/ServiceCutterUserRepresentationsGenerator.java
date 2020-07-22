@@ -30,10 +30,7 @@ public class ServiceCutterUserRepresentationsGenerator extends AbstractContextMa
 	@Override
 	protected void generateFromContextMappingModel(ContextMappingModel model, IFileSystemAccess2 fsa, URI inputFileURI) {
 		ResourceSet resourceSet = model.eResource().getResourceSet();
-
-		URI inputURI = inputFileURI.trimFileExtension();
-		String fileName = inputURI.lastSegment();
-		URI sclURI = inputURI.trimSegments(1).appendSegment(fileName).appendFileExtension("scl");
+		URI sclURI = inputFileURI.trimFileExtension().appendFileExtension("scl");
 
 		UserRepresentationsBuilder builder;
 		Resource sclResource;

@@ -5,34 +5,27 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
 
 import org.contextmapper.dsl.AbstractCMLInputFileTest;
 import org.contextmapper.dsl.cml.CMLResourceContainer;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
+import org.contextmapper.dsl.exception.ContextMapperApplicationException;
 import org.contextmapper.dsl.generator.NewServiceCutContextMapGenerator;
 import org.contextmapper.dsl.generator.exception.GeneratorInputException;
-import org.contextmapper.dsl.generator.exception.NoContextMapDefinedException;
-import org.contextmapper.dsl.generator.servicecutter.input.converter.SCLToUserRepresentationsConverter;
 import org.contextmapper.dsl.generators.mocks.ContextMappingModelResourceMock;
 import org.contextmapper.dsl.generators.mocks.IFileSystemAccess2Mock;
 import org.contextmapper.dsl.generators.mocks.IGeneratorContextMock;
-import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.ServiceCutterUserRepresentationsModel;
-import org.eclipse.emf.ecore.resource.Resource;
+import org.contextmapper.servicecutter.dsl.ServiceCutterConfigurationDSLStandaloneSetup;
+import org.eclipse.xtext.generator.GeneratorContext;
+import org.eclipse.xtext.generator.IGenerator2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import ch.hsr.servicecutter.api.SolverConfigurationFactory;
-import ch.hsr.servicecutter.solver.SolverConfiguration;
-
 public class NewServiceCutContextMapGeneratorTest extends AbstractCMLInputFileTest {
-
-	private NewServiceCutContextMapGenerator generator;
 
 	@BeforeEach
 	public void prepare() {
 		super.prepare();
-		this.generator = new NewServiceCutContextMapGenerator();
 	}
 
 	@Test
@@ -44,7 +37,7 @@ public class NewServiceCutContextMapGeneratorTest extends AbstractCMLInputFileTe
 
 		// when, then
 		assertThrows(GeneratorInputException.class, () -> {
-			this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml").setResourceSet(input.getResource().getResourceSet()), filesystem,
+			new NewServiceCutContextMapGenerator().doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml").setResourceSet(input.getResource().getResourceSet()), filesystem,
 					new IGeneratorContextMock());
 		});
 	}
@@ -53,81 +46,55 @@ public class NewServiceCutContextMapGeneratorTest extends AbstractCMLInputFileTe
 	void canGenerateNewContextMap() throws IOException {
 		// given
 		CMLResourceContainer input = getResourceCopyOfTestCML("DDD_Sample_Input.cml");
-		ContextMappingModel model = input.getContextMappingModel();
+		new ServiceCutterConfigurationDSLStandaloneSetup().createInjectorAndDoEMFRegistration();
 
 		// when
-		IFileSystemAccess2Mock filesystem = new IFileSystemAccess2Mock();
-		this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml").setResourceSet(input.getResource().getResourceSet()), filesystem,
-				new IGeneratorContextMock());
+		IGenerator2 generator = new NewServiceCutContextMapGenerator();
+		generator.doGenerate(input.getResource(), getFileSystemAccess(), new GeneratorContext());
 
 		// then
-		assertTrue(filesystem.getGeneratedFilesSet().contains("testmodel_NewCut_1.cml"));
+		assertTrue(new File(input.getResource().getURI().trimFileExtension().trimFragment().appendFragment("testmodel_NewCut_1").appendFileExtension("cml").toFileString()).exists());
 	}
 
 	@Test
 	void canGenerateUniqueFileName() throws IOException {
 		// given
 		CMLResourceContainer input = getResourceCopyOfTestCML("DDD_Sample_Input.cml");
-		ContextMappingModel model = input.getContextMappingModel();
+		new ServiceCutterConfigurationDSLStandaloneSetup().createInjectorAndDoEMFRegistration();
 
 		// when
-		IFileSystemAccess2Mock filesystem = new IFileSystemAccess2Mock();
-		this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml").setResourceSet(input.getResource().getResourceSet()), filesystem,
-				new IGeneratorContextMock());
-		this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml").setResourceSet(input.getResource().getResourceSet()), filesystem,
-				new IGeneratorContextMock());
+		IGenerator2 generator = new NewServiceCutContextMapGenerator();
+		generator.doGenerate(input.getResource(), getFileSystemAccess(), new GeneratorContext());
+		generator.doGenerate(input.getResource(), getFileSystemAccess(), new GeneratorContext());
 
 		// then
-		assertTrue(filesystem.getGeneratedFilesSet().contains("testmodel_NewCut_1.cml"));
-		assertTrue(filesystem.getGeneratedFilesSet().contains("testmodel_NewCut_2.cml"));
+		assertTrue(new File(input.getResource().getURI().trimFileExtension().trimFragment().appendFragment("testmodel_NewCut_1").appendFileExtension("cml").toFileString()).exists());
+		assertTrue(new File(input.getResource().getURI().trimFileExtension().trimFragment().appendFragment("testmodel_NewCut_2").appendFileExtension("cml").toFileString()).exists());
 	}
 
 	@Test
-	void canUseCustomSolverConfiguration() throws IOException {
+	void canCreateConfigFileIfProjectRootIsSet() throws IOException {
 		// given
 		CMLResourceContainer input = getResourceCopyOfTestCML("DDD_Sample_Input.cml");
-		ContextMappingModel model = input.getContextMappingModel();
-
-		File configurationFile = new File(Paths.get("").toAbsolutePath().toString(), "/integ-test-files/servicecutter/solver-configuration.json");
-		SolverConfiguration solverConfiguration = new SolverConfigurationFactory().createConfigurationWithJSONFile(configurationFile);
+		new ServiceCutterConfigurationDSLStandaloneSetup().createInjectorAndDoEMFRegistration();
 
 		// when
-		IFileSystemAccess2Mock filesystem = new IFileSystemAccess2Mock();
-		this.generator.setSolverConfiguration(solverConfiguration);
-		this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml").setResourceSet(input.getResource().getResourceSet()), filesystem,
-				new IGeneratorContextMock());
+		NewServiceCutContextMapGenerator generator = new NewServiceCutContextMapGenerator();
+		generator.setProjectDirectory(testDir);
+		generator.doGenerate(input.getResource(), getFileSystemAccess(), new GeneratorContext());
 
 		// then
-		assertTrue(filesystem.getGeneratedFilesSet().contains("testmodel_NewCut_1.cml"));
+		assertTrue(new File(testDir, ".servicecutter.yml").exists());
 	}
 
 	@Test
-	void canUseUserRepresentations() throws IOException {
+	void cannotSetNotExistingProjectDir() throws IOException {
 		// given
-		CMLResourceContainer input = getResourceCopyOfTestCML("DDD_Sample_Input.cml");
-		ContextMappingModel model = input.getContextMappingModel();
-
-		Resource sclInput = getResourceCopyOfTestSCL("DDD_Sample_ServiceCutter-User-Representations.scl");
-		ServiceCutterUserRepresentationsModel sclModel = (ServiceCutterUserRepresentationsModel) sclInput.getContents().get(0);
-
-		// when
-		IFileSystemAccess2Mock filesystem = new IFileSystemAccess2Mock();
-		this.generator.setUserRepresentationContainer(new SCLToUserRepresentationsConverter().convert(sclModel));
-		this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml").setResourceSet(input.getResource().getResourceSet()), filesystem,
-				new IGeneratorContextMock());
-
-		// then
-		assertTrue(filesystem.getGeneratedFilesSet().contains("testmodel_NewCut_1.cml"));
-	}
-
-	@Test
-	void canHandleModelWithoutContextMap() throws IOException {
-		// given
-		CMLResourceContainer input = getResourceCopyOfTestCML("CML_Model_without_ContextMap.cml");
+		NewServiceCutContextMapGenerator generator = new NewServiceCutContextMapGenerator();
 
 		// when, then
-		assertThrows(NoContextMapDefinedException.class, () -> {
-			this.generator.checkPreconditions(input.getContextMappingModel());
+		assertThrows(ContextMapperApplicationException.class, () -> {
+			generator.setProjectDirectory(new File(testDir, "this-directory-does-not-exist"));
 		});
 	}
 

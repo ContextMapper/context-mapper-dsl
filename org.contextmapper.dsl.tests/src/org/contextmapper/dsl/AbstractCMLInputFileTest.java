@@ -17,13 +17,7 @@ package org.contextmapper.dsl;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
 import org.contextmapper.dsl.cml.CMLResourceContainer;
@@ -32,18 +26,19 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.junit.jupiter.api.AfterEach;
+import org.eclipse.xtext.generator.JavaIoFileSystemAccess;
+import org.eclipse.xtext.parser.IEncodingProvider;
+import org.eclipse.xtext.service.AbstractGenericModule;
 import org.junit.jupiter.api.BeforeEach;
 
-public abstract class AbstractCMLInputFileTest {
-	protected File testDir;
+import com.google.inject.Guice;
+
+public abstract class AbstractCMLInputFileTest extends AbstractDirectoryIntegrationTest {
 	protected ResourceSet resourceSet;
 
 	@BeforeEach
 	public void prepare() {
-		String dirName = UUID.randomUUID().toString();
-		this.testDir = new File(new File(System.getProperty("java.io.tmpdir")), dirName);
-		this.testDir.mkdir();
+		super.prepare();
 		this.resourceSet = new ResourceSetImpl();
 	}
 
@@ -103,27 +98,20 @@ public abstract class AbstractCMLInputFileTest {
 		return new File(Paths.get("").toAbsolutePath().toString(), getTestFileDirectory() + testCMLName);
 	}
 
+	protected JavaIoFileSystemAccess getFileSystemAccess() {
+		JavaIoFileSystemAccess fsa = new JavaIoFileSystemAccess();
+		Guice.createInjector(new AbstractGenericModule() {
+			public Class<? extends IEncodingProvider> bindIEncodingProvider() {
+				return IEncodingProvider.Runtime.class;
+			}
+		}).injectMembers(fsa);
+		return fsa;
+	}
+
 	/**
 	 * Override this method to define test file directory. Example:
 	 * "/integ-test-files/refactorings/"
 	 */
 	protected abstract String getTestFileDirectory();
 
-	@AfterEach
-	void cleanup() throws IOException {
-		Path directory = Paths.get(this.testDir.getAbsolutePath());
-		Files.walkFileTree(directory, new SimpleFileVisitor<Path>() {
-			@Override
-			public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-				Files.delete(file);
-				return FileVisitResult.CONTINUE;
-			}
-
-			@Override
-			public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-				Files.delete(dir);
-				return FileVisitResult.CONTINUE;
-			}
-		});
-	}
 }

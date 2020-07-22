@@ -89,14 +89,4 @@ class ServiceCutterUserRepresentationsGeneratorTest extends AbstractCMLInputFile
 	protected String getTestFileDirectory() {
 		return "/integ-test-files/servicecutter/";
 	}
-
-	private JavaIoFileSystemAccess getFileSystemAccess() {
-		JavaIoFileSystemAccess fsa = new JavaIoFileSystemAccess();
-		Guice.createInjector(new AbstractGenericModule() {
-			public Class<? extends IEncodingProvider> bindIEncodingProvider() {
-				return IEncodingProvider.Runtime.class;
-			}
-		}).injectMembers(fsa);
-		return fsa;
-	}
 }
