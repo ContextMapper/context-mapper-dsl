@@ -13,18 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.contextmapper.servicecutter.dsl.ide
+package org.contextmapper.servicecutter.dsl.ide.commands;
 
-import org.contextmapper.servicecutter.dsl.ide.commands.SCLCommandService
-import org.eclipse.xtext.ide.server.commands.IExecutableCommandService
+import org.contextmapper.servicecutter.dsl.scl.SCLResourceContainer;
+import org.eclipse.lsp4j.ExecuteCommandParams;
+import org.eclipse.xtext.ide.server.Document;
+import org.eclipse.xtext.ide.server.ILanguageServerAccess;
 
 /**
- * Use this class to register ide components.
+ * Interface for all SCL LSP commands that can be executed on SCL resource.
+ * 
+ * @author Stefan Kapferer
+ *
  */
-class ServiceCutterConfigurationDSLIdeModule extends AbstractServiceCutterConfigurationDSLIdeModule {
-	
-	def Class<? extends IExecutableCommandService> bindIExecutableCommandService() {
-		return SCLCommandService
-	}
-	
+public interface SCLResourceCommand {
+
+	void executeCommand(SCLResourceContainer cmlResource, Document document, ILanguageServerAccess access, ExecuteCommandParams params);
+
 }

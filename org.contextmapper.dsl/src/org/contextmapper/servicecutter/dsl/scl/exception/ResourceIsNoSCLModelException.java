@@ -13,18 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.contextmapper.servicecutter.dsl.ide
+package org.contextmapper.servicecutter.dsl.scl.exception;
 
-import org.contextmapper.servicecutter.dsl.ide.commands.SCLCommandService
-import org.eclipse.xtext.ide.server.commands.IExecutableCommandService
+import org.contextmapper.dsl.exception.ContextMapperApplicationException;
+import org.eclipse.emf.common.util.URI;
 
-/**
- * Use this class to register ide components.
- */
-class ServiceCutterConfigurationDSLIdeModule extends AbstractServiceCutterConfigurationDSLIdeModule {
-	
-	def Class<? extends IExecutableCommandService> bindIExecutableCommandService() {
-		return SCLCommandService
+public class ResourceIsNoSCLModelException extends ContextMapperApplicationException {
+
+	public ResourceIsNoSCLModelException(URI uri) {
+		super("The resource '" + uri.toString() + "' does not contain a SCL model.");
 	}
-	
+
+	public ResourceIsNoSCLModelException() {
+		super("The given resource does not contain a SCL model.");
+	}
+
 }

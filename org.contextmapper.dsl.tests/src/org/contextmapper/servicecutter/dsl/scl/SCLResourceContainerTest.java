@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.contextmapper.dsl.cml;
+package org.contextmapper.servicecutter.dsl.scl;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.contextmapper.dsl.cml.exception.ResourceIsNoCMLModelException;
-import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
-import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
+import org.contextmapper.servicecutter.dsl.scl.exception.ResourceIsNoSCLModelException;
+import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.ServiceCutterConfigurationDSLFactory;
+import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.ServiceCutterUserRepresentationsModel;
 import org.contextmapper.tactic.dsl.tacticdsl.TacticdslFactory;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -29,19 +29,18 @@ import org.eclipse.emf.ecore.resource.impl.ResourceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class CMLResourceContainerTest {
-
+public class SCLResourceContainerTest {
 	@Test
 	public void canCreateCMLResourceContainer() {
 		// given
 		Resource resource = new ResourceImpl(URI.createURI("testresource"));
 
 		// when
-		resource.getContents().add(ContextMappingDSLFactory.eINSTANCE.createContextMappingModel());
-		CMLResourceContainer cmlRes = new CMLResourceContainer(resource);
+		resource.getContents().add(ServiceCutterConfigurationDSLFactory.eINSTANCE.createServiceCutterUserRepresentationsModel());
+		SCLResourceContainer sclRes = new SCLResourceContainer(resource);
 
 		// then
-		assertNotNull(cmlRes.getResource());
+		assertNotNull(sclRes.getResource());
 	}
 
 	@Test
@@ -50,13 +49,13 @@ public class CMLResourceContainerTest {
 		Resource resource = new ResourceImpl(URI.createURI("testresource"));
 
 		// when
-		resource.getContents().add(ContextMappingDSLFactory.eINSTANCE.createContextMappingModel());
-		CMLResourceContainer cmlRes = new CMLResourceContainer(resource);
-		ContextMappingModel contextMappingModel = cmlRes.getContextMappingModel();
+		resource.getContents().add(ServiceCutterConfigurationDSLFactory.eINSTANCE.createServiceCutterUserRepresentationsModel());
+		SCLResourceContainer sclRes = new SCLResourceContainer(resource);
+		ServiceCutterUserRepresentationsModel sclModel = sclRes.getServiceCutterConfigurationModel();
 
 		// then
-		assertNotNull(contextMappingModel);
-		assertTrue(contextMappingModel instanceof ContextMappingModel);
+		assertNotNull(sclModel);
+		assertTrue(sclModel instanceof ServiceCutterUserRepresentationsModel);
 	}
 
 	@Test
@@ -65,8 +64,8 @@ public class CMLResourceContainerTest {
 		Resource resource = new ResourceImpl(URI.createURI("testresource"));
 
 		// when, then
-		Assertions.assertThrows(ResourceIsNoCMLModelException.class, () -> {
-			new CMLResourceContainer(resource);
+		Assertions.assertThrows(ResourceIsNoSCLModelException.class, () -> {
+			new SCLResourceContainer(resource);
 		});
 	}
 
@@ -76,8 +75,8 @@ public class CMLResourceContainerTest {
 		Resource resource = new ResourceImpl();
 
 		// when, then
-		Assertions.assertThrows(ResourceIsNoCMLModelException.class, () -> {
-			new CMLResourceContainer(resource);
+		Assertions.assertThrows(ResourceIsNoSCLModelException.class, () -> {
+			new SCLResourceContainer(resource);
 		});
 	}
 
@@ -90,8 +89,8 @@ public class CMLResourceContainerTest {
 		resource.getContents().add(TacticdslFactory.eINSTANCE.createApplication());
 
 		// then
-		Assertions.assertThrows(ResourceIsNoCMLModelException.class, () -> {
-			new CMLResourceContainer(resource);
+		Assertions.assertThrows(ResourceIsNoSCLModelException.class, () -> {
+			new SCLResourceContainer(resource);
 		});
 	}
 
@@ -99,11 +98,11 @@ public class CMLResourceContainerTest {
 	public void isNotEqualToObjectOfOtherType() {
 		// given
 		Resource resource = new ResourceImpl(URI.createURI("testresource"));
-		resource.getContents().add(ContextMappingDSLFactory.eINSTANCE.createContextMappingModel());
-		CMLResourceContainer cmlRes = new CMLResourceContainer(resource);
+		resource.getContents().add(ServiceCutterConfigurationDSLFactory.eINSTANCE.createServiceCutterUserRepresentationsModel());
+		SCLResourceContainer sclRes = new SCLResourceContainer(resource);
 
 		// when
-		boolean isEqual = cmlRes.equals(new Object());
+		boolean isEqual = sclRes.equals(new Object());
 
 		// then
 		assertFalse(isEqual);
@@ -113,15 +112,15 @@ public class CMLResourceContainerTest {
 	public void isEqualIfResourceURIIsEqual() {
 		// given
 		Resource resource1 = new ResourceImpl(URI.createURI("testresource"));
-		resource1.getContents().add(ContextMappingDSLFactory.eINSTANCE.createContextMappingModel());
-		CMLResourceContainer cmlRes1 = new CMLResourceContainer(resource1);
+		resource1.getContents().add(ServiceCutterConfigurationDSLFactory.eINSTANCE.createServiceCutterUserRepresentationsModel());
+		SCLResourceContainer sclRes1 = new SCLResourceContainer(resource1);
 
 		Resource resource2 = new ResourceImpl(URI.createURI("testresource"));
-		resource2.getContents().add(ContextMappingDSLFactory.eINSTANCE.createContextMappingModel());
-		CMLResourceContainer cmlRes2 = new CMLResourceContainer(resource2);
+		resource2.getContents().add(ServiceCutterConfigurationDSLFactory.eINSTANCE.createServiceCutterUserRepresentationsModel());
+		SCLResourceContainer sclRes2 = new SCLResourceContainer(resource2);
 
 		// when
-		boolean isEqual = cmlRes1.equals(cmlRes2);
+		boolean isEqual = sclRes1.equals(sclRes2);
 
 		// then
 		assertTrue(isEqual);
@@ -131,18 +130,17 @@ public class CMLResourceContainerTest {
 	public void isNotEqualIfResourceURIIsNotEqual() {
 		// given
 		Resource resource1 = new ResourceImpl(URI.createURI("testresource1"));
-		resource1.getContents().add(ContextMappingDSLFactory.eINSTANCE.createContextMappingModel());
-		CMLResourceContainer cmlRes1 = new CMLResourceContainer(resource1);
+		resource1.getContents().add(ServiceCutterConfigurationDSLFactory.eINSTANCE.createServiceCutterUserRepresentationsModel());
+		SCLResourceContainer sclRes1 = new SCLResourceContainer(resource1);
 
 		Resource resource2 = new ResourceImpl(URI.createURI("testresource2"));
-		resource2.getContents().add(ContextMappingDSLFactory.eINSTANCE.createContextMappingModel());
-		CMLResourceContainer cmlRes2 = new CMLResourceContainer(resource2);
+		resource2.getContents().add(ServiceCutterConfigurationDSLFactory.eINSTANCE.createServiceCutterUserRepresentationsModel());
+		SCLResourceContainer sclRes2 = new SCLResourceContainer(resource2);
 
 		// when
-		boolean isEqual = cmlRes1.equals(cmlRes2);
+		boolean isEqual = sclRes1.equals(sclRes2);
 
 		// then
 		assertFalse(isEqual);
 	}
-
 }

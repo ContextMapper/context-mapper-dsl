@@ -58,7 +58,7 @@ public class ServiceCutterUserRepresentationsJSONGenerator extends AbstractGener
 					"characteristicDoc");
 			FilterProvider filters = new SimpleFilterProvider().addFilter("docFilter", docFilter);
 			try {
-				fsa.generateFile(modelName + ".json", objectMapper.writer(filters).writeValueAsString(model));
+				fsa.generateFile(modelName + "_user-representations.json", objectMapper.writer(filters).writeValueAsString(model));
 			} catch (JsonProcessingException e) {
 				throw new RuntimeException("JSON conversion error occured!", e);
 			}

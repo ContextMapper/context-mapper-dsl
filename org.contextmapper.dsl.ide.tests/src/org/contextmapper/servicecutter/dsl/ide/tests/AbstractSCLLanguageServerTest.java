@@ -13,18 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.contextmapper.servicecutter.dsl.ide
+package org.contextmapper.servicecutter.dsl.ide.tests;
 
-import org.contextmapper.servicecutter.dsl.ide.commands.SCLCommandService
-import org.eclipse.xtext.ide.server.commands.IExecutableCommandService
+import org.eclipse.xtext.testing.AbstractLanguageServerTest;
 
-/**
- * Use this class to register ide components.
- */
-class ServiceCutterConfigurationDSLIdeModule extends AbstractServiceCutterConfigurationDSLIdeModule {
-	
-	def Class<? extends IExecutableCommandService> bindIExecutableCommandService() {
-		return SCLCommandService
+public abstract class AbstractSCLLanguageServerTest extends AbstractLanguageServerTest {
+
+	public AbstractSCLLanguageServerTest() {
+		super("scl");
 	}
-	
+
 }

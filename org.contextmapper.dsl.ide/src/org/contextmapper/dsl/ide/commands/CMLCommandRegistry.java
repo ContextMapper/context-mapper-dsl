@@ -38,7 +38,8 @@ import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 
 /**
- * Registers all commands that can be called on LSP command service.
+ * Registers all commands that can be called on LSP command service (for CML
+ * language).
  * 
  * @author Stefan Kapferer
  *
