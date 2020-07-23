@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test
 
 import static extension org.junit.jupiter.api.Assertions.assertTrue
 
-class ServiceCutterUserRepresentationsGeneratorCommandTest extends AbstractCMLCommandTest {
+class ServiceCutterUserRepresentationExampleFileGeneratorCommandTest extends AbstractCMLCommandTest {
 
 	@BeforeEach
 	def void prepare() {
@@ -33,10 +33,29 @@ class ServiceCutterUserRepresentationsGeneratorCommandTest extends AbstractCMLCo
 	}
 
 	@Test
-	def void testServiceCutterUserRepresentationGeneratorCommandExecution() {
+	def void testServiceCutterUserRepresentationExampleFileGeneratorCommandExecution() {
 		// given
 		initializeCommandsDynamically()
 		val model = '''
+			ContextMap {
+				contains context1, context2
+				
+				context1 -> context2
+			}
+			BoundedContext context1 {
+				Aggregate agg1 {
+					Entity entity1 {
+						String attr1
+					}
+				}
+			}
+			BoundedContext context2 {
+				Aggregate agg2 {
+					Entity entity2 {
+						String attr2
+					}
+				}
+			}
 			UseCase Get_paid_for_car_accident { // title
 				actor "Claimant" // primary actor
 				interactions
@@ -57,12 +76,12 @@ class ServiceCutterUserRepresentationsGeneratorCommandTest extends AbstractCMLCo
 
 		// when
 		val result = languageServer.executeCommand(
-			new ExecuteCommandParams("cml.generate.servicecutter.user.representations", #[new JsonPrimitive(fileURI)]))
+			new ExecuteCommandParams("cml.generate.servicecutter.user.representation.example.file", #[new JsonPrimitive(fileURI)]))
 		val resultVal = result.get as String
 
 		// then
 		CMLCommandService.COMMAND_EXECUTED_RETURN_VALUE.assertEquals(resultVal)
-		new File(root, "test.scl").exists.assertTrue
+		new File(root, "test_user-representations.scl").exists.assertTrue
 	}
 
 }
