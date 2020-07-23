@@ -20,14 +20,20 @@ import java.io.File
 import org.contextmapper.dsl.ide.commands.CMLCommandService
 import org.contextmapper.dsl.ide.tests.commands.AbstractCMLCommandTest
 import org.eclipse.lsp4j.ExecuteCommandParams
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 import static extension org.junit.jupiter.api.Assertions.assertTrue
 
-class NewServiceCutGeneratorCommandTest extends AbstractCMLCommandTest {
+class ServiceCutterInputGeneratorCommandTest extends AbstractCMLCommandTest {
+
+	@BeforeEach
+	def void prepare() {
+		deleteGeneratedFiles("json")
+	}
 
 	@Test
-	def void testServiceCutGeneratorCommandExecution() {
+	def void testServiceCutterInputGeneratorCommandExecution() {
 		// given
 		initializeCommandsDynamically()
 		val model = '''
@@ -55,14 +61,13 @@ class NewServiceCutGeneratorCommandTest extends AbstractCMLCommandTest {
 
 		// when
 		val result = languageServer.executeCommand(
-			new ExecuteCommandParams("cml.generate.new.service.cut", #[new JsonPrimitive(fileURI)]))
+			new ExecuteCommandParams("cml.generate.servicecutter.input", #[new JsonPrimitive(fileURI)]))
 		val resultVal = result.get as String
 
 		// then
 		CMLCommandService.COMMAND_EXECUTED_RETURN_VALUE.assertEquals(resultVal)
-		new File(root, "test.scl").exists.assertTrue
-		new File(root, "test_NewCut_1.cml").exists.assertTrue
-		new File(root, ".servicecutter.yml").exists.assertTrue
+		srcGenFolder.exists.assertTrue
+		new File(srcGenFolder, "test.json").exists.assertTrue
 	}
 
 }

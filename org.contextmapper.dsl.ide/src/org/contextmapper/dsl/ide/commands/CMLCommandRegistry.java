@@ -23,6 +23,7 @@ import org.contextmapper.dsl.ide.commands.impl.generation.GenericTextFileGenerat
 import org.contextmapper.dsl.ide.commands.impl.generation.MDSLGenerationCommand;
 import org.contextmapper.dsl.ide.commands.impl.generation.NewServiceCutGenerationCommand;
 import org.contextmapper.dsl.ide.commands.impl.generation.PlantUMLGenerationCommand;
+import org.contextmapper.dsl.ide.commands.impl.generation.ServiceCutterInputGenerationCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.DeriveBoundedContextFromSubdomainsCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.DeriveSubdomainFromUserRequirementsCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.SplitAggregateByEntitiesRefactoringCommand;
@@ -57,6 +58,7 @@ public class CMLCommandRegistry {
 		commandMap.put("cml.generate.mdsl", new MDSLGenerationCommand());
 		commandMap.put("cml.generate.generic.text.file", new GenericTextFileGenerationCommand());
 		commandMap.put("cml.generate.new.service.cut", new NewServiceCutGenerationCommand());
+		commandMap.put("cml.generate.servicecutter.input", new ServiceCutterInputGenerationCommand());
 		commandMap.put("cml.ar.splitBCByOwner", new SplitBoundedContextByOwnerRefactoringCommand(editRecorder));
 		commandMap.put("cml.ar.splitBCByFeature", new SplitBoundedContextByFeaturesRefactoringCommand(editRecorder));
 		commandMap.put("cml.ar.splitAggregateByEntities", new SplitAggregateByEntitiesRefactoringCommand(editRecorder));
