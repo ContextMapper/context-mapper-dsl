@@ -15,9 +15,7 @@
  */
 package org.contextmapper.dsl.ide.tests;
 
-import org.contextmapper.dsl.ContextMappingDSLStandaloneSetup;
 import org.eclipse.xtext.testing.AbstractLanguageServerTest;
-import org.junit.jupiter.api.BeforeEach;
 
 /**
  * AbstractLanguageServerTest for the Context Mapper DSL (CML) language.

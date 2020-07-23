@@ -15,46 +15,35 @@
  */
 package org.contextmapper.dsl.ide.commands.impl.generation;
 
+import java.nio.file.Paths;
+
 import org.contextmapper.dsl.cml.CMLResourceContainer;
-import org.contextmapper.dsl.ide.commands.CMLResourceCommand;
+import org.contextmapper.dsl.generator.NewServiceCutContextMapGenerator;
 import org.eclipse.lsp4j.ExecuteCommandParams;
 import org.eclipse.xtext.generator.GeneratorContext;
 import org.eclipse.xtext.generator.IGenerator2;
-import org.eclipse.xtext.generator.JavaIoFileSystemAccess;
 import org.eclipse.xtext.ide.server.Document;
 import org.eclipse.xtext.ide.server.ILanguageServerAccess;
-import org.eclipse.xtext.parser.IEncodingProvider;
-import org.eclipse.xtext.service.AbstractGenericModule;
-
-import com.google.inject.Guice;
 
 /**
- * Abstract command to call generators.
+ * This command calls the 'New Service Cut' generator that generates a new
+ * Context Mapping Model using Service Cutter.
  * 
  * @author Stefan Kapferer
  *
  */
-public abstract class AbstractGenerationCommand implements CMLResourceCommand {
-
-	/**
-	 * Override this method to define which generator shall be called.
-	 */
-	abstract IGenerator2 getGenerator();
+public class NewServiceCutGenerationCommand extends AbstractGenerationCommand {
 
 	@Override
 	public void executeCommand(CMLResourceContainer cmlResource, Document document, ILanguageServerAccess access, ExecuteCommandParams params) {
-		getGenerator().doGenerate(cmlResource.getResource(), getFileSystemAccess(), new GeneratorContext());
+		NewServiceCutContextMapGenerator serviceCutGenerator = (NewServiceCutContextMapGenerator) getGenerator();
+		serviceCutGenerator.setProjectDirectory(Paths.get(access.getInitializeParams().getRootUri().replace("file:", "")).toFile());
+		serviceCutGenerator.doGenerate(cmlResource.getResource(), getFileSystemAccess(), new GeneratorContext());
 	}
 
-	protected JavaIoFileSystemAccess getFileSystemAccess() {
-		JavaIoFileSystemAccess fsa = new JavaIoFileSystemAccess();
-		Guice.createInjector(new AbstractGenericModule() {
-			@SuppressWarnings("unused")
-			public Class<? extends IEncodingProvider> bindIEncodingProvider() {
-				return IEncodingProvider.Runtime.class;
-			}
-		}).injectMembers(fsa);
-		fsa.setOutputPath("./src-gen");
-		return fsa;
+	@Override
+	IGenerator2 getGenerator() {
+		return new NewServiceCutContextMapGenerator();
 	}
+
 }
