@@ -16,7 +16,7 @@
 	<extension
 		point="org.eclipse.ui.editors">
 		<editor
-			class="org.contextmapper.servicecutter.dsl.ui.ServiceCutterConfigurationDSLExecutableExtensionFactory:org.contextmapper.dsl.ui.editor.CMLEditor"
+			class="org.contextmapper.servicecutter.dsl.ui.ServiceCutterConfigurationDSLExecutableExtensionFactory:org.contextmapper.servicecutter.dsl.ui.editor.SCLEditor"
 			contributorClass="org.eclipse.ui.editors.text.TextEditorActionContributor"
 			default="true"
 			extensions="scl"
@@ -374,6 +374,12 @@
             description="Open the generators quick menu."
             categoryId="org.eclipse.xtext.ui.category.refactoring"
             id="org.contextmapper.ui.edit.cml.generator.quickMenu">
+		</command>
+		<command
+            name="Generators Quick Menu"
+            description="Open the generators quick menu."
+            categoryId="org.eclipse.xtext.ui.category.refactoring"
+            id="org.contextmapper.servicecutter.dsl.ui.edit.scl.generator.quickMenu">
 		</command>
 	</extension>
 	<extension point="org.eclipse.ui.menus">
@@ -965,6 +971,17 @@
             platform="carbon"
             sequence="COMMAND+ALT+G"
             commandId="org.contextmapper.ui.edit.cml.generator.quickMenu"
+            contextId="org.eclipse.xtext.ui.XtextEditorScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+         <key
+            sequence="M2+M3+G"
+            commandId="org.contextmapper.servicecutter.dsl.ui.edit.scl.generator.quickMenu"
+            contextId="org.eclipse.xtext.ui.XtextEditorScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+         <key
+            platform="carbon"
+            sequence="COMMAND+ALT+G"
+            commandId="org.contextmapper.servicecutter.dsl.ui.edit.scl.generator.quickMenu"
             contextId="org.eclipse.xtext.ui.XtextEditorScope"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
     </extension>

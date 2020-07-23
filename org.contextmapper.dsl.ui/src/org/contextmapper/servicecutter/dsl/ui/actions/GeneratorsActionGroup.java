@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.contextmapper.dsl.ui.actions;
+package org.contextmapper.servicecutter.dsl.ui.actions;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,7 +27,6 @@ import org.eclipse.core.commands.common.NotDefinedException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.Separator;
 import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.handlers.IHandlerService;
@@ -37,7 +36,7 @@ import com.google.common.collect.Lists;
 
 public class GeneratorsActionGroup extends ActionGroup {
 
-	private static final String QUICK_MENU_ID = "org.contextmapper.ui.edit.cml.generator.quickMenu";
+	private static final String QUICK_MENU_ID = "org.contextmapper.servicecutter.dsl.ui.edit.scl.generator.quickMenu";
 
 	private IHandlerService handlerService;
 	private ICommandService commandService;
@@ -70,18 +69,7 @@ public class GeneratorsActionGroup extends ActionGroup {
 
 	private int fillRefactorMenu(IMenuManager generatorSubmenu) {
 		int added = 0;
-		added += addAction(generatorSubmenu, createAction("org.contextmapper.dsl.ui.handler.ContextMapGenerationCommand"));
-		added += addAction(generatorSubmenu, createAction("org.contextmapper.dsl.ui.handler.PlantUMLGenerationCommand"));
-		added += addAction(generatorSubmenu, createAction("org.contextmapper.dsl.ui.handler.GenericTextFileGenerationCommand"));
-		generatorSubmenu.add(new Separator());
-		added += addAction(generatorSubmenu, createAction("org.contextmapper.dsl.ui.handler.MDSLGenerationCommand"));
-		generatorSubmenu.add(new Separator());
-		added += addAction(generatorSubmenu, createAction("org.contextmapper.dsl.ui.handler.NewServiceCutContextMapGenerationCommand"));
-		added += addAction(generatorSubmenu, createAction("org.contextmapper.dsl.ui.handler.ServiceCutterGenerationCommand"));
-		added += addAction(generatorSubmenu, createAction("org.contextmapper.dsl.ui.handler.ServiceCutterUserRepresentationsGenerationCommand"));
-		added += addAction(generatorSubmenu, createAction("org.contextmapper.dsl.ui.handler.ServiceCutterUserRepresentationsExampleGenerationCommand"));
-		generatorSubmenu.add(new Separator());
-		added += addAction(generatorSubmenu, createAction("org.contextmapper.dsl.ui.handler.XMIGenerationCommand"));
+		added += addAction(generatorSubmenu, createAction("org.contextmapper.servicecutter.dsl.ui.handler.ServiceCutterUserRepresentationsJSONGenerationCommand"));
 		return added;
 	}
 
@@ -111,7 +99,7 @@ public class GeneratorsActionGroup extends ActionGroup {
 	}
 
 	private void addGeneratorSubmenu(IMenuManager menu) {
-		MenuManager contextMenu = new MenuManager("Context Mapper", "org.contextmapper.dsl.ui.generator.menu");
+		MenuManager contextMenu = new MenuManager("Context Mapper", "org.contextmapper.servicecutter.dsl.ui.generator.menu");
 		contextMenu.setActionDefinitionId(QUICK_MENU_ID);
 		contextMenu.setImageDescriptor(CMLImageDescriptionFactory.createContextMapperLogoDescriptor());
 		if (fillRefactorMenu(contextMenu) > 0)
