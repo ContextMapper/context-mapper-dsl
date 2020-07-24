@@ -130,3 +130,4 @@ UseCase Get_paid_for_car_accident { // title
 	scope "Insurance company" // scope
 	level "Summary" // level
 }
+

@@ -116,6 +116,7 @@ public class ContextMappingModelToServiceCutterERDConverter {
 					relation.setType(RelationType.AGGREGATION);
 					target.getRelations().add(relation);
 				}
+				entityEntity.getNanoentities().add(reference.getName());
 			}
 		}
 		target.getEntities().add(entityEntity);
