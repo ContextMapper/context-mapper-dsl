@@ -28,21 +28,24 @@ import org.contextmapper.dsl.services.ContextMappingDSLGrammarAccess
 import org.contextmapper.tactic.dsl.formatting2.TacticDDDLanguageFormatter
 import org.eclipse.xtext.formatting2.IFormattableDocument
 import org.contextmapper.dsl.contextMappingDSL.UserRequirement
+import org.contextmapper.dsl.contextMappingDSL.UseCase
+import org.contextmapper.dsl.contextMappingDSL.UserStory
 
 class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 
 	@Inject extension ContextMappingDSLGrammarAccess
 
 	def dispatch void format(ContextMappingModel contextMappingModel, extension IFormattableDocument document) {
-		var ignoredFirst = contextMappingModel.firstLineComment != null && !"".equals(contextMappingModel.firstLineComment)
-		for(cmlImport : contextMappingModel.imports) {
-			if(ignoredFirst) {
+		var ignoredFirst = contextMappingModel.firstLineComment != null &&
+			!"".equals(contextMappingModel.firstLineComment)
+		for (cmlImport : contextMappingModel.imports) {
+			if (ignoredFirst) {
 				cmlImport.prepend[newLine]
 			} else {
 				ignoredFirst = true
 			}
 		}
-		
+
 		contextMappingModel.map.format
 
 		for (boundedContext : contextMappingModel.boundedContexts) {
@@ -50,6 +53,9 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 		}
 		for (domain : contextMappingModel.domains) {
 			domain.format
+		}
+		for (userRequirement : contextMappingModel.userRequirements) {
+			userRequirement.format
 		}
 	}
 
@@ -62,10 +68,10 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 		contextMap.regionFor.keyword("type").prepend[newLine]
 		contextMap.regionFor.keyword("state").prepend[newLine]
 
-		contextMap.regionFor.keywords('contains').forEach[
+		contextMap.regionFor.keywords('contains').forEach [
 			prepend[newLines = 1]
 		]
-		
+
 		for (relationship : contextMap.relationships) {
 			relationship.format
 		}
@@ -78,7 +84,7 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 		)[indent]
 
 		boundedContext.prepend[newLines = 2]
-		if(boundedContext.comment !== null && !"".equals(boundedContext.comment))
+		if (boundedContext.comment !== null && !"".equals(boundedContext.comment))
 			boundedContext.regionFor.keyword('BoundedContext').prepend[newLine]
 
 		boundedContext.regionFor.keyword("domainVisionStatement").prepend[newLine]
@@ -90,47 +96,59 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 		for (aggregate : boundedContext.aggregates) {
 			aggregate.format
 		}
-		for(module : boundedContext.modules) {
+		for (module : boundedContext.modules) {
 			module.format
 		}
 	}
-	
+
 	def dispatch void format(Domain domain, extension IFormattableDocument document) {
 		interior(
 			domain.regionFor.ruleCallTo(OPENRule).append[newLine],
 			domain.regionFor.ruleCallTo(CLOSERule).prepend[newLines = 2].append[newLines = 2]
 		)[indent]
-		
+
 		domain.regionFor.keyword("domainVisionStatement").prepend[newLine]
-		
+
 		for (subdomain : domain.subdomains) {
 			subdomain.format
 		}
 	}
-	
+
 	def dispatch void format(Subdomain subdomain, extension IFormattableDocument document) {
 		interior(
 			subdomain.regionFor.ruleCallTo(OPENRule).append[newLine],
 			subdomain.regionFor.ruleCallTo(CLOSERule).prepend[newLines = 1].append[newLines = 2]
 		)[indent]
-		
+
 		subdomain.regionFor.keyword("domainVisionStatement").prepend[newLine]
 		subdomain.regionFor.keyword("type").prepend[newLine]
-		
+
 		for (entity : subdomain.entities) {
 			entity.format
 		}
-		
+
 		for (service : subdomain.services) {
 			service.format
 		}
 	}
-	
+
 	def dispatch void format(UserRequirement requirement, extension IFormattableDocument document) {
 		interior(
 			requirement.regionFor.ruleCallTo(OPENRule).append[newLine],
 			requirement.regionFor.ruleCallTo(CLOSERule).prepend[newLine].append[newLines = 2]
 		)[indent]
+
+		if (requirement instanceof UseCase) {
+			requirement.regionFor.keyword("UseCase").prepend[newLines = 2]
+		}
+
+		if (requirement instanceof UserStory) {
+			requirement.regionFor.keyword("UserStory").prepend[newLines = 2]
+		}
+
+		requirement.regionFor.keyword("isLatencyCritical").prepend[newLine]
+		requirement.regionFor.keyword("reads").prepend[newLine]
+		requirement.regionFor.keyword("writes").prepend[newLine]
 
 		requirement.prepend[newLines = 2]
 	}
@@ -140,40 +158,40 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 			relationship.regionFor.ruleCallTo(OPENRule).append[newLine],
 			relationship.regionFor.ruleCallTo(CLOSERule).prepend[newLine].append[newLines = 2]
 		)[indent]
-		
+
 		relationship.regionFor.keyword('implementationTechnology').prepend[newLine]
 		relationship.regionFor.keyword('exposedAggregates').prepend[newLine]
 		relationship.regionFor.keyword('downstreamRights').prepend[newLine]
-		
+
 		relationship.regionFor.keyword('U').surround[noSpace]
 		relationship.regionFor.keyword('D').surround[noSpace]
 		relationship.regionFor.keyword('OHS').surround[noSpace]
 		relationship.regionFor.keyword('PL').surround[noSpace]
 		relationship.regionFor.keyword('ACL').surround[noSpace]
 		relationship.regionFor.keyword('CF').surround[noSpace]
-		relationship.regionFor.keywords('SK').forEach[
+		relationship.regionFor.keywords('SK').forEach [
 			surround[noSpace]
 		]
-		relationship.regionFor.keywords('P').forEach[
+		relationship.regionFor.keywords('P').forEach [
 			surround[noSpace]
 		]
-		relationship.regionFor.keywords(',').forEach[
+		relationship.regionFor.keywords(',').forEach [
 			prepend[noSpace]
 			append[oneSpace]
 		]
 
 		relationship.prepend[newLines = 2]
 	}
-	
+
 	def dispatch void format(Aggregate aggregate, extension IFormattableDocument document) {
 		interior(
 			aggregate.regionFor.ruleCallTo(OPENRule).append[newLine],
 			aggregate.regionFor.ruleCallTo(CLOSERule).prepend[newLine].append[newLine]
 		)[indent]
-		
+
 		aggregate.prepend[newLines = 1]
 		aggregate.regionFor.keyword('Aggregate').prepend[newLine]
-		
+
 		aggregate.regionFor.keyword('responsibilities').prepend[newLine]
 		aggregate.regionFor.keyword('owner').prepend[newLine]
 		aggregate.regionFor.keyword('useCases').prepend[newLine]
@@ -191,13 +209,13 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 			service.format
 		}
 	}
-	
+
 	def dispatch void format(SculptorModule module, extension IFormattableDocument document) {
 		interior(
 			module.regionFor.ruleCallTo(OPENRule).append[newLine],
 			module.regionFor.ruleCallTo(CLOSERule).prepend[newLine].append[newLine]
 		)[indent]
-		for(aggregate : module.aggregates) {
+		for (aggregate : module.aggregates) {
 			aggregate.format
 		}
 	}

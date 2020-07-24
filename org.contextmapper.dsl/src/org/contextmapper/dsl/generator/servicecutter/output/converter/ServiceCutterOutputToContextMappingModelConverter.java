@@ -16,8 +16,10 @@
 package org.contextmapper.dsl.generator.servicecutter.output.converter;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -56,6 +58,8 @@ public class ServiceCutterOutputToContextMappingModelConverter {
 	private TacticdslFactory tacticDDDFactory = TacticdslFactory.eINSTANCE;
 	private Map<String, BoundedContext> boundedContextMap;
 	private Map<String, String> attributeTypes;
+	private Set<String> referenceNames;
+	private Map<String, DomainObject> references2Reconstruct;
 	private ContextMappingModel originalModelState;
 	private ContextMappingModel model;
 
@@ -64,6 +68,8 @@ public class ServiceCutterOutputToContextMappingModelConverter {
 	public ServiceCutterOutputToContextMappingModelConverter() {
 		this.boundedContextMap = new HashMap<>();
 		this.attributeTypes = new HashMap<>();
+		this.referenceNames = new HashSet<>();
+		this.references2Reconstruct = new HashMap<>();
 
 		this.resolvingHelper = new CMLModelObjectsResolvingHelper();
 	}
@@ -115,6 +121,12 @@ public class ServiceCutterOutputToContextMappingModelConverter {
 			String entityName = nanoEntity.split("\\.")[0];
 			String nanoEntityName = nanoEntity.split("\\.")[1];
 			Entity entity = createOrGetEntity(entities, entityName);
+
+			// don't create attribute in case this was a reference originally
+			if (referenceNames.contains(nanoEntity)) {
+				references2Reconstruct.put(nanoEntity, entity);
+				continue;
+			}
 
 			Attribute attribute = tacticDDDFactory.createAttribute();
 			if (attributeTypes.containsKey(nanoEntity))
@@ -171,6 +183,9 @@ public class ServiceCutterOutputToContextMappingModelConverter {
 			domainObject.getAttributes().stream().forEach(a -> {
 				this.attributeTypes.put(domainObject.getName() + "." + a.getName(), a.getType());
 			});
+			domainObject.getReferences().stream().forEach(r -> {
+				this.referenceNames.add(domainObject.getName() + "." + r.getName());
+			});
 		}
 	}
 
@@ -193,13 +208,13 @@ public class ServiceCutterOutputToContextMappingModelConverter {
 			return;
 
 		List<Reference> originalReferences = EcoreUtil2.eAllOfType(originalModelState, Reference.class);
-		for (Reference originalReference : originalReferences) {
-			DomainObject sourceObject = (DomainObject) originalReference.eContainer();
-			Set<DomainObject> matchingObjectsInNewModel = findDomainObjectByName(sourceObject.getName());
-			if (matchingObjectsInNewModel.size() != 1)
+
+		for (String referenceNanoEntity : references2Reconstruct.keySet()) {
+			Optional<Reference> originalReference = originalReferences.stream().filter(r -> (((DomainObject) r.eContainer()).getName() + "." + r.getName()).equals(referenceNanoEntity)).findFirst();
+			if (originalReference.isEmpty())
 				continue;
 
-			reconstructReference(matchingObjectsInNewModel.iterator().next(), originalReference, originalReference.getDomainObjectType().getName());
+			reconstructReference(references2Reconstruct.get(referenceNanoEntity), originalReference.get(), originalReference.get().getDomainObjectType().getName());
 		}
 	}
 
@@ -208,8 +223,7 @@ public class ServiceCutterOutputToContextMappingModelConverter {
 		if (parentBC == null)
 			return; // in case this source object is not part of a Bounded Context
 
-		List<DomainObject> targetDomainObjects = EcoreUtil2.eAllOfType(model, DomainObject.class).stream().filter(obj -> obj.getName().equals(targetTypeName))
-				.collect(Collectors.toList());
+		List<DomainObject> targetDomainObjects = EcoreUtil2.eAllOfType(model, DomainObject.class).stream().filter(obj -> obj.getName().equals(targetTypeName)).collect(Collectors.toList());
 		if (targetDomainObjects.size() == 1) {
 			Reference reference = TacticdslFactory.eINSTANCE.createReference();
 			reference.setName(originalReference.getName());
@@ -218,14 +232,9 @@ public class ServiceCutterOutputToContextMappingModelConverter {
 			reference.setDoc(originalReference.getDoc());
 			sourceObject.getReferences().add(reference);
 		} else {
-			sourceObject.setComment("/* Service Cut generator: it was not possible to reconstruct the reference '" + originalReference.getName() + "' from "
-					+ sourceObject.getName() + " to " + targetTypeName + ". Please re-create that reference manually. */");
+			sourceObject.setComment("/* Service Cut generator: it was not possible to reconstruct the reference '" + originalReference.getName() + "' from " + sourceObject.getName() + " to "
+					+ targetTypeName + ". Please re-create that reference manually. */");
 		}
-	}
-
-	private Set<DomainObject> findDomainObjectByName(String domainObjectName) {
-		List<DomainObject> domainObjects = EcoreUtil2.eAllOfType(model, DomainObject.class);
-		return domainObjects.stream().filter(obj -> obj.getName().equals(domainObjectName)).collect(Collectors.toSet());
 	}
 
 }
