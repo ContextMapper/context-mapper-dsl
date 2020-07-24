@@ -11,3 +11,5 @@ BoundedContext TestContext {
     }
 
 }
+
+BoundedContext TestTeam { type TEAM } // ensure that teams are ignored

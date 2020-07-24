@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
+import org.contextmapper.dsl.contextMappingDSL.BoundedContextType;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.UserRequirement;
 import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.PredefinedService;
@@ -119,6 +120,9 @@ public class UserRepresentationsBuilder {
 	private void buildPredefinedServices() {
 		model.getPredefinedServices().clear();
 		for (BoundedContext bc : contextMappingModel.getBoundedContexts()) {
+			if (bc.getType().equals(BoundedContextType.TEAM))
+				continue;
+
 			PredefinedService predefinedService = factory.createPredefinedService();
 			predefinedService.setName(bc.getName());
 			predefinedService.getNanoentities().addAll(getAllNanoentities(bc));
