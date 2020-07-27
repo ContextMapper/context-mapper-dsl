@@ -71,17 +71,15 @@ public class UserRepresentationsExampleFactory {
 		if (allModelAttributes.size() <= 0) {
 			UseCase dummyUseCase = factory.createUseCase();
 			dummyUseCase.setName("NoDataFound");
-			dummyUseCase.setDoc(
-					"/* Your context map should at least contain one bounded context with aggregates, entities and some attributes. \n"
-							+ " * Otherwise it is not possible to generate user representation examples. */");
+			dummyUseCase.setDoc("/* Your context map should at least contain one bounded context with aggregates, entities and some attributes. \n"
+					+ " * Otherwise it is not possible to generate user representation examples. */");
 			model.getUseCases().add(dummyUseCase);
 			return model;
 		}
 
 		List<UseCase> useCases = createSampleUseCases();
 		if (useCases.size() > 0)
-			useCases.get(0).setDoc(
-					"/* The following usecases are just examples to give you a hint how to specify them! You may want to change or remove them. */");
+			useCases.get(0).setDoc("/* The following usecases are just examples to give you a hint how to specify them! You may want to change or remove them. */");
 		model.getUseCases().addAll(useCases);
 		model.setCompatibilities(createSampleCompatibilities());
 		model.getAggregates().addAll(createSampleAggregates());
@@ -136,18 +134,15 @@ public class UserRepresentationsExampleFactory {
 
 	private Compatibilities createSampleCompatibilities() {
 		Compatibilities compatibilities = factory.createCompatibilities();
-		compatibilities.setDoc("/* Compatibilities can be used to import all coupling criteria of type Compatability.\n"
-				+ " * https://github.com/ServiceCutter/ServiceCutter/wiki/Compatibilities\n"
-				+ " * The following compatibilities are just examples to provide you a template! You have to specify or remove them. "
-				+ " */");
+		compatibilities.setDoc("/* Compatibilities can be used to import all coupling criteria of type Compatability.\n" + " * https://github.com/ServiceCutter/ServiceCutter/wiki/Compatibilities\n"
+				+ " * The following compatibilities are just examples to provide you a template! You have to specify or remove them. " + " */");
 
 		// difficult to create examples, if there are no attributes in the model
 		if (allModelAttributes.size() <= 0)
 			return compatibilities;
 
 		ContentVolatility exampleContentVolatility = factory.createContentVolatility();
-		exampleContentVolatility
-				.setDoc("/* See: https://github.com/ServiceCutter/ServiceCutter/wiki/CC-8-Content-Volatility */");
+		exampleContentVolatility.setDoc("/* See: https://github.com/ServiceCutter/ServiceCutter/wiki/CC-8-Content-Volatility */");
 		exampleContentVolatility.setCharacteristic("Often");
 		exampleContentVolatility.setCharacteristicDoc("// Allowed characteristics: Often, Regularly, Rarely");
 		exampleContentVolatility.getNanoentities().add(randomlyPickAttribute(allModelAttributes));
@@ -155,8 +150,7 @@ public class UserRepresentationsExampleFactory {
 		compatibilities.getContentVolatility().add(exampleContentVolatility);
 
 		StructuralVolatility exampleStructuralVolatility = factory.createStructuralVolatility();
-		exampleStructuralVolatility
-				.setDoc("/* See: https://github.com/ServiceCutter/ServiceCutter/wiki/CC-4-Structural-Volatility */");
+		exampleStructuralVolatility.setDoc("/* See: https://github.com/ServiceCutter/ServiceCutter/wiki/CC-4-Structural-Volatility */");
 		exampleStructuralVolatility.setCharacteristic("Normal");
 		exampleStructuralVolatility.setCharacteristicDoc("// Allowed characteristics: Often, Normal, Rarely");
 		exampleStructuralVolatility.getNanoentities().add(randomlyPickAttribute(allModelAttributes));
@@ -164,8 +158,7 @@ public class UserRepresentationsExampleFactory {
 		compatibilities.getStructuralVolatility().add(exampleStructuralVolatility);
 
 		AvailabilityCriticality exampleAvailabilityCriticality = factory.createAvailabilityCriticality();
-		exampleAvailabilityCriticality
-				.setDoc("/* See: https://github.com/ServiceCutter/ServiceCutter/wiki/CC-7-Availability-Criticality */");
+		exampleAvailabilityCriticality.setDoc("/* See: https://github.com/ServiceCutter/ServiceCutter/wiki/CC-7-Availability-Criticality */");
 		exampleAvailabilityCriticality.setCharacteristic("Normal");
 		exampleAvailabilityCriticality.setCharacteristicDoc("// Allowed characteristics: Critical, Normal, Low");
 		exampleAvailabilityCriticality.getNanoentities().add(randomlyPickAttribute(allModelAttributes));
@@ -173,8 +166,7 @@ public class UserRepresentationsExampleFactory {
 		compatibilities.getAvailabilityCriticality().add(exampleAvailabilityCriticality);
 
 		ConsistencyCriticality exampleConsistencyCriticality = factory.createConsistencyCriticality();
-		exampleConsistencyCriticality
-				.setDoc("/* See: https://github.com/ServiceCutter/ServiceCutter/wiki/CC-6-Consistency-Criticality */");
+		exampleConsistencyCriticality.setDoc("/* See: https://github.com/ServiceCutter/ServiceCutter/wiki/CC-6-Consistency-Criticality */");
 		exampleConsistencyCriticality.setCharacteristic("Eventually");
 		exampleConsistencyCriticality.setCharacteristicDoc("// Allowed characteristics: High, Eventually, Weak");
 		exampleConsistencyCriticality.getNanoentities().add(randomlyPickAttribute(allModelAttributes));
@@ -182,8 +174,7 @@ public class UserRepresentationsExampleFactory {
 		compatibilities.getConsistencyCriticality().add(exampleConsistencyCriticality);
 
 		StorageSimilarity exampleStorageSimilarity = factory.createStorageSimilarity();
-		exampleStorageSimilarity
-				.setDoc("/* See: https://github.com/ServiceCutter/ServiceCutter/wiki/CC-11-Storage-Similarity */");
+		exampleStorageSimilarity.setDoc("/* See: https://github.com/ServiceCutter/ServiceCutter/wiki/CC-11-Storage-Similarity */");
 		exampleStorageSimilarity.setCharacteristic("Normal");
 		exampleStorageSimilarity.setCharacteristicDoc("// Allowed characteristics: Tiny, Normal, Huge");
 		exampleStorageSimilarity.getNanoentities().add(randomlyPickAttribute(allModelAttributes));
@@ -191,8 +182,7 @@ public class UserRepresentationsExampleFactory {
 		compatibilities.getStorageSimilarity().add(exampleStorageSimilarity);
 
 		SecurityCriticality exampleSecurityCriticality = factory.createSecurityCriticality();
-		exampleSecurityCriticality
-				.setDoc("/* See: https://github.com/ServiceCutter/ServiceCutter/wiki/CC-15-Security-Criticality */");
+		exampleSecurityCriticality.setDoc("/* See: https://github.com/ServiceCutter/ServiceCutter/wiki/CC-15-Security-Criticality */");
 		exampleSecurityCriticality.setCharacteristic("Internal");
 		exampleSecurityCriticality.setCharacteristicDoc("// Allowed characteristics: Critical, Internal, Public");
 		exampleSecurityCriticality.getNanoentities().add(randomlyPickAttribute(allModelAttributes));
@@ -210,15 +200,14 @@ public class UserRepresentationsExampleFactory {
 				List<Attribute> aggregateAttributes = collectAttributes(aggregate);
 				Aggregate scAggregate = factory.createAggregate();
 				scAggregate.setName(aggregate.getName());
-				scAggregate
-						.setDoc("/* This aggregate was generated by your CML model. You do not have to change it. */");
+				scAggregate.setDoc("/* This aggregate was generated by your CML model. You do not have to change it. */");
 				scAggregate.getNanoentities().addAll(convertAttributesToNanoEntites(aggregateAttributes));
 				aggregates.add(scAggregate);
 			}
 		} else if (allModelAttributes.size() > 0) {
 			Aggregate sampleAggregate = factory.createAggregate();
-			sampleAggregate.setDoc("/* This is just a sample aggregate (template). \n"
-					+ "* Note that if your CML model had Aggregates within the Bounded Contexts, they would have been generated at this place! */");
+			sampleAggregate.setDoc(
+					"/* This is just a sample aggregate (template). \n" + "* Note that if your CML model had Aggregates within the Bounded Contexts, they would have been generated at this place! */");
 			sampleAggregate.setName("SampleAggregate");
 			sampleAggregate.getNanoentities().add(randomlyPickAttribute(allModelAttributes));
 			sampleAggregate.getNanoentities().add(randomlyPickAttribute(allModelAttributes));
@@ -235,12 +224,11 @@ public class UserRepresentationsExampleFactory {
 
 	private List<PredefinedService> createSamplePredefinedServices() {
 		List<PredefinedService> predefinedServices = Lists.newArrayList();
-		for (BoundedContext boundedContext : this.contextMappingModel.getMap().getBoundedContexts()) {
+		for (BoundedContext boundedContext : this.contextMappingModel.getBoundedContexts()) {
 			List<Attribute> attributes = collectAttributes(boundedContext);
 			PredefinedService predefinedService = factory.createPredefinedService();
 			predefinedService.setName(boundedContext.getName());
-			predefinedService.setDoc("/* This predefined service is based on your '" + boundedContext.getName()
-					+ "' BoundedContext. You do not have to change it. */");
+			predefinedService.setDoc("/* This predefined service is based on your '" + boundedContext.getName() + "' BoundedContext. You do not have to change it. */");
 			predefinedService.getNanoentities().addAll(convertAttributesToNanoEntites(attributes));
 			predefinedServices.add(predefinedService);
 		}
@@ -280,8 +268,8 @@ public class UserRepresentationsExampleFactory {
 		if (allModelAttributes.size() > 0) {
 			SharedOwnerGroup exampleSharedOwnerGroup = factory.createSharedOwnerGroup();
 			exampleSharedOwnerGroup.setName("SharedOwnerGroupTemplate");
-			exampleSharedOwnerGroup.setDoc("/* Shared Owner Groups cannot be derived from ContextMap. \n "
-					+ "* This is a template/example how you can define them. If you do not want to specify any, remove this block. */");
+			exampleSharedOwnerGroup.setDoc(
+					"/* Shared Owner Groups cannot be derived from ContextMap. \n " + "* This is a template/example how you can define them. If you do not want to specify any, remove this block. */");
 			exampleSharedOwnerGroup.getNanoentities().add(randomlyPickAttribute(allModelAttributes));
 			exampleSharedOwnerGroup.getNanoentities().add(randomlyPickAttribute(allModelAttributes));
 			sharedOwnerGroups.add(exampleSharedOwnerGroup);
@@ -290,8 +278,7 @@ public class UserRepresentationsExampleFactory {
 	}
 
 	private List<org.contextmapper.dsl.contextMappingDSL.Aggregate> collectAggregates() {
-		return EcoreUtil2.getAllContentsOfType(contextMappingModel,
-				org.contextmapper.dsl.contextMappingDSL.Aggregate.class);
+		return EcoreUtil2.getAllContentsOfType(contextMappingModel, org.contextmapper.dsl.contextMappingDSL.Aggregate.class);
 	}
 
 	private List<DomainObject> collectDomainObjects() {
@@ -304,16 +291,12 @@ public class UserRepresentationsExampleFactory {
 
 	private List<Attribute> collectAttributes(ContextMappingModel rootModel) {
 		List<Attribute> attributes = Lists.newArrayList();
-		
-		if(rootModel.getMap() == null)
-			return attributes;
-		
-		for(BoundedContext bc : rootModel.getMap().getBoundedContexts()) {
+		for (BoundedContext bc : rootModel.getBoundedContexts()) {
 			attributes.addAll(EcoreUtil2.getAllContentsOfType(bc, Attribute.class));
 		}
 		return attributes;
 	}
-	
+
 	private List<Attribute> collectAttributes(EObject root) {
 		return EcoreUtil2.getAllContentsOfType(root, Attribute.class);
 	}
