@@ -15,16 +15,23 @@
  */
 package org.contextmapper.servicecutter.dsl.ui.editor;
 
+import java.util.Arrays;
+import java.util.Set;
+
 import org.contextmapper.servicecutter.dsl.ui.actions.GeneratorsActionGroup;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.ui.actions.ActionContext;
 import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.xtext.ui.editor.XtextEditor;
 
+import com.google.common.collect.Sets;
+
 public class SCLEditor extends XtextEditor {
 
 	private ActionGroup generatorsGroup;
 
+	private static final String SCL_EDITOR_KEYBINDING_SCOPE = "org.contextmapper.ui.scl.editor.SCLEditorScope";
+	
 	@Override
 	protected void createActions() {
 		super.createActions();
@@ -40,6 +47,16 @@ public class SCLEditor extends XtextEditor {
 		generatorsGroup.setContext(context);
 		generatorsGroup.fillContextMenu(menu);
 		generatorsGroup.setContext(null);
+	}
+	
+	@Override
+	protected void setKeyBindingScopes(String[] scopes) {
+		Set<String> scopesSet = Sets.newHashSet();
+		if (scopes != null)
+			scopesSet.addAll(Arrays.asList(scopes));
+		if (!scopesSet.contains(SCL_EDITOR_KEYBINDING_SCOPE))
+			scopesSet.add(SCL_EDITOR_KEYBINDING_SCOPE);
+		super.setKeyBindingScopes(scopesSet.toArray(new String[scopesSet.size()]));
 	}
 
 }

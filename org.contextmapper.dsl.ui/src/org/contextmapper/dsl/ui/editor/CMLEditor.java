@@ -15,6 +15,9 @@
  */
 package org.contextmapper.dsl.ui.editor;
 
+import java.util.Arrays;
+import java.util.Set;
+
 import org.contextmapper.dsl.ui.actions.GeneratorsActionGroup;
 import org.contextmapper.dsl.ui.actions.RefactoringActionGroup;
 import org.eclipse.jface.action.IMenuManager;
@@ -22,10 +25,14 @@ import org.eclipse.ui.actions.ActionContext;
 import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.xtext.ui.editor.XtextEditor;
 
+import com.google.common.collect.Sets;
+
 public class CMLEditor extends XtextEditor {
 
 	private ActionGroup refactoringGroup;
 	private ActionGroup generatorsGroup;
+
+	private static final String CML_EDITOR_KEYBINDING_SCOPE = "org.contextmapper.ui.cml.editor.CMLEditorScope";
 
 	@Override
 	protected void createActions() {
@@ -43,10 +50,20 @@ public class CMLEditor extends XtextEditor {
 		refactoringGroup.setContext(context);
 		refactoringGroup.fillContextMenu(menu);
 		refactoringGroup.setContext(null);
-		
+
 		generatorsGroup.setContext(context);
 		generatorsGroup.fillContextMenu(menu);
 		generatorsGroup.setContext(null);
+	}
+
+	@Override
+	protected void setKeyBindingScopes(String[] scopes) {
+		Set<String> scopesSet = Sets.newHashSet();
+		if (scopes != null)
+			scopesSet.addAll(Arrays.asList(scopes));
+		if (!scopesSet.contains(CML_EDITOR_KEYBINDING_SCOPE))
+			scopesSet.add(CML_EDITOR_KEYBINDING_SCOPE);
+		super.setKeyBindingScopes(scopesSet.toArray(new String[scopesSet.size()]));
 	}
 
 }

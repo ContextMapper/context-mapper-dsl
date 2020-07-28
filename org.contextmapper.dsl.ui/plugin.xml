@@ -949,40 +949,54 @@
             	description="A project containing Freemarker example templates for Context Mapper's generic generator."/>
     	</example>
     </extension>
+	<extension point="org.eclipse.ui.contexts">
+		<context
+			description="CML Editor Context"
+			id="org.contextmapper.ui.cml.editor.CMLEditorScope"
+			name="CML Editor Context"
+			parentId="org.eclipse.xtext.ui.XtextEditorScope">
+		</context>
+		<context
+			description="SCL Editor Context"
+			id="org.contextmapper.ui.scl.editor.SCLEditorScope"
+			name="SCL Editor Context"
+			parentId="org.eclipse.xtext.ui.XtextEditorScope">
+		</context>
+	</extension>
 	<extension
          point="org.eclipse.ui.bindings">
          <key
             sequence="M2+M3+T"
             commandId="org.contextmapper.ui.edit.cml.refactor.quickMenu"
-            contextId="org.eclipse.xtext.ui.XtextEditorScope"
+            contextId="org.contextmapper.ui.cml.editor.CMLEditorScope"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
          <key
             platform="carbon"
             sequence="COMMAND+ALT+T"
             commandId="org.contextmapper.ui.edit.cml.refactor.quickMenu"
-            contextId="org.eclipse.xtext.ui.XtextEditorScope"
+            contextId="org.contextmapper.ui.cml.editor.CMLEditorScope"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
          <key
             sequence="M2+M3+G"
             commandId="org.contextmapper.ui.edit.cml.generator.quickMenu"
-            contextId="org.eclipse.xtext.ui.XtextEditorScope"
+            contextId="org.contextmapper.ui.cml.editor.CMLEditorScope"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
          <key
             platform="carbon"
             sequence="COMMAND+ALT+G"
             commandId="org.contextmapper.ui.edit.cml.generator.quickMenu"
-            contextId="org.eclipse.xtext.ui.XtextEditorScope"
+            contextId="org.contextmapper.ui.cml.editor.CMLEditorScope"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
          <key
             sequence="M2+M3+G"
             commandId="org.contextmapper.servicecutter.dsl.ui.edit.scl.generator.quickMenu"
-            contextId="org.eclipse.xtext.ui.XtextEditorScope"
+            contextId="org.contextmapper.ui.scl.editor.SCLEditorScope"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
          <key
             platform="carbon"
             sequence="COMMAND+ALT+G"
             commandId="org.contextmapper.servicecutter.dsl.ui.edit.scl.generator.quickMenu"
-            contextId="org.eclipse.xtext.ui.XtextEditorScope"
+            contextId="org.contextmapper.ui.scl.editor.SCLEditorScope"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
     </extension>
 </plugin>
