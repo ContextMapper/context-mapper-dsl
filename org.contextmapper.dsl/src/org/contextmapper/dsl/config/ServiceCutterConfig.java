@@ -25,7 +25,7 @@ public class ServiceCutterConfig {
 
 	private Map<String, Double> algorithmParams = new HashMap<>();
 	private Map<String, SolverPriority> priorities = new HashMap<>();
-	private SolverAlgorithm algorithm = SolverAlgorithm.LEUNG;
+	private SolverAlgorithm algorithm = SolverAlgorithm.MARKOV_CLUSTERING;
 
 	public Map<String, Double> getAlgorithmParams() {
 		return algorithmParams;
