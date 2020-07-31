@@ -58,7 +58,7 @@ public class ServiceCutterConfigHandlerTest extends AbstractDirectoryIntegration
 		SolverConfiguration config = handler.getServiceCutterSolverConfiguration();
 
 		// then
-		assertEquals(SolverAlgorithm.LEUNG, config.getAlgorithm());
+		assertEquals(SolverAlgorithm.MARKOV_CLUSTERING, config.getAlgorithm());
 	}
 
 	@Test
