@@ -27,6 +27,7 @@ import org.contextmapper.dsl.ide.commands.impl.generation.ServiceCutterInputGene
 import org.contextmapper.dsl.ide.commands.impl.generation.ServiceCutterUserRepresentationExampleFileGenerationCommand;
 import org.contextmapper.dsl.ide.commands.impl.generation.ServiceCutterUserRepresentationsGenerationCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.DeriveBoundedContextFromSubdomainsCommand;
+import org.contextmapper.dsl.ide.commands.impl.refactoring.DeriveFrontendAndBackendFromFeatureBCCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.DeriveSubdomainFromUserRequirementsCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.SplitAggregateByEntitiesRefactoringCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.SplitBoundedContextByFeaturesRefactoringCommand;
@@ -69,6 +70,7 @@ public class CMLCommandRegistry {
 		commandMap.put("cml.ar.splitAggregateByEntities", new SplitAggregateByEntitiesRefactoringCommand(editRecorder));
 		commandMap.put("cml.ar.deriveSubdomainFromURs", new DeriveSubdomainFromUserRequirementsCommand(editRecorder));
 		commandMap.put("cml.ar.deriveBoundedContextFromSDs", new DeriveBoundedContextFromSubdomainsCommand(editRecorder));
+		commandMap.put("cml.ar.deriveFrontendBackendSystemsFromFeatureBC", new DeriveFrontendAndBackendFromFeatureBCCommand(editRecorder));
 	}
 
 	public CMLResourceCommand getCommand(String commandId) {
