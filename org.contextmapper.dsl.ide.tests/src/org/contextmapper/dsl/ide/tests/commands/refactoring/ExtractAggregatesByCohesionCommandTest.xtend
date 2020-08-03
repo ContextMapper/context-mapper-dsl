@@ -22,7 +22,7 @@ import org.contextmapper.dsl.ide.tests.commands.AbstractCMLCommandTest
 import org.eclipse.lsp4j.ExecuteCommandParams
 import org.junit.jupiter.api.Test
 
-class ExtractAggregatesByVolatilityCommandTest extends AbstractCMLCommandTest {
+class ExtractAggregatesByCohesionCommandTest extends AbstractCMLCommandTest {
 
 	@Test
 	def void testARCommandExecution() {
@@ -30,12 +30,8 @@ class ExtractAggregatesByVolatilityCommandTest extends AbstractCMLCommandTest {
 		initializeCommandsDynamically()
 		val model = '''
 			BoundedContext TestContext {
-				Aggregate TestAggregate1 {
-					likelihoodForChange OFTEN
-				}
-				Aggregate TestAggregate2 {
-					likelihoodForChange NORMAL
-				}
+				Aggregate TestAggregate1
+				Aggregate TestAggregate2
 			}
 		'''
 		val fileURI = 'test.cml'.writeFile(model)
@@ -43,9 +39,15 @@ class ExtractAggregatesByVolatilityCommandTest extends AbstractCMLCommandTest {
 		// when
 		val refactoringParams = new JsonArray
 		refactoringParams.add("TestContext")
-		refactoringParams.add("OFTEN")
+		refactoringParams.add("TestContextNewName")
+
+		val aggregateNames = new JsonArray
+		aggregateNames.add("TestAggregate1")
+		aggregateNames.add("TestAggregate2")
+
+		refactoringParams.add(aggregateNames)
 		val result = languageServer.executeCommand(
-			new ExecuteCommandParams("cml.ar.extractAggregatesByVolatility",
+			new ExecuteCommandParams("cml.ar.extractAggregatesByCohesion",
 				#[new JsonPrimitive(fileURI), refactoringParams]))
 		val resultVal = result.get as String
 

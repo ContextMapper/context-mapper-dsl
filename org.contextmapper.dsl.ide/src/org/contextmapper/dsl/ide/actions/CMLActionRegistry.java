@@ -26,6 +26,7 @@ import org.contextmapper.dsl.exception.ContextMapperApplicationException;
 import org.contextmapper.dsl.ide.actions.impl.DeriveBoundedContextFromSubdomainsAction;
 import org.contextmapper.dsl.ide.actions.impl.DeriveFrontendAndBackendFromFeatureBCAction;
 import org.contextmapper.dsl.ide.actions.impl.DeriveSubdomainFromUserRequirementsAction;
+import org.contextmapper.dsl.ide.actions.impl.ExtractAggregatesByCohesionAction;
 import org.contextmapper.dsl.ide.actions.impl.ExtractAggregatesByVolatilityAction;
 import org.contextmapper.dsl.ide.actions.impl.SplitAggregateByEntitiesAction;
 import org.contextmapper.dsl.ide.actions.impl.SplitBoundedContextByFeaturesAction;
@@ -70,8 +71,8 @@ public class CMLActionRegistry {
 		this.registerAllQuickFixes();
 	}
 
-	private Set<CMLCodeAction> getAllActions(CMLResourceContainer resource, List<EObject> selectedObjects) {
-		Set<CMLCodeAction> codeActions = Sets.newHashSet();
+	private List<CMLCodeAction> getAllActions(CMLResourceContainer resource, List<EObject> selectedObjects) {
+		List<CMLCodeAction> codeActions = Lists.newLinkedList();
 
 		// add new AR here:
 		codeActions.add(new SplitBoundedContextByOwnerAction(resource, selectedObjects));
@@ -82,8 +83,9 @@ public class CMLActionRegistry {
 		codeActions.add(new DeriveFrontendAndBackendFromFeatureBCAction(resource, selectedObjects));
 		codeActions.add(new SplitSystemIntoSubsystemsAction(resource, selectedObjects));
 		codeActions.add(new ExtractAggregatesByVolatilityAction(resource, selectedObjects));
+		codeActions.add(new ExtractAggregatesByCohesionAction(resource, selectedObjects));
 
-		return Sets.newHashSet(codeActions);
+		return Lists.newLinkedList(codeActions);
 	}
 
 	private void registerAllQuickFixes() {

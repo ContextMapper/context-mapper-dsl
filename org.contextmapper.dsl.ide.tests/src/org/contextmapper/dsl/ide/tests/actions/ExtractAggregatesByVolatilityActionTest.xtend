@@ -38,6 +38,10 @@ class ExtractAggregatesByVolatilityActionTest extends AbstractBoundedContextCode
 				title : Extract Aggregates By Volatility
 				args : 
 				    file://«this.root»/MyModel.cml,TestContext
+				command : cml.ar.extractAggregatesByCohesion.proxy
+				title : Extract Aggregates By Cohesion
+				args : 
+				    file://«this.root»/MyModel.cml,TestContext
 			'''
 		]
 	}

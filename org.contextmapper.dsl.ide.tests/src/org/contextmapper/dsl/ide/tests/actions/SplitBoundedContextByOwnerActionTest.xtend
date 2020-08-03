@@ -40,6 +40,10 @@ class SplitBoundedContextByOwnerActionTest extends AbstractBoundedContextCodeAct
 				title : Split Bounded Context by Owner
 				args : 
 				    file://«this.root»/MyModel.cml,TestContext
+				command : cml.ar.extractAggregatesByCohesion.proxy
+				title : Extract Aggregates By Cohesion
+				args : 
+					file://«this.root»/MyModel.cml,TestContext
 			'''
 		]
 	}
@@ -60,6 +64,10 @@ class SplitBoundedContextByOwnerActionTest extends AbstractBoundedContextCodeAct
 				BoundedContext Team1 { type TEAM }
 			'''
 			expectedCodeActions = '''
+				command : cml.ar.extractAggregatesByCohesion.proxy
+				title : Extract Aggregates By Cohesion
+				args : 
+				    file://«this.root»/MyModel.cml,TestContext
 			'''
 		]
 	}

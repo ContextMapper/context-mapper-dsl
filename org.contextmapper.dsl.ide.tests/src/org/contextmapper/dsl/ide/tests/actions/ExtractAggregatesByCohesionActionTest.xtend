@@ -17,52 +17,18 @@ package org.contextmapper.dsl.ide.tests.actions
 
 import org.junit.jupiter.api.Test
 
-class SplitBoundedContextByFeaturesActionTest extends AbstractBoundedContextCodeActionTest {
+class ExtractAggregatesByCohesionActionTest extends AbstractBoundedContextCodeActionTest {
 
 	@Test
-	def void canCreateCodeAction4SplitByFeature() {
+	def void canOfferAction4BoundedContext() {
 		testCodeAction [
 			model = '''
 				BoundedContext TestContext {
-					Aggregate TestAggregate1 {
-						userRequirements Story1
-					}
-					Aggregate TestAggregate2 {
-						userRequirements Story2
-					}
+					Aggregate TestAggregate1
+					Aggregate TestAggregate2
 				}
-				
-				UserStory Story1
-				UserStory Story2
 			'''
-			expectedCodeActions = '''
-				command : cml.ar.splitBCByFeature
-				title : Split Bounded Context by Features
-				args : 
-				    file://«this.root»/MyModel.cml,TestContext
-				command : cml.ar.extractAggregatesByCohesion.proxy
-				title : Extract Aggregates By Cohesion
-				args : 
-				    file://«this.root»/MyModel.cml,TestContext
-			'''
-		]
-	}
-
-	@Test
-	def void canIgnoreContextIfOnlyOneFeatureInvolved() {
-		testCodeAction [
-			model = '''
-				BoundedContext TestContext {
-					Aggregate TestAggregate1 {
-						userRequirements Story1
-					}
-					Aggregate TestAggregate2 {
-						userRequirements Story1
-					}
-				}
-				
-				UserStory Story1
-			'''
+			line = 0
 			expectedCodeActions = '''
 				command : cml.ar.extractAggregatesByCohesion.proxy
 				title : Extract Aggregates By Cohesion
@@ -71,5 +37,5 @@ class SplitBoundedContextByFeaturesActionTest extends AbstractBoundedContextCode
 			'''
 		]
 	}
-
+	
 }
