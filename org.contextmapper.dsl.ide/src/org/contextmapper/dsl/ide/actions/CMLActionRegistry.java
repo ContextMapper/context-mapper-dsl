@@ -24,10 +24,12 @@ import java.util.stream.Collectors;
 import org.contextmapper.dsl.cml.CMLResourceContainer;
 import org.contextmapper.dsl.exception.ContextMapperApplicationException;
 import org.contextmapper.dsl.ide.actions.impl.DeriveBoundedContextFromSubdomainsAction;
+import org.contextmapper.dsl.ide.actions.impl.DeriveFrontendAndBackendFromFeatureBCAction;
 import org.contextmapper.dsl.ide.actions.impl.DeriveSubdomainFromUserRequirementsAction;
 import org.contextmapper.dsl.ide.actions.impl.SplitAggregateByEntitiesAction;
 import org.contextmapper.dsl.ide.actions.impl.SplitBoundedContextByFeaturesAction;
 import org.contextmapper.dsl.ide.actions.impl.SplitBoundedContextByOwnerAction;
+import org.contextmapper.dsl.ide.actions.impl.SplitSystemIntoSubsystemsAction;
 import org.contextmapper.dsl.ide.edit.WorkspaceEditRecorder;
 import org.contextmapper.dsl.quickfixes.CMLQuickFix;
 import org.contextmapper.dsl.quickfixes.tactic.ExtractIDValueObjectQuickFix;
@@ -76,6 +78,8 @@ public class CMLActionRegistry {
 		codeActions.add(new SplitAggregateByEntitiesAction(resource, selectedObjects));
 		codeActions.add(new DeriveSubdomainFromUserRequirementsAction(resource, selectedObjects));
 		codeActions.add(new DeriveBoundedContextFromSubdomainsAction(resource, selectedObjects));
+		codeActions.add(new DeriveFrontendAndBackendFromFeatureBCAction(resource, selectedObjects));
+		codeActions.add(new SplitSystemIntoSubsystemsAction(resource, selectedObjects));
 
 		return Sets.newHashSet(codeActions);
 	}
