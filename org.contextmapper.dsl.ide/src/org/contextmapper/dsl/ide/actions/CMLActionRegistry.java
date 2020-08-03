@@ -29,6 +29,7 @@ import org.contextmapper.dsl.ide.actions.impl.DeriveSubdomainFromUserRequirement
 import org.contextmapper.dsl.ide.actions.impl.SplitAggregateByEntitiesAction;
 import org.contextmapper.dsl.ide.actions.impl.SplitBoundedContextByFeaturesAction;
 import org.contextmapper.dsl.ide.actions.impl.SplitBoundedContextByOwnerAction;
+import org.contextmapper.dsl.ide.actions.impl.SplitSystemIntoSubsystemsAction;
 import org.contextmapper.dsl.ide.edit.WorkspaceEditRecorder;
 import org.contextmapper.dsl.quickfixes.CMLQuickFix;
 import org.contextmapper.dsl.quickfixes.tactic.ExtractIDValueObjectQuickFix;
@@ -78,6 +79,7 @@ public class CMLActionRegistry {
 		codeActions.add(new DeriveSubdomainFromUserRequirementsAction(resource, selectedObjects));
 		codeActions.add(new DeriveBoundedContextFromSubdomainsAction(resource, selectedObjects));
 		codeActions.add(new DeriveFrontendAndBackendFromFeatureBCAction(resource, selectedObjects));
+		codeActions.add(new SplitSystemIntoSubsystemsAction(resource, selectedObjects));
 
 		return Sets.newHashSet(codeActions);
 	}

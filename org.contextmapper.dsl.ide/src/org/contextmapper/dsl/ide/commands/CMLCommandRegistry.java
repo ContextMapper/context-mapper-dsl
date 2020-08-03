@@ -32,6 +32,7 @@ import org.contextmapper.dsl.ide.commands.impl.refactoring.DeriveSubdomainFromUs
 import org.contextmapper.dsl.ide.commands.impl.refactoring.SplitAggregateByEntitiesRefactoringCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.SplitBoundedContextByFeaturesRefactoringCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.SplitBoundedContextByOwnerRefactoringCommand;
+import org.contextmapper.dsl.ide.commands.impl.refactoring.SplitSystemContextIntoSubsystemsCommand;
 import org.contextmapper.dsl.ide.edit.WorkspaceEditRecorder;
 
 import com.google.common.collect.Maps;
@@ -71,6 +72,7 @@ public class CMLCommandRegistry {
 		commandMap.put("cml.ar.deriveSubdomainFromURs", new DeriveSubdomainFromUserRequirementsCommand(editRecorder));
 		commandMap.put("cml.ar.deriveBoundedContextFromSDs", new DeriveBoundedContextFromSubdomainsCommand(editRecorder));
 		commandMap.put("cml.ar.deriveFrontendBackendSystemsFromFeatureBC", new DeriveFrontendAndBackendFromFeatureBCCommand(editRecorder));
+		commandMap.put("cml.ar.splitSystemContextIntoSubsystems", new SplitSystemContextIntoSubsystemsCommand(editRecorder));
 	}
 
 	public CMLResourceCommand getCommand(String commandId) {
