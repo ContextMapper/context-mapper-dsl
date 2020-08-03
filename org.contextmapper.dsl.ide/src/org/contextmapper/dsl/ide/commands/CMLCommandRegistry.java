@@ -29,6 +29,7 @@ import org.contextmapper.dsl.ide.commands.impl.generation.ServiceCutterUserRepre
 import org.contextmapper.dsl.ide.commands.impl.refactoring.DeriveBoundedContextFromSubdomainsCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.DeriveFrontendAndBackendFromFeatureBCCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.DeriveSubdomainFromUserRequirementsCommand;
+import org.contextmapper.dsl.ide.commands.impl.refactoring.ExtractAggregatesByVolatilityCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.SplitAggregateByEntitiesRefactoringCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.SplitBoundedContextByFeaturesRefactoringCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.SplitBoundedContextByOwnerRefactoringCommand;
@@ -73,6 +74,7 @@ public class CMLCommandRegistry {
 		commandMap.put("cml.ar.deriveBoundedContextFromSDs", new DeriveBoundedContextFromSubdomainsCommand(editRecorder));
 		commandMap.put("cml.ar.deriveFrontendBackendSystemsFromFeatureBC", new DeriveFrontendAndBackendFromFeatureBCCommand(editRecorder));
 		commandMap.put("cml.ar.splitSystemContextIntoSubsystems", new SplitSystemContextIntoSubsystemsCommand(editRecorder));
+		commandMap.put("cml.ar.extractAggregatesByVolatility", new ExtractAggregatesByVolatilityCommand(editRecorder));
 	}
 
 	public CMLResourceCommand getCommand(String commandId) {
