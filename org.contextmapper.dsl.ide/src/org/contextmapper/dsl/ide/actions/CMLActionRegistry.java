@@ -18,7 +18,6 @@ package org.contextmapper.dsl.ide.actions;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.cml.CMLResourceContainer;
@@ -28,6 +27,7 @@ import org.contextmapper.dsl.ide.actions.impl.DeriveFrontendAndBackendFromFeatur
 import org.contextmapper.dsl.ide.actions.impl.DeriveSubdomainFromUserRequirementsAction;
 import org.contextmapper.dsl.ide.actions.impl.ExtractAggregatesByCohesionAction;
 import org.contextmapper.dsl.ide.actions.impl.ExtractAggregatesByVolatilityAction;
+import org.contextmapper.dsl.ide.actions.impl.MergeAggregatesAction;
 import org.contextmapper.dsl.ide.actions.impl.SplitAggregateByEntitiesAction;
 import org.contextmapper.dsl.ide.actions.impl.SplitBoundedContextByFeaturesAction;
 import org.contextmapper.dsl.ide.actions.impl.SplitBoundedContextByOwnerAction;
@@ -47,7 +47,6 @@ import org.eclipse.xtext.ide.server.codeActions.ICodeActionService2;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 
 /**
@@ -84,6 +83,7 @@ public class CMLActionRegistry {
 		codeActions.add(new SplitSystemIntoSubsystemsAction(resource, selectedObjects));
 		codeActions.add(new ExtractAggregatesByVolatilityAction(resource, selectedObjects));
 		codeActions.add(new ExtractAggregatesByCohesionAction(resource, selectedObjects));
+		codeActions.add(new MergeAggregatesAction(resource, selectedObjects));
 
 		return Lists.newLinkedList(codeActions);
 	}

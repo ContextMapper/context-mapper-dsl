@@ -17,41 +17,23 @@ package org.contextmapper.dsl.ide.tests.actions
 
 import org.junit.jupiter.api.Test
 
-class SplitAggregateByEntitiesActionTest extends AbstractBoundedContextCodeActionTest {
+class MergeAggregatesActionTest extends AbstractBoundedContextCodeActionTest {
 
 	@Test
-	def void canCreateCodeAction4SplitByEntities() {
+	def void canOfferAction4Aggregate() {
 		testCodeAction [
 			model = '''
 				BoundedContext TestContext {
-					Aggregate TestAggregate {
-						Entity Entity1
-						Entity Entity2
-					}
+					Aggregate TestAggregate1
+					Aggregate TestAggregate2
 				}
 			'''
 			line = 1
 			expectedCodeActions = '''
-				command : cml.ar.splitAggregateByEntities
-				title : Split Aggregate By Entities
+				command : cml.ar.mergeAggregates.proxy
+				title : Merge Aggregates
 				args : 
-				    file://«this.root»/MyModel.cml,TestAggregate
-			'''
-		]
-	}
-
-	@Test
-	def void canIgnoreAggregateIfOnlyOneEntityInvolved() {
-		testCodeAction [
-			model = '''
-				BoundedContext TestContext {
-					Aggregate TestAggregate {
-						Entity Entity1
-					}
-				}
-			'''
-			line = 1
-			expectedCodeActions = '''
+				    file://«this.root»/MyModel.cml,TestAggregate1,TestAggregate2
 			'''
 		]
 	}
