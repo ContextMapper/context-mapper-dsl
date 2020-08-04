@@ -31,6 +31,7 @@ import org.contextmapper.dsl.ide.commands.impl.refactoring.DeriveFrontendAndBack
 import org.contextmapper.dsl.ide.commands.impl.refactoring.DeriveSubdomainFromUserRequirementsCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.ExtractAggregatesByCohesionCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.ExtractAggregatesByVolatilityCommand;
+import org.contextmapper.dsl.ide.commands.impl.refactoring.ExtractSharedKernelCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.MergeAggregatesCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.MergeBoundedContextsCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.SplitAggregateByEntitiesRefactoringCommand;
@@ -81,6 +82,7 @@ public class CMLCommandRegistry {
 		commandMap.put("cml.ar.extractAggregatesByCohesion", new ExtractAggregatesByCohesionCommand(editRecorder));
 		commandMap.put("cml.ar.mergeAggregates", new MergeAggregatesCommand(editRecorder));
 		commandMap.put("cml.ar.mergeBoundedContexts", new MergeBoundedContextsCommand(editRecorder));
+		commandMap.put("cml.ar.extractSharedKernel", new ExtractSharedKernelCommand(editRecorder));
 	}
 
 	public CMLResourceCommand getCommand(String commandId) {

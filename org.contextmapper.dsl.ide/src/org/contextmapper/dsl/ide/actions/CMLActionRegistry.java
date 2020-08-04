@@ -27,6 +27,7 @@ import org.contextmapper.dsl.ide.actions.impl.DeriveFrontendAndBackendFromFeatur
 import org.contextmapper.dsl.ide.actions.impl.DeriveSubdomainFromUserRequirementsAction;
 import org.contextmapper.dsl.ide.actions.impl.ExtractAggregatesByCohesionAction;
 import org.contextmapper.dsl.ide.actions.impl.ExtractAggregatesByVolatilityAction;
+import org.contextmapper.dsl.ide.actions.impl.ExtractSharedKernelAction;
 import org.contextmapper.dsl.ide.actions.impl.MergeAggregatesAction;
 import org.contextmapper.dsl.ide.actions.impl.MergeBoundedContextsAction;
 import org.contextmapper.dsl.ide.actions.impl.SplitAggregateByEntitiesAction;
@@ -86,6 +87,7 @@ public class CMLActionRegistry {
 		codeActions.add(new ExtractAggregatesByCohesionAction(resource, selectedObjects));
 		codeActions.add(new MergeAggregatesAction(resource, selectedObjects));
 		codeActions.add(new MergeBoundedContextsAction(resource, selectedObjects));
+		codeActions.add(new ExtractSharedKernelAction(resource, selectedObjects));
 
 		return Lists.newLinkedList(codeActions);
 	}
