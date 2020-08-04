@@ -32,6 +32,7 @@ import org.contextmapper.dsl.ide.commands.impl.refactoring.DeriveSubdomainFromUs
 import org.contextmapper.dsl.ide.commands.impl.refactoring.ExtractAggregatesByCohesionCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.ExtractAggregatesByVolatilityCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.MergeAggregatesCommand;
+import org.contextmapper.dsl.ide.commands.impl.refactoring.MergeBoundedContextsCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.SplitAggregateByEntitiesRefactoringCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.SplitBoundedContextByFeaturesRefactoringCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.SplitBoundedContextByOwnerRefactoringCommand;
@@ -79,6 +80,7 @@ public class CMLCommandRegistry {
 		commandMap.put("cml.ar.extractAggregatesByVolatility", new ExtractAggregatesByVolatilityCommand(editRecorder));
 		commandMap.put("cml.ar.extractAggregatesByCohesion", new ExtractAggregatesByCohesionCommand(editRecorder));
 		commandMap.put("cml.ar.mergeAggregates", new MergeAggregatesCommand(editRecorder));
+		commandMap.put("cml.ar.mergeBoundedContexts", new MergeBoundedContextsCommand(editRecorder));
 	}
 
 	public CMLResourceCommand getCommand(String commandId) {
