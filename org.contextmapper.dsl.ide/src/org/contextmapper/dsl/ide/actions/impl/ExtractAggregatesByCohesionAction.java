@@ -51,9 +51,11 @@ public class ExtractAggregatesByCohesionAction implements CMLCodeAction {
 
 	@Override
 	public Command getCommand() {
+		BoundedContext bc = getSelectedSystemBoundedContext();
 		List<Object> commandArguments = Lists.newLinkedList();
 		commandArguments.add(cmlResource.getResource().getURI().toString());
-		commandArguments.add(getSelectedSystemBoundedContext().getName());
+		commandArguments.add(bc.getName());
+		commandArguments.addAll(bc.getAggregates().stream().map(agg -> agg.getName()).collect(Collectors.toSet()));
 		return new Command("Extract Aggregates By Cohesion", "cml.ar.extractAggregatesByCohesion.proxy", commandArguments);
 	}
 

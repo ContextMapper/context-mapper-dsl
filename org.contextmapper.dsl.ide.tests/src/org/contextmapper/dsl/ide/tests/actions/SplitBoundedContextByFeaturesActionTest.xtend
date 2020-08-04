@@ -43,7 +43,7 @@ class SplitBoundedContextByFeaturesActionTest extends AbstractBoundedContextCode
 				command : cml.ar.extractAggregatesByCohesion.proxy
 				title : Extract Aggregates By Cohesion
 				args : 
-				    file://«this.root»/MyModel.cml,TestContext
+				    file://«this.root»/MyModel.cml,TestContext,TestAggregate1,TestAggregate2
 			'''
 		]
 	}
@@ -67,7 +67,7 @@ class SplitBoundedContextByFeaturesActionTest extends AbstractBoundedContextCode
 				command : cml.ar.extractAggregatesByCohesion.proxy
 				title : Extract Aggregates By Cohesion
 				args : 
-				    file://«this.root»/MyModel.cml,TestContext
+				    file://«this.root»/MyModel.cml,TestContext,TestAggregate1,TestAggregate2
 			'''
 		]
 	}
