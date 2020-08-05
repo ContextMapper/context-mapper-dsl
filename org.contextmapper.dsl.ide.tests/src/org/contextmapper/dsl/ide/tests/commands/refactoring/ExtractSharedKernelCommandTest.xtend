@@ -15,7 +15,6 @@
  */
 package org.contextmapper.dsl.ide.tests.commands.refactoring
 
-import com.google.gson.JsonArray
 import com.google.gson.JsonPrimitive
 import org.contextmapper.dsl.ide.commands.CMLCommandService
 import org.contextmapper.dsl.ide.tests.commands.AbstractCMLCommandTest
@@ -40,9 +39,6 @@ class ExtractSharedKernelCommandTest extends AbstractCMLCommandTest {
 		val fileURI = 'test.cml'.writeFile(model)
 
 		// when
-		val refactoringParams = new JsonArray
-		refactoringParams.add("TestContext1")
-		refactoringParams.add("TestContext2")
 		val result = languageServer.executeCommand(
 			new ExecuteCommandParams("cml.ar.extractSharedKernel",
 				#[new JsonPrimitive(fileURI), new JsonPrimitive("TestContext1"), new JsonPrimitive("TestContext2")]))

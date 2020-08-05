@@ -15,6 +15,8 @@
  */
 package org.contextmapper.dsl.ui.handler.wizard;
 
+import org.contextmapper.dsl.refactoring.SuspendPartnershipMode;
+
 public class SuspendPartnershipContext {
 
 	private String boundedContext1;
