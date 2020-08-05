@@ -39,6 +39,8 @@ import org.contextmapper.dsl.ide.commands.impl.refactoring.SplitBoundedContextBy
 import org.contextmapper.dsl.ide.commands.impl.refactoring.SplitBoundedContextByOwnerRefactoringCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.SplitSystemContextIntoSubsystemsCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.SuspendPartnershipCommand;
+import org.contextmapper.dsl.ide.commands.impl.refactoring.SwitchFromPartnershipToSharedKernelCommand;
+import org.contextmapper.dsl.ide.commands.impl.refactoring.SwitchFromSharedKernelToPartnershipCommand;
 import org.contextmapper.dsl.ide.edit.WorkspaceEditRecorder;
 
 import com.google.common.collect.Maps;
@@ -85,6 +87,8 @@ public class CMLCommandRegistry {
 		commandMap.put("cml.ar.mergeBoundedContexts", new MergeBoundedContextsCommand(editRecorder));
 		commandMap.put("cml.ar.extractSharedKernel", new ExtractSharedKernelCommand(editRecorder));
 		commandMap.put("cml.ar.suspendPartnership", new SuspendPartnershipCommand(editRecorder));
+		commandMap.put("cml.ar.switchPartnershipToSharedKernel", new SwitchFromPartnershipToSharedKernelCommand(editRecorder));
+		commandMap.put("cml.ar.switchSharedKernelToPartnership", new SwitchFromSharedKernelToPartnershipCommand(editRecorder));
 	}
 
 	public CMLResourceCommand getCommand(String commandId) {

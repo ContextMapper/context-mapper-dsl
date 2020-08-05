@@ -37,8 +37,12 @@ class ExtractSharedKernelActionTest extends AbstractBoundedContextCodeActionTest
 				title : Extract Shared Kernel
 				args : 
 				    file://«this.root»/MyModel.cml,TestContext1,TestContext2
+				command : cml.ar.switchSharedKernelToPartnership
+				title : Change to Partnership
+				args : 
+				    file://«this.root»/MyModel.cml,TestContext1,TestContext2
 			'''
 		]
 	}
-	
+
 }

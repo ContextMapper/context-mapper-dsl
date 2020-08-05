@@ -35,6 +35,8 @@ import org.contextmapper.dsl.ide.actions.impl.SplitBoundedContextByFeaturesActio
 import org.contextmapper.dsl.ide.actions.impl.SplitBoundedContextByOwnerAction;
 import org.contextmapper.dsl.ide.actions.impl.SplitSystemIntoSubsystemsAction;
 import org.contextmapper.dsl.ide.actions.impl.SuspendPartnershipAction;
+import org.contextmapper.dsl.ide.actions.impl.SwitchFromPartnershipToSharedKernelAction;
+import org.contextmapper.dsl.ide.actions.impl.SwitchFromSharedKernelToPartnershipAction;
 import org.contextmapper.dsl.ide.edit.WorkspaceEditRecorder;
 import org.contextmapper.dsl.quickfixes.CMLQuickFix;
 import org.contextmapper.dsl.quickfixes.tactic.ExtractIDValueObjectQuickFix;
@@ -90,6 +92,8 @@ public class CMLActionRegistry {
 		codeActions.add(new MergeBoundedContextsAction(resource, selectedObjects));
 		codeActions.add(new ExtractSharedKernelAction(resource, selectedObjects));
 		codeActions.add(new SuspendPartnershipAction(resource, selectedObjects));
+		codeActions.add(new SwitchFromPartnershipToSharedKernelAction(resource, selectedObjects));
+		codeActions.add(new SwitchFromSharedKernelToPartnershipAction(resource, selectedObjects));
 
 		return Lists.newLinkedList(codeActions);
 	}

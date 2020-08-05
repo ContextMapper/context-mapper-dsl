@@ -17,7 +17,7 @@ package org.contextmapper.dsl.ide.tests.actions
 
 import org.junit.jupiter.api.Test
 
-class SuspendPartnershipActionTest extends AbstractBoundedContextCodeActionTest {
+class SwitchFromSharedKernelToPartnershipActionTest extends AbstractBoundedContextCodeActionTest {
 
 	@Test
 	def void canOfferAction4Partnership() {
@@ -26,19 +26,19 @@ class SuspendPartnershipActionTest extends AbstractBoundedContextCodeActionTest 
 				ContextMap {
 					contains TestContext1, TestContext2
 					
-					TestContext1 [P]<->[P] TestContext2
+					TestContext1 [SK]<->[SK] TestContext2
 				}
 				BoundedContext TestContext1
 				BoundedContext TestContext2
 			'''
 			line = 3
 			expectedCodeActions = '''
-				command : cml.ar.suspendPartnership.proxy
-				title : Suspend Partnership
+				command : cml.ar.extractSharedKernel
+				title : Extract Shared Kernel
 				args : 
 				    file://«this.root»/MyModel.cml,TestContext1,TestContext2
-				command : cml.ar.switchPartnershipToSharedKernel
-				title : Change to Shared Kernel
+				command : cml.ar.switchSharedKernelToPartnership
+				title : Change to Partnership
 				args : 
 				    file://«this.root»/MyModel.cml,TestContext1,TestContext2
 			'''

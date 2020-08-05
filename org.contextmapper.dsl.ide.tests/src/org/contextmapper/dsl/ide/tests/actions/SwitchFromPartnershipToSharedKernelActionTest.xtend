@@ -17,7 +17,7 @@ package org.contextmapper.dsl.ide.tests.actions
 
 import org.junit.jupiter.api.Test
 
-class SuspendPartnershipActionTest extends AbstractBoundedContextCodeActionTest {
+class SwitchFromPartnershipToSharedKernelActionTest extends AbstractBoundedContextCodeActionTest {
 
 	@Test
 	def void canOfferAction4Partnership() {
