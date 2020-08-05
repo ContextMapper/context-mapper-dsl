@@ -15,6 +15,8 @@
  */
 package org.contextmapper.dsl.ui.hover;
 
+import org.contextmapper.dsl.hover.CMLHoverTextProvider;
+import org.contextmapper.dsl.hover.impl.HTMLHoverTextProvider4CML;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.internal.text.html.HTMLPrinter;
 import org.eclipse.jface.text.IRegion;
@@ -22,16 +24,17 @@ import org.eclipse.xtext.Keyword;
 import org.eclipse.xtext.ui.editor.hover.html.DefaultEObjectHoverProvider;
 import org.eclipse.xtext.ui.editor.hover.html.XtextBrowserInformationControlInput;
 
-import com.google.inject.Inject;
-
 public class CMLHoverProvider extends DefaultEObjectHoverProvider {
 
-	@Inject
-	private CMLKeywordHovers keywordHovers;
+	private CMLHoverTextProvider hoverTextProvider;
+
+	public CMLHoverProvider() {
+		super();
+		this.hoverTextProvider = new HTMLHoverTextProvider4CML();
+	}
 
 	@Override
-	protected XtextBrowserInformationControlInput getHoverInfo(EObject obj, IRegion region,
-			XtextBrowserInformationControlInput prev) {
+	protected XtextBrowserInformationControlInput getHoverInfo(EObject obj, IRegion region, XtextBrowserInformationControlInput prev) {
 		if (obj instanceof Keyword) {
 			String html = getHoverInfoAsHtml(obj);
 			if (html != null && !"".equals(html)) {
@@ -47,7 +50,7 @@ public class CMLHoverProvider extends DefaultEObjectHoverProvider {
 	@Override
 	protected String getHoverInfoAsHtml(EObject o) {
 		if (o instanceof Keyword)
-			return keywordHovers.hoverText((Keyword) o);
+			return hoverTextProvider.getHoverText(((Keyword) o).getValue());
 		return super.getHoverInfoAsHtml(o);
 	}
 }

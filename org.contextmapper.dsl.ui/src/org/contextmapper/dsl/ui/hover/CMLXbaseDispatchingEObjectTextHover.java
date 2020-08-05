@@ -15,6 +15,8 @@
  */
 package org.contextmapper.dsl.ui.hover;
 
+import org.contextmapper.dsl.hover.CMLHoverTextProvider;
+import org.contextmapper.dsl.hover.impl.HTMLHoverTextProvider4CML;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IRegion;
@@ -37,10 +39,14 @@ public class CMLXbaseDispatchingEObjectTextHover extends XbaseDispatchingEObject
 	@Inject
 	IEObjectHoverProvider hoverProvider;
 
-	@Inject
-	CMLKeywordHovers keywordHovers;
+	CMLHoverTextProvider hoverTextProvider;
 
 	IInformationControlCreatorProvider lastCreatorProvider = null;
+
+	public CMLXbaseDispatchingEObjectTextHover() {
+		super();
+		this.hoverTextProvider = new HTMLHoverTextProvider4CML();
+	}
 
 	@Override
 	public Object getHoverInfo(EObject first, ITextViewer textViewer, IRegion hoverRegion) {
@@ -48,7 +54,7 @@ public class CMLXbaseDispatchingEObjectTextHover extends XbaseDispatchingEObject
 			EnumLiteralDeclaration enumLiteral = (EnumLiteralDeclaration) first;
 			first = enumLiteral.getLiteral();
 		}
-		if (first instanceof Keyword && keywordHovers.hasKeywordHoverText(((Keyword) first).getValue())) {
+		if (first instanceof Keyword && hoverTextProvider.isKeywordRegistered(((Keyword) first).getValue())) {
 			lastCreatorProvider = hoverProvider.getHoverInfo(first, textViewer, hoverRegion);
 			return lastCreatorProvider == null ? null : lastCreatorProvider.getInfo();
 		}
@@ -58,8 +64,7 @@ public class CMLXbaseDispatchingEObjectTextHover extends XbaseDispatchingEObject
 
 	@Override
 	public IInformationControlCreator getHoverControlCreator() {
-		return this.lastCreatorProvider == null ? super.getHoverControlCreator()
-				: lastCreatorProvider.getHoverControlCreator();
+		return this.lastCreatorProvider == null ? super.getHoverControlCreator() : lastCreatorProvider.getHoverControlCreator();
 	}
 
 	@Override
