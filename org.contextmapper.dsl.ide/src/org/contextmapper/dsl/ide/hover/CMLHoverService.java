@@ -40,7 +40,7 @@ public class CMLHoverService extends HoverService {
 	public String getContents(EObject element) {
 		if (element instanceof Keyword)
 			return textProvider.getHoverText(((Keyword) element).getValue());
-		if(element instanceof EnumLiteralDeclaration)
+		if (element instanceof EnumLiteralDeclaration)
 			return textProvider.getHoverText(((EnumLiteralDeclaration) element).getEnumLiteral().toString());
 		return "";
 	}
@@ -48,16 +48,28 @@ public class CMLHoverService extends HoverService {
 	@Override
 	protected HoverContext createContext(Document document, XtextResource resource, int offset) {
 		// handle keyword case; in case cursor if over a keyword
-		if (resource != null && resource.getParseResult() != null && resource.getParseResult().getRootNode() != null) {
+		if (resource.getParseResult() != null && resource.getParseResult().getRootNode() != null) {
 			ILeafNode leaf = NodeModelUtils.findLeafNodeAtOffset(resource.getParseResult().getRootNode(), offset);
-			if (leaf != null && leaf.getGrammarElement() != null && leaf.getGrammarElement() instanceof Keyword) {
+			if (isGrammarElementKeyword(leaf)) {
 				return new HoverContext(document, resource, offset, leaf.getTextRegion(), (Keyword) leaf.getGrammarElement());
-			} else if  (leaf != null && leaf.getGrammarElement() != null && leaf.getGrammarElement() instanceof EnumLiteralDeclaration) {
+			} else if (isGrammarElementEnumLiteral(leaf)) {
 				return new HoverContext(document, resource, offset, leaf.getTextRegion(), (EnumLiteralDeclaration) leaf.getGrammarElement());
 			}
 		}
 
 		// default case
 		return super.createContext(document, resource, offset);
+	}
+
+	private boolean isGrammarElementDefined(ILeafNode leaf) {
+		return leaf != null && leaf.getGrammarElement() != null;
+	}
+
+	private boolean isGrammarElementKeyword(ILeafNode leaf) {
+		return isGrammarElementDefined(leaf) && leaf.getGrammarElement() instanceof Keyword;
+	}
+
+	private boolean isGrammarElementEnumLiteral(ILeafNode leaf) {
+		return isGrammarElementDefined(leaf) && leaf.getGrammarElement() instanceof EnumLiteralDeclaration;
 	}
 }
