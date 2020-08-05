@@ -17,6 +17,7 @@ package org.contextmapper.dsl.ui.handler;
 
 import org.contextmapper.dsl.cml.CMLResourceContainer;
 import org.contextmapper.dsl.contextMappingDSL.Partnership;
+import org.contextmapper.dsl.refactoring.SemanticCMLRefactoring;
 import org.contextmapper.dsl.refactoring.SwitchFromPartnershipToSharedKernelRefactoring;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.emf.ecore.EObject;
@@ -26,7 +27,9 @@ public class SwitchFromPartnershipToSharedKernelRefactoringHandler extends Abstr
 	@Override
 	protected void executeRefactoring(CMLResourceContainer resource, ExecutionEvent event) {
 		Partnership partnership = (Partnership) getSelectedElement();
-		new SwitchFromPartnershipToSharedKernelRefactoring(partnership.getParticipant1().getName(), partnership.getParticipant2().getName()).refactor(resource);
+		SemanticCMLRefactoring ar = new SwitchFromPartnershipToSharedKernelRefactoring(partnership.getParticipant1().getName(), partnership.getParticipant2().getName());
+		ar.refactor(resource);
+		ar.persistChanges();
 	}
 
 	@Override

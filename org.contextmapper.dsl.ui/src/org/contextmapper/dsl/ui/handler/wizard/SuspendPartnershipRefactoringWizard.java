@@ -18,6 +18,7 @@ package org.contextmapper.dsl.ui.handler.wizard;
 import java.util.Arrays;
 import java.util.function.Function;
 
+import org.contextmapper.dsl.refactoring.SuspendPartnershipMode;
 import org.contextmapper.dsl.ui.handler.wizard.pages.SuspendPartnershipWizardPage;
 import org.contextmapper.dsl.ui.handler.wizard.pages.TwoBoundedContextSelectionWizardPage;
 import org.eclipse.jface.wizard.IWizardPage;

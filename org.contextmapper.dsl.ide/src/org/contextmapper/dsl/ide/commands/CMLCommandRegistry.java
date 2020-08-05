@@ -29,10 +29,18 @@ import org.contextmapper.dsl.ide.commands.impl.generation.ServiceCutterUserRepre
 import org.contextmapper.dsl.ide.commands.impl.refactoring.DeriveBoundedContextFromSubdomainsCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.DeriveFrontendAndBackendFromFeatureBCCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.DeriveSubdomainFromUserRequirementsCommand;
+import org.contextmapper.dsl.ide.commands.impl.refactoring.ExtractAggregatesByCohesionCommand;
+import org.contextmapper.dsl.ide.commands.impl.refactoring.ExtractAggregatesByVolatilityCommand;
+import org.contextmapper.dsl.ide.commands.impl.refactoring.ExtractSharedKernelCommand;
+import org.contextmapper.dsl.ide.commands.impl.refactoring.MergeAggregatesCommand;
+import org.contextmapper.dsl.ide.commands.impl.refactoring.MergeBoundedContextsCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.SplitAggregateByEntitiesRefactoringCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.SplitBoundedContextByFeaturesRefactoringCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.SplitBoundedContextByOwnerRefactoringCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.SplitSystemContextIntoSubsystemsCommand;
+import org.contextmapper.dsl.ide.commands.impl.refactoring.SuspendPartnershipCommand;
+import org.contextmapper.dsl.ide.commands.impl.refactoring.SwitchFromPartnershipToSharedKernelCommand;
+import org.contextmapper.dsl.ide.commands.impl.refactoring.SwitchFromSharedKernelToPartnershipCommand;
 import org.contextmapper.dsl.ide.edit.WorkspaceEditRecorder;
 
 import com.google.common.collect.Maps;
@@ -73,6 +81,14 @@ public class CMLCommandRegistry {
 		commandMap.put("cml.ar.deriveBoundedContextFromSDs", new DeriveBoundedContextFromSubdomainsCommand(editRecorder));
 		commandMap.put("cml.ar.deriveFrontendBackendSystemsFromFeatureBC", new DeriveFrontendAndBackendFromFeatureBCCommand(editRecorder));
 		commandMap.put("cml.ar.splitSystemContextIntoSubsystems", new SplitSystemContextIntoSubsystemsCommand(editRecorder));
+		commandMap.put("cml.ar.extractAggregatesByVolatility", new ExtractAggregatesByVolatilityCommand(editRecorder));
+		commandMap.put("cml.ar.extractAggregatesByCohesion", new ExtractAggregatesByCohesionCommand(editRecorder));
+		commandMap.put("cml.ar.mergeAggregates", new MergeAggregatesCommand(editRecorder));
+		commandMap.put("cml.ar.mergeBoundedContexts", new MergeBoundedContextsCommand(editRecorder));
+		commandMap.put("cml.ar.extractSharedKernel", new ExtractSharedKernelCommand(editRecorder));
+		commandMap.put("cml.ar.suspendPartnership", new SuspendPartnershipCommand(editRecorder));
+		commandMap.put("cml.ar.switchPartnershipToSharedKernel", new SwitchFromPartnershipToSharedKernelCommand(editRecorder));
+		commandMap.put("cml.ar.switchSharedKernelToPartnership", new SwitchFromSharedKernelToPartnershipCommand(editRecorder));
 	}
 
 	public CMLResourceCommand getCommand(String commandId) {

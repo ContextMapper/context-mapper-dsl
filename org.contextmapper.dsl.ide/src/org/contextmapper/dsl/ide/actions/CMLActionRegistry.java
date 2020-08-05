@@ -18,7 +18,6 @@ package org.contextmapper.dsl.ide.actions;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.cml.CMLResourceContainer;
@@ -26,10 +25,18 @@ import org.contextmapper.dsl.exception.ContextMapperApplicationException;
 import org.contextmapper.dsl.ide.actions.impl.DeriveBoundedContextFromSubdomainsAction;
 import org.contextmapper.dsl.ide.actions.impl.DeriveFrontendAndBackendFromFeatureBCAction;
 import org.contextmapper.dsl.ide.actions.impl.DeriveSubdomainFromUserRequirementsAction;
+import org.contextmapper.dsl.ide.actions.impl.ExtractAggregatesByCohesionAction;
+import org.contextmapper.dsl.ide.actions.impl.ExtractAggregatesByVolatilityAction;
+import org.contextmapper.dsl.ide.actions.impl.ExtractSharedKernelAction;
+import org.contextmapper.dsl.ide.actions.impl.MergeAggregatesAction;
+import org.contextmapper.dsl.ide.actions.impl.MergeBoundedContextsAction;
 import org.contextmapper.dsl.ide.actions.impl.SplitAggregateByEntitiesAction;
 import org.contextmapper.dsl.ide.actions.impl.SplitBoundedContextByFeaturesAction;
 import org.contextmapper.dsl.ide.actions.impl.SplitBoundedContextByOwnerAction;
 import org.contextmapper.dsl.ide.actions.impl.SplitSystemIntoSubsystemsAction;
+import org.contextmapper.dsl.ide.actions.impl.SuspendPartnershipAction;
+import org.contextmapper.dsl.ide.actions.impl.SwitchFromPartnershipToSharedKernelAction;
+import org.contextmapper.dsl.ide.actions.impl.SwitchFromSharedKernelToPartnershipAction;
 import org.contextmapper.dsl.ide.edit.WorkspaceEditRecorder;
 import org.contextmapper.dsl.quickfixes.CMLQuickFix;
 import org.contextmapper.dsl.quickfixes.tactic.ExtractIDValueObjectQuickFix;
@@ -45,7 +52,6 @@ import org.eclipse.xtext.ide.server.codeActions.ICodeActionService2;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 
 /**
@@ -69,8 +75,8 @@ public class CMLActionRegistry {
 		this.registerAllQuickFixes();
 	}
 
-	private Set<CMLCodeAction> getAllActions(CMLResourceContainer resource, List<EObject> selectedObjects) {
-		Set<CMLCodeAction> codeActions = Sets.newHashSet();
+	private List<CMLCodeAction> getAllActions(CMLResourceContainer resource, List<EObject> selectedObjects) {
+		List<CMLCodeAction> codeActions = Lists.newLinkedList();
 
 		// add new AR here:
 		codeActions.add(new SplitBoundedContextByOwnerAction(resource, selectedObjects));
@@ -80,8 +86,16 @@ public class CMLActionRegistry {
 		codeActions.add(new DeriveBoundedContextFromSubdomainsAction(resource, selectedObjects));
 		codeActions.add(new DeriveFrontendAndBackendFromFeatureBCAction(resource, selectedObjects));
 		codeActions.add(new SplitSystemIntoSubsystemsAction(resource, selectedObjects));
+		codeActions.add(new ExtractAggregatesByVolatilityAction(resource, selectedObjects));
+		codeActions.add(new ExtractAggregatesByCohesionAction(resource, selectedObjects));
+		codeActions.add(new MergeAggregatesAction(resource, selectedObjects));
+		codeActions.add(new MergeBoundedContextsAction(resource, selectedObjects));
+		codeActions.add(new ExtractSharedKernelAction(resource, selectedObjects));
+		codeActions.add(new SuspendPartnershipAction(resource, selectedObjects));
+		codeActions.add(new SwitchFromPartnershipToSharedKernelAction(resource, selectedObjects));
+		codeActions.add(new SwitchFromSharedKernelToPartnershipAction(resource, selectedObjects));
 
-		return Sets.newHashSet(codeActions);
+		return Lists.newLinkedList(codeActions);
 	}
 
 	private void registerAllQuickFixes() {

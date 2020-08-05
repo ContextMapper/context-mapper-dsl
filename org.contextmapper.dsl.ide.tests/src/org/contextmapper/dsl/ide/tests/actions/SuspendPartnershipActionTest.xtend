@@ -17,43 +17,32 @@ package org.contextmapper.dsl.ide.tests.actions
 
 import org.junit.jupiter.api.Test
 
-class SplitAggregateByEntitiesActionTest extends AbstractBoundedContextCodeActionTest {
+class SuspendPartnershipActionTest extends AbstractBoundedContextCodeActionTest {
 
 	@Test
-	def void canCreateCodeAction4SplitByEntities() {
+	def void canOfferAction4Partnership() {
 		testCodeAction [
 			model = '''
-				BoundedContext TestContext {
-					Aggregate TestAggregate {
-						Entity Entity1
-						Entity Entity2
-					}
+				ContextMap {
+					contains TestContext1, TestContext2
+					
+					TestContext1 [P]<->[P] TestContext2
 				}
+				BoundedContext TestContext1
+				BoundedContext TestContext2
 			'''
-			line = 1
+			line = 3
 			expectedCodeActions = '''
-				command : cml.ar.splitAggregateByEntities
-				title : Split Aggregate By Entities
+				command : cml.ar.suspendPartnership.proxy
+				title : Suspend Partnership
 				args : 
-				    file://«this.root»/MyModel.cml,TestAggregate
+				    file://«this.root»/MyModel.cml,TestContext1,TestContext2
+				command : cml.ar.switchPartnershipToSharedKernel
+				title : Change to Shared Kernel
+				args : 
+				    file://«this.root»/MyModel.cml,TestContext1,TestContext2
 			'''
 		]
 	}
 
-	@Test
-	def void canIgnoreAggregateIfOnlyOneEntityInvolved() {
-		testCodeAction [
-			model = '''
-				BoundedContext TestContext {
-					Aggregate TestAggregate {
-						Entity Entity1
-					}
-				}
-			'''
-			line = 1
-			expectedCodeActions = '''
-			'''
-		]
-	}
-	
 }

@@ -15,11 +15,11 @@
  */
 package org.contextmapper.dsl.ui.handler.wizard.pages;
 
-import static org.contextmapper.dsl.ui.handler.wizard.SuspendPartnershipMode.EXTRACT_NEW_BOUNDED_CONTEXT;
-import static org.contextmapper.dsl.ui.handler.wizard.SuspendPartnershipMode.MERGE_BOUNDED_CONTEXTS;
-import static org.contextmapper.dsl.ui.handler.wizard.SuspendPartnershipMode.REPLACE_RELATIONSHIP_WITH_UPSTREAM_DOWNSTREAM;
+import static org.contextmapper.dsl.refactoring.SuspendPartnershipMode.EXTRACT_NEW_BOUNDED_CONTEXT;
+import static org.contextmapper.dsl.refactoring.SuspendPartnershipMode.MERGE_BOUNDED_CONTEXTS;
+import static org.contextmapper.dsl.refactoring.SuspendPartnershipMode.REPLACE_RELATIONSHIP_WITH_UPSTREAM_DOWNSTREAM;
 
-import org.contextmapper.dsl.ui.handler.wizard.SuspendPartnershipMode;
+import org.contextmapper.dsl.refactoring.SuspendPartnershipMode;
 import org.eclipse.jface.fieldassist.AutoCompleteField;
 import org.eclipse.jface.fieldassist.ComboContentAdapter;
 import org.eclipse.swt.SWT;
