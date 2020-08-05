@@ -17,8 +17,10 @@ package org.contextmapper.dsl.ide
 
 import org.contextmapper.dsl.ide.actions.CMLActionService
 import org.contextmapper.dsl.ide.commands.CMLCommandService
+import org.contextmapper.dsl.ide.hover.CMLHoverService
 import org.eclipse.xtext.ide.server.codeActions.ICodeActionService2
 import org.eclipse.xtext.ide.server.commands.IExecutableCommandService
+import org.eclipse.xtext.ide.server.hover.HoverService
 
 /**
  * Use this class to register ide components.
@@ -31,6 +33,10 @@ class ContextMappingDSLIdeModule extends AbstractContextMappingDSLIdeModule {
 	
 	def Class<? extends ICodeActionService2> bindICodeActionService2() {
 		return CMLActionService
+	}
+
+	def Class<? extends HoverService> bindHoverService() {
+		return CMLHoverService
 	}
 
 }
