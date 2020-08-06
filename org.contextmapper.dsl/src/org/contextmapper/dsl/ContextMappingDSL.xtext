@@ -170,7 +170,11 @@ Aggregate :
   "Aggregate" name=ID (OPEN
     (
     	(('responsibilities' ('=')? responsibilities+=STRING) ("," responsibilities+=STRING)*)? &
-    	((('useCases' | 'userRequirements') ('=')? userRequirements += [UserRequirement]) ("," userRequirements += [UserRequirement])*)? &
+    	(
+    		(('useCases' ('=')? userRequirements += [UseCase]) ("," userRequirements += [UseCase])*) |
+    		(('userStories' ('=')? userRequirements += [UserStory]) ("," userRequirements += [UserStory])*) |
+    		((('features' | 'userRequirements') ('=')? userRequirements += [UserRequirement]) ("," userRequirements += [UserRequirement])*)
+    	)? &
     	('owner' ('=')? owner=[BoundedContext])? & 
     	('knowledgeLevel' ('=')? knowledgeLevel=KnowledgeLevel)? &
     	('likelihoodForChange' ('=')? likelihoodForChange=LikelihoodForChange)?
