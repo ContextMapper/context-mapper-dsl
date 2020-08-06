@@ -583,7 +583,7 @@
 	</extension>
 	<extension
 	      point="org.eclipse.ui.commands">
-	      <command name="Split Bounded Context by Use Cases" categoryId="org.eclipse.xtext.ui.category.refactoring"
+	      <command name="Split Bounded Context by Features" categoryId="org.eclipse.xtext.ui.category.refactoring"
              id="org.contextmapper.dsl.ui.handler.SplitBoundedContextByUseCasesRefactoringCommand">
 	      </command>
 	</extension>
