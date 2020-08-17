@@ -80,15 +80,18 @@ public class UserRepresentationsBuilder {
 	private void buildUseCases() {
 		model.getUseCases().clear();
 		for (UserRequirement ur : contextMappingModel.getUserRequirements()) {
-			if (ur.getNanoentitiesRead().isEmpty() && ur.getNanoentitiesWritten().isEmpty())
+			Set<String> nanoEntitiesRead = new NanoentityCollector().getNanoentitiesRead(ur);
+			Set<String> nanoEntitiesWritten = new NanoentityCollector().getNanoentitiesWritten(ur);
+
+			if (nanoEntitiesRead.isEmpty() && nanoEntitiesWritten.isEmpty())
 				continue;
 
 			// create one use case for each user requirement in CML (use case or user story
 			// in CML)
 			UseCase uc = factory.createUseCase();
 			uc.setName(ur.getName());
-			uc.getNanoentitiesRead().addAll(ur.getNanoentitiesRead());
-			uc.getNanoentitiesWritten().addAll(ur.getNanoentitiesWritten());
+			uc.getNanoentitiesRead().addAll(nanoEntitiesRead);
+			uc.getNanoentitiesWritten().addAll(nanoEntitiesWritten);
 			model.getUseCases().add(uc);
 		}
 	}

@@ -46,8 +46,8 @@ public class UserRepresentationsBuilderTest extends AbstractCMLInputFileTest {
 		// then
 		assertEquals(1, scModel.getUseCases().size());
 		UseCase useCase = scModel.getUseCases().get(0);
-		assertEquals(2, useCase.getNanoentitiesRead().size());
-		assertEquals(2, useCase.getNanoentitiesWritten().size());
+		assertEquals(10, useCase.getNanoentitiesRead().size());
+		assertEquals(10, useCase.getNanoentitiesWritten().size());
 	}
 
 	@Test

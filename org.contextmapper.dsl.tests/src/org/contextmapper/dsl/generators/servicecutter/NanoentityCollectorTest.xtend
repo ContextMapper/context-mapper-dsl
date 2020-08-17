@@ -13,91 +13,83 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.contextmapper.dsl
+package org.contextmapper.dsl.generators.servicecutter
 
 import com.google.inject.Inject
-import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLPackage
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel
+import org.contextmapper.dsl.generator.servicecutter.input.userrepresentations.NanoentityCollector
 import org.contextmapper.dsl.tests.ContextMappingDSLInjectorProvider
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.extensions.InjectionExtension
 import org.eclipse.xtext.testing.util.ParseHelper
-import org.eclipse.xtext.testing.validation.ValidationTestHelper
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.^extension.ExtendWith
 
-import static org.contextmapper.dsl.validation.ValidationMessages.*
 import static org.contextmapper.dsl.util.ParsingErrorAssertions.*
+import static org.junit.jupiter.api.Assertions.*
 
 @ExtendWith(InjectionExtension)
 @InjectWith(ContextMappingDSLInjectorProvider)
-class UserRequirementsValidatorTest {
-
+class NanoentityCollectorTest {
 	@Inject
 	ParseHelper<ContextMappingModel> parseHelper
 
-	ValidationTestHelper validationTestHelper = new ValidationTestHelper();
-
 	@Test
-	def void canCreateErrorIfReadNanoentityStringNotCorrect() {
+	def void canCollectNanoentities4DefaultVerbs() {
 		// given
 		val String dslSnippet = '''
-			UseCase TestUsecase {
-				reads "just a string"
+			UseCase TestCase {
+				interactions
+					create a "Claim" with its "date", // write
+					update a "Claim" with its "number", // write
+					delete a "Claim" with its "number", // write
+					read a "Claim" with its "date", "description" // read
 			}
 		''';
 		// when
 		val ContextMappingModel result = parseHelper.parse(dslSnippet);
-		// then
-		assertThatNoParsingErrorsOccurred(result);
-		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.USER_REQUIREMENT, "",
-			String.format(STRING_IS_NOT_NANOENTITY, "just a string"));
-	}
+		val req = result.userRequirements.get(0);
+		val reads = new NanoentityCollector().getNanoentitiesRead(req);
+		val writes = new NanoentityCollector().getNanoentitiesWritten(req);
 
-	@Test
-	def void canCreateErrorIfWrittenNanoentityStringNotCorrect() {
-		// given
-		val String dslSnippet = '''
-			UseCase TestUsecase {
-				writes "just a string"
-			}
-		''';
-		// when
-		val ContextMappingModel result = parseHelper.parse(dslSnippet);
-		// then
-		assertThatNoParsingErrorsOccurred(result);
-		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.USER_REQUIREMENT, "",
-			String.format(STRING_IS_NOT_NANOENTITY, "just a string"));
-	}
-
-	@Test
-	def void canIgnoreCorrectNanoentityReadStrings() {
-		// given
-		val String dslSnippet = '''
-			UseCase TestUsecase {
-				reads "Entity.attribute"
-			}
-		''';
-		// when
-		val ContextMappingModel result = parseHelper.parse(dslSnippet);
 		// then
 		assertThatNoParsingErrorsOccurred(result);
 		assertThatNoValidationErrorsOccurred(result);
+
+		assertEquals(2, reads.size);
+		assertEquals(2, writes.size);
+		assertTrue(reads.contains("Claim.date"));
+		assertTrue(reads.contains("Claim.description"));
+		assertTrue(writes.contains("Claim.number"));
+		assertTrue(writes.contains("Claim.date"));
 	}
 
 	@Test
-	def void canIgnoreCorrectNanoentityWriteStrings() {
+	def void canCollectNanoEntities4CustomVerbs() {
 		// given
 		val String dslSnippet = '''
-			UseCase TestUsecase {
-				writes "Entity.attribute"
+			UseCase TestCase {
+				interactions
+					"submit" a "Claim" with its "date",
+					"reject" a "Claim" with its "number"
 			}
 		''';
 		// when
 		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		val req = result.userRequirements.get(0);
+		val reads = new NanoentityCollector().getNanoentitiesRead(req);
+		val writes = new NanoentityCollector().getNanoentitiesWritten(req);
+
 		// then
 		assertThatNoParsingErrorsOccurred(result);
 		assertThatNoValidationErrorsOccurred(result);
+
+		assertEquals(2, reads.size);
+		assertEquals(2, writes.size);
+		assertTrue(reads.contains("Claim.date"));
+		assertTrue(reads.contains("Claim.number"));
+		assertTrue(writes.contains("Claim.date"));
+		assertTrue(writes.contains("Claim.number"));
 	}
 
 }

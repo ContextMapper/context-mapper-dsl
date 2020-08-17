@@ -10,8 +10,6 @@ UseCase Get_paid_for_car_accident { // title
 	benefit "A claimant submits a claim and and gets paid from the insurance company." // story (brief summary)
 	scope "Insurance company" // scope
 	level "Summary" // level
-	reads "Claimant.firstName", "Claimant.lastName"
-	writes "Claim.date", "Claim.amountClaimed"
 }
 
 UseCase AnotherUseCase {

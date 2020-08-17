@@ -196,20 +196,14 @@ UseCase:
 		('interactions' ('=')? features+=Feature ("," features+=Feature)*)? &
 		('benefit' ('=')? benefit=STRING)? &
 		('scope' ('=')? scope=STRING)? &
-		('level' ('=')? level=STRING)? &
-		('isLatencyCritical' ('=')? isLatencyCritical?='true')? &
-		(('reads' nanoentitiesRead+=STRING*) ("," nanoentitiesRead+=STRING)*)? &
-        (('writes' nanoentitiesWritten+=STRING*) ("," nanoentitiesWritten+=STRING)*)?)  
+		('level' ('=')? level=STRING)?)
 	CLOSE)?
 ;
 
 UserStory:
 	'UserStory' name=ID 
 	(OPEN
-		((('As a' | 'As an') role=STRING ('I want to' features+=Feature)+ 'so that' benefit=STRING)? &
-		('isLatencyCritical' ('=')? isLatencyCritical?='true')? &
-		(('reads' nanoentitiesRead+=STRING*) ("," nanoentitiesRead+=STRING)*)? &
-        (('writes' nanoentitiesWritten+=STRING*) ("," nanoentitiesWritten+=STRING)*)?)  
+		(('As a' | 'As an') role=STRING ('I want to' features+=Feature)+ 'so that' benefit=STRING)?
 	CLOSE)?
 ;
 
