@@ -1,0 +1,186 @@
+ContextMap DDDSampleMap {
+	contains CargoBookingContext
+	contains VoyagePlanningContext
+	contains LocationContext
+	
+	CargoBookingContext [SK]<->[SK] VoyagePlanningContext
+	
+	CargoBookingContext [D]<-[U,OHS,PL] LocationContext
+	
+	VoyagePlanningContext [D]<-[U,OHS,PL] LocationContext
+	
+}
+
+BoundedContext CargoBookingContext {
+	Module cargo {
+		basePackage = se.citerus.dddsample.domain.model
+		
+		Aggregate CargoItineraryLegDeliveryRouteSpecification {
+			Entity Cargo {
+				aggregateRoot
+				
+				TrackingId trackingId
+				- LocationShared origin
+				- RouteSpecification routeSpecification
+				- Itinerary itinerary
+				- Delivery delivery
+							
+				Repository CargoRepository {
+	                 @Cargo find(TrackingId trackingId) throws CargoNotFoundException;
+	                 List<@Cargo> findAll;
+	                 store(@Cargo cargo);
+	                 TrackingId nextTrackingId();
+				}
+			}
+			
+			ValueObject Delivery {
+				- TransportStatus transportStatus;
+				- LocationShared lastKnownLocation;
+				- Voyage currentVoyage;
+				boolean misdirected;
+				Date eta;
+				- HandlingActivity nextExpectedActivity;
+				boolean isUnloadedAtDestination;
+				- RoutingStatus routingStatus;
+				Date calculatedAt;
+				- HandlingEvent lastEvent;
+			}
+			
+			ValueObject HandlingActivity {
+				HandlingEvent.Type handlingEventType
+				- LocationShared location
+				- Voyage voyage
+			}
+			
+			ValueObject Itinerary {
+				ItineraryNumber itineraryNumber
+				- List<Leg> legs
+			}
+			
+			ValueObject Leg {
+				- Voyage voyage
+				- LocationShared loadLocation
+				- LocationShared unloadLocation
+				Date loadTime
+				Date unloadTime
+			}
+			
+			ValueObject RouteSpecification {
+				- LocationShared origin
+				- LocationShared destination
+				Date arrivalDeadline
+			}
+			
+			enum TransportStatus {
+	            NOT_RECEIVED, IN_PORT, ONBOARD_CARRIER, CLAIMED, UNKNOWN
+			}
+			
+			enum RoutingStatus {
+				NOT_ROUTED, ROUTED, MISROUTED
+			}
+
+			Service RoutingService {
+            	List<@Itinerary> fetchRoutesForSpecification(@RouteSpecification routeSpecification) throws LocationNotFoundException;
+			}
+				
+		}
+	}
+	
+	Module handling {
+		basePackage = se.citerus.dddsample.domain.model
+		
+		Aggregate Handling {
+			DomainEvent HandlingEvent {
+				aggregateRoot
+				persistent
+				
+				Type handlingType;
+				- Voyage voyage;
+				- LocationShared location;
+				Date completionTime;
+				Date registrationTime;
+				- Cargo cargo;
+				
+				Repository HandlingEventRepository {
+					@HandlingHistory lookupHandlingHistoryOfCargo(TrackingId trackingId);
+				}
+			}
+			
+			ValueObject HandlingHistory {
+				- List<HandlingEvent> handlingEvents
+			}
+		}
+	}
+}
+
+BoundedContext VoyagePlanningContext {
+	Module voyage {
+		basePackage = se.citerus.dddsample.domain.model
+		
+		Aggregate Voyage {
+			Entity Voyage {
+				aggregateRoot
+				
+				- VoyageNumber voyageNumber;
+  				- Schedule schedule;
+				
+				Repository VoyageRepository {
+					
+				}
+			}
+			
+			ValueObject CarrierMovement {
+				- LocationShared departureLocation;
+  				- LocationShared arrivalLocation;
+  				Date departureTime;
+  				Date arrivalTime;
+			}
+			
+			ValueObject Schedule {
+				- List<CarrierMovement> carrierMovements
+			}
+			
+			ValueObject VoyageNumber {
+				String number
+			}
+		}
+	}
+}
+
+BoundedContext LocationContext {
+	Module location {
+		basePackage = se.citerus.dddsample.domain.model
+		
+		Aggregate Location {
+			Entity Location {
+				aggregateRoot
+				
+				PortCode portcode
+				- UnLocode unLocode;
+  				String name;
+				
+				Repository LocationRepository {
+					@Location find(@UnLocode unLocode);
+					List<@Location> findAll();
+				}
+			}
+			
+			ValueObject UnLocode {
+				String unLocode
+			}
+			
+			ValueObject LocationShared {
+				PortCode portCode
+				- Location location
+			}
+		}
+	}
+}
+
+Domain CargoDomain {
+	Subdomain Locations supports BookCargo
+	Subdomain CargoBooking supports ManageLocation
+}
+
+UserStory BookCargo
+UserStory ManageLocation

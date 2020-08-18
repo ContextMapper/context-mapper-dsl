@@ -29,9 +29,12 @@ import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
+import org.contextmapper.dsl.contextMappingDSL.Domain;
 import org.contextmapper.dsl.contextMappingDSL.Relationship;
 import org.contextmapper.dsl.contextMappingDSL.SharedKernel;
+import org.contextmapper.dsl.contextMappingDSL.Subdomain;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
+import org.contextmapper.dsl.contextMappingDSL.UserRequirement;
 import org.contextmapper.tactic.dsl.tacticdsl.Attribute;
 import org.contextmapper.tactic.dsl.tacticdsl.DomainObject;
 import org.contextmapper.tactic.dsl.tacticdsl.Entity;
@@ -113,6 +116,21 @@ public class ServiceCutterOutputToContextMappingModelConverter {
 		model.getUserRequirements().addAll(EcoreUtil2.copyAll(originalModelState.getUserRequirements()));
 		model.getImports().addAll(EcoreUtil2.copyAll(originalModelState.getImports()));
 		model.getDomains().addAll(EcoreUtil2.copyAll(originalModelState.getDomains()));
+		for (Domain domain : model.getDomains())
+			reconstructSubdomainToFeatureReferences(domain);
+	}
+
+	private void reconstructSubdomainToFeatureReferences(Domain domain) {
+		for (Subdomain subdomain : domain.getSubdomains())
+			reconstructSubdomainToFeatureReferences(subdomain);
+	}
+
+	private void reconstructSubdomainToFeatureReferences(Subdomain subDomain) {
+		List<UserRequirement> urReferences = Lists.newLinkedList();
+		for (UserRequirement ur : subDomain.getSupportedFeatures())
+			urReferences.add(model.getUserRequirements().stream().filter(u -> u.getName().equals(ur.getName())).findFirst().get());
+		subDomain.getSupportedFeatures().clear();
+		subDomain.getSupportedFeatures().addAll(urReferences);
 	}
 
 	private List<Entity> convertEntities(char serviceId, List<String> nanoEntities) {
