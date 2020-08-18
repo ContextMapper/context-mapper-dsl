@@ -115,13 +115,15 @@ public class NewServiceCutContextMapGenerator extends AbstractContextMappingMode
 		ResourceSet resourceSet = contextMappingModel.eResource().getResourceSet();
 		URI sclURI = inputFileURI.trimFileExtension().appendFileExtension("scl");
 
-		if (!resourceSet.getURIConverter().exists(sclURI, null)) {
-			new ServiceCutterUserRepresentationsGenerator().doGenerate(contextMappingModel.eResource(), fsa, context);
-		}
+		updateUserRepresentations();
 
 		Resource sclResource = resourceSet.getResource(sclURI, true);
 		ServiceCutterUserRepresentationsModel sclModel = (ServiceCutterUserRepresentationsModel) sclResource.getContents().get(0);
 		return new SCLToUserRepresentationsConverter().convert(sclModel);
+	}
+
+	private void updateUserRepresentations() {
+		new ServiceCutterUserRepresentationsGenerator().doGenerate(contextMappingModel.eResource(), fsa, context);
 	}
 
 	public void checkPreconditions(ContextMappingModel model) {

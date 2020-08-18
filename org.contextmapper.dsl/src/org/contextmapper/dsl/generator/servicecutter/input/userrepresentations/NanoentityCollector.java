@@ -16,6 +16,7 @@
 package org.contextmapper.dsl.generator.servicecutter.input.userrepresentations;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.contextMappingDSL.Feature;
 import org.contextmapper.dsl.contextMappingDSL.UserRequirement;
@@ -65,9 +66,16 @@ public class NanoentityCollector {
 
 	private Set<String> getAllNanoentities(Feature feature) {
 		Set<String> nanoEntities = Sets.newHashSet();
-		for (String attr : feature.getEntityAttributes())
-			nanoEntities.add(feature.getEntity().trim() + "." + attr.trim());
+		for (String attr : feature.getEntityAttributes().stream().filter(a -> !"".equals(a)).collect(Collectors.toSet()))
+			nanoEntities.add(feature.getEntity().trim() + "." + formatAttributeName(attr));
 		return nanoEntities;
+	}
+
+	private String formatAttributeName(String attr) {
+		String trimedAttr = attr.trim();
+		if (trimedAttr.length() == 1)
+			return trimedAttr.trim().toLowerCase();
+		return trimedAttr.substring(0, 1).toLowerCase() + trimedAttr.substring(1);
 	}
 
 }

@@ -92,4 +92,54 @@ class NanoentityCollectorTest {
 		assertTrue(writes.contains("Claim.number"));
 	}
 
+	@Test
+	def void canIgnoreEmptyStrings() {
+		// given
+		val String dslSnippet = '''
+			UseCase TestCase {
+				interactions
+					"submit" a "Claim" with its "date", ""
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		val req = result.userRequirements.get(0);
+		val reads = new NanoentityCollector().getNanoentitiesRead(req);
+		val writes = new NanoentityCollector().getNanoentitiesWritten(req);
+
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+
+		assertEquals(1, reads.size);
+		assertEquals(1, writes.size);
+		assertTrue(reads.contains("Claim.date"));
+		assertTrue(writes.contains("Claim.date"));
+	}
+
+	@Test
+	def void canFormatAttributeStrings() {
+		// given
+		val String dslSnippet = '''
+			UseCase TestCase {
+				interactions
+					create a "Claim" with its "a", "B", "Cee", "dee"
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		val req = result.userRequirements.get(0);
+		val writes = new NanoentityCollector().getNanoentitiesWritten(req);
+
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+
+		assertEquals(4, writes.size);
+		assertTrue(writes.contains("Claim.a"));
+		assertTrue(writes.contains("Claim.b"));
+		assertTrue(writes.contains("Claim.cee"));
+		assertTrue(writes.contains("Claim.dee"));
+	}
+
 }
