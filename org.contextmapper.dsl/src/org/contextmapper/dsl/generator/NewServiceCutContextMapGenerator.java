@@ -65,22 +65,23 @@ public class NewServiceCutContextMapGenerator extends AbstractContextMappingMode
 		// prepare service cutter input
 		EntityRelationDiagram erdInput = new ContextMappingModelToServiceCutterERDConverter().convert(fileBaseName, model);
 		ServiceCutterContextBuilder contextBuilder = new ServiceCutterContextBuilder(erdInput);
-		contextBuilder.withCustomSolverConfiguration(getSolverConfiguration());
+		SolverConfiguration solverConfig = getSolverConfiguration();
+		contextBuilder.withCustomSolverConfiguration(solverConfig);
 		contextBuilder.withUserRepresentations(getUserRepresentations(inputFileURI));
 		ServiceCutterContext context = contextBuilder.build();
 
 		// calculate new service cut
 		SolverResult result = new ServiceCutter(context).generateDecomposition();
-		ContextMappingModel newServiceCutModel = new ServiceCutterOutputToContextMappingModelConverter(contextMappingModel).convert(result);
+		ContextMappingModel newServiceCutModel = new ServiceCutterOutputToContextMappingModelConverter(contextMappingModel, context, getSCLModel(inputFileURI).eResource().getURI()).convert(result);
 
 		// save new CML file
 		int counter = 1;
-		String baseFileName = inputFileURI.trimFileExtension().lastSegment();
-		URI fileName = inputFileURI.trimFileExtension().trimSegments(1).appendSegment(baseFileName + "_NewCut_" + counter).appendFileExtension("cml");
+		String baseFileName = inputFileURI.trimFileExtension().lastSegment() + "_" + solverConfig.getAlgorithm().toString().replace(" ", "_") + "_Cut_";
+		URI fileName = inputFileURI.trimFileExtension().trimSegments(1).appendSegment(baseFileName + counter).appendFileExtension("cml");
 
 		while (resourceSet.getURIConverter().exists(fileName, null)) {
 			counter++;
-			fileName = inputFileURI.trimFileExtension().trimSegments(1).appendSegment(baseFileName + "_NewCut_" + counter).appendFileExtension("cml");
+			fileName = inputFileURI.trimFileExtension().trimSegments(1).appendSegment(baseFileName + counter).appendFileExtension("cml");
 		}
 		Resource resource = resourceSet.createResource(fileName);
 		resource.getContents().add(newServiceCutModel);
@@ -112,14 +113,14 @@ public class NewServiceCutContextMapGenerator extends AbstractContextMappingMode
 	}
 
 	private UserRepresentationContainer getUserRepresentations(URI inputFileURI) {
-		ResourceSet resourceSet = contextMappingModel.eResource().getResourceSet();
-		URI sclURI = inputFileURI.trimFileExtension().appendFileExtension("scl");
-
 		updateUserRepresentations();
+		return new SCLToUserRepresentationsConverter().convert(getSCLModel(inputFileURI));
+	}
 
+	private ServiceCutterUserRepresentationsModel getSCLModel(URI inputFileURI) {
+		URI sclURI = inputFileURI.trimFileExtension().appendFileExtension("scl");
 		Resource sclResource = resourceSet.getResource(sclURI, true);
-		ServiceCutterUserRepresentationsModel sclModel = (ServiceCutterUserRepresentationsModel) sclResource.getContents().get(0);
-		return new SCLToUserRepresentationsConverter().convert(sclModel);
+		return (ServiceCutterUserRepresentationsModel) sclResource.getContents().get(0);
 	}
 
 	private void updateUserRepresentations() {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 The Context Mapper Project Team
+ * Copyright 2018-2020 The Context Mapper Project Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,14 +40,19 @@ import org.contextmapper.tactic.dsl.tacticdsl.DomainObject;
 import org.contextmapper.tactic.dsl.tacticdsl.Entity;
 import org.contextmapper.tactic.dsl.tacticdsl.Reference;
 import org.contextmapper.tactic.dsl.tacticdsl.TacticdslFactory;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.xtext.EcoreUtil2;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+import ch.hsr.servicecutter.api.ServiceCutterContext;
 import ch.hsr.servicecutter.api.model.Service;
 import ch.hsr.servicecutter.api.model.ServiceRelation;
 import ch.hsr.servicecutter.api.model.SolverResult;
+import ch.hsr.servicecutter.solver.SolverAlgorithm;
+import ch.hsr.servicecutter.solver.SolverConfiguration;
+import ch.hsr.servicecutter.solver.SolverPriority;
 
 /**
  * Converter to convert ServiceCutter Output to CML Model.
@@ -65,6 +70,8 @@ public class ServiceCutterOutputToContextMappingModelConverter {
 	private Map<String, DomainObject> references2Reconstruct;
 	private ContextMappingModel originalModelState;
 	private ContextMappingModel model;
+	private ServiceCutterContext serviceCutterContext;
+	private URI sclURI;
 
 	private CMLModelObjectsResolvingHelper resolvingHelper;
 
@@ -77,10 +84,16 @@ public class ServiceCutterOutputToContextMappingModelConverter {
 		this.resolvingHelper = new CMLModelObjectsResolvingHelper();
 	}
 
-	public ServiceCutterOutputToContextMappingModelConverter(ContextMappingModel originalModel) {
+	public ServiceCutterOutputToContextMappingModelConverter(ContextMappingModel originalModel, ServiceCutterContext serviceCutterContext) {
 		this();
 		this.originalModelState = originalModel;
+		this.serviceCutterContext = serviceCutterContext;
 		initializeTypeMapByOriginalCMLModel(originalModel);
+	}
+
+	public ServiceCutterOutputToContextMappingModelConverter(ContextMappingModel originalModel, ServiceCutterContext serviceCutterContext, URI sclUri) {
+		this(originalModel, serviceCutterContext);
+		this.sclURI = sclUri;
 	}
 
 	public ContextMappingModel convert(SolverResult serviceCutterResult) {
@@ -106,7 +119,47 @@ public class ServiceCutterOutputToContextMappingModelConverter {
 		model.setMap(contextMap);
 		reconstructReferencesIfPossible();
 		copyRootElementsNotAffected();
+		model.setTopComment(generateTopComment());
 		return model;
+	}
+
+	private String generateTopComment() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("/* This CML model has been generated with Service Cutter.");
+		if (this.originalModelState != null)
+			sb.append(System.lineSeparator() + " * It decomposes the original CML model " + originalModelState.eResource().getURI().toString() + ".");
+		if (this.sclURI != null)
+			sb.append(System.lineSeparator() + " * The following user representations file was used for the decomposition: " + sclURI.toString() + ".");
+		if (this.serviceCutterContext != null) {
+			SolverConfiguration config = serviceCutterContext.getSolverConfiguration();
+			sb.append(System.lineSeparator() + " * ");
+			sb.append(System.lineSeparator() + " * The service cut was generated with the following input parameters (.servicecutter.yml):");
+			sb.append(System.lineSeparator() + " * Algorithm: " + config.getAlgorithm().name());
+			for (Map.Entry<String, Double> entry : getAlgorithmParameters4Algo(config.getAlgorithmParams(), config.getAlgorithm()).entrySet())
+				sb.append(System.lineSeparator() + " * " + entry.getKey() + ": " + entry.getValue().toString());
+			for (Map.Entry<String, SolverPriority> entry : config.getPriorities().entrySet())
+				sb.append(System.lineSeparator() + " * " + entry.getKey() + ": " + entry.getValue().name());
+		}
+		sb.append(System.lineSeparator() + " */");
+		return sb.toString();
+	}
+
+	private Map<String, Double> getAlgorithmParameters4Algo(Map<String, Double> allParams, SolverAlgorithm algo) {
+		Map<String, Double> algoParams = Maps.newHashMap();
+		String prefix = getAlgoPrefix(algo);
+		for (String paramKey : allParams.keySet()) {
+			if (paramKey.startsWith(prefix))
+				algoParams.put(paramKey, allParams.get(paramKey));
+		}
+		return algoParams;
+	}
+
+	private String getAlgoPrefix(SolverAlgorithm algo) {
+		Map<SolverAlgorithm, String> prefixTable = Maps.newHashMap();
+		prefixTable.put(SolverAlgorithm.LEUNG, "leung");
+		prefixTable.put(SolverAlgorithm.CHINESE_WHISPERS, "cw");
+		prefixTable.put(SolverAlgorithm.MARKOV_CLUSTERING, "mcl");
+		return prefixTable.get(algo);
 	}
 
 	private void copyRootElementsNotAffected() {

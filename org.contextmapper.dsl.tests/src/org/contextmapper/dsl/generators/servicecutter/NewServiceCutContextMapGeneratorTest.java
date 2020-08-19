@@ -53,7 +53,8 @@ public class NewServiceCutContextMapGeneratorTest extends AbstractCMLInputFileTe
 		// when
 		IGenerator2 generator = new NewServiceCutContextMapGenerator();
 		generator.doGenerate(input.getResource(), getFileSystemAccess(), new GeneratorContext());
-		File generatedFile = new File(input.getResource().getURI().trimFileExtension().trimSegments(1).appendSegment("DDD_Sample_Input_NewCut_1").appendFileExtension("cml").toFileString());
+		File generatedFile = new File(
+				input.getResource().getURI().trimFileExtension().trimSegments(1).appendSegment("DDD_Sample_Input_Markov_Clustering_Cut_1").appendFileExtension("cml").toFileString());
 
 		// then
 		assertTrue(generatedFile.exists());
@@ -69,7 +70,7 @@ public class NewServiceCutContextMapGeneratorTest extends AbstractCMLInputFileTe
 		IGenerator2 generator = new NewServiceCutContextMapGenerator();
 		generator.doGenerate(input.getResource(), getFileSystemAccess(), new GeneratorContext());
 		File generatedFile = new File(
-				input.getResource().getURI().trimFileExtension().trimSegments(1).appendSegment("DDD_Sample_Input_Root-Elements_NewCut_1").appendFileExtension("cml").toFileString());
+				input.getResource().getURI().trimFileExtension().trimSegments(1).appendSegment("DDD_Sample_Input_Root-Elements_Markov_Clustering_Cut_1").appendFileExtension("cml").toFileString());
 
 		// then
 		assertTrue(generatedFile.exists());
@@ -92,8 +93,10 @@ public class NewServiceCutContextMapGeneratorTest extends AbstractCMLInputFileTe
 		generator.doGenerate(input.getResource(), getFileSystemAccess(), new GeneratorContext());
 
 		// then
-		assertTrue(new File(input.getResource().getURI().trimFileExtension().trimSegments(1).appendSegment("DDD_Sample_Input_NewCut_1").appendFileExtension("cml").toFileString()).exists());
-		assertTrue(new File(input.getResource().getURI().trimFileExtension().trimSegments(1).appendSegment("DDD_Sample_Input_NewCut_2").appendFileExtension("cml").toFileString()).exists());
+		assertTrue(new File(input.getResource().getURI().trimFileExtension().trimSegments(1).appendSegment("DDD_Sample_Input_Markov_Clustering_Cut_1").appendFileExtension("cml").toFileString())
+				.exists());
+		assertTrue(new File(input.getResource().getURI().trimFileExtension().trimSegments(1).appendSegment("DDD_Sample_Input_Markov_Clustering_Cut_2").appendFileExtension("cml").toFileString())
+				.exists());
 	}
 
 	@Test
