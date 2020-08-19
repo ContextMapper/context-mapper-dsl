@@ -3,7 +3,6 @@ ContextMap {
 	contains TestBackend
 
 	TestBackend [ PL ] -> [ ACL ] TestFrontend
-
 }
 
 BoundedContext TestSystem {

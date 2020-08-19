@@ -36,8 +36,7 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 	@Inject extension ContextMappingDSLGrammarAccess
 
 	def dispatch void format(ContextMappingModel contextMappingModel, extension IFormattableDocument document) {
-		var ignoredFirst = contextMappingModel.firstLineComment != null &&
-			!"".equals(contextMappingModel.firstLineComment)
+		var ignoredFirst = contextMappingModel.topComment != null && !"".equals(contextMappingModel.topComment)
 		for (cmlImport : contextMappingModel.imports) {
 			if (ignoredFirst) {
 				cmlImport.prepend[newLine]
@@ -62,9 +61,14 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 	def dispatch void format(ContextMap contextMap, extension IFormattableDocument document) {
 		interior(
 			contextMap.regionFor.ruleCallTo(OPENRule).append[newLine],
-			contextMap.regionFor.ruleCallTo(CLOSERule).prepend[newLines = 2].append[newLines = 2]
+			contextMap.regionFor.ruleCallTo(CLOSERule).prepend[newLine].append[newLines = 2]
 		)[indent]
 
+		var model = contextMap.eContainer as ContextMappingModel
+		var hasTopComment = model.topComment != null && !"".equals(model.topComment)
+
+		if (hasTopComment)
+			contextMap.regionFor.keyword("ContextMap").prepend[newLine]
 		contextMap.regionFor.keyword("type").prepend[newLine]
 		contextMap.regionFor.keyword("state").prepend[newLine]
 

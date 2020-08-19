@@ -88,7 +88,7 @@ public class MergeBoundedContextsRefactoring extends AbstractRefactoring impleme
 
 		// create comment if BC2 file is empty
 		if (bc2Model.getMap() == null && bc2Model.getBoundedContexts().isEmpty())
-			bc2Model.setFirstLineComment("// Due to the application of 'Merge Bounded Contexts' this file no longer contains any Bounded Contexts.");
+			bc2Model.setTopComment("// Due to the application of 'Merge Bounded Contexts' this file no longer contains any Bounded Contexts.");
 	}
 
 	private String mergeImplementationTechnologies(String implementationTechnology1, String implementationTechnology2) {
