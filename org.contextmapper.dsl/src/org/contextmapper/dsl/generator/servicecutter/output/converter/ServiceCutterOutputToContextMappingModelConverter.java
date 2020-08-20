@@ -45,6 +45,7 @@ import org.eclipse.xtext.EcoreUtil2;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 import ch.hsr.servicecutter.api.ServiceCutterContext;
 import ch.hsr.servicecutter.api.model.Service;
@@ -106,6 +107,7 @@ public class ServiceCutterOutputToContextMappingModelConverter {
 		}
 		for (Service service : serviceCutterResult.getServices()) {
 			BoundedContext bc = createOrGetBoundedContext(service.getName());
+			bc.setComment(generateBCComment(service));
 
 			Aggregate aggregate = contextMappingFactory.createAggregate();
 			aggregate.setName("Aggregate_" + service.getId());
@@ -142,6 +144,40 @@ public class ServiceCutterOutputToContextMappingModelConverter {
 		}
 		sb.append(System.lineSeparator() + " */");
 		return sb.toString();
+	}
+
+	private String generateBCComment(Service service) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("/* This Bounded Context has been proposed by Service Cutter.");
+		if (this.originalModelState != null) {
+			sb.append(System.lineSeparator() + " * It contains parts of the domain models of the following original Bounded Contexts:");
+			for (BoundedContext bc : collectOriginalBoundedContexts4Service(service))
+				sb.append(System.lineSeparator() + " * - " + bc.getName());
+		}
+		sb.append(System.lineSeparator() + " */");
+		return sb.toString();
+	}
+
+	private Set<BoundedContext> collectOriginalBoundedContexts4Service(Service service) {
+		Set<BoundedContext> bcs = Sets.newHashSet();
+		for (String nanoEntity : service.getNanoentities()) {
+			BoundedContext bc = getOriginalBoundedContext4Nanoentity(nanoEntity);
+			if (bc != null)
+				bcs.add(bc);
+		}
+		return bcs;
+	}
+
+	private BoundedContext getOriginalBoundedContext4Nanoentity(String nanoEntity) {
+		String entityName = nanoEntity.split("\\.")[0];
+		String attributeName = nanoEntity.split("\\.")[1];
+		for (DomainObject obj : EcoreUtil2.eAllOfType(originalModelState, DomainObject.class).stream().filter(o -> o.getName().equals(entityName)).collect(Collectors.toList())) {
+			if (obj.getAttributes().stream().anyMatch(a -> a.getName().equals(attributeName)))
+				return new CMLModelObjectsResolvingHelper().resolveBoundedContext(obj);
+			if (obj.getReferences().stream().anyMatch(r -> r.getName().equals(attributeName)))
+				return new CMLModelObjectsResolvingHelper().resolveBoundedContext(obj);
+		}
+		return null;
 	}
 
 	private Map<String, Double> getAlgorithmParameters4Algo(Map<String, Double> allParams, SolverAlgorithm algo) {
