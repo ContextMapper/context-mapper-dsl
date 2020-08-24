@@ -25,6 +25,7 @@ import org.contextmapper.dsl.cml.CMLResourceContainer;
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
+import org.contextmapper.dsl.contextMappingDSL.SculptorModule;
 import org.contextmapper.dsl.exception.ContextMapperApplicationException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -53,6 +54,32 @@ public class ExtractSuggestedServiceTest extends AbstractRefactoringTest {
 		Aggregate aggregate = newBC.getAggregates().get(0);
 		assertNotNull(aggregate);
 		assertEquals(10, aggregate.getDomainObjects().size());
+	}
+
+	@Test
+	public void canExtractServiceUsingModules() throws IOException {
+		// given
+		CMLResourceContainer model = getResourceCopyOfTestCML("extract-suggested-service-with-modules-test.cml");
+		BoundedContext contextToExtract = getResourceCopyOfTestCML("extract-suggested-service-with-modules-test_Markov_Clustering_Cut_1.cml").getContextMappingModel().getBoundedContexts().stream()
+				.filter(bc -> bc.getName().equals("Service_A")).findFirst().get();
+
+		// when
+		ExtractSuggestedService ar = new ExtractSuggestedService(contextToExtract, "ExtractedBC");
+		ar.refactor(model);
+		ar.persistChanges();
+		model = reloadResource(model);
+
+		// then
+		assertEquals(2, model.getContextMappingModel().getBoundedContexts().size());
+		BoundedContext origBC = model.getContextMappingModel().getBoundedContexts().stream().filter(bc -> bc.getName().equals("Monolith")).findFirst().get();
+		BoundedContext newBC = model.getContextMappingModel().getBoundedContexts().stream().filter(bc -> bc.getName().equals("ExtractedBC")).findFirst().get();
+		assertNotNull(origBC);
+		assertNotNull(newBC);
+		assertEquals(2, origBC.getModules().size());
+		assertEquals(1, newBC.getAggregates().size());
+		SculptorModule mod1 = origBC.getModules().stream().filter(m -> m.getName().equals("Module1")).findFirst().get();
+		assertNotNull(mod1);
+		assertEquals(0, mod1.getDomainObjects().size());
 	}
 
 	@Test

@@ -1,0 +1,14 @@
+BoundedContext Monolith {
+	Module Module1 {
+		Entity Customer {
+			String firstname
+			String lastname
+		}
+	}
+	Module Module2 {
+		Entity CustomerDTO {
+			String firstname
+			String lastname
+		}
+	}
+}
