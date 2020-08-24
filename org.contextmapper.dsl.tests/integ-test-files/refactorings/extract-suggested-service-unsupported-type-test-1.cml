@@ -1,0 +1,13 @@
+BoundedContext Monolith {
+	Aggregate SingleAggregate {
+		Entity Customer {
+			String firstname
+			String lastname
+
+		}
+		BasicType CustomerDTO {
+			String firstname
+			String lastname
+		}
+	}
+}

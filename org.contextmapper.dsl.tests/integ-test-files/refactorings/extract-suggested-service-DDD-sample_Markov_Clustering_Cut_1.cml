@@ -157,6 +157,10 @@ BoundedContext Service_A {
 		Entity CarrierMovement {
 			Date arrivalTime
 			Date departureTime
+			- Location arrivalLocation
+			- Location departureLocation
+			String nonExistingAttr4Test // attributes that do not exist in original model shall be ignored
+			- Location justAnotherLocationRef // references that do not exist in original model shall be ignored
 		}
 		Entity UnLocode {
 			String unlocode
