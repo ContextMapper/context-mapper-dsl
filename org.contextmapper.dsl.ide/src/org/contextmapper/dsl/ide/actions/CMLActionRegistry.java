@@ -28,6 +28,7 @@ import org.contextmapper.dsl.ide.actions.impl.DeriveSubdomainFromUserRequirement
 import org.contextmapper.dsl.ide.actions.impl.ExtractAggregatesByCohesionAction;
 import org.contextmapper.dsl.ide.actions.impl.ExtractAggregatesByVolatilityAction;
 import org.contextmapper.dsl.ide.actions.impl.ExtractSharedKernelAction;
+import org.contextmapper.dsl.ide.actions.impl.ExtractSuggestedServiceAction;
 import org.contextmapper.dsl.ide.actions.impl.MergeAggregatesAction;
 import org.contextmapper.dsl.ide.actions.impl.MergeBoundedContextsAction;
 import org.contextmapper.dsl.ide.actions.impl.SplitAggregateByEntitiesAction;
@@ -94,6 +95,7 @@ public class CMLActionRegistry {
 		codeActions.add(new SuspendPartnershipAction(resource, selectedObjects));
 		codeActions.add(new SwitchFromPartnershipToSharedKernelAction(resource, selectedObjects));
 		codeActions.add(new SwitchFromSharedKernelToPartnershipAction(resource, selectedObjects));
+		codeActions.add(new ExtractSuggestedServiceAction(resource, selectedObjects));
 
 		return Lists.newLinkedList(codeActions);
 	}

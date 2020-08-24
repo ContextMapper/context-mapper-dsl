@@ -1,0 +1,166 @@
+/**
+ * The CargoTracking context contains the domain model of the DDD Sample application with all its Aggregates:
+ */
+BoundedContext CargoTracking {
+	Aggregate Cargo {
+		Entity Cargo {
+			aggregateRoot
+			- TrackingId trackingId
+			- Location origin
+			- RouteSpecification routeSpecification
+			- Itinerary itinerary
+			- Delivery delivery
+		}
+		ValueObject TrackingId {
+			String id
+		}
+		ValueObject RouteSpecification {
+			- Location origin
+			- Location destination
+			Date arrivalDeadline
+		}
+		ValueObject Delivery {
+			- TransportStatus transportStatus
+			- Location lastKnownLocation
+			- Voyage currentVoyage
+			boolean misdirected
+			Date eta
+			- HandlingActivity nextExpectedActivity
+			boolean isUnloadedAtDestination
+			- RoutingStatus routingStatus
+			Date calculatedAt
+			- HandlingEvent lastEvent
+		}
+		ValueObject HandlingActivity {
+			Type handlingActivityType
+			- Location location
+			- Voyage voyage
+		}
+		ValueObject Itinerary {
+			- List<Leg> legs
+		}
+		ValueObject Leg {
+			- Voyage voyage
+			- Location loadLocation
+			- Location unloadLocation
+			Date loadTime
+			Date unloadTime
+		}
+		enum RoutingStatus {
+			NOT_ROUTED, ROUTED, MISROUTED;
+		}
+		enum TransportStatus {
+			NOT_RECEIVED, IN_PORT, ONBOARD_CARRIER, CLAIMED, UNKNOWN;
+		}
+	}
+	Aggregate Location {
+		Entity Location {
+			aggregateRoot
+			- UnLocode unLocode
+			String name
+		}
+		ValueObject UnLocode {
+			String unlocode
+		}
+	}
+	Aggregate Handling {
+		DomainEvent HandlingEvent {
+			- HandlingEventType handlingEventType
+			- Voyage voyage
+			- Location location
+			Date completionTime
+			Date registrationTime
+			- Cargo cargo
+		}
+		enum HandlingEventType {
+			LOAD, UNLOAD, RECEIVE, CLAIM, CUSTOMS
+		}
+		ValueObject HandlingHistory {
+			- List<HandlingEvent> handlingEvents
+		}
+	}
+	Aggregate Voyage {
+		Entity Voyage {
+			aggregateRoot
+			- VoyageNumber voyageNumber
+			- Schedule schedule
+		}
+		ValueObject CarrierMovement {
+			- Location departureLocation
+			- Location arrivalLocation
+			Date departureTime
+			Date arrivalTime
+		}
+		ValueObject Schedule {
+			- List<CarrierMovement> carrierMovements
+		}
+		ValueObject VoyageNumber {
+			String number
+		}
+	}
+}
+
+/* Use Cases (taken from Service Cutter examples) */
+UseCase ViewTracking {
+	interactions
+		read a "Cargo" with its "trackingId",
+		read an "HandlingEvent" with its "type", "location", "completionTime",
+		read a "Delivery" with its "transportStatus"
+}
+
+UseCase ViewCargos {
+	interactions
+		read a "Cargo" with its "trackindId",
+		read a "RouteSpecification" with its "destination", "arrivalDeadline",
+		read a "Delivery" with its "routingStatus",
+		read a "Itinerary" with its "itineraryNumber"
+}
+
+UseCase BookCargo {
+	interactions
+		read a "Location" with its "unLocode",
+		update a "Cargo" with its "trackingId",
+		update a "RouteSpecification" with its "origin", "arrivalDeadline", "destination"
+}
+
+UseCase ChangeCargoDestination {
+	interactions
+		read a "Cargo" with its "trackingId",
+		read a "RouteSpecification" with its "destination",
+		update a "RouteSpecification" with its "destination"
+}
+
+UseCase RouteCargo {
+	interactions
+		read a "Cargo" with its "trackindId",
+		read a "RouteSpecification" with its "destination", "origin", "arrivalDeadline",
+		read a "Location" with its "unLocode",
+		read a "Voyage" with its "voyageNumber",
+		read a "CarrierMovement" with its "departureLocation", "arrivalLocation", "departureTime", "arrivalTime",
+		update an "Itinerary" with its "itineraryNumber",
+		update a "Leg" with its "unloadLocation", "loadLocation", "loadTime", "unloadTime"
+}
+
+UseCase CreateLocation {
+	interactions
+		create a "Location" with its "inLocode", "name"
+}
+
+UseCase CreateVoyage {
+	interactions
+		create a "Voyage" with its "voyageNumber"
+}
+
+UseCase AddCarrierMovement {
+	interactions
+		read a "Voyage" with its "voyageNumber",
+		update a "CarrierMovement" with its "departureLocation", "arrivalLocation", "departureTime", "arrivalTime"
+}
+
+UseCase HandleCargoEvent {
+	interactions
+		read a "Voyage" with its "voyageNumer",
+		read a "Cargo" with its "trackingId",
+		update an "HandlingEvent" with its "type", "completionTime", "registrationTime", "location",
+		update an "Delivery" with its "transportStatus", "misdirected", "estimatedArrivalTime", "isUnloadedAtDestination", "routingStatus"
+}

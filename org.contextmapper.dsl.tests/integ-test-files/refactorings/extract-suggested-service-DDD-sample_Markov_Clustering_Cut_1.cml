@@ -1,0 +1,364 @@
+/* This CML model has been generated with Service Cutter.
+ * It decomposes the original CML model platform:/resource/test/src/ddd-service-cutting-sample/DDD-Sample.cml.
+ * The following user representations file was used for the decomposition: platform:/resource/test/src/ddd-service-cutting-sample/DDD-Sample.scl.
+ * 
+ * The service cut was generated with the following input parameters (.servicecutter.yml):
+ * Algorithm: MARKOV_CLUSTERING
+ * Identity & Lifecycle Commonality: M
+ * Security Constraint: M
+ * Storage Similarity: XS
+ * Security Criticality: XS
+ * Latency: M
+ * Structural Volatility: XS
+ * Consistency Criticality: XS
+ * Predefined Service Constraint: XL
+ * Availability Criticality: XS
+ * Semantic Proximity: M
+ * Consistency Constraint: M
+ * Shared Owner: M
+ * Content Volatility: XS
+ * Security Contextuality: M
+ */
+ContextMap {
+	contains Service_P
+	contains Service_L
+	contains Service_G
+	contains Service_J
+	contains Service_Q
+	contains Service_M
+	contains Service_I
+	contains Service_A
+	contains Service_H
+	contains Service_B
+	contains Service_N
+	contains Service_D
+	contains Service_K
+	contains Service_C
+	contains Service_F
+	contains Service_O
+	contains Service_E
+
+	Service_P -> Service_A
+
+	Service_G [SK] <-> [SK] Service_A
+
+	Service_H -> Service_G
+
+	Service_D -> Service_G
+
+	Service_G -> Service_E
+
+	Service_Q -> Service_A
+
+	Service_Q -> Service_E
+
+	Service_I -> Service_A
+
+	Service_H -> Service_A
+
+	Service_N -> Service_A
+
+	Service_D -> Service_A
+
+	Service_K -> Service_A
+
+	Service_F -> Service_A
+
+	Service_A [SK] <-> [SK] Service_E
+}
+
+/* This Bounded Context has been proposed by Service Cutter.
+ * It contains parts of the domain models of the following original Bounded Contexts:
+ * - CargoTracking
+ */
+BoundedContext Service_P {
+	Aggregate Aggregate_P {
+		/* Service Cut generator: it was not possible to reconstruct the reference 'arrivalLocation' from CarrierMovement to Location. Please re-create that reference manually. */
+		Entity CarrierMovement
+	}
+}
+
+/* This Bounded Context has been proposed by Service Cutter.
+ * It contains parts of the domain models of the following original Bounded Contexts:
+ * - CargoTracking
+ */
+BoundedContext Service_L {
+	Aggregate Aggregate_L {
+		/* Service Cut generator: it was not possible to reconstruct the reference 'voyage' from HandlingActivity to Voyage. Please re-create that reference manually. */
+		Entity HandlingActivity
+	}
+}
+
+/* This Bounded Context has been proposed by Service Cutter.
+ * It contains parts of the domain models of the following original Bounded Contexts:
+ * - CargoTracking
+ */
+BoundedContext Service_G {
+	Aggregate Aggregate_G {
+		/* Service Cut generator: it was not possible to reconstruct the reference 'origin' from Cargo to Location. Please re-create that reference manually. */
+		Entity Cargo {
+			- TrackingId trackingId
+			- Itinerary itinerary
+		}
+	}
+}
+
+/* This Bounded Context has been proposed by Service Cutter.
+ * It contains parts of the domain models of the following original Bounded Contexts:
+ * - CargoTracking
+ */
+BoundedContext Service_J {
+	Aggregate Aggregate_J {
+		Entity Voyage {
+			- Schedule schedule
+		}
+	}
+}
+
+/* This Bounded Context has been proposed by Service Cutter.
+ * It contains parts of the domain models of the following original Bounded Contexts:
+ * - CargoTracking
+ */
+BoundedContext Service_Q {
+	Aggregate Aggregate_Q {
+		/* Service Cut generator: it was not possible to reconstruct the reference 'origin' from RouteSpecification to Location. Please re-create that reference manually. */
+		Entity RouteSpecification
+	}
+}
+
+/* This Bounded Context has been proposed by Service Cutter.
+ * It contains parts of the domain models of the following original Bounded Contexts:
+ * - CargoTracking
+ */
+BoundedContext Service_M {
+	Aggregate Aggregate_M {
+		/* Service Cut generator: it was not possible to reconstruct the reference 'carrierMovements' from Schedule to CarrierMovement. Please re-create that reference manually. */
+		Entity Schedule
+	}
+}
+
+/* This Bounded Context has been proposed by Service Cutter.
+ * It contains parts of the domain models of the following original Bounded Contexts:
+ * - CargoTracking
+ */
+BoundedContext Service_I {
+	Aggregate Aggregate_I {
+		/* Service Cut generator: it was not possible to reconstruct the reference 'loadLocation' from Leg to Location. Please re-create that reference manually. */
+		Entity Leg
+	}
+}
+
+/* This Bounded Context has been proposed by Service Cutter.
+ * It contains parts of the domain models of the following original Bounded Contexts:
+ * - CargoTracking
+ */
+BoundedContext Service_A {
+	Aggregate Aggregate_A {
+		Entity CarrierMovement {
+			Date arrivalTime
+			Date departureTime
+		}
+		Entity UnLocode {
+			String unlocode
+		}
+		Entity HandlingActivity {
+			Type handlingActivityType
+		}
+		Entity RouteSpecification {
+			Date arrivalDeadline
+		}
+		Entity HandlingEvent {
+			Date registrationTime
+			Date completionTime
+		}
+		Entity Delivery {
+			Date calculatedAt
+			boolean isUnloadedAtDestination
+			Date eta
+			boolean misdirected
+		}
+		Entity TrackingId {
+			String id
+		}
+		Entity Leg {
+			Date loadTime
+			Date unloadTime
+		}
+		Entity VoyageNumber {
+			String number
+		}
+		Entity Location {
+			String name
+		}
+	}
+}
+
+/* This Bounded Context has been proposed by Service Cutter.
+ * It contains parts of the domain models of the following original Bounded Contexts:
+ * - CargoTracking
+ */
+BoundedContext Service_H {
+	Aggregate Aggregate_H {
+		/* Service Cut generator: it was not possible to reconstruct the reference 'lastEvent' from Delivery to HandlingEvent. Please re-create that reference manually. */
+		Entity Delivery
+	}
+}
+
+/* This Bounded Context has been proposed by Service Cutter.
+ * It contains parts of the domain models of the following original Bounded Contexts:
+ * - CargoTracking
+ */
+BoundedContext Service_B {
+	Aggregate Aggregate_B {
+		/* Service Cut generator: it was not possible to reconstruct the reference 'handlingEvents' from HandlingHistory to HandlingEvent. Please re-create that reference manually. */
+		Entity HandlingHistory
+	}
+}
+
+/* This Bounded Context has been proposed by Service Cutter.
+ * It contains parts of the domain models of the following original Bounded Contexts:
+ * - CargoTracking
+ */
+BoundedContext Service_N {
+	Aggregate Aggregate_N {
+		/* Service Cut generator: it was not possible to reconstruct the reference 'unloadLocation' from Leg to Location. Please re-create that reference manually. */
+		Entity Leg
+	}
+}
+
+/* This Bounded Context has been proposed by Service Cutter.
+ * It contains parts of the domain models of the following original Bounded Contexts:
+ * - CargoTracking
+ */
+BoundedContext Service_D {
+	Aggregate Aggregate_D {
+		/* Service Cut generator: it was not possible to reconstruct the reference 'voyage' from HandlingEvent to Voyage. Please re-create that reference manually. */
+		Entity HandlingEvent {
+			- Cargo cargo
+		}
+	}
+}
+
+/* This Bounded Context has been proposed by Service Cutter.
+ * It contains parts of the domain models of the following original Bounded Contexts:
+ * - CargoTracking
+ */
+BoundedContext Service_K {
+	Aggregate Aggregate_K {
+		Entity Voyage {
+			- VoyageNumber voyageNumber
+		}
+	}
+}
+
+/* This Bounded Context has been proposed by Service Cutter.
+ * It contains parts of the domain models of the following original Bounded Contexts:
+ * - CargoTracking
+ */
+BoundedContext Service_C {
+	Aggregate Aggregate_C {
+		/* Service Cut generator: it was not possible to reconstruct the reference 'location' from HandlingActivity to Location. Please re-create that reference manually. */
+		Entity HandlingActivity
+	}
+}
+
+/* This Bounded Context has been proposed by Service Cutter.
+ * It contains parts of the domain models of the following original Bounded Contexts:
+ * - CargoTracking
+ */
+BoundedContext Service_F {
+	Aggregate Aggregate_F {
+		/* Service Cut generator: it was not possible to reconstruct the reference 'departureLocation' from CarrierMovement to Location. Please re-create that reference manually. */
+		Entity CarrierMovement
+	}
+}
+
+/* This Bounded Context has been proposed by Service Cutter.
+ * It contains parts of the domain models of the following original Bounded Contexts:
+ * - CargoTracking
+ */
+BoundedContext Service_O {
+	Aggregate Aggregate_O {
+		/* Service Cut generator: it was not possible to reconstruct the reference 'legs' from Itinerary to Leg. Please re-create that reference manually. */
+		Entity Itinerary
+	}
+}
+
+/* This Bounded Context has been proposed by Service Cutter.
+ * It contains parts of the domain models of the following original Bounded Contexts:
+ * - CargoTracking
+ */
+BoundedContext Service_E {
+	Aggregate Aggregate_E {
+		/* Service Cut generator: it was not possible to reconstruct the reference 'destination' from RouteSpecification to Location. Please re-create that reference manually. */
+		Entity RouteSpecification
+		Entity Location {
+			- UnLocode unLocode
+		}
+	}
+}
+
+UseCase ViewTracking {
+	interactions
+	"read" "Cargo" with its "trackingId" ,
+	"read" "HandlingEvent" with its "type" , "location" , "completionTime" ,
+	"read" "Delivery" with its "transportStatus"
+}
+
+UseCase ViewCargos {
+	interactions
+	"read" "Cargo" with its "trackindId" ,
+	"read" "RouteSpecification" with its "destination" , "arrivalDeadline" ,
+	"read" "Delivery" with its "routingStatus" ,
+	"read" "Itinerary" with its "itineraryNumber"
+}
+
+UseCase BookCargo {
+	interactions
+	"read" "Location" with its "unLocode" ,
+	"update" "Cargo" with its "trackingId" ,
+	"update" "RouteSpecification" with its "origin" , "arrivalDeadline" , "destination"
+}
+
+UseCase ChangeCargoDestination {
+	interactions
+	"read" "Cargo" with its "trackingId" ,
+	"read" "RouteSpecification" with its "destination" ,
+	"update" "RouteSpecification" with its "destination"
+}
+
+UseCase RouteCargo {
+	interactions
+	"read" "Cargo" with its "trackindId" ,
+	"read" "RouteSpecification" with its "destination" , "origin" , "arrivalDeadline" ,
+	"read" "Location" with its "unLocode" ,
+	"read" "Voyage" with its "voyageNumber" ,
+	"read" "CarrierMovement" with its "departureLocation" , "arrivalLocation" , "departureTime" , "arrivalTime" ,
+	"update" "Itinerary" with its "itineraryNumber" ,
+	"update" "Leg" with its "unloadLocation" , "loadLocation" , "loadTime" , "unloadTime"
+}
+
+UseCase CreateLocation {
+	interactions
+	"create" "Location" with its "inLocode" , "name"
+}
+
+UseCase CreateVoyage {
+	interactions
+	"create" "Voyage" with its "voyageNumber"
+}
+
+UseCase AddCarrierMovement {
+	interactions
+	"read" "Voyage" with its "voyageNumber" ,
+	"update" "CarrierMovement" with its "departureLocation" , "arrivalLocation" , "departureTime" , "arrivalTime"
+}
+
+UseCase HandleCargoEvent {
+	interactions
+	"read" "Voyage" with its "voyageNumer" ,
+	"read" "Cargo" with its "trackingId" ,
+	"update" "HandlingEvent" with its "type" , "completionTime" , "registrationTime" , "location" ,
+	"update" "Delivery" with its "transportStatus" , "misdirected" , "estimatedArrivalTime" , "isUnloadedAtDestination" , "routingStatus"
+}
+
