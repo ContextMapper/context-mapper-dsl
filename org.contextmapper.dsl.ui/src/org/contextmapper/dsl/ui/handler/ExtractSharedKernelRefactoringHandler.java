@@ -15,7 +15,7 @@
  */
 package org.contextmapper.dsl.ui.handler;
 
-import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.contextMappingDSL.SharedKernel;
 import org.contextmapper.dsl.refactoring.ExtractSharedKernelRefactoring;
 import org.contextmapper.dsl.refactoring.SemanticCMLRefactoring;
@@ -25,7 +25,7 @@ import org.eclipse.emf.ecore.EObject;
 public class ExtractSharedKernelRefactoringHandler extends AbstractRefactoringHandler {
 
 	@Override
-	protected void executeRefactoring(CMLResourceContainer resource, ExecutionEvent event) {
+	protected void executeRefactoring(CMLResource resource, ExecutionEvent event) {
 		SharedKernel sk = (SharedKernel) getSelectedElement();
 		SemanticCMLRefactoring ar = new ExtractSharedKernelRefactoring(sk.getParticipant1().getName(), sk.getParticipant2().getName());
 		ar.refactor(resource);

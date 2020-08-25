@@ -30,7 +30,7 @@ import org.contextmapper.contextmap.generator.model.SharedKernel;
 import org.contextmapper.contextmap.generator.model.UpstreamDownstreamRelationship;
 import org.contextmapper.contextmap.generator.model.UpstreamPatterns;
 import org.contextmapper.dsl.AbstractCMLInputFileTest;
-import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.generator.contextmap.ContextMapModelConverter;
 import org.junit.jupiter.api.Test;
@@ -41,7 +41,7 @@ public class ContextMapModelConverterTest extends AbstractCMLInputFileTest {
 	public void canConvertContextMap() throws IOException {
 		// given
 		String inputModelName = "test-context-map-1.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 		ContextMappingModel model = input.getContextMappingModel();
 
 		// when

@@ -15,7 +15,7 @@
  */
 package org.contextmapper.dsl.ui.handler;
 
-import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.exception.ContextMapperApplicationException;
 import org.contextmapper.dsl.refactoring.ExtractSuggestedService;
@@ -59,7 +59,7 @@ public class ExtractSuggestedServiceRefactoringHandler extends AbstractRefactori
 	}
 
 	@Override
-	protected void executeRefactoring(CMLResourceContainer resource, ExecutionEvent event) {
+	protected void executeRefactoring(CMLResource resource, ExecutionEvent event) {
 		BoundedContext bc = (BoundedContext) getSelectedElement();
 
 		ChooseName4NewBoundedContextContext refactoringContext = new ChooseName4NewBoundedContextContext("NewBoundedContext");
@@ -68,12 +68,12 @@ public class ExtractSuggestedServiceRefactoringHandler extends AbstractRefactori
 			throw new ContextMapperApplicationException("We were not able to find the original CML model. Please do not rename the models after generating service cut suggestions.");
 
 		new WizardDialog(HandlerUtil.getActiveShell(event), new ChooseName4NewBoundedContextWizard(refactoringContext, executionContext -> {
-			return finishRefactoring(new ExtractSuggestedService(bc, executionContext.getNewBoundedContextName()), new CMLResourceContainer(originalCMLResource), event);
+			return finishRefactoring(new ExtractSuggestedService(bc, executionContext.getNewBoundedContextName()), new CMLResource(originalCMLResource), event);
 		})).open();
 	}
 
 	@Override
-	protected boolean finishRefactoring(SemanticCMLRefactoring ar, CMLResourceContainer resource, ExecutionEvent event) {
+	protected boolean finishRefactoring(SemanticCMLRefactoring ar, CMLResource resource, ExecutionEvent event) {
 		IWorkbenchPage workbenchPage = getCurrentWorkbenchPage();
 		if (workbenchPage != null && originalCMLResource != null) {
 			IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(originalCMLResource.getURI().toPlatformString(false)));

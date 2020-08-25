@@ -18,7 +18,7 @@ package org.contextmapper.dsl.ui.handler;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.refactoring.SemanticCMLRefactoring;
 import org.contextmapper.dsl.refactoring.henshin.SplitAggregateByEntitiesRefactoring;
@@ -30,7 +30,7 @@ import org.eclipse.emf.ecore.EObject;
 public class SplitAggregateByEntitiesRefactoringHandler extends AbstractRefactoringHandler {
 
 	@Override
-	protected void executeRefactoring(CMLResourceContainer resource, ExecutionEvent event) {
+	protected void executeRefactoring(CMLResource resource, ExecutionEvent event) {
 		Aggregate aggregate = (Aggregate) getSelectedElement();
 		SemanticCMLRefactoring ar = new SplitAggregateByEntitiesRefactoring(aggregate.getName());
 		ar.refactor(resource, getAllResources());

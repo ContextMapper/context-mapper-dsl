@@ -19,11 +19,11 @@ import com.google.common.collect.Lists
 import com.google.gson.JsonPrimitive
 import com.google.inject.Inject
 import org.apache.log4j.Logger
-import org.contextmapper.dsl.cml.CMLResourceContainer
 import org.eclipse.lsp4j.ExecuteCommandParams
 import org.eclipse.xtext.ide.server.ILanguageServerAccess
 import org.eclipse.xtext.ide.server.commands.IExecutableCommandService
 import org.eclipse.xtext.util.CancelIndicator
+import org.contextmapper.dsl.cml.CMLResource
 
 class CMLCommandService implements IExecutableCommandService {
 
@@ -51,7 +51,7 @@ class CMLCommandService implements IExecutableCommandService {
 					"CML LSP command has been called: " + params.getCommand() + " (" + params.getArguments().get(0) +
 						")");
 				try {
-					command.executeCommand(new CMLResourceContainer(resource), document, access, params);
+					command.executeCommand(new CMLResource(resource), document, access, params);
 				} catch (Exception e) {
 					LOG.error("The command '" + command + "' resulted in an error", e);
 					e.printStackTrace(System.out);

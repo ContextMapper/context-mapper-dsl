@@ -17,7 +17,7 @@ package org.contextmapper.dsl.ide.commands.impl.generation;
 
 import java.nio.file.Paths;
 
-import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.generator.NewServiceCutContextMapGenerator;
 import org.eclipse.lsp4j.ExecuteCommandParams;
 import org.eclipse.xtext.generator.GeneratorContext;
@@ -35,10 +35,10 @@ import org.eclipse.xtext.ide.server.ILanguageServerAccess;
 public class NewServiceCutGenerationCommand extends AbstractGenerationCommand {
 
 	@Override
-	public void executeCommand(CMLResourceContainer cmlResource, Document document, ILanguageServerAccess access, ExecuteCommandParams params) {
+	public void executeCommand(CMLResource cmlResource, Document document, ILanguageServerAccess access, ExecuteCommandParams params) {
 		NewServiceCutContextMapGenerator serviceCutGenerator = (NewServiceCutContextMapGenerator) getGenerator();
 		serviceCutGenerator.setProjectDirectory(Paths.get(access.getInitializeParams().getRootUri().replace("file:", "")).toFile());
-		serviceCutGenerator.doGenerate(cmlResource.getResource(), getFileSystemAccess(), new GeneratorContext());
+		serviceCutGenerator.doGenerate(cmlResource, getFileSystemAccess(), new GeneratorContext());
 	}
 
 	@Override

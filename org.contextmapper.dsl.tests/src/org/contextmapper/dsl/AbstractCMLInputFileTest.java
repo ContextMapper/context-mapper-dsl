@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 
 import org.apache.commons.io.FileUtils;
-import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.servicecutter.dsl.ServiceCutterConfigurationDSLStandaloneSetup;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -42,11 +42,11 @@ public abstract class AbstractCMLInputFileTest extends AbstractDirectoryIntegrat
 		this.resourceSet = new ResourceSetImpl();
 	}
 
-	protected CMLResourceContainer getResourceCopyOfTestCML(String testCMLName) throws IOException {
+	protected CMLResource getResourceCopyOfTestCML(String testCMLName) throws IOException {
 		File testFile = new File(testDir, testCMLName);
 		FileUtils.copyFile(getTestFile(testCMLName), testFile);
 		new ContextMappingDSLStandaloneSetup().createInjectorAndDoEMFRegistration();
-		return new CMLResourceContainer(resourceSet.getResource(URI.createFileURI(testFile.getAbsolutePath()), true));
+		return new CMLResource(resourceSet.getResource(URI.createFileURI(testFile.getAbsolutePath()), true));
 	}
 
 	protected File getCopyOfTestInputFile(String testInputFileName) throws IOException {
@@ -60,8 +60,8 @@ public abstract class AbstractCMLInputFileTest extends AbstractDirectoryIntegrat
 	 */
 	protected ResourceSet getResourceSetOfTestCMLFiles(String... testCMLFileNames) throws IOException {
 		for (String testFileName : testCMLFileNames) {
-			CMLResourceContainer cmlResource = this.getResourceCopyOfTestCML(testFileName);
-			resourceSet.getResource(cmlResource.getResource().getURI(), true);
+			CMLResource cmlResource = this.getResourceCopyOfTestCML(testFileName);
+			resourceSet.getResource(cmlResource.getURI(), true);
 		}
 		return resourceSet;
 	}
@@ -69,13 +69,13 @@ public abstract class AbstractCMLInputFileTest extends AbstractDirectoryIntegrat
 	/**
 	 * Only use this method if model is not changed!!
 	 */
-	protected CMLResourceContainer getOriginalResourceOfTestCML(String testCMLName) throws IOException {
+	protected CMLResource getOriginalResourceOfTestCML(String testCMLName) throws IOException {
 		File testFile = getTestFile(testCMLName);
 		new ContextMappingDSLStandaloneSetup().createInjectorAndDoEMFRegistration();
-		return new CMLResourceContainer(resourceSet.getResource(URI.createFileURI(testFile.getAbsolutePath()), true));
+		return new CMLResource(resourceSet.getResource(URI.createFileURI(testFile.getAbsolutePath()), true));
 	}
 
-	protected CMLResourceContainer getOriginalResourceOfTestCML(String testCMLName, boolean setupServiceCutterDSL) throws IOException {
+	protected CMLResource getOriginalResourceOfTestCML(String testCMLName, boolean setupServiceCutterDSL) throws IOException {
 		if (setupServiceCutterDSL)
 			new ServiceCutterConfigurationDSLStandaloneSetup().createInjectorAndDoEMFRegistration();
 		return getOriginalResourceOfTestCML(testCMLName);
@@ -89,9 +89,9 @@ public abstract class AbstractCMLInputFileTest extends AbstractDirectoryIntegrat
 		return rs.getResource(URI.createFileURI(testFile.getAbsolutePath()), true);
 	}
 
-	protected CMLResourceContainer reloadResource(CMLResourceContainer resource) {
+	protected CMLResource reloadResource(CMLResource resource) {
 		ResourceSet rs = new ResourceSetImpl();
-		return new CMLResourceContainer(rs.getResource(URI.createFileURI(resource.getResource().getURI().devicePath()), true));
+		return new CMLResource(rs.getResource(URI.createFileURI(resource.getURI().devicePath()), true));
 	}
 
 	protected File getTestFile(String testCMLName) {

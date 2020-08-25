@@ -17,7 +17,7 @@ package org.contextmapper.dsl.ide.commands.impl.refactoring;
 
 import java.util.Optional;
 
-import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.exception.ContextMapperApplicationException;
 import org.contextmapper.dsl.ide.edit.WorkspaceEditRecorder;
@@ -33,14 +33,14 @@ import com.google.gson.JsonPrimitive;
 
 public class ExtractSuggestedServiceCommand extends AbstractRefactoringCommand {
 
-	private CMLResourceContainer cmlResource;
+	private CMLResource cmlResource;
 
 	public ExtractSuggestedServiceCommand(WorkspaceEditRecorder editRecorder) {
 		super(editRecorder);
 	}
 
 	@Override
-	public void executeCommand(CMLResourceContainer cmlResource, Document document, ILanguageServerAccess access, ExecuteCommandParams params) {
+	public void executeCommand(CMLResource cmlResource, Document document, ILanguageServerAccess access, ExecuteCommandParams params) {
 		this.cmlResource = cmlResource;
 		super.executeCommand(cmlResource, document, access, params);
 	}
@@ -54,7 +54,7 @@ public class ExtractSuggestedServiceCommand extends AbstractRefactoringCommand {
 		JsonPrimitive newBoundedContextName = (JsonPrimitive) refactoringParams.get(2);
 
 		URI serviceCutURI = URI.createURI(serviceCutResourceURI.getAsString());
-		CMLResourceContainer serviceCutResource = new CMLResourceContainer(cmlResource.getResource().getResourceSet().getResource(serviceCutURI, true));
+		CMLResource serviceCutResource = new CMLResource(cmlResource.getResourceSet().getResource(serviceCutURI, true));
 		Optional<BoundedContext> serviceToExtract = serviceCutResource.getContextMappingModel().getBoundedContexts().stream().filter(bc -> bc.getName().equals(serviceToExtractName.getAsString()))
 				.findFirst();
 		if (!serviceToExtract.isPresent())

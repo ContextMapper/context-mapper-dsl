@@ -15,7 +15,7 @@
  */
 package org.contextmapper.dsl.refactoring.henshin;
 
-import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.refactoring.AbstractRefactoring;
 import org.contextmapper.dsl.refactoring.SemanticCMLRefactoring;
 import org.eclipse.emf.henshin.interpreter.EGraph;
@@ -43,8 +43,8 @@ public abstract class AbstractHenshinRefactoring extends AbstractRefactoring imp
 		Module module = resourceSet.getModule(transformationFile, false);
 
 		// Load the example model into an EGraph
-		CMLResourceContainer transformationResource = getTransformationResource();
-		EGraph graph = new EGraphImpl(transformationResource.getResource());
+		CMLResource transformationResource = getTransformationResource();
+		EGraph graph = new EGraphImpl(transformationResource);
 
 		// Create an engine and a rule application
 		Engine engine = new EngineImpl();
@@ -58,8 +58,8 @@ public abstract class AbstractHenshinRefactoring extends AbstractRefactoring imp
 			throwTransformationError();
 
 		// replace transformed model in resource
-		transformationResource.getResource().getContents().clear();
-		transformationResource.getResource().getContents().add(graph.getRoots().get(0));
+		transformationResource.getContents().clear();
+		transformationResource.getContents().add(graph.getRoots().get(0));
 
 		// post-processing
 		postProcessing(transformationResource);
@@ -72,7 +72,7 @@ public abstract class AbstractHenshinRefactoring extends AbstractRefactoring imp
 	 * 
 	 * @return the CML resource that shall be transformed
 	 */
-	protected abstract CMLResourceContainer getTransformationResource();
+	protected abstract CMLResource getTransformationResource();
 
 	/**
 	 * Method has to be implemented to provide the name of the Henshin
@@ -106,7 +106,7 @@ public abstract class AbstractHenshinRefactoring extends AbstractRefactoring imp
 	 * 
 	 * @param resource The resource already transformed by Henshin.
 	 */
-	protected void postProcessing(CMLResourceContainer resource) {
+	protected void postProcessing(CMLResource resource) {
 		// nothing to do
 	}
 

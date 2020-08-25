@@ -19,7 +19,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.contextMappingDSL.Subdomain;
 import org.contextmapper.dsl.refactoring.DeriveBoundedContextFromSubdomains;
 import org.contextmapper.dsl.ui.handler.wizard.DeriveBoundedContextFromSubdomainsContext;
@@ -32,7 +32,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 public class GenerateBoundedContextFromSubdomainRefactoringHandler extends AbstractRefactoringWithUserInputHandler {
 
 	@Override
-	protected void executeRefactoring(CMLResourceContainer resource, ExecutionEvent event) {
+	protected void executeRefactoring(CMLResource resource, ExecutionEvent event) {
 		Set<Subdomain> subdomains = getAllSelectedElements().stream().filter(sd -> sd instanceof Subdomain).map(sd -> (Subdomain) sd).collect(Collectors.toSet());
 		Set<String> boundedContexts = resource.getContextMappingModel().getBoundedContexts().stream().map(bc -> bc.getName()).collect(Collectors.toSet());
 		Set<String> ids = subdomains.stream().map(sd -> sd.getName()).collect(Collectors.toSet());

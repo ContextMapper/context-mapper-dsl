@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.contextMappingDSL.UserRequirement;
 import org.contextmapper.dsl.ide.actions.CMLCodeAction;
 import org.eclipse.emf.ecore.EObject;
@@ -35,10 +35,10 @@ import com.google.common.collect.Lists;
  */
 public class DeriveSubdomainFromUserRequirementsAction implements CMLCodeAction {
 
-	private CMLResourceContainer cmlResource;
+	private CMLResource cmlResource;
 	private List<EObject> editorSelection;
 
-	public DeriveSubdomainFromUserRequirementsAction(CMLResourceContainer cmlResource, List<EObject> editorSelection) {
+	public DeriveSubdomainFromUserRequirementsAction(CMLResource cmlResource, List<EObject> editorSelection) {
 		this.cmlResource = cmlResource;
 		this.editorSelection = editorSelection;
 	}
@@ -51,7 +51,7 @@ public class DeriveSubdomainFromUserRequirementsAction implements CMLCodeAction 
 	@Override
 	public Command getCommand() {
 		List<Object> commandArguments = Lists.newLinkedList();
-		commandArguments.add(cmlResource.getResource().getURI().toString());
+		commandArguments.add(cmlResource.getURI().toString());
 		commandArguments.addAll(getSelectedUserRequirements().stream().map(ur -> ur.getName()).collect(Collectors.toSet()));
 		return new Command("Derive Subdomain From User Requirements", "cml.ar.deriveSubdomainFromURs.proxy", commandArguments);
 	}

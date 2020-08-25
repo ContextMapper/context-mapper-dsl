@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 
-import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.Partnership;
@@ -34,7 +34,7 @@ public class SwitchFromSharedKernelToPartnershipRefactoringTest extends Abstract
 	@Test
 	public void canSwitchFromSharedKernelToPartnership() throws IOException {
 		// given
-		CMLResourceContainer input = getResourceCopyOfTestCML("switch-from-sharedkernel-to-partnership-test-1-input.cml");
+		CMLResource input = getResourceCopyOfTestCML("switch-from-sharedkernel-to-partnership-test-1-input.cml");
 
 		// when
 		new SwitchFromSharedKernelToPartnershipRefactoring("CustomerManagement", "AnotherContext").refactor(input);
@@ -56,7 +56,7 @@ public class SwitchFromSharedKernelToPartnershipRefactoringTest extends Abstract
 		// given
 		String boundedContext1 = "TestContext";
 		String boundedContext2 = null;
-		CMLResourceContainer input = getResourceCopyOfTestCML("switch-from-sharedkernel-to-partnership-precondition-checks-input.cml");
+		CMLResource input = getResourceCopyOfTestCML("switch-from-sharedkernel-to-partnership-precondition-checks-input.cml");
 
 		// when, then
 		Assertions.assertThrows(RefactoringInputException.class, () -> {
@@ -69,7 +69,7 @@ public class SwitchFromSharedKernelToPartnershipRefactoringTest extends Abstract
 		// given
 		String boundedContext1 = null;
 		String boundedContext2 = "TestContext";
-		CMLResourceContainer input = getResourceCopyOfTestCML("switch-from-sharedkernel-to-partnership-precondition-checks-input.cml");
+		CMLResource input = getResourceCopyOfTestCML("switch-from-sharedkernel-to-partnership-precondition-checks-input.cml");
 
 		// when, then
 		Assertions.assertThrows(RefactoringInputException.class, () -> {
@@ -82,7 +82,7 @@ public class SwitchFromSharedKernelToPartnershipRefactoringTest extends Abstract
 		// given
 		String boundedContext1 = "TestContext";
 		String boundedContext2 = "TestContext";
-		CMLResourceContainer input = getResourceCopyOfTestCML("switch-from-sharedkernel-to-partnership-precondition-checks-input.cml");
+		CMLResource input = getResourceCopyOfTestCML("switch-from-sharedkernel-to-partnership-precondition-checks-input.cml");
 
 		// when, then
 		Assertions.assertThrows(RefactoringInputException.class, () -> {
@@ -95,7 +95,7 @@ public class SwitchFromSharedKernelToPartnershipRefactoringTest extends Abstract
 		// given
 		String boundedContext1 = "CustomerManagement";
 		String boundedContext2 = "AnotherContext";
-		CMLResourceContainer input = getResourceCopyOfTestCML("switch-from-sharedkernel-to-partnership-precondition-checks-multiple-rels-input.cml");
+		CMLResource input = getResourceCopyOfTestCML("switch-from-sharedkernel-to-partnership-precondition-checks-multiple-rels-input.cml");
 
 		// when, then
 		Assertions.assertThrows(RefactoringInputException.class, () -> {
@@ -108,7 +108,7 @@ public class SwitchFromSharedKernelToPartnershipRefactoringTest extends Abstract
 		// given
 		String boundedContext1 = "TestContext1";
 		String boundedContext2 = "TestContext2";
-		CMLResourceContainer input = getResourceCopyOfTestCML("switch-from-sharedkernel-to-partnership-precondition-checks-no-rel-input.cml");
+		CMLResource input = getResourceCopyOfTestCML("switch-from-sharedkernel-to-partnership-precondition-checks-no-rel-input.cml");
 
 		// when, then
 		Assertions.assertThrows(RefactoringInputException.class, () -> {

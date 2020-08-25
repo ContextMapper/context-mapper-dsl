@@ -3,7 +3,7 @@ package org.contextmapper.dsl.ui.handler;
 import java.util.List;
 import java.util.Set;
 
-import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.Import;
 import org.contextmapper.dsl.exception.ContextMapperApplicationException;
@@ -57,7 +57,7 @@ public abstract class AbstractRefactoringHandler extends AbstractHandler impleme
 			IResource xResource = xEditor.getResource();
 			currentResourceSet = resourceSetProvider.get(xResource.getProject());
 			currentResource = getCurrentResource();
-			executeRefactoring(new CMLResourceContainer(currentResource), event);
+			executeRefactoring(new CMLResource(currentResource), event);
 		} catch (ContextMapperApplicationException e) {
 			MessageDialog.openInformation(HandlerUtil.getActiveShell(event), "Model Input", e.getMessage());
 		} catch (Exception e) {
@@ -119,7 +119,7 @@ public abstract class AbstractRefactoringHandler extends AbstractHandler impleme
 	/**
 	 * Implement this method to initialize and execute the requested refactoring.
 	 */
-	protected abstract void executeRefactoring(CMLResourceContainer resource, ExecutionEvent event);
+	protected abstract void executeRefactoring(CMLResource resource, ExecutionEvent event);
 
 	/**
 	 * Finds the selected element in the editor (where the user open the

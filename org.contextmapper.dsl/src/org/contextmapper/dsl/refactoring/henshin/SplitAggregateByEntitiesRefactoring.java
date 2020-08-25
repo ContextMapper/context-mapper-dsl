@@ -18,7 +18,7 @@ package org.contextmapper.dsl.refactoring.henshin;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
@@ -68,7 +68,7 @@ public class SplitAggregateByEntitiesRefactoring extends AbstractHenshinRefactor
 	}
 
 	@Override
-	protected void postProcessing(CMLResourceContainer resource) {
+	protected void postProcessing(CMLResource resource) {
 		ContextMappingModel model = resource.getContextMappingModel();
 		Aggregate inputAggregate = getSelectedAggregate(model);
 		if (inputAggregate == null)
@@ -128,7 +128,7 @@ public class SplitAggregateByEntitiesRefactoring extends AbstractHenshinRefactor
 	}
 
 	@Override
-	protected CMLResourceContainer getTransformationResource() {
+	protected CMLResource getTransformationResource() {
 		for (BoundedContext boundedContext : getAllBoundedContexts()) {
 			List<Aggregate> bcAggregates = EcoreUtil2.<Aggregate>getAllContentsOfType(boundedContext, Aggregate.class);
 			List<Aggregate> aggregatesWithInputName = bcAggregates.stream().filter(agg -> agg.getName().equals(aggregateName)).collect(Collectors.toList());

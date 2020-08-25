@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
 
-import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
@@ -36,7 +36,7 @@ public class ExtractSuggestedServiceTest extends AbstractRefactoringTest {
 	@Test
 	public void canExtractServiceFromDDDSample() throws IOException {
 		// given
-		CMLResourceContainer model = getResourceCopyOfTestCML("extract-suggested-service-DDD-sample.cml");
+		CMLResource model = getResourceCopyOfTestCML("extract-suggested-service-DDD-sample.cml");
 		BoundedContext contextToExtract = getResourceCopyOfTestCML("extract-suggested-service-DDD-sample_Markov_Clustering_Cut_1.cml").getContextMappingModel().getBoundedContexts().stream()
 				.filter(bc -> bc.getName().equals("Service_A")).findFirst().get();
 
@@ -59,7 +59,7 @@ public class ExtractSuggestedServiceTest extends AbstractRefactoringTest {
 	@Test
 	public void canExtractServiceUsingModules() throws IOException {
 		// given
-		CMLResourceContainer model = getResourceCopyOfTestCML("extract-suggested-service-with-modules-test.cml");
+		CMLResource model = getResourceCopyOfTestCML("extract-suggested-service-with-modules-test.cml");
 		BoundedContext contextToExtract = getResourceCopyOfTestCML("extract-suggested-service-with-modules-test_Markov_Clustering_Cut_1.cml").getContextMappingModel().getBoundedContexts().stream()
 				.filter(bc -> bc.getName().equals("Service_A")).findFirst().get();
 
@@ -85,7 +85,7 @@ public class ExtractSuggestedServiceTest extends AbstractRefactoringTest {
 	@Test
 	public void canThrowExceptionInCaseThereAreNoAttributes() throws IOException {
 		// given
-		CMLResourceContainer model = getResourceCopyOfTestCML("extract-suggested-service-empty-model-test.cml");
+		CMLResource model = getResourceCopyOfTestCML("extract-suggested-service-empty-model-test.cml");
 		BoundedContext contextToExtract = getResourceCopyOfTestCML("extract-suggested-service-DDD-sample_Markov_Clustering_Cut_1.cml").getContextMappingModel().getBoundedContexts().stream()
 				.filter(bc -> bc.getName().equals("Service_P")).findFirst().get();
 
@@ -99,7 +99,7 @@ public class ExtractSuggestedServiceTest extends AbstractRefactoringTest {
 	@ValueSource(strings = { "extract-suggested-service-unsupported-type-test-1", "extract-suggested-service-unsupported-type-test-2" })
 	public void canThrowException4UnsupportedType(String baseTestFileName) throws IOException {
 		// given
-		CMLResourceContainer model = getResourceCopyOfTestCML(baseTestFileName + ".cml");
+		CMLResource model = getResourceCopyOfTestCML(baseTestFileName + ".cml");
 		BoundedContext contextToExtract = getResourceCopyOfTestCML(baseTestFileName + "_Markov_Clustering_Cut_1.cml").getContextMappingModel().getBoundedContexts().stream()
 				.filter(bc -> bc.getName().equals("Service_A")).findFirst().get();
 

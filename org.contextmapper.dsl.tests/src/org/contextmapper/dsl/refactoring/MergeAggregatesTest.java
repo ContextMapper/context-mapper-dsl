@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
@@ -30,7 +30,7 @@ public class MergeAggregatesTest extends AbstractRefactoringTest {
 	void canMergeAggregates() throws IOException {
 		// given
 		String inputModelName = "merge-aggregates-test-1-input.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 		MergeAggregatesRefactoring refactoring = new MergeAggregatesRefactoring("Customers", "Addresses");
 
 		// when
@@ -59,7 +59,7 @@ public class MergeAggregatesTest extends AbstractRefactoringTest {
 	void canMergeAggregatesInModule() throws IOException {
 		// given
 		String inputModelName = "merge-aggregates-test-2-input.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 		MergeAggregatesRefactoring refactoring = new MergeAggregatesRefactoring("Customers", "Addresses");
 
 		// when
@@ -89,7 +89,7 @@ public class MergeAggregatesTest extends AbstractRefactoringTest {
 	void doesNotThrowExceptionIfAggregatesAreTheSame() throws IOException {
 		// given
 		String inputModelName = "merge-aggregates-test-1-input.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 		MergeAggregatesRefactoring refactoring = new MergeAggregatesRefactoring("Customers", "Customers");
 
 		// when
@@ -105,7 +105,7 @@ public class MergeAggregatesTest extends AbstractRefactoringTest {
 	void doesNotThrowExceptionIfFirstAggregateDoesNotExist() throws IOException {
 		// given
 		String inputModelName = "merge-aggregates-test-1-input.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 		MergeAggregatesRefactoring refactoring = new MergeAggregatesRefactoring("ThisAggregateDoesNotExist", "Customers");
 
 		// when
@@ -121,7 +121,7 @@ public class MergeAggregatesTest extends AbstractRefactoringTest {
 	void doesNotThrowExceptionIfSecondAggregateDoesNotExist() throws IOException {
 		// given
 		String inputModelName = "merge-aggregates-test-1-input.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 		MergeAggregatesRefactoring refactoring = new MergeAggregatesRefactoring("Customers", "ThisAggregateDoesNotExist");
 
 		// when
@@ -137,7 +137,7 @@ public class MergeAggregatesTest extends AbstractRefactoringTest {
 	void canMergeAndUpdateContextMap() throws IOException {
 		// given
 		String inputModelName = "merge-aggregates-test-3-input.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 		MergeAggregatesRefactoring refactoring = new MergeAggregatesRefactoring("Customers", "Addresses");
 
 		// when
@@ -176,7 +176,7 @@ public class MergeAggregatesTest extends AbstractRefactoringTest {
 	void expectExceptionIfThereAreDuplicateEntityNames() throws IOException {
 		// given
 		String inputModelName = "merge-aggregates-test-4-input.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 		MergeAggregatesRefactoring refactoring = new MergeAggregatesRefactoring("Customers", "Addresses");
 
 		// when / then
@@ -189,7 +189,7 @@ public class MergeAggregatesTest extends AbstractRefactoringTest {
 	void canTakeAttributesFromFirstAggregateByDefault() throws IOException {
 		// given
 		String inputModelName = "merge-aggregates-test-5-input.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 		MergeAggregatesRefactoring refactoring = new MergeAggregatesRefactoring("agg1", "agg2");
 
 		// when
@@ -211,7 +211,7 @@ public class MergeAggregatesTest extends AbstractRefactoringTest {
 	void canTakeAttributesFromSecondAggregate() throws IOException {
 		// given
 		String inputModelName = "merge-aggregates-test-5-input.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 		MergeAggregatesRefactoring refactoring = new MergeAggregatesRefactoring("agg1", "agg2", true);
 
 		// when
@@ -233,7 +233,7 @@ public class MergeAggregatesTest extends AbstractRefactoringTest {
 	void canHandleAggregateRoots() throws IOException {
 		// given
 		String inputModelName = "merge-aggregates-test-6-input.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 		MergeAggregatesRefactoring refactoring = new MergeAggregatesRefactoring("agg1", "agg2", true);
 
 		// when
@@ -253,14 +253,14 @@ public class MergeAggregatesTest extends AbstractRefactoringTest {
 	@Test
 	void canHandleContextMapInDifferentFile() throws IOException {
 		// given
-		CMLResourceContainer mainResource = getResourceCopyOfTestCML("merge-aggregates-test-7-input-2.cml");
+		CMLResource mainResource = getResourceCopyOfTestCML("merge-aggregates-test-7-input-2.cml");
 		ResourceSet additionalResources = getResourceSetOfTestCMLFiles("merge-aggregates-test-7-input-1.cml");
 
 		// when
 		MergeAggregatesRefactoring ar = new MergeAggregatesRefactoring("Customers", "Addresses");
 		ar.refactor(mainResource, additionalResources);
 		ar.persistChanges();
-		CMLResourceContainer contextMapResource = new CMLResourceContainer(
+		CMLResource contextMapResource = new CMLResource(
 				additionalResources.getResources().stream().filter(r -> r.getURI().toString().endsWith("merge-aggregates-test-7-input-1.cml")).findFirst().get());
 		contextMapResource = reloadResource(contextMapResource);
 

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
@@ -28,7 +28,7 @@ public class SplitAggregateByEntitiesTest extends AbstractRefactoringTest {
 	void canSplitWithTwoAggregates() throws IOException {
 		// given
 		String inputModelName = "split-agg-by-entities-test-1-input.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 		SplitAggregateByEntitiesRefactoring refactoring = new SplitAggregateByEntitiesRefactoring("Customers");
 
 		// when
@@ -58,7 +58,7 @@ public class SplitAggregateByEntitiesTest extends AbstractRefactoringTest {
 	void canRefactorIfAggregateDoesNotExist() throws IOException {
 		// given
 		String inputModelName = "split-agg-by-entities-test-1-input.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 		SplitAggregateByEntitiesRefactoring refactoring = new SplitAggregateByEntitiesRefactoring("ThisAggregateDoesNotExist");
 
 		// when
@@ -75,7 +75,7 @@ public class SplitAggregateByEntitiesTest extends AbstractRefactoringTest {
 	void canSplitInModule() throws IOException {
 		// given
 		String inputModelName = "split-agg-by-entities-test-2-input.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 		SplitAggregateByEntitiesRefactoring refactoring = new SplitAggregateByEntitiesRefactoring("Customers");
 
 		// when
@@ -102,7 +102,7 @@ public class SplitAggregateByEntitiesTest extends AbstractRefactoringTest {
 	void canFixExposedAggregatesInContextMap() throws IOException {
 		// given
 		String inputModelName = "split-agg-by-entities-test-3-input.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 		SplitAggregateByEntitiesRefactoring refactoring = new SplitAggregateByEntitiesRefactoring("Customers");
 
 		// when
@@ -130,14 +130,14 @@ public class SplitAggregateByEntitiesTest extends AbstractRefactoringTest {
 	@Test
 	void canHandleContextMapInDifferentFile() throws IOException {
 		// given
-		CMLResourceContainer mainResource = getResourceCopyOfTestCML("split-agg-by-entities-test-4-input-2.cml");
+		CMLResource mainResource = getResourceCopyOfTestCML("split-agg-by-entities-test-4-input-2.cml");
 		ResourceSet additionalResources = getResourceSetOfTestCMLFiles("split-agg-by-entities-test-4-input-1.cml");
 
 		// when
 		SplitAggregateByEntitiesRefactoring ar = new SplitAggregateByEntitiesRefactoring("Customers");
 		ar.refactor(mainResource, additionalResources);
 		ar.persistChanges();
-		CMLResourceContainer contextMapResource = new CMLResourceContainer(
+		CMLResource contextMapResource = new CMLResource(
 				additionalResources.getResources().stream().filter(r -> r.getURI().toString().endsWith("split-agg-by-entities-test-4-input-1.cml")).findFirst().get());
 		contextMapResource = reloadResource(contextMapResource);
 		

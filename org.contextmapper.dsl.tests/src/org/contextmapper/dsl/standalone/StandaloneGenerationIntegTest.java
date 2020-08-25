@@ -13,21 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.contextmapper.dsl.ide.commands;
+package org.contextmapper.dsl.standalone;
 
-import org.contextmapper.dsl.cml.CMLResource;
-import org.eclipse.lsp4j.ExecuteCommandParams;
-import org.eclipse.xtext.ide.server.Document;
-import org.eclipse.xtext.ide.server.ILanguageServerAccess;
+public class StandaloneGenerationIntegTest {
 
-/**
- * Interface for all CML LSP commands that can be executed on CML resource.
- * 
- * @author Stefan Kapferer
- *
- */
-public interface CMLResourceCommand {
-
-	void executeCommand(CMLResource cmlResource, Document document, ILanguageServerAccess access, ExecuteCommandParams params);
-
+	
+	
 }

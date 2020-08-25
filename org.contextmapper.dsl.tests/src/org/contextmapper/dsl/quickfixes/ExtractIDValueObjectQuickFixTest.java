@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 
-import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.SculptorModule;
@@ -39,7 +39,7 @@ public class ExtractIDValueObjectQuickFixTest extends AbstractQuickFixTest {
 	@Test
 	public void canExtractValueObjectFromPrimitiveAttribute() throws IOException {
 		// given
-		CMLResourceContainer cmlResource = getResourceCopyOfTestCML("extract-vo-for-primitive-id-test-1.cml");
+		CMLResource cmlResource = getResourceCopyOfTestCML("extract-vo-for-primitive-id-test-1.cml");
 		ContextMappingModel model = cmlResource.getContextMappingModel();
 		Attribute idAttr = EcoreUtil2.getAllContentsOfType(model, Attribute.class).stream().filter(a -> a.getName().equals("customerId")).findFirst().get();
 
@@ -62,7 +62,7 @@ public class ExtractIDValueObjectQuickFixTest extends AbstractQuickFixTest {
 	@Test
 	public void canExtractValueObjectFromPrimitiveAttributeInModule() throws IOException {
 		// given
-		CMLResourceContainer cmlResource = getResourceCopyOfTestCML("extract-vo-for-primitive-id-test-2.cml");
+		CMLResource cmlResource = getResourceCopyOfTestCML("extract-vo-for-primitive-id-test-2.cml");
 		ContextMappingModel model = cmlResource.getContextMappingModel();
 		Attribute idAttr = EcoreUtil2.getAllContentsOfType(model, Attribute.class).stream().filter(a -> a.getName().equals("customerId")).findFirst().get();
 

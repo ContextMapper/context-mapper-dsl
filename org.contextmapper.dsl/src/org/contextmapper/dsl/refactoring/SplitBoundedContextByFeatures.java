@@ -17,7 +17,7 @@ package org.contextmapper.dsl.refactoring;
 
 import java.util.stream.Collectors;
 
-import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.cml.CMLResource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 
 public class SplitBoundedContextByFeatures implements SemanticCMLRefactoring {
@@ -30,12 +30,12 @@ public class SplitBoundedContextByFeatures implements SemanticCMLRefactoring {
 	}
 
 	@Override
-	public void refactor(CMLResourceContainer resource) {
+	public void refactor(CMLResource resource) {
 		this.coreAR.refactor(resource);
 	}
 
 	@Override
-	public void refactor(CMLResourceContainer resource, ResourceSet consistencyCheckResources) {
+	public void refactor(CMLResource resource, ResourceSet consistencyCheckResources) {
 		this.coreAR.refactor(resource, consistencyCheckResources);
 	}
 

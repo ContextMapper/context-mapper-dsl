@@ -17,7 +17,7 @@ package org.contextmapper.dsl.ui.handler;
 
 import java.util.stream.Collectors;
 
-import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.refactoring.ExtractAggregatesByCohesion;
 import org.contextmapper.dsl.ui.handler.wizard.ExtractAggregatesByCohesionContext;
@@ -45,7 +45,7 @@ public class ExtractAggregatesByCohesionRefactoringHandler extends AbstractRefac
 	}
 
 	@Override
-	protected void executeRefactoring(CMLResourceContainer resource, ExecutionEvent event) {
+	protected void executeRefactoring(CMLResource resource, ExecutionEvent event) {
 		BoundedContext bc = (BoundedContext) getSelectedElement();
 
 		ExtractAggregatesByCohesionContext refactoringContext = new ExtractAggregatesByCohesionContext("NewBoundedContext",

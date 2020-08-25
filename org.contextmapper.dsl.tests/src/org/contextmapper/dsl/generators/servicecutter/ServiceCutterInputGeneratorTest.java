@@ -25,7 +25,7 @@ import java.nio.file.Paths;
 
 import org.apache.commons.io.FileUtils;
 import org.contextmapper.dsl.AbstractCMLInputFileTest;
-import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
@@ -68,7 +68,7 @@ class ServiceCutterInputGeneratorTest extends AbstractCMLInputFileTest {
 	@Test
 	void canSerializeCorrectly() throws IOException {
 		// given
-		CMLResourceContainer input = getResourceCopyOfTestCML("DDD_Sample_Input.cml");
+		CMLResource input = getResourceCopyOfTestCML("DDD_Sample_Input.cml");
 		ContextMappingModel model = input.getContextMappingModel();
 
 		// when

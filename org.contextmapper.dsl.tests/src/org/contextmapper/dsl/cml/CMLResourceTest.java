@@ -29,19 +29,19 @@ import org.eclipse.emf.ecore.resource.impl.ResourceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class CMLResourceContainerTest {
+public class CMLResourceTest {
 
 	@Test
-	public void canCreateCMLResourceContainer() {
+	public void canCreateCMLResource() {
 		// given
 		Resource resource = new ResourceImpl(URI.createURI("testresource"));
 
 		// when
 		resource.getContents().add(ContextMappingDSLFactory.eINSTANCE.createContextMappingModel());
-		CMLResourceContainer cmlRes = new CMLResourceContainer(resource);
+		CMLResource cmlRes = new CMLResource(resource);
 
 		// then
-		assertNotNull(cmlRes.getResource());
+		assertNotNull(cmlRes);
 	}
 
 	@Test
@@ -51,7 +51,7 @@ public class CMLResourceContainerTest {
 
 		// when
 		resource.getContents().add(ContextMappingDSLFactory.eINSTANCE.createContextMappingModel());
-		CMLResourceContainer cmlRes = new CMLResourceContainer(resource);
+		CMLResource cmlRes = new CMLResource(resource);
 		ContextMappingModel contextMappingModel = cmlRes.getContextMappingModel();
 
 		// then
@@ -66,7 +66,7 @@ public class CMLResourceContainerTest {
 
 		// when, then
 		Assertions.assertThrows(ResourceIsNoCMLModelException.class, () -> {
-			new CMLResourceContainer(resource);
+			new CMLResource(resource);
 		});
 	}
 
@@ -77,7 +77,7 @@ public class CMLResourceContainerTest {
 
 		// when, then
 		Assertions.assertThrows(ResourceIsNoCMLModelException.class, () -> {
-			new CMLResourceContainer(resource);
+			new CMLResource(resource);
 		});
 	}
 
@@ -91,7 +91,7 @@ public class CMLResourceContainerTest {
 
 		// then
 		Assertions.assertThrows(ResourceIsNoCMLModelException.class, () -> {
-			new CMLResourceContainer(resource);
+			new CMLResource(resource);
 		});
 	}
 
@@ -100,7 +100,7 @@ public class CMLResourceContainerTest {
 		// given
 		Resource resource = new ResourceImpl(URI.createURI("testresource"));
 		resource.getContents().add(ContextMappingDSLFactory.eINSTANCE.createContextMappingModel());
-		CMLResourceContainer cmlRes = new CMLResourceContainer(resource);
+		CMLResource cmlRes = new CMLResource(resource);
 
 		// when
 		boolean isEqual = cmlRes.equals(new Object());
@@ -114,11 +114,11 @@ public class CMLResourceContainerTest {
 		// given
 		Resource resource1 = new ResourceImpl(URI.createURI("testresource"));
 		resource1.getContents().add(ContextMappingDSLFactory.eINSTANCE.createContextMappingModel());
-		CMLResourceContainer cmlRes1 = new CMLResourceContainer(resource1);
+		CMLResource cmlRes1 = new CMLResource(resource1);
 
 		Resource resource2 = new ResourceImpl(URI.createURI("testresource"));
 		resource2.getContents().add(ContextMappingDSLFactory.eINSTANCE.createContextMappingModel());
-		CMLResourceContainer cmlRes2 = new CMLResourceContainer(resource2);
+		CMLResource cmlRes2 = new CMLResource(resource2);
 
 		// when
 		boolean isEqual = cmlRes1.equals(cmlRes2);
@@ -132,11 +132,11 @@ public class CMLResourceContainerTest {
 		// given
 		Resource resource1 = new ResourceImpl(URI.createURI("testresource1"));
 		resource1.getContents().add(ContextMappingDSLFactory.eINSTANCE.createContextMappingModel());
-		CMLResourceContainer cmlRes1 = new CMLResourceContainer(resource1);
+		CMLResource cmlRes1 = new CMLResource(resource1);
 
 		Resource resource2 = new ResourceImpl(URI.createURI("testresource2"));
 		resource2.getContents().add(ContextMappingDSLFactory.eINSTANCE.createContextMappingModel());
-		CMLResourceContainer cmlRes2 = new CMLResourceContainer(resource2);
+		CMLResource cmlRes2 = new CMLResource(resource2);
 
 		// when
 		boolean isEqual = cmlRes1.equals(cmlRes2);

@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContextType;
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
@@ -28,7 +28,7 @@ public class MergeBoundedContextsTest extends AbstractRefactoringTest {
 	void canMergeBoundedContexts() throws IOException {
 		// given
 		String inputModelName = "merge-bounded-contexts-test-1-input.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 		MergeBoundedContextsRefactoring refactoring = new MergeBoundedContextsRefactoring("CustomerManagement", "AnotherContext");
 
 		// when
@@ -49,7 +49,7 @@ public class MergeBoundedContextsTest extends AbstractRefactoringTest {
 	void doNotMergeIfBC1DoesNotExist() throws IOException {
 		// given
 		String inputModelName = "merge-bounded-contexts-test-1-input.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 		MergeBoundedContextsRefactoring refactoring = new MergeBoundedContextsRefactoring("ThisBCDoesNotExist", "AnotherContext");
 
 		// when
@@ -63,7 +63,7 @@ public class MergeBoundedContextsTest extends AbstractRefactoringTest {
 	void doNotMergeIfBC2DoesNotExist() throws IOException {
 		// given
 		String inputModelName = "merge-bounded-contexts-test-1-input.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 		MergeBoundedContextsRefactoring refactoring = new MergeBoundedContextsRefactoring("CustomerManagement", "ThisBCDoesNotExist");
 
 		// when
@@ -77,7 +77,7 @@ public class MergeBoundedContextsTest extends AbstractRefactoringTest {
 	void doNotMergeIfOnlyOneContextGiven() throws IOException {
 		// given
 		String inputModelName = "merge-bounded-contexts-test-1-input.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 		MergeBoundedContextsRefactoring refactoring = new MergeBoundedContextsRefactoring("CustomerManagement", "CustomerManagement");
 
 		// when
@@ -91,7 +91,7 @@ public class MergeBoundedContextsTest extends AbstractRefactoringTest {
 	void canMergeWithModules() throws IOException {
 		// given
 		String inputModelName = "merge-bounded-contexts-test-2-input.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 		MergeBoundedContextsRefactoring refactoring = new MergeBoundedContextsRefactoring("CustomerManagement", "AnotherContext");
 
 		// when
@@ -111,7 +111,7 @@ public class MergeBoundedContextsTest extends AbstractRefactoringTest {
 	void doesRemoveBC2FromContextMap() throws IOException {
 		// given
 		String inputModelName = "merge-bounded-contexts-test-3-input.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 		MergeBoundedContextsRefactoring refactoring = new MergeBoundedContextsRefactoring("CustomerManagement", "AnotherContext");
 
 		// when
@@ -125,7 +125,7 @@ public class MergeBoundedContextsTest extends AbstractRefactoringTest {
 	void doesRemoveRelationshipsBetweenTheGivenBCs() throws IOException {
 		// given
 		String inputModelName = "merge-bounded-contexts-test-4-input.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 		MergeBoundedContextsRefactoring refactoring = new MergeBoundedContextsRefactoring("CustomerManagement", "AnotherContext");
 
 		// when
@@ -139,7 +139,7 @@ public class MergeBoundedContextsTest extends AbstractRefactoringTest {
 	void doesFixAsymRelationshipsFromBC2ToBC1() throws IOException {
 		// given
 		String inputModelName = "merge-bounded-contexts-test-5-input.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 		MergeBoundedContextsRefactoring refactoring = new MergeBoundedContextsRefactoring("CustomerManagement", "AnotherContext");
 
 		// when
@@ -161,7 +161,7 @@ public class MergeBoundedContextsTest extends AbstractRefactoringTest {
 	void doesFixSymRelationshipsFromBC2ToBC1() throws IOException {
 		// given
 		String inputModelName = "merge-bounded-contexts-test-6-input.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 		MergeBoundedContextsRefactoring refactoring = new MergeBoundedContextsRefactoring("CustomerManagement", "AnotherContext");
 
 		// when
@@ -183,7 +183,7 @@ public class MergeBoundedContextsTest extends AbstractRefactoringTest {
 	void canMergeImplementationTechnology() throws IOException {
 		// given
 		String inputModelName = "merge-bounded-contexts-test-7-input.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 		MergeBoundedContextsRefactoring refactoring = new MergeBoundedContextsRefactoring("CustomerManagement", "AnotherContext");
 
 		// when
@@ -200,7 +200,7 @@ public class MergeBoundedContextsTest extends AbstractRefactoringTest {
 	void canMergeEmptyImplementationTechnologies() throws IOException {
 		// given
 		String inputModelName = "merge-bounded-contexts-test-8-input.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 		MergeBoundedContextsRefactoring refactoring = new MergeBoundedContextsRefactoring("CustomerManagement", "AnotherContext");
 
 		// when
@@ -217,7 +217,7 @@ public class MergeBoundedContextsTest extends AbstractRefactoringTest {
 	void canMergeNotSetImplementationTechnologies() throws IOException {
 		// given
 		String inputModelName = "merge-bounded-contexts-test-9-input.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 		MergeBoundedContextsRefactoring refactoring = new MergeBoundedContextsRefactoring("CustomerManagement", "AnotherContext");
 
 		// when
@@ -234,7 +234,7 @@ public class MergeBoundedContextsTest extends AbstractRefactoringTest {
 	void canMergeTeamsRealizedContexts() throws IOException {
 		// given
 		String inputModelName = "merge-bounded-contexts-test-10-input.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 		MergeBoundedContextsRefactoring refactoring = new MergeBoundedContextsRefactoring("TeamA", "TeamB");
 
 		// when
@@ -254,7 +254,7 @@ public class MergeBoundedContextsTest extends AbstractRefactoringTest {
 	void canTakeAttributesFromFirstBoundedContextByDefault() throws IOException {
 		// given
 		String inputModelName = "merge-bounded-contexts-test-11-input.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 		MergeBoundedContextsRefactoring refactoring = new MergeBoundedContextsRefactoring("CustomerManagement", "AnotherContext");
 
 		// when
@@ -274,7 +274,7 @@ public class MergeBoundedContextsTest extends AbstractRefactoringTest {
 	void canTakeAttributesFromSecondBoundedContext() throws IOException {
 		// given
 		String inputModelName = "merge-bounded-contexts-test-11-input.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 		MergeBoundedContextsRefactoring refactoring = new MergeBoundedContextsRefactoring("CustomerManagement", "AnotherContext", true);
 
 		// when
@@ -293,7 +293,7 @@ public class MergeBoundedContextsTest extends AbstractRefactoringTest {
 	@Test
 	void canMergeBoundedContextsInDifferentFiles() throws IOException {
 		// given
-		CMLResourceContainer mainResource = getResourceCopyOfTestCML("merge-bounded-contexts-multiple-files-test-3.cml");
+		CMLResource mainResource = getResourceCopyOfTestCML("merge-bounded-contexts-multiple-files-test-3.cml");
 		ResourceSet additionalResources = getResourceSetOfTestCMLFiles("merge-bounded-contexts-multiple-files-test-1.cml", "merge-bounded-contexts-multiple-files-test-2.cml");
 
 		// when
@@ -304,7 +304,7 @@ public class MergeBoundedContextsTest extends AbstractRefactoringTest {
 
 		// then
 		ContextMap map = mainResource.getContextMappingModel().getMap();
-		CMLResourceContainer updatedResource = new CMLResourceContainer(
+		CMLResource updatedResource = new CMLResource(
 				additionalResources.getResources().stream().filter(r -> r.getURI().toString().endsWith("merge-bounded-contexts-multiple-files-test-1.cml")).findFirst().get());
 		updatedResource = reloadResource(updatedResource);
 
@@ -318,7 +318,7 @@ public class MergeBoundedContextsTest extends AbstractRefactoringTest {
 	@Test
 	void canFixImportsWhenMergingAcrossFiles() throws IOException {
 		// given
-		CMLResourceContainer mainResource = getResourceCopyOfTestCML("merge-bounded-contexts-fix-import-test-1.cml");
+		CMLResource mainResource = getResourceCopyOfTestCML("merge-bounded-contexts-fix-import-test-1.cml");
 		ResourceSet additionalResources = getResourceSetOfTestCMLFiles("merge-bounded-contexts-fix-import-test-2.cml", "merge-bounded-contexts-fix-import-test-3.cml",
 				"merge-bounded-contexts-fix-import-test-4.cml");
 
@@ -329,7 +329,7 @@ public class MergeBoundedContextsTest extends AbstractRefactoringTest {
 		mainResource = reloadResource(mainResource);
 
 		// then
-		CMLResourceContainer updatedImportResource = new CMLResourceContainer(
+		CMLResource updatedImportResource = new CMLResource(
 				additionalResources.getResources().stream().filter(r -> r.getURI().toString().endsWith("merge-bounded-contexts-fix-import-test-4.cml")).findFirst().get());
 		updatedImportResource = reloadResource(updatedImportResource);
 

@@ -19,7 +19,7 @@ import static org.contextmapper.dsl.validation.ValidationMessages.BOUNDED_CONTEX
 
 import java.io.IOException;
 
-import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLPackage;
 import org.eclipse.xtext.testing.validation.ValidationTestHelper;
 import org.junit.jupiter.api.Test;
@@ -29,11 +29,10 @@ public class UniquenessAcrossFilesTest extends AbstractCMLInputFileTest {
 	@Test
 	public void canValidateUniquenessAcrossFiles() throws IOException {
 		// given
-		CMLResourceContainer input = getOriginalResourceOfTestCML("uniqueness-validation-test.cml");
+		CMLResource input = getOriginalResourceOfTestCML("uniqueness-validation-test.cml");
 
 		// when, then
-		new ValidationTestHelper().assertError(input.getResource(), ContextMappingDSLPackage.Literals.BOUNDED_CONTEXT, "",
-				String.format(BOUNDED_CONTEXT_NAME_NOT_UNIQUE, "anotherContext"));
+		new ValidationTestHelper().assertError(input.getXtextResource(), ContextMappingDSLPackage.Literals.BOUNDED_CONTEXT, "", String.format(BOUNDED_CONTEXT_NAME_NOT_UNIQUE, "anotherContext"));
 	}
 
 	@Override

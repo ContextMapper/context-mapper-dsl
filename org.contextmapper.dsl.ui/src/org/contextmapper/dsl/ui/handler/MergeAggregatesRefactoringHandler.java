@@ -18,7 +18,7 @@ package org.contextmapper.dsl.ui.handler;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.SculptorModule;
@@ -47,7 +47,7 @@ public class MergeAggregatesRefactoringHandler extends AbstractRefactoringWithUs
 	}
 
 	@Override
-	protected void executeRefactoring(CMLResourceContainer resource, ExecutionEvent event) {
+	protected void executeRefactoring(CMLResource resource, ExecutionEvent event) {
 		Aggregate aggregate = (Aggregate) getSelectedElement();
 		BoundedContext parentBC = null;
 		if (aggregate.eContainer() instanceof BoundedContext) {
