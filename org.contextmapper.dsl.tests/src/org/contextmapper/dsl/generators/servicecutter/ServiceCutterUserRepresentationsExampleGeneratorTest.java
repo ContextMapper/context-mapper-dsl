@@ -37,7 +37,7 @@ class ServiceCutterUserRepresentationsExampleGeneratorTest {
 
 	private ServiceCutterUserRepresentationsExampleGenerator generator;
 	private String dummyInputFilePath = "/integ-test-files/model.cml";
-	private String resultFiltPath = "/integ-test-files/model_user-representations.scl";
+	private String resultFiltPath = "/integ-test-files/model_scl-syntax-example.scl";
 
 	@BeforeEach
 	public void prepare() {

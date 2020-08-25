@@ -45,7 +45,7 @@ public class ServiceCutterUserRepresentationsExampleGenerator extends AbstractCo
 		EcoreUtil.resolveAll(sclModel);
 		URI inputURI = inputFileURI.trimFileExtension();
 		String fileName = inputURI.lastSegment();
-		URI outputURI = inputURI.trimSegments(1).appendSegment(fileName + "_user-representations").appendFileExtension("scl");
+		URI outputURI = inputURI.trimSegments(1).appendSegment(fileName + "_scl-syntax-example").appendFileExtension("scl");
 		Resource sclResource = resourceSet.createResource(outputURI);
 		sclResource.getContents().add(sclModel);
 		try {
