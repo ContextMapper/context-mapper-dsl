@@ -179,6 +179,9 @@ class UserStoryDSLParsingTest {
 					I want to create an "Address" with its "firstname", "lastname" in an "Customer"
 					I want to create an "Address" with its "firstname", "lastname" for a "Customer"
 					I want to create an "Address" with its "firstname", "lastname" for an "Customer"
+					I want to "add" an "Address" with its "firstname", "lastname" to a "Customer"
+					I want to "add" an "Address" with its "firstname", "lastname" to an "Customer"
+					I want to "add" an "Address" with its "firstname", "lastname" to "Customer"
 				so that "I can manage the customers data and addresses"
 			}
 		''';

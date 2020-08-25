@@ -308,6 +308,66 @@ class UseCaseDSLParsingTest {
 		val feature = result.userRequirements.get(0).features.get(0);
 		assertEquals("Customer", feature.containerEntity);
 	}
+	
+	@Test
+	def void canDefineContainmentRelationshipSyntaxVariant7() {
+		// given
+		val String dslSnippet = '''
+			UseCase testUsecase {
+				actor = "Insurance Employee"
+				interactions = "add" an "Address" with its "firstname", "lastname" to a "Customer"
+				benefit = "I can manage the customers data and ..."
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+
+		val feature = result.userRequirements.get(0).features.get(0);
+		assertEquals("Customer", feature.containerEntity);
+	}
+	
+	@Test
+	def void canDefineContainmentRelationshipSyntaxVariant8() {
+		// given
+		val String dslSnippet = '''
+			UseCase testUsecase {
+				actor = "Insurance Employee"
+				interactions = "add" an "Address" with its "firstname", "lastname" to an "Customer"
+				benefit = "I can manage the customers data and ..."
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+
+		val feature = result.userRequirements.get(0).features.get(0);
+		assertEquals("Customer", feature.containerEntity);
+	}
+	
+	@Test
+	def void canDefineContainmentRelationshipSyntaxVariant9() {
+		// given
+		val String dslSnippet = '''
+			UseCase testUsecase {
+				actor = "Insurance Employee"
+				interactions = "add" an "Address" with its "firstname", "lastname" to "Customer"
+				benefit = "I can manage the customers data and ..."
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+
+		val feature = result.userRequirements.get(0).features.get(0);
+		assertEquals("Customer", feature.containerEntity);
+	}
 
 	@Test
 	def void canDefineScope() {
