@@ -807,7 +807,7 @@
 		<command name="Generate Service Cutter User Representations (SCL)" id="org.contextmapper.dsl.ui.handler.ServiceCutterUserRepresentationsGenerationCommand"></command>
 		<command name="Generate Service Cutter User Representation Example File (SCL)" id="org.contextmapper.dsl.ui.handler.ServiceCutterUserRepresentationsExampleGenerationCommand"></command>
 		<command name="Generate MDSL Service Contracts" id="org.contextmapper.dsl.ui.handler.MDSLGenerationCommand"></command>
-		<command name="Generate New Service Cut" id="org.contextmapper.dsl.ui.handler.NewServiceCutContextMapGenerationCommand"></command>
+		<command name="Propose New Service Cut" id="org.contextmapper.dsl.ui.handler.NewServiceCutContextMapGenerationCommand"></command>
 		<command name="Generate Text File with Freemarker Template" id="org.contextmapper.dsl.ui.handler.GenericTextFileGenerationCommand"></command>
 	</extension>
 	<extension point="org.eclipse.ui.menus">
