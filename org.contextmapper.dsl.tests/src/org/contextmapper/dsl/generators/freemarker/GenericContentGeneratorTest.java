@@ -119,8 +119,7 @@ public class GenericContentGeneratorTest extends AbstractCMLInputFileTest {
 			"instance-of-wrong-parameters-test.ftl:instance-of-test-1.cml", "instance-of-second-parameter-no-class.ftl:instance-of-test-1.cml",
 			"filter-bounded-contexts-wrong-parameters-test.ftl:filter-bounded-contexts-wrong-parameters-test.cml",
 			"filter-bounded-contexts-wrong-parameter-type-test.ftl:filter-bounded-contexts-wrong-parameter-type-test.cml",
-			"filter-teams-wrong-parameters-test.ftl:filter-teams-wrong-parameters-test.cml",
-			"filter-teams-wrong-parameter-type-test.ftl:filter-teams-wrong-parameter-type-test.cml" }, delimiter = ':')
+			"filter-teams-wrong-parameters-test.ftl:filter-teams-wrong-parameters-test.cml", "filter-teams-wrong-parameter-type-test.ftl:filter-teams-wrong-parameter-type-test.cml" }, delimiter = ':')
 	public void canCheckInputParametersOfHelperFunctions(String template, String inputCML) throws IOException {
 		// given
 		GenericContentGenerator generator = new GenericContentGenerator();
@@ -129,7 +128,7 @@ public class GenericContentGeneratorTest extends AbstractCMLInputFileTest {
 
 		// when, then
 		Assertions.assertThrows(ContextMapperApplicationException.class, () -> {
-			generator.doGenerate(getResourceCopyOfTestCML(inputCML).getResource(), new IFileSystemAccess2Mock(), new IGeneratorContextMock());
+			generator.doGenerate(getResourceCopyOfTestCML(inputCML), new IFileSystemAccess2Mock(), new IGeneratorContextMock());
 		});
 	}
 
@@ -158,7 +157,7 @@ public class GenericContentGeneratorTest extends AbstractCMLInputFileTest {
 
 		// when
 		IFileSystemAccess2Mock filesystem = new IFileSystemAccess2Mock();
-		generator.doGenerate(getResourceCopyOfTestCML(inputCML).getResource(), filesystem, new IGeneratorContextMock());
+		generator.doGenerate(getResourceCopyOfTestCML(inputCML), filesystem, new IGeneratorContextMock());
 
 		// then
 		assertTrue(filesystem.getGeneratedFilesSet().contains("output.txt"));
@@ -166,7 +165,7 @@ public class GenericContentGeneratorTest extends AbstractCMLInputFileTest {
 	}
 
 	private Resource getSimpleCMLResource() throws IOException {
-		return getResourceCopyOfTestCML("simple-context-map.cml").getResource();
+		return getResourceCopyOfTestCML("simple-context-map.cml");
 	}
 
 	@Override

@@ -36,7 +36,7 @@ import com.google.common.collect.Sets;
 public class CMLModelObjectsResolvingHelper {
 
 	private Set<ContextMappingModel> resolveImportedModels(ContextMappingModel rootModel) {
-		Set<CMLResourceContainer> importedResources = new CMLImportResolver().resolveImportedResources(new CMLResourceContainer(rootModel.eResource()));
+		Set<CMLResource> importedResources = new CMLImportResolver().resolveImportedResources(new CMLResource(rootModel.eResource()));
 		return importedResources.stream().map(r -> r.getContextMappingModel()).collect(Collectors.toSet());
 	}
 

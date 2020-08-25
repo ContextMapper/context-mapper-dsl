@@ -20,7 +20,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.cml.CMLImportResolver;
-import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContextType;
 import org.contextmapper.dsl.refactoring.DeriveFrontendAndBackendSystemsFromFeature;
@@ -37,7 +37,7 @@ import com.google.common.collect.Lists;
 public class GenerateBackendFrontendSystemsFromFeatureBCRefactoringHandler extends AbstractRefactoringWithUserInputHandler {
 
 	@Override
-	protected void executeRefactoring(CMLResourceContainer resource, ExecutionEvent event) {
+	protected void executeRefactoring(CMLResource resource, ExecutionEvent event) {
 		BoundedContext selectedContext = (BoundedContext) getSelectedElement();
 		Set<String> allBCNames = collectAllBoundedContexts().stream().map(bc -> bc.getName()).collect(Collectors.toSet());
 
@@ -76,7 +76,7 @@ public class GenerateBackendFrontendSystemsFromFeatureBCRefactoringHandler exten
 		List<BoundedContext> bcList = Lists.newLinkedList();
 		Resource currentResource = getCurrentResource();
 		bcList.addAll(getCurrentContextMappingModel().getBoundedContexts());
-		for (CMLResourceContainer cmlResource : new CMLImportResolver().resolveImportedResources(new CMLResourceContainer(currentResource))) {
+		for (CMLResource cmlResource : new CMLImportResolver().resolveImportedResources(new CMLResource(currentResource))) {
 			bcList.addAll(cmlResource.getContextMappingModel().getBoundedContexts());
 		}
 		return bcList;

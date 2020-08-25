@@ -15,7 +15,7 @@
  */
 package org.contextmapper.dsl.ide.commands;
 
-import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.cml.CMLResource;
 import org.eclipse.lsp4j.ExecuteCommandParams;
 import org.eclipse.xtext.ide.server.Document;
 import org.eclipse.xtext.ide.server.ILanguageServerAccess;
@@ -28,6 +28,6 @@ import org.eclipse.xtext.ide.server.ILanguageServerAccess;
  */
 public interface CMLResourceCommand {
 
-	void executeCommand(CMLResourceContainer cmlResource, Document document, ILanguageServerAccess access, ExecuteCommandParams params);
+	void executeCommand(CMLResource cmlResource, Document document, ILanguageServerAccess access, ExecuteCommandParams params);
 
 }

@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContextType;
 import org.contextmapper.dsl.ide.actions.CMLCodeAction;
@@ -37,10 +37,10 @@ import com.google.common.collect.Lists;
  */
 public class DeriveFrontendAndBackendFromFeatureBCAction implements CMLCodeAction {
 
-	private CMLResourceContainer cmlResource;
+	private CMLResource cmlResource;
 	private List<EObject> editorSelection;
 
-	public DeriveFrontendAndBackendFromFeatureBCAction(CMLResourceContainer cmlResource, List<EObject> editorSelection) {
+	public DeriveFrontendAndBackendFromFeatureBCAction(CMLResource cmlResource, List<EObject> editorSelection) {
 		this.cmlResource = cmlResource;
 		this.editorSelection = editorSelection;
 	}
@@ -53,7 +53,7 @@ public class DeriveFrontendAndBackendFromFeatureBCAction implements CMLCodeActio
 	@Override
 	public Command getCommand() {
 		List<Object> commandArguments = Lists.newLinkedList();
-		commandArguments.add(cmlResource.getResource().getURI().toString());
+		commandArguments.add(cmlResource.getURI().toString());
 		commandArguments.add(getSelectedFeatureBoundedContext().getName());
 		return new Command("Derive Frontend And Backend System From Feature BC", "cml.ar.deriveFrontendBackendSystemsFromFeatureBC.proxy", commandArguments);
 	}

@@ -25,7 +25,7 @@ import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.contextmapper.dsl.AbstractCMLInputFileTest;
-import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.generator.MDSLContractsGenerator;
 import org.contextmapper.dsl.generator.mdsl.ProtectedRegionIdentifier;
@@ -41,7 +41,7 @@ class MDSLContractsGeneratorTest extends AbstractCMLInputFileTest {
 	void canCreateMDSLFiles() throws IOException {
 		// given
 		String inputModelName = "basic-mdsl-model-test.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 		ContextMappingModel model = input.getContextMappingModel();
 
 		// when
@@ -56,7 +56,7 @@ class MDSLContractsGeneratorTest extends AbstractCMLInputFileTest {
 	void canOverWriteFileAndPreserveProtectedRegion() throws IOException {
 		// given
 		String inputModelName = "overwrite-with-preserving-protected-region-test.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 		ContextMappingModel model = input.getContextMappingModel();
 		File existingMDSLFile = new File(Paths.get("").toAbsolutePath().toString(), "/integ-test-files/mdsl/overwrite-with-preserving-protected-region-test.mdsl");
 		String existingMDSLContent = FileUtils.readFileToString(existingMDSLFile, Charset.forName("UTF-8"));

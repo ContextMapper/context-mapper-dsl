@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.contextMappingDSL.Partnership;
 import org.contextmapper.dsl.ide.actions.CMLCodeAction;
 import org.eclipse.emf.ecore.EObject;
@@ -35,10 +35,10 @@ import com.google.common.collect.Lists;
  */
 public class SuspendPartnershipAction implements CMLCodeAction {
 
-	private CMLResourceContainer cmlResource;
+	private CMLResource cmlResource;
 	private List<EObject> editorSelection;
 
-	public SuspendPartnershipAction(CMLResourceContainer cmlResource, List<EObject> editorSelection) {
+	public SuspendPartnershipAction(CMLResource cmlResource, List<EObject> editorSelection) {
 		this.cmlResource = cmlResource;
 		this.editorSelection = editorSelection;
 	}
@@ -52,7 +52,7 @@ public class SuspendPartnershipAction implements CMLCodeAction {
 	public Command getCommand() {
 		List<Object> commandArguments = Lists.newLinkedList();
 		Partnership selectedPartnership = getSelectedPartnership();
-		commandArguments.add(cmlResource.getResource().getURI().toString());
+		commandArguments.add(cmlResource.getURI().toString());
 		commandArguments.add(selectedPartnership.getParticipant1().getName());
 		commandArguments.add(selectedPartnership.getParticipant2().getName());
 		return new Command("Suspend Partnership", "cml.ar.suspendPartnership.proxy", commandArguments);

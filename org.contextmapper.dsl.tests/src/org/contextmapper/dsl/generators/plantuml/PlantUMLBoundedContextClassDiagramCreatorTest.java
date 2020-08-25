@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
 
 import org.contextmapper.dsl.AbstractCMLInputFileTest;
-import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
@@ -493,7 +493,7 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 	public void canCreateMethodForDomainObjectOperationsWithDomainObjectType() throws IOException {
 		// given
 		String inputModelName = "operations-domain-object-types-test.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 		BoundedContext bc = input.getContextMappingModel().getBoundedContexts().get(0);
 
 		// when
@@ -508,7 +508,7 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 	public void canCreateMethodForOperationsWithCollectionTypes() throws IOException {
 		// given
 		String inputModelName = "operations-with-list-types-test.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 		BoundedContext bc = input.getContextMappingModel().getBoundedContexts().get(0);
 
 		// when
@@ -523,7 +523,7 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 	public void canCreateMethodForOperationsWithoutReturnTypes() throws IOException {
 		// given
 		String inputModelName = "operations-with-no-return-value.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 		BoundedContext bc = input.getContextMappingModel().getBoundedContexts().get(0);
 
 		// when
@@ -538,7 +538,7 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 	public void canCreateService() throws IOException {
 		// given
 		String inputModelName = "services-test.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 		BoundedContext bc = input.getContextMappingModel().getBoundedContexts().get(0);
 
 		// when

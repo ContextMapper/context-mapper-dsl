@@ -29,7 +29,7 @@ import java.util.Arrays;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
-import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContextType;
@@ -54,7 +54,7 @@ public class DeriveBoundedContextFromSubdomainsTest extends AbstractRefactoringT
 			"derive-bc-from-subdomain-test-4-input.cml", "derive-bc-from-subdomain-test-5-input.cml" })
 	public void canDeriveBoundedContextFromSubdomain(String inputFile) throws IOException {
 		// given
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputFile);
+		CMLResource input = getResourceCopyOfTestCML(inputFile);
 
 		// when
 		Set<String> subdomains = Sets.newHashSet(Arrays.asList(new String[] { "CustomerDomain" }));
@@ -94,7 +94,7 @@ public class DeriveBoundedContextFromSubdomainsTest extends AbstractRefactoringT
 	@ValueSource(strings = { "derive-bc-from-subdomain-test-1-input.cml", "derive-bc-from-subdomain-test-6-input.cml", "derive-bc-from-subdomain-test-7-input.cml" })
 	public void canCopyAndEnhanceServices(String inputFile) throws IOException {
 		// given
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputFile);
+		CMLResource input = getResourceCopyOfTestCML(inputFile);
 
 		// when
 		Set<String> subdomains = Sets.newHashSet(Arrays.asList(new String[] { "CustomerDomain" }));
@@ -133,7 +133,7 @@ public class DeriveBoundedContextFromSubdomainsTest extends AbstractRefactoringT
 	@Test
 	public void canHandleDuplicateAggregateNameInOtherContext() throws IOException {
 		// given
-		CMLResourceContainer input = getResourceCopyOfTestCML("derive-bc-from-subdomain-duplicate-aggregate-name-test-1-input.cml");
+		CMLResource input = getResourceCopyOfTestCML("derive-bc-from-subdomain-duplicate-aggregate-name-test-1-input.cml");
 
 		// when
 		Set<String> subdomains = Sets.newHashSet(Arrays.asList(new String[] { "CustomerDomain" }));
@@ -154,7 +154,7 @@ public class DeriveBoundedContextFromSubdomainsTest extends AbstractRefactoringT
 	@Test
 	public void canCopyEntityAttributesAndReferences() throws IOException {
 		// given
-		CMLResourceContainer input = getResourceCopyOfTestCML("derive-bc-from-subdomain-entity-attributes-test-1-input.cml");
+		CMLResource input = getResourceCopyOfTestCML("derive-bc-from-subdomain-entity-attributes-test-1-input.cml");
 
 		// when
 		Set<String> subdomains = Sets.newHashSet(Arrays.asList(new String[] { "CustomerDomain" }));
@@ -185,7 +185,7 @@ public class DeriveBoundedContextFromSubdomainsTest extends AbstractRefactoringT
 	@ValueSource(strings = { "derive-bc-from-subdomain-test-9-input.cml" })
 	public void canCreateServiceOperationParametersFromFeatures(String inputFile) throws IOException {
 		// given
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputFile);
+		CMLResource input = getResourceCopyOfTestCML(inputFile);
 
 		// when
 		Set<String> subdomains = Sets.newHashSet(Arrays.asList(new String[] { "CustomerDomain" }));
@@ -234,7 +234,7 @@ public class DeriveBoundedContextFromSubdomainsTest extends AbstractRefactoringT
 	@ValueSource(strings = { "derive-bc-from-subdomain-test-10-input.cml" })
 	public void canCreateServiceOperationParametersFromFeaturesInModule(String inputFile) throws IOException {
 		// given
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputFile);
+		CMLResource input = getResourceCopyOfTestCML(inputFile);
 
 		// when
 		Set<String> subdomains = Sets.newHashSet(Arrays.asList(new String[] { "CustomerDomain" }));
@@ -282,7 +282,7 @@ public class DeriveBoundedContextFromSubdomainsTest extends AbstractRefactoringT
 	@Test
 	public void canThrowExceptionIfNoCorrectSubdomainNameIsProvided() throws IOException {
 		// given
-		CMLResourceContainer input = getResourceCopyOfTestCML("derive-bc-from-subdomain-test-1-input.cml");
+		CMLResource input = getResourceCopyOfTestCML("derive-bc-from-subdomain-test-1-input.cml");
 
 		// when, then
 		Set<String> subdomains = Sets.newHashSet(Arrays.asList(new String[] { "JustSomeTestDomainNotExisting" }));
@@ -295,7 +295,7 @@ public class DeriveBoundedContextFromSubdomainsTest extends AbstractRefactoringT
 	@Test
 	public void canThrowExceptionIfEntityAlreadyExistsInOtherBoundedContext() throws IOException {
 		// given
-		CMLResourceContainer input = getResourceCopyOfTestCML("derive-bc-from-subdomain-test-8-input.cml");
+		CMLResource input = getResourceCopyOfTestCML("derive-bc-from-subdomain-test-8-input.cml");
 
 		// when, then
 		Set<String> subdomains = Sets.newHashSet(Arrays.asList(new String[] { "CustomerDomain" }));
@@ -308,7 +308,7 @@ public class DeriveBoundedContextFromSubdomainsTest extends AbstractRefactoringT
 	@Test
 	public void canHandleClaimsIntegrationTest() throws IOException {
 		// given
-		CMLResourceContainer input = getResourceCopyOfTestCML("derive-bc-from-subdomain-test-11-input.cml");
+		CMLResource input = getResourceCopyOfTestCML("derive-bc-from-subdomain-test-11-input.cml");
 
 		// when
 		Set<String> subdomains = Sets.newHashSet(Arrays.asList(new String[] { "ClaimsManagement" }));
@@ -317,9 +317,9 @@ public class DeriveBoundedContextFromSubdomainsTest extends AbstractRefactoringT
 		ar.persistChanges();
 
 		// then
-		String dslText = FileUtils.readFileToString(new File(input.getResource().getURI().toFileString()), "UTF-8");
-		String expectedResult = FileUtils.readFileToString(
-				new File(Paths.get("").toAbsolutePath().toString(), "/integ-test-files/refactorings/derive-bc-from-subdomain-test-11-output.cml"), Charset.forName("UTF-8"));
+		String dslText = FileUtils.readFileToString(new File(input.getURI().toFileString()), "UTF-8");
+		String expectedResult = FileUtils.readFileToString(new File(Paths.get("").toAbsolutePath().toString(), "/integ-test-files/refactorings/derive-bc-from-subdomain-test-11-output.cml"),
+				Charset.forName("UTF-8"));
 		assertEquals(expectedResult, dslText);
 	}
 

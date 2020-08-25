@@ -17,7 +17,7 @@ package org.contextmapper.dsl.ide.actions;
 
 import java.util.List;
 
-import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.cml.CMLResource;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.resource.EObjectAtOffsetHelper;
 import org.eclipse.xtext.resource.XtextResource;
@@ -36,11 +36,11 @@ public class SelectionContextResolver {
 	@Inject
 	private EObjectAtOffsetHelper offsetHelper;
 
-	public List<EObject> resolveAllSelectedEObjects(CMLResourceContainer resource, int startOffset, int endOffset) {
+	public List<EObject> resolveAllSelectedEObjects(CMLResource resource, int startOffset, int endOffset) {
 		List<EObject> objectList = Lists.newLinkedList();
 
 		for (int i = startOffset; i <= endOffset; i++) {
-			XtextResource cmlResource = (XtextResource) resource.getResource();
+			XtextResource cmlResource = (XtextResource) resource.getXtextResource();
 			EObject object = offsetHelper.resolveElementAt(cmlResource, i);
 			if (!objectList.contains(object))
 				objectList.add(object);

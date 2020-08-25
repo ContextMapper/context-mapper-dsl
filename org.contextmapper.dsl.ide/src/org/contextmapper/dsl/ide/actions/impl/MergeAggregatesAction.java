@@ -20,7 +20,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.cml.CMLModelObjectsResolvingHelper;
-import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.ide.actions.CMLCodeAction;
@@ -38,10 +38,10 @@ import com.google.common.collect.Lists;
  */
 public class MergeAggregatesAction implements CMLCodeAction {
 
-	private CMLResourceContainer cmlResource;
+	private CMLResource cmlResource;
 	private List<EObject> editorSelection;
 
-	public MergeAggregatesAction(CMLResourceContainer cmlResource, List<EObject> editorSelection) {
+	public MergeAggregatesAction(CMLResource cmlResource, List<EObject> editorSelection) {
 		this.cmlResource = cmlResource;
 		this.editorSelection = editorSelection;
 	}
@@ -61,7 +61,7 @@ public class MergeAggregatesAction implements CMLCodeAction {
 		Aggregate aggregate = getSelectedAggregate();
 		BoundedContext parentContext = new CMLModelObjectsResolvingHelper().resolveBoundedContext(aggregate);
 		List<Object> commandArguments = Lists.newLinkedList();
-		commandArguments.add(cmlResource.getResource().getURI().toString());
+		commandArguments.add(cmlResource.getURI().toString());
 		commandArguments.add(aggregate.getName());
 		commandArguments.addAll(EcoreUtil2.eAllOfType(parentContext, Aggregate.class).stream().map(agg -> agg.getName()).filter(name -> !name.equals(aggregate.getName())).collect(Collectors.toSet()));
 

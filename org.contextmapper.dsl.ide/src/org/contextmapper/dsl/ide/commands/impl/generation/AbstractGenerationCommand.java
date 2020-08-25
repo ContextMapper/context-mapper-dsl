@@ -15,7 +15,7 @@
  */
 package org.contextmapper.dsl.ide.commands.impl.generation;
 
-import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.ide.commands.CMLResourceCommand;
 import org.eclipse.lsp4j.ExecuteCommandParams;
 import org.eclipse.xtext.generator.GeneratorContext;
@@ -42,8 +42,8 @@ public abstract class AbstractGenerationCommand implements CMLResourceCommand {
 	abstract IGenerator2 getGenerator();
 
 	@Override
-	public void executeCommand(CMLResourceContainer cmlResource, Document document, ILanguageServerAccess access, ExecuteCommandParams params) {
-		getGenerator().doGenerate(cmlResource.getResource(), getFileSystemAccess(), new GeneratorContext());
+	public void executeCommand(CMLResource cmlResource, Document document, ILanguageServerAccess access, ExecuteCommandParams params) {
+		getGenerator().doGenerate(cmlResource, getFileSystemAccess(), new GeneratorContext());
 	}
 
 	protected JavaIoFileSystemAccess getFileSystemAccess() {

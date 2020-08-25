@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.exception.ContextMapperApplicationException;
 import org.contextmapper.dsl.ide.actions.impl.DeriveBoundedContextFromSubdomainsAction;
 import org.contextmapper.dsl.ide.actions.impl.DeriveFrontendAndBackendFromFeatureBCAction;
@@ -76,7 +76,7 @@ public class CMLActionRegistry {
 		this.registerAllQuickFixes();
 	}
 
-	private List<CMLCodeAction> getAllActions(CMLResourceContainer resource, List<EObject> selectedObjects) {
+	private List<CMLCodeAction> getAllActions(CMLResource resource, List<EObject> selectedObjects) {
 		List<CMLCodeAction> codeActions = Lists.newLinkedList();
 
 		// add new AR here:
@@ -105,7 +105,7 @@ public class CMLActionRegistry {
 		registerQuickFix(DomainObjectValidator.ID_IS_PRIMITIVE_CODE, new ExtractIDValueObjectQuickFix());
 	}
 
-	public List<? extends Command> getApplicableActionCommands(CMLResourceContainer resource, List<EObject> selectedObjects) {
+	public List<? extends Command> getApplicableActionCommands(CMLResource resource, List<EObject> selectedObjects) {
 		List<? extends Command> result = getAllActions(resource, selectedObjects).stream().filter(a -> a.isApplicable()).map(a -> a.getCommand()).collect(Collectors.toList());
 		return result;
 	}
@@ -137,7 +137,7 @@ public class CMLActionRegistry {
 		action.setDiagnostics(Arrays.asList(new Diagnostic[] { diagnostic }));
 		action.setKind(CodeActionKind.QuickFix);
 		action.setEdit(editRecorder.recordWorkspaceEdit(options.getLanguageServerAccess(), options.getResource().getURI(), options.getDocument(), (Resource resource) -> {
-			CMLResourceContainer cmlResource = new CMLResourceContainer(resource);
+			CMLResource cmlResource = new CMLResource(resource);
 			List<EObject> objects = selectionResolver.resolveAllSelectedEObjects(cmlResource, options.getDocument().getOffSet(diagnostic.getRange().getStart()),
 					options.getDocument().getOffSet(diagnostic.getRange().getEnd()));
 			if (objects.isEmpty())

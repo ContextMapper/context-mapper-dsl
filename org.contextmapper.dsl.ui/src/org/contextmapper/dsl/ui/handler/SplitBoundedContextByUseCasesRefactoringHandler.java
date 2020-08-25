@@ -18,7 +18,7 @@ package org.contextmapper.dsl.ui.handler;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.refactoring.SemanticCMLRefactoring;
 import org.contextmapper.dsl.refactoring.SplitBoundedContextByFeatures;
@@ -28,7 +28,7 @@ import org.eclipse.emf.ecore.EObject;
 public class SplitBoundedContextByUseCasesRefactoringHandler extends AbstractRefactoringHandler {
 
 	@Override
-	protected void executeRefactoring(CMLResourceContainer resource, ExecutionEvent event) {
+	protected void executeRefactoring(CMLResource resource, ExecutionEvent event) {
 		BoundedContext bc = (BoundedContext) getSelectedElement();
 		SemanticCMLRefactoring ar = new SplitBoundedContextByFeatures(bc.getName());
 		ar.refactor(resource, getAllResources());

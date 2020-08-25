@@ -33,16 +33,16 @@ import com.google.common.collect.Sets;
  */
 public class CMLImportResolver {
 
-	public Set<CMLResourceContainer> resolveImportedResources(CMLResourceContainer rootResource) {
-		Set<CMLResourceContainer> importedResources = Sets.newHashSet();
-		Resource resource = rootResource.getResource();
+	public Set<CMLResource> resolveImportedResources(CMLResource rootResource) {
+		Set<CMLResource> importedResources = Sets.newHashSet();
+		Resource resource = rootResource;
 		ResourceSet rs = resource.getResourceSet();
 		ContextMappingModel cmlModel = (ContextMappingModel) resource.getContents().get(0);
 		for (Import cmlImport : cmlModel.getImports()) {
 			URI importURI = URI.createURI(cmlImport.getImportURI()).resolve(resource.getURI());
 			Resource importedResource = rs.getResource(importURI, true);
-			if(isResourceCMLModel(importedResource))
-				importedResources.add(new CMLResourceContainer(importedResource));
+			if (isResourceCMLModel(importedResource))
+				importedResources.add(new CMLResource(importedResource));
 		}
 		return importedResources;
 	}
@@ -54,5 +54,5 @@ public class CMLImportResolver {
 			return false;
 		return true;
 	}
-	
+
 }

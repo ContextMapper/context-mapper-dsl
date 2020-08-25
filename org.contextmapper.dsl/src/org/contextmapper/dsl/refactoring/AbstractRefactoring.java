@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.contextmapper.dsl.cml.CMLImportResolver;
-import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
@@ -41,18 +41,18 @@ import com.google.common.collect.Sets;
 public abstract class AbstractRefactoring implements SemanticCMLRefactoring {
 
 	protected ContextMappingModel model;
-	protected CMLResourceContainer rootResource;
-	protected Set<CMLResourceContainer> importedResources;
-	private Map<BoundedContext, CMLResourceContainer> boundedContextsMap = Maps.newHashMap();
-	private Map<ContextMap, CMLResourceContainer> contextMapMap = Maps.newHashMap();
-	private Map<Domain, CMLResourceContainer> domainMap = Maps.newHashMap();
-	private Map<UserRequirement, CMLResourceContainer> userRequirementMap = Maps.newHashMap();
+	protected CMLResource rootResource;
+	protected Set<CMLResource> importedResources;
+	private Map<BoundedContext, CMLResource> boundedContextsMap = Maps.newHashMap();
+	private Map<ContextMap, CMLResource> contextMapMap = Maps.newHashMap();
+	private Map<Domain, CMLResource> domainMap = Maps.newHashMap();
+	private Map<UserRequirement, CMLResource> userRequirementMap = Maps.newHashMap();
 
 	protected ResourceSet consistencyCheckResources;
-	protected Set<CMLResourceContainer> additionalResourcesToCheck = Sets.newHashSet();
+	protected Set<CMLResource> additionalResourcesToCheck = Sets.newHashSet();
 
 	@Override
-	public void refactor(CMLResourceContainer resource) {
+	public void refactor(CMLResource resource) {
 		this.rootResource = resource;
 		this.importedResources = new CMLImportResolver().resolveImportedResources(rootResource);
 		this.model = resource.getContextMappingModel();
@@ -62,20 +62,20 @@ public abstract class AbstractRefactoring implements SemanticCMLRefactoring {
 	}
 
 	@Override
-	public void refactor(CMLResourceContainer resource, ResourceSet consistencyCheckResources) {
+	public void refactor(CMLResource resource, ResourceSet consistencyCheckResources) {
 		this.consistencyCheckResources = consistencyCheckResources;
 		enableModificationTracking(consistencyCheckResources);
 		for (Resource resourceToCheck : consistencyCheckResources.getResources()) {
 			if (resourceToCheck.getContents().isEmpty() || !(resourceToCheck.getContents().get(0) instanceof ContextMappingModel))
 				continue;
-			this.additionalResourcesToCheck.add(new CMLResourceContainer(resourceToCheck));
+			this.additionalResourcesToCheck.add(new CMLResource(resourceToCheck));
 		}
 		refactor(resource);
 	}
 
 	@Override
 	public void persistChanges() {
-		Resource rootResource = this.rootResource.getResource();
+		Resource rootResource = this.rootResource;
 		if (rootResource.isModified())
 			persistResource(rootResource);
 		if (rootResource.getResourceSet() != null)
@@ -93,10 +93,10 @@ public abstract class AbstractRefactoring implements SemanticCMLRefactoring {
 
 	protected abstract void doRefactor();
 
-	private void enableModificationTracking(CMLResourceContainer cmlResource) {
-		cmlResource.getResource().setTrackingModification(true);
-		if (cmlResource.getResource().getResourceSet() != null)
-			enableModificationTracking(cmlResource.getResource().getResourceSet());
+	private void enableModificationTracking(CMLResource cmlResource) {
+		cmlResource.setTrackingModification(true);
+		if (cmlResource.getResourceSet() != null)
+			enableModificationTracking(cmlResource.getResourceSet());
 	}
 
 	private void enableModificationTracking(ResourceSet rs) {
@@ -127,49 +127,49 @@ public abstract class AbstractRefactoring implements SemanticCMLRefactoring {
 		} catch (IOException e) {
 			throw new RuntimeException("Document cannot be formatted.");
 		}
-	} 
-	
-	protected CMLResourceContainer getResource(BoundedContext bc) {
-		CMLResourceContainer result = this.boundedContextsMap.get(bc);
+	}
+
+	protected CMLResource getResource(BoundedContext bc) {
+		CMLResource result = this.boundedContextsMap.get(bc);
 		return result;
 	}
 
 	private void resolveRootElements() {
 		resolveAllRootElements(rootResource);
-		for (CMLResourceContainer importedResource : importedResources) {
+		for (CMLResource importedResource : importedResources) {
 			resolveAllRootElements(importedResource);
 		}
 	}
 
-	private void resolveAllRootElements(CMLResourceContainer importedResource) {
+	private void resolveAllRootElements(CMLResource importedResource) {
 		resolveBoundedContexts(importedResource);
 		resolveContextMaps(importedResource);
 		resolveDomains(importedResource);
 		resolveUserRequirements(importedResource);
 	}
 
-	private void resolveBoundedContexts(CMLResourceContainer resource) {
+	private void resolveBoundedContexts(CMLResource resource) {
 		for (BoundedContext bc : resource.getContextMappingModel().getBoundedContexts()) {
 			this.boundedContextsMap.put(bc, resource);
 		}
 	}
 
-	private void resolveContextMaps(CMLResourceContainer resource) {
+	private void resolveContextMaps(CMLResource resource) {
 		if (resource.getContextMappingModel().getMap() != null)
 			this.contextMapMap.put(resource.getContextMappingModel().getMap(), resource);
-		for (CMLResourceContainer extResourceToCheck : this.additionalResourcesToCheck) {
+		for (CMLResource extResourceToCheck : this.additionalResourcesToCheck) {
 			if (extResourceToCheck.getContextMappingModel().getMap() != null && containsImport(extResourceToCheck, resource))
 				this.contextMapMap.put(extResourceToCheck.getContextMappingModel().getMap(), extResourceToCheck);
 		}
 	}
 
-	private void resolveDomains(CMLResourceContainer resource) {
+	private void resolveDomains(CMLResource resource) {
 		for (Domain domain : resource.getContextMappingModel().getDomains()) {
 			this.domainMap.put(domain, resource);
 		}
 	}
 
-	private void resolveUserRequirements(CMLResourceContainer resource) {
+	private void resolveUserRequirements(CMLResource resource) {
 		for (UserRequirement userRequirement : resource.getContextMappingModel().getUserRequirements()) {
 			this.userRequirementMap.put(userRequirement, resource);
 		}
@@ -178,9 +178,9 @@ public abstract class AbstractRefactoring implements SemanticCMLRefactoring {
 	/**
 	 * Checks whether source contains an import statement to target.
 	 */
-	private boolean containsImport(CMLResourceContainer source, CMLResourceContainer target) {
+	private boolean containsImport(CMLResource source, CMLResource target) {
 		for (Import cmlImport : source.getContextMappingModel().getImports()) {
-			if (URI.createURI(cmlImport.getImportURI()).resolve(source.getResource().getURI()).toString().equals(target.getResource().getURI().toString()))
+			if (URI.createURI(cmlImport.getImportURI()).resolve(source.getURI()).toString().equals(target.getURI().toString()))
 				return true;
 		}
 		return false;

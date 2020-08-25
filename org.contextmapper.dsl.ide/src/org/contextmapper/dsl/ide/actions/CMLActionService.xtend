@@ -17,10 +17,10 @@ package org.contextmapper.dsl.ide.actions
 
 import com.google.inject.Inject
 import java.util.stream.Collectors
-import org.contextmapper.dsl.cml.CMLResourceContainer
 import org.eclipse.lsp4j.jsonrpc.messages.Either
 import org.eclipse.xtext.ide.server.codeActions.ICodeActionService2
 import com.google.common.collect.Lists
+import org.contextmapper.dsl.cml.CMLResource
 
 class CMLActionService implements ICodeActionService2 {
 
@@ -33,7 +33,7 @@ class CMLActionService implements ICodeActionService2 {
 		val startPosition = currentSelectionRange.start;
 		val endPosition = currentSelectionRange.end;
 
-		val resource = new CMLResourceContainer(options.resource);
+		val resource = new CMLResource(options.resource);
 		val selectedObjects = selectionResolver.resolveAllSelectedEObjects(resource,
 			options.document.getOffSet(startPosition), options.document.getOffSet(endPosition));
 

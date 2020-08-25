@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.ide.actions.CMLCodeAction;
 import org.contextmapper.tactic.dsl.tacticdsl.Entity;
@@ -37,10 +37,10 @@ import com.google.common.collect.Lists;
  */
 public class SplitAggregateByEntitiesAction implements CMLCodeAction {
 
-	private CMLResourceContainer cmlResource;
+	private CMLResource cmlResource;
 	private List<EObject> editorSelection;
 
-	public SplitAggregateByEntitiesAction(CMLResourceContainer cmlResource, List<EObject> editorSelection) {
+	public SplitAggregateByEntitiesAction(CMLResource cmlResource, List<EObject> editorSelection) {
 		this.cmlResource = cmlResource;
 		this.editorSelection = editorSelection;
 	}
@@ -60,7 +60,7 @@ public class SplitAggregateByEntitiesAction implements CMLCodeAction {
 	@Override
 	public Command getCommand() {
 		List<Object> commandArguments = Lists.newLinkedList();
-		commandArguments.add(cmlResource.getResource().getURI().toString());
+		commandArguments.add(cmlResource.getURI().toString());
 		commandArguments.add(getSelectedAggregate().getName());
 		return new Command("Split Aggregate By Entities", "cml.ar.splitAggregateByEntities", commandArguments);
 	}

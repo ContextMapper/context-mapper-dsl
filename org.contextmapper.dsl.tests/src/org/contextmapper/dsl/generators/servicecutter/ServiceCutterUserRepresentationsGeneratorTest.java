@@ -44,7 +44,7 @@ class ServiceCutterUserRepresentationsGeneratorTest extends AbstractCMLInputFile
 	@Test
 	void canCreateUserRepresentationsFile() throws IOException {
 		// given
-		Resource inputResource = getResourceCopyOfTestCML("user-representations-generation-test-1.cml").getResource();
+		Resource inputResource = getResourceCopyOfTestCML("user-representations-generation-test-1.cml");
 		new ServiceCutterConfigurationDSLStandaloneSetup().createInjectorAndDoEMFRegistration();
 
 		// when
@@ -63,7 +63,7 @@ class ServiceCutterUserRepresentationsGeneratorTest extends AbstractCMLInputFile
 	@Test
 	void canCreateUpdateUserRepresentationsFile() throws IOException {
 		// given
-		Resource inputResource = getResourceCopyOfTestCML("user-representations-generation-test-1.cml").getResource();
+		Resource inputResource = getResourceCopyOfTestCML("user-representations-generation-test-1.cml");
 		Resource sclResource = getResourceCopyOfTestSCL("user-representations-generation-test-1.scl");
 
 		// when

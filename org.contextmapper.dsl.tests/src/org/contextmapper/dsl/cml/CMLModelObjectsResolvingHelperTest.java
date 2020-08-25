@@ -34,7 +34,7 @@ public class CMLModelObjectsResolvingHelperTest extends AbstractCMLInputFileTest
 	@ValueSource(strings = { "TestEntity1", "TestEntity2", "TestEntity4" })
 	public void canResolveBoundedContextThatContainsDomainObject(String domainObjectName) throws IOException {
 		// given
-		CMLResourceContainer input = getResourceCopyOfTestCML("bc-resolving-test-1.cml");
+		CMLResource input = getResourceCopyOfTestCML("bc-resolving-test-1.cml");
 		DomainObject domainObject = EcoreUtil2.eAllOfType(input.getContextMappingModel(), DomainObject.class).stream().filter(o -> o.getName().equals(domainObjectName)).findFirst()
 				.get();
 
@@ -49,7 +49,7 @@ public class CMLModelObjectsResolvingHelperTest extends AbstractCMLInputFileTest
 	@Test
 	public void canReturnNullInCaseDomainObjectIsNotPartOfBC() throws IOException {
 		// given
-		CMLResourceContainer input = getResourceCopyOfTestCML("bc-resolving-test-1.cml");
+		CMLResource input = getResourceCopyOfTestCML("bc-resolving-test-1.cml");
 		DomainObject domainObject = EcoreUtil2.eAllOfType(input.getContextMappingModel(), DomainObject.class).stream().filter(o -> o.getName().equals("TestEntity3")).findFirst()
 				.get();
 

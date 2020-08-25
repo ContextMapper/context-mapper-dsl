@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
 import org.contextmapper.dsl.refactoring.SplitBoundedContextByOwner;
@@ -35,7 +35,7 @@ public class SplitBoundedContextByOwnerTest extends AbstractRefactoringTest {
 	void canSplitByOwner() throws IOException {
 		// given
 		String inputModelName = "split-bc-by-owner-test-1-input.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 
 		// when
 		SplitBoundedContextByOwner ar = new SplitBoundedContextByOwner("CustomerManagement");
@@ -53,7 +53,7 @@ public class SplitBoundedContextByOwnerTest extends AbstractRefactoringTest {
 	void canSplitWithMultipleAggregatesPerOwner() throws IOException {
 		// given
 		String inputModelName = "split-bc-by-owner-test-2-input.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 
 		// when
 		SplitBoundedContextByOwner ar = new SplitBoundedContextByOwner("CustomerManagement");
@@ -71,7 +71,7 @@ public class SplitBoundedContextByOwnerTest extends AbstractRefactoringTest {
 	void canSplitIfThereIsNothingToSplit() throws IOException {
 		// given
 		String inputModelName = "split-bc-by-owner-test-3-input.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 
 		// when
 		SplitBoundedContextByOwner ar = new SplitBoundedContextByOwner("CustomerManagement");
@@ -85,7 +85,7 @@ public class SplitBoundedContextByOwnerTest extends AbstractRefactoringTest {
 	void canSplitAndFixExposedAggregatesInContextMapRelationships() throws IOException {
 		// given
 		String inputModelName = "split-bc-by-owner-test-4-input.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 
 		// when
 		SplitBoundedContextByOwner ar = new SplitBoundedContextByOwner("CustomerManagement");
@@ -108,14 +108,14 @@ public class SplitBoundedContextByOwnerTest extends AbstractRefactoringTest {
 	@Test
 	void canUpdateContextMapInDifferentFile() throws IOException {
 		// given
-		CMLResourceContainer mainResource = getResourceCopyOfTestCML("split-bc-by-owner-test-5-input-2.cml");
+		CMLResource mainResource = getResourceCopyOfTestCML("split-bc-by-owner-test-5-input-2.cml");
 		ResourceSet additionalResources = getResourceSetOfTestCMLFiles("split-bc-by-owner-test-5-input-1.cml");
 
 		// when
 		SplitBoundedContextByOwner ar = new SplitBoundedContextByOwner("CustomerManagement");
 		ar.refactor(mainResource, additionalResources);
 		ar.persistChanges();
-		CMLResourceContainer contextMapResource = new CMLResourceContainer(
+		CMLResource contextMapResource = new CMLResource(
 				additionalResources.getResources().stream().filter(r -> r.getURI().toString().endsWith("split-bc-by-owner-test-5-input-1.cml")).findFirst().get());
 		contextMapResource = reloadResource(contextMapResource);
 

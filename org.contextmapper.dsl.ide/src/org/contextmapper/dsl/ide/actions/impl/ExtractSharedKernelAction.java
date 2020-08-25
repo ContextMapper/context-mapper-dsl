@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.contextMappingDSL.SharedKernel;
 import org.contextmapper.dsl.ide.actions.CMLCodeAction;
 import org.eclipse.emf.ecore.EObject;
@@ -35,10 +35,10 @@ import com.google.common.collect.Lists;
  */
 public class ExtractSharedKernelAction implements CMLCodeAction {
 
-	private CMLResourceContainer cmlResource;
+	private CMLResource cmlResource;
 	private List<EObject> editorSelection;
 
-	public ExtractSharedKernelAction(CMLResourceContainer cmlResource, List<EObject> editorSelection) {
+	public ExtractSharedKernelAction(CMLResource cmlResource, List<EObject> editorSelection) {
 		this.cmlResource = cmlResource;
 		this.editorSelection = editorSelection;
 	}
@@ -52,7 +52,7 @@ public class ExtractSharedKernelAction implements CMLCodeAction {
 	public Command getCommand() {
 		List<Object> commandArguments = Lists.newLinkedList();
 		SharedKernel selectedSharedKernel = getSelectedSharedKernel();
-		commandArguments.add(cmlResource.getResource().getURI().toString());
+		commandArguments.add(cmlResource.getURI().toString());
 		commandArguments.add(selectedSharedKernel.getParticipant1().getName());
 		commandArguments.add(selectedSharedKernel.getParticipant2().getName());
 		return new Command("Extract Shared Kernel", "cml.ar.extractSharedKernel", commandArguments);

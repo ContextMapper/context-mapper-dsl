@@ -19,7 +19,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
 
-import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.exception.ContextMapperApplicationException;
 import org.contextmapper.dsl.generator.GenericContentGenerator;
 import org.contextmapper.dsl.generator.exception.GeneratorInputException;
@@ -48,7 +48,7 @@ public class GenericTextFileGenerationCommand extends AbstractGenerationCommand 
 	}
 
 	@Override
-	public void executeCommand(CMLResourceContainer cmlResource, Document document, ILanguageServerAccess access, ExecuteCommandParams params) {
+	public void executeCommand(CMLResource cmlResource, Document document, ILanguageServerAccess access, ExecuteCommandParams params) {
 		if (params.getArguments().size() != 2 || params.getArguments().get(1).getClass() != JsonArray.class)
 			throw new ContextMapperApplicationException(
 					"This command expects a JSON array with the following values as second parameter: URI to Freemarker template, filename string for output file");

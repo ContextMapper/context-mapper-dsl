@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
 import java.util.stream.Stream;
 
-import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
@@ -42,7 +42,7 @@ public class ExtractSharedKernelRefactoringTest extends AbstractRefactoringTest 
 	@MethodSource("createExtractSharedKernelParameters")
 	void canExtractSharedKernel(String inputFile, String resultingNewBC) throws IOException {
 		// given
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputFile);
+		CMLResource input = getResourceCopyOfTestCML(inputFile);
 
 		// when
 		new ExtractSharedKernelRefactoring("CustomerManagement", "AnotherContext").refactor(input);
@@ -76,7 +76,7 @@ public class ExtractSharedKernelRefactoringTest extends AbstractRefactoringTest 
 	@Test
 	public void canCreateAggregateInNewBoundedContext() throws IOException {
 		// given
-		CMLResourceContainer input = getResourceCopyOfTestCML("extract-shared-kernel-test-1-input.cml");
+		CMLResource input = getResourceCopyOfTestCML("extract-shared-kernel-test-1-input.cml");
 
 		// when
 		new ExtractSharedKernelRefactoring("CustomerManagement", "AnotherContext").refactor(input);
@@ -97,7 +97,7 @@ public class ExtractSharedKernelRefactoringTest extends AbstractRefactoringTest 
 		// given
 		String boundedContext1 = "TestContext";
 		String boundedContext2 = null;
-		CMLResourceContainer input = getResourceCopyOfTestCML("extract-shared-kernel-precondition-checks-input.cml");
+		CMLResource input = getResourceCopyOfTestCML("extract-shared-kernel-precondition-checks-input.cml");
 
 		// when, then
 		Assertions.assertThrows(RefactoringInputException.class, () -> {
@@ -110,7 +110,7 @@ public class ExtractSharedKernelRefactoringTest extends AbstractRefactoringTest 
 		// given
 		String boundedContext1 = null;
 		String boundedContext2 = "TestContext";
-		CMLResourceContainer input = getResourceCopyOfTestCML("extract-shared-kernel-precondition-checks-input.cml");
+		CMLResource input = getResourceCopyOfTestCML("extract-shared-kernel-precondition-checks-input.cml");
 
 		// when, then
 		Assertions.assertThrows(RefactoringInputException.class, () -> {
@@ -123,7 +123,7 @@ public class ExtractSharedKernelRefactoringTest extends AbstractRefactoringTest 
 		// given
 		String boundedContext1 = "TestContext";
 		String boundedContext2 = "TestContext";
-		CMLResourceContainer input = getResourceCopyOfTestCML("extract-shared-kernel-precondition-checks-input.cml");
+		CMLResource input = getResourceCopyOfTestCML("extract-shared-kernel-precondition-checks-input.cml");
 
 		// when, then
 		Assertions.assertThrows(RefactoringInputException.class, () -> {
@@ -136,7 +136,7 @@ public class ExtractSharedKernelRefactoringTest extends AbstractRefactoringTest 
 		// given
 		String boundedContext1 = "CustomerManagement";
 		String boundedContext2 = "AnotherContext";
-		CMLResourceContainer input = getResourceCopyOfTestCML("extract-shared-kernel-precondition-checks-multiple-rels-input.cml");
+		CMLResource input = getResourceCopyOfTestCML("extract-shared-kernel-precondition-checks-multiple-rels-input.cml");
 
 		// when, then
 		Assertions.assertThrows(RefactoringInputException.class, () -> {
@@ -149,7 +149,7 @@ public class ExtractSharedKernelRefactoringTest extends AbstractRefactoringTest 
 		// given
 		String boundedContext1 = "TestContext1";
 		String boundedContext2 = "TestContext2";
-		CMLResourceContainer input = getResourceCopyOfTestCML("extract-shared-kernel-precondition-checks-no-rel-input.cml");
+		CMLResource input = getResourceCopyOfTestCML("extract-shared-kernel-precondition-checks-no-rel-input.cml");
 
 		// when, then
 		Assertions.assertThrows(RefactoringInputException.class, () -> {

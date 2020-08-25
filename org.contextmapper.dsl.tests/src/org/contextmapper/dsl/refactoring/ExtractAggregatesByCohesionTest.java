@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
@@ -41,7 +41,7 @@ public class ExtractAggregatesByCohesionTest extends AbstractRefactoringTest {
 	void canExtractAggregatesByGivenInputList() throws IOException {
 		// given
 		String inputModelName = "extract-aggregates-by-nfr-test-1-input.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 
 		// when
 		List<String> aggregatesToExtract = Arrays.asList(new String[] { "Customers", "Addresses" });
@@ -64,7 +64,7 @@ public class ExtractAggregatesByCohesionTest extends AbstractRefactoringTest {
 	void canExtractAggregatesAndFixExposedReferencesInContextMap() throws IOException {
 		// given
 		String inputModelName = "extract-aggregates-by-nfr-test-2-input.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 
 		// when
 		List<String> aggregatesToExtract = Arrays.asList(new String[] { "Addresses" });
@@ -102,7 +102,7 @@ public class ExtractAggregatesByCohesionTest extends AbstractRefactoringTest {
 	void noErrorIfNoAggregatesGivenAsParameter() throws IOException {
 		// given
 		String inputModelName = "extract-aggregates-by-nfr-test-1-input.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 
 		// when
 		List<String> aggregatesToExtract = Lists.newArrayList();
@@ -122,7 +122,7 @@ public class ExtractAggregatesByCohesionTest extends AbstractRefactoringTest {
 	void noErrorIfContextMapIsNull() throws IOException {
 		// given
 		String inputModelName = "extract-aggregates-by-nfr-test-3-input.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 
 		// when
 		List<String> aggregatesToExtract = Arrays.asList(new String[] { "Customers", "Addresses" });
@@ -145,7 +145,7 @@ public class ExtractAggregatesByCohesionTest extends AbstractRefactoringTest {
 	void noErrorIfAggregateIsGivenWhichDoesNotExist() throws IOException {
 		// given
 		String inputModelName = "extract-aggregates-by-nfr-test-1-input.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 
 		// when
 		List<String> aggregatesToExtract = Arrays.asList(new String[] { "Customers", "Addresses", "ThisAggregateDoesNotExist" });
@@ -167,7 +167,7 @@ public class ExtractAggregatesByCohesionTest extends AbstractRefactoringTest {
 	@Test
 	void canHandleContextMapInDifferentFile() throws IOException {
 		// given
-		CMLResourceContainer mainResource = getResourceCopyOfTestCML("extract-aggregates-by-nfr-test-4-input-2.cml");
+		CMLResource mainResource = getResourceCopyOfTestCML("extract-aggregates-by-nfr-test-4-input-2.cml");
 		ResourceSet additionalResources = getResourceSetOfTestCMLFiles("extract-aggregates-by-nfr-test-4-input-1.cml");
 
 		// when
@@ -175,7 +175,7 @@ public class ExtractAggregatesByCohesionTest extends AbstractRefactoringTest {
 		ExtractAggregatesByCohesion ar = new ExtractAggregatesByCohesion("CustomerManagement", "CustomerManagement_Extracted", aggregatesToExtract);
 		ar.refactor(mainResource, additionalResources);
 		ar.persistChanges();
-		CMLResourceContainer contextMapResource = new CMLResourceContainer(
+		CMLResource contextMapResource = new CMLResource(
 				additionalResources.getResources().stream().filter(r -> r.getURI().toString().endsWith("extract-aggregates-by-nfr-test-4-input-1.cml")).findFirst().get());
 		contextMapResource = reloadResource(contextMapResource);
 

@@ -20,7 +20,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContextType;
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
@@ -118,25 +118,24 @@ public class MergeBoundedContextsRefactoring extends AbstractRefactoring impleme
 	}
 
 	private void handleImportsToRemovedBC(BoundedContext mergedBC, BoundedContext removedBC) {
-		CMLResourceContainer mergedBCResource = getResource(mergedBC);
-		CMLResourceContainer removedBCResource = getResource(removedBC);
-		URI mergedBCURI = mergedBCResource.getResource().getURI();
-		URI removedBCURI = removedBCResource.getResource().getURI();
+		CMLResource mergedBCResource = getResource(mergedBC);
+		CMLResource removedBCResource = getResource(removedBC);
+		URI mergedBCURI = mergedBCResource.getURI();
+		URI removedBCURI = removedBCResource.getURI();
 
 		// precondition: if BCs are specified in same resource, imports are okay
-		if (mergedBCResource.getResource().getURI().toString().equals(removedBCResource.getResource().getURI().toString()))
+		if (mergedBCResource.getURI().toString().equals(removedBCResource.getURI().toString()))
 			return;
 
 		// create import to removed BC resource
 		Import importToRemovedBCResource = ContextMappingDSLFactory.eINSTANCE.createImport();
 		importToRemovedBCResource.setImportURI(removedBCURI.toString());
 		mergedBCResource.getContextMappingModel().getImports().add(importToRemovedBCResource);
-		
-		for (CMLResourceContainer resource : additionalResourcesToCheck) {
-			Set<URI> importedURIs = resource.getContextMappingModel().getImports().stream().map(i -> URI.createURI(i.getImportURI()).resolve(resource.getResource().getURI()))
-					.collect(Collectors.toSet());
 
-			if (mergedBCURI.toString().equals(resource.getResource().getURI().toString()))
+		for (CMLResource resource : additionalResourcesToCheck) {
+			Set<URI> importedURIs = resource.getContextMappingModel().getImports().stream().map(i -> URI.createURI(i.getImportURI()).resolve(resource.getURI())).collect(Collectors.toSet());
+
+			if (mergedBCURI.toString().equals(resource.getURI().toString()))
 				continue;
 
 			if (importedURIs.contains(removedBCURI) && !importedURIs.contains(mergedBCURI)) {

@@ -18,7 +18,7 @@ package org.contextmapper.dsl.ui.handler;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.refactoring.MergeBoundedContextsRefactoring;
@@ -49,7 +49,7 @@ public class MergeBoundedContextsRefactoringHandler extends AbstractRefactoringW
 	}
 
 	@Override
-	protected void executeRefactoring(CMLResourceContainer resource, ExecutionEvent event) {
+	protected void executeRefactoring(CMLResource resource, ExecutionEvent event) {
 		BoundedContext bc = (BoundedContext) getSelectedElement();
 
 		MergeBoundedContextsContext refactoringContext = new MergeBoundedContextsContext(bc.getName(),

@@ -15,7 +15,7 @@
  */
 package org.contextmapper.dsl.ide.commands.impl.refactoring;
 
-import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.ide.commands.CMLResourceCommand;
 import org.contextmapper.dsl.ide.edit.WorkspaceEditRecorder;
 import org.contextmapper.dsl.refactoring.SemanticCMLRefactoring;
@@ -39,13 +39,12 @@ public abstract class AbstractRefactoringCommand implements CMLResourceCommand {
 	protected abstract SemanticCMLRefactoring getRefactoring(ExecuteCommandParams params);
 
 	@Override
-	public void executeCommand(CMLResourceContainer cmlResource, Document document, ILanguageServerAccess access, ExecuteCommandParams params) {
-		access.getLanguageClient()
-				.applyEdit(new ApplyWorkspaceEditParams(editRecorder.recordWorkspaceEdit(access, cmlResource.getResource().getURI(), document, (Resource copiedResource) -> {
-					CMLResourceContainer copiedCMLResource = new CMLResourceContainer(copiedResource);
-					SemanticCMLRefactoring ar = getRefactoring(params);
-					ar.refactor(copiedCMLResource);
-				}), "Apply Architectural Refactoring (AR)"));
+	public void executeCommand(CMLResource cmlResource, Document document, ILanguageServerAccess access, ExecuteCommandParams params) {
+		access.getLanguageClient().applyEdit(new ApplyWorkspaceEditParams(editRecorder.recordWorkspaceEdit(access, cmlResource.getURI(), document, (Resource copiedResource) -> {
+			CMLResource copiedCMLResource = new CMLResource(copiedResource);
+			SemanticCMLRefactoring ar = getRefactoring(params);
+			ar.refactor(copiedCMLResource);
+		}), "Apply Architectural Refactoring (AR)"));
 	}
 
 }

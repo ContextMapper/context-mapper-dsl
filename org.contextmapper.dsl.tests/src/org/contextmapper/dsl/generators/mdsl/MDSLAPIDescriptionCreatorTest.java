@@ -25,7 +25,7 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.contextmapper.dsl.AbstractCMLInputFileTest;
-import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.generator.mdsl.MDSLAPIDescriptionCreator;
 import org.contextmapper.dsl.generator.mdsl.MDSLModelCreator;
 import org.contextmapper.dsl.generator.mdsl.ProtectedRegionContextFactory;
@@ -104,14 +104,14 @@ public class MDSLAPIDescriptionCreatorTest extends AbstractCMLInputFileTest {
 		// given
 		String baseFilename = "mdsl-no-operation-in-one-api";
 		String inputModelName = baseFilename + ".cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 		MDSLModelCreator mdslCreator = new MDSLModelCreator(input.getContextMappingModel());
 
 		// when
 		List<ServiceSpecification> serviceSpecifications = mdslCreator.createServiceSpecifications();
 		MDSLAPIDescriptionCreator dslTextCreator = new TestMDSLAPIDescriptionCreator(new ProtectedRegionContextFactory().createProtectedRegionContextForNewMDSLFile());
 		ServiceSpecification spec = serviceSpecifications.stream().filter(s -> s.getName().equals("MyBoundedContextAPI")).findFirst().get();
-		String dslText = dslTextCreator.createAPIDescriptionText(spec, input.getResource().getURI().toFileString());
+		String dslText = dslTextCreator.createAPIDescriptionText(spec, input.getURI().toFileString());
 
 		// then
 		File expectedResultFile = new File(Paths.get("").toAbsolutePath().toString(), "/integ-test-files/mdsl/" + baseFilename + ".mdsl");
@@ -202,7 +202,7 @@ public class MDSLAPIDescriptionCreatorTest extends AbstractCMLInputFileTest {
 	private void testCMLInputAndMDSLOutputFiles(String baseFilename, boolean overwriteExistingFile) throws IOException {
 		// given
 		String inputModelName = baseFilename + ".cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 		MDSLModelCreator mdslCreator = new MDSLModelCreator(input.getContextMappingModel());
 
 		// when
@@ -215,7 +215,7 @@ public class MDSLAPIDescriptionCreatorTest extends AbstractCMLInputFileTest {
 		} else {
 			dslTextCreator = new TestMDSLAPIDescriptionCreator(new ProtectedRegionContextFactory().createProtectedRegionContextForNewMDSLFile());
 		}
-		String dslText = dslTextCreator.createAPIDescriptionText(serviceSpecifications.get(0), input.getResource().getURI().toFileString());
+		String dslText = dslTextCreator.createAPIDescriptionText(serviceSpecifications.get(0), input.getURI().toFileString());
 
 		// then
 		File expectedResultFile = new File(Paths.get("").toAbsolutePath().toString(), "/integ-test-files/mdsl/" + baseFilename + ".mdsl");

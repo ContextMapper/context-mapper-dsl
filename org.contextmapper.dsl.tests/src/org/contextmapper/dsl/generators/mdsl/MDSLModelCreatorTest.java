@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.contextmapper.dsl.AbstractCMLInputFileTest;
-import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.generator.exception.GeneratorInputException;
 import org.contextmapper.dsl.generator.mdsl.MDSLModelCreator;
 import org.contextmapper.dsl.generator.mdsl.model.DataType;
@@ -39,7 +39,7 @@ public class MDSLModelCreatorTest extends AbstractCMLInputFileTest {
 	@Test
 	void canCreateMDSLModel() throws IOException {
 		// given
-		CMLResourceContainer input = getResourceCopyOfTestCML("basic-mdsl-model-test.cml");
+		CMLResource input = getResourceCopyOfTestCML("basic-mdsl-model-test.cml");
 		MDSLModelCreator mdslCreator = new MDSLModelCreator(input.getContextMappingModel());
 
 		// when
@@ -97,7 +97,7 @@ public class MDSLModelCreatorTest extends AbstractCMLInputFileTest {
 	@Test
 	void canCreateMDSLModelWithoutContextMap() throws IOException {
 		// given
-		CMLResourceContainer input = getResourceCopyOfTestCML("basic-mdsl-model-test-without-contextmap.cml");
+		CMLResource input = getResourceCopyOfTestCML("basic-mdsl-model-test-without-contextmap.cml");
 		MDSLModelCreator mdslCreator = new MDSLModelCreator(input.getContextMappingModel());
 
 		// when
@@ -149,7 +149,7 @@ public class MDSLModelCreatorTest extends AbstractCMLInputFileTest {
 	void doesOnlyCreateOneDataTypeIfSameNameApearsMultipleTimes() throws IOException {
 		// given
 		String inputModelName = "same-data-type-in-multiple-methods.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 		MDSLModelCreator mdslCreator = new MDSLModelCreator(input.getContextMappingModel());
 
 		// when
@@ -165,7 +165,7 @@ public class MDSLModelCreatorTest extends AbstractCMLInputFileTest {
 	void createsOnlyOneAPIForUpstreamContextWhichOccursInMultipleRelationships() throws IOException {
 		// given
 		String inputModelName = "context-is-upstream-in-multiple-relationships.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 		MDSLModelCreator mdslCreator = new MDSLModelCreator(input.getContextMappingModel());
 
 		// when
@@ -180,7 +180,7 @@ public class MDSLModelCreatorTest extends AbstractCMLInputFileTest {
 	void canHandleReferencesInMethodTypes() throws IOException {
 		// given
 		String inputModelName = "use-references-in-methods.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 		MDSLModelCreator mdslCreator = new MDSLModelCreator(input.getContextMappingModel());
 
 		// when
@@ -200,7 +200,7 @@ public class MDSLModelCreatorTest extends AbstractCMLInputFileTest {
 	void canHandleMDSLKeywords() throws IOException {
 		// given
 		String inputModelName = "mdsl-can-handle-keyword-clashes.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 		MDSLModelCreator mdslCreator = new MDSLModelCreator(input.getContextMappingModel());
 
 		// when
@@ -220,7 +220,7 @@ public class MDSLModelCreatorTest extends AbstractCMLInputFileTest {
 	void throwExceptionIfThereAreNoOperations() throws IOException {
 		// given
 		String inputModelName = "no-operation.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 		MDSLModelCreator mdslCreator = new MDSLModelCreator(input.getContextMappingModel());
 
 		// when -> then throw exception

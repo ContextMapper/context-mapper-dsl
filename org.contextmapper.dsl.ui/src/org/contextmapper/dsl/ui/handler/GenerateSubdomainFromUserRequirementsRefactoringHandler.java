@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.Domain;
 import org.contextmapper.dsl.contextMappingDSL.UserRequirement;
@@ -49,7 +49,7 @@ public class GenerateSubdomainFromUserRequirementsRefactoringHandler extends Abs
 	}
 
 	@Override
-	protected void executeRefactoring(CMLResourceContainer resource, ExecutionEvent event) {
+	protected void executeRefactoring(CMLResource resource, ExecutionEvent event) {
 		Set<UserRequirement> userRequirements = getAllSelectedElements().stream().filter(o -> o instanceof UserRequirement).map(o -> (UserRequirement) o)
 				.collect(Collectors.toSet());
 

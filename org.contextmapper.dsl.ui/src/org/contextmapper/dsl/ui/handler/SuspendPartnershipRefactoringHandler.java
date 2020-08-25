@@ -15,7 +15,7 @@
  */
 package org.contextmapper.dsl.ui.handler;
 
-import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.contextMappingDSL.Partnership;
 import org.contextmapper.dsl.refactoring.ChangePartnershipToUpstreamDownstreamRefactoring;
 import org.contextmapper.dsl.refactoring.ExtractPartnershipRefactoring;
@@ -45,7 +45,7 @@ public class SuspendPartnershipRefactoringHandler extends AbstractRefactoringWit
 	}
 
 	@Override
-	protected void executeRefactoring(CMLResourceContainer resource, ExecutionEvent event) {
+	protected void executeRefactoring(CMLResource resource, ExecutionEvent event) {
 		Partnership partnership = (Partnership) getSelectedElement();
 
 		SuspendPartnershipContext refactoringContext = new SuspendPartnershipContext(partnership.getParticipant1().getName(), partnership.getParticipant2().getName());

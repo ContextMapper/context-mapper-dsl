@@ -1,6 +1,6 @@
 package org.contextmapper.dsl.ui.handler;
 
-import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.exception.ContextMapperApplicationException;
 import org.contextmapper.dsl.refactoring.SemanticCMLRefactoring;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -13,7 +13,7 @@ public abstract class AbstractRefactoringWithUserInputHandler extends AbstractRe
 	/**
 	 * Use this method to finish refactoring after user input (on finish)
 	 */
-	protected boolean finishRefactoring(SemanticCMLRefactoring ar, CMLResourceContainer resource, ExecutionEvent event) {
+	protected boolean finishRefactoring(SemanticCMLRefactoring ar, CMLResource resource, ExecutionEvent event) {
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
 			public void run() {

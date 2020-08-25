@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
@@ -39,7 +39,7 @@ public class ExtractAggregatesByVolatilityTest extends AbstractRefactoringTest {
 	void canExtractAggregatesWhichAreLikelyToChange() throws IOException {
 		// given
 		String inputModelName = "extract-aggregates-likely-to-change-test-1-input.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 
 		// when
 		ExtractAggregatesByVolatility ar = new ExtractAggregatesByVolatility("CustomerManagement", LikelihoodForChange.OFTEN);
@@ -61,7 +61,7 @@ public class ExtractAggregatesByVolatilityTest extends AbstractRefactoringTest {
 	void canFixExposedAggregates() throws IOException {
 		// given
 		String inputModelName = "extract-aggregates-likely-to-change-test-5-input.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 
 		// when
 		ExtractAggregatesByVolatility ar = new ExtractAggregatesByVolatility("CustomerManagement", LikelihoodForChange.OFTEN);
@@ -89,7 +89,7 @@ public class ExtractAggregatesByVolatilityTest extends AbstractRefactoringTest {
 	void noErrorsIfThereAreNoAggregates() throws IOException {
 		// given
 		String inputModelName = "extract-aggregates-likely-to-change-test-2-input.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 
 		// when
 		ExtractAggregatesByVolatility ar = new ExtractAggregatesByVolatility("CustomerManagement", LikelihoodForChange.OFTEN);
@@ -103,7 +103,7 @@ public class ExtractAggregatesByVolatilityTest extends AbstractRefactoringTest {
 	void doNotCreateNewBCIfThereIsOnlyOneAggregate() throws IOException {
 		// given
 		String inputModelName = "extract-aggregates-likely-to-change-test-3-input.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 
 		// when
 		ExtractAggregatesByVolatility ar = new ExtractAggregatesByVolatility("CustomerManagement", LikelihoodForChange.OFTEN);
@@ -117,7 +117,7 @@ public class ExtractAggregatesByVolatilityTest extends AbstractRefactoringTest {
 	void noErrorsIfThereAreNoAggregatesToExtract() throws IOException {
 		// given
 		String inputModelName = "extract-aggregates-likely-to-change-test-4-input.cml";
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputModelName);
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 
 		// when
 		ExtractAggregatesByVolatility ar = new ExtractAggregatesByVolatility("CustomerManagement", LikelihoodForChange.OFTEN);
@@ -130,14 +130,14 @@ public class ExtractAggregatesByVolatilityTest extends AbstractRefactoringTest {
 	@Test
 	void canHandleContextMapInDifferentFile() throws IOException {
 		// given
-		CMLResourceContainer mainResource = getResourceCopyOfTestCML("extract-aggregates-likely-to-change-test-6-input-2.cml");
+		CMLResource mainResource = getResourceCopyOfTestCML("extract-aggregates-likely-to-change-test-6-input-2.cml");
 		ResourceSet additionalResources = getResourceSetOfTestCMLFiles("extract-aggregates-likely-to-change-test-6-input-1.cml");
 
 		// when
 		ExtractAggregatesByVolatility ar = new ExtractAggregatesByVolatility("CustomerManagement", LikelihoodForChange.OFTEN);
 		ar.refactor(mainResource, additionalResources);
 		ar.persistChanges();
-		CMLResourceContainer contextMapResource = new CMLResourceContainer(additionalResources.getResources().stream()
+		CMLResource contextMapResource = new CMLResource(additionalResources.getResources().stream()
 				.filter(r -> r.getURI().toString().endsWith("extract-aggregates-likely-to-change-test-6-input-1.cml")).findFirst().get());
 		contextMapResource = reloadResource(contextMapResource);
 

@@ -15,7 +15,7 @@
  */
 package org.contextmapper.dsl.refactoring;
 
-import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.cml.CMLResource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 
 public interface SemanticCMLRefactoring {
@@ -25,7 +25,7 @@ public interface SemanticCMLRefactoring {
 	 * 
 	 * @param resource the resource with the CML model that shall be refactored
 	 */
-	void refactor(CMLResourceContainer resource);
+	void refactor(CMLResource resource);
 
 	/**
 	 * 
@@ -45,7 +45,7 @@ public interface SemanticCMLRefactoring {
 	 *                                         refactoring can correct the
 	 *                                         references.
 	 */
-	void refactor(CMLResourceContainer resource, ResourceSet resourcesToBeChecked4Consistency);
+	void refactor(CMLResource resource, ResourceSet resourcesToBeChecked4Consistency);
 
 	/**
 	 * Can be called after the 'refactor' method, in case one wants to save/persist

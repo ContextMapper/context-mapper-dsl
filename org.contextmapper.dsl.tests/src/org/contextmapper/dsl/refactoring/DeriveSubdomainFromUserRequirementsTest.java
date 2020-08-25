@@ -25,7 +25,7 @@ import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.Domain;
 import org.contextmapper.dsl.contextMappingDSL.Subdomain;
@@ -51,7 +51,7 @@ public class DeriveSubdomainFromUserRequirementsTest extends AbstractRefactoring
 			"derive-subdomain-from-user-story-test-6-input.cml" })
 	public void canDeriveSubdomainFromUserStory(String inputFile) throws IOException {
 		// given
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputFile);
+		CMLResource input = getResourceCopyOfTestCML(inputFile);
 
 		// when
 		Set<String> userStories = Sets.newHashSet(Arrays.asList(new String[] { "US1_Create", "Story_to_be_Ignored", "UseCase_to_be_Ignored" }));
@@ -91,7 +91,7 @@ public class DeriveSubdomainFromUserRequirementsTest extends AbstractRefactoring
 	@Test
 	public void canMergeDomainVisionStatements() throws IOException {
 		// given
-		CMLResourceContainer input = getResourceCopyOfTestCML("derive-subdomain-from-user-story-test-existing-dvs-1.cml");
+		CMLResource input = getResourceCopyOfTestCML("derive-subdomain-from-user-story-test-existing-dvs-1.cml");
 
 		// when
 		Set<String> userStories = Sets.newHashSet(Arrays.asList(new String[] { "US1_Create", "Story_to_be_Ignored" }));
@@ -119,7 +119,7 @@ public class DeriveSubdomainFromUserRequirementsTest extends AbstractRefactoring
 	@NullSource
 	public void canThrowExceptionIfNoDomainNameProvided(String domainName) throws IOException {
 		// given
-		CMLResourceContainer input = getResourceCopyOfTestCML("derive-subdomain-from-user-story-test-1-input.cml");
+		CMLResource input = getResourceCopyOfTestCML("derive-subdomain-from-user-story-test-1-input.cml");
 
 		// when, then
 		Set<String> userStories = Sets.newHashSet(Arrays.asList(new String[] { "US1_Create" }));
@@ -134,7 +134,7 @@ public class DeriveSubdomainFromUserRequirementsTest extends AbstractRefactoring
 	@NullSource
 	public void canThrowExceptionIfNoSubdomainNameProvided(String subdomainName) throws IOException {
 		// given
-		CMLResourceContainer input = getResourceCopyOfTestCML("derive-subdomain-from-user-story-test-1-input.cml");
+		CMLResource input = getResourceCopyOfTestCML("derive-subdomain-from-user-story-test-1-input.cml");
 
 		// when, then
 		Set<String> userStories = Sets.newHashSet(Arrays.asList(new String[] { "US1_Create" }));
@@ -147,7 +147,7 @@ public class DeriveSubdomainFromUserRequirementsTest extends AbstractRefactoring
 	@Test
 	public void canThrowExceptionIfNoRequirementsProvided() throws IOException {
 		// given
-		CMLResourceContainer input = getResourceCopyOfTestCML("derive-subdomain-from-user-story-test-1-input.cml");
+		CMLResource input = getResourceCopyOfTestCML("derive-subdomain-from-user-story-test-1-input.cml");
 
 		// when, then
 		Set<String> userStories = Sets.newHashSet(Arrays.asList(new String[] { "not-existing-story" }));
@@ -161,7 +161,7 @@ public class DeriveSubdomainFromUserRequirementsTest extends AbstractRefactoring
 	@ValueSource(strings = { "derive-subdomain-from-user-story-test-7-input.cml", "derive-subdomain-from-user-story-test-8-input.cml" })
 	public void canCreateEntityAttributes(String inputFile) throws IOException {
 		// given
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputFile);
+		CMLResource input = getResourceCopyOfTestCML(inputFile);
 
 		// when
 		Set<String> userStories = Sets.newHashSet(Arrays.asList(new String[] { "US1_Create" }));
@@ -185,7 +185,7 @@ public class DeriveSubdomainFromUserRequirementsTest extends AbstractRefactoring
 	@ValueSource(strings = { "derive-subdomain-from-user-story-test-9-input.cml", "derive-subdomain-from-user-story-test-12-input.cml" })
 	public void canCreateContainmentReference(String inputFile) throws IOException {
 		// given
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputFile);
+		CMLResource input = getResourceCopyOfTestCML(inputFile);
 
 		// when
 		Set<String> userStories = Sets.newHashSet(Arrays.asList(new String[] { "US1_Create" }));
@@ -210,7 +210,7 @@ public class DeriveSubdomainFromUserRequirementsTest extends AbstractRefactoring
 	@ValueSource(strings = { "derive-subdomain-from-user-story-test-10-input.cml", "derive-subdomain-from-user-story-test-11-input.cml" })
 	public void canIgnoreEmptyReferences(String inputFile) throws IOException {
 		// given
-		CMLResourceContainer input = getResourceCopyOfTestCML(inputFile);
+		CMLResource input = getResourceCopyOfTestCML(inputFile);
 
 		// when
 		Set<String> userStories = Sets.newHashSet(Arrays.asList(new String[] { "US1_Create" }));
