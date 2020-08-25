@@ -32,6 +32,7 @@ import org.contextmapper.dsl.ide.commands.impl.refactoring.DeriveSubdomainFromUs
 import org.contextmapper.dsl.ide.commands.impl.refactoring.ExtractAggregatesByCohesionCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.ExtractAggregatesByVolatilityCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.ExtractSharedKernelCommand;
+import org.contextmapper.dsl.ide.commands.impl.refactoring.ExtractSuggestedServiceCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.MergeAggregatesCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.MergeBoundedContextsCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.SplitAggregateByEntitiesRefactoringCommand;
@@ -89,6 +90,7 @@ public class CMLCommandRegistry {
 		commandMap.put("cml.ar.suspendPartnership", new SuspendPartnershipCommand(editRecorder));
 		commandMap.put("cml.ar.switchPartnershipToSharedKernel", new SwitchFromPartnershipToSharedKernelCommand(editRecorder));
 		commandMap.put("cml.ar.switchSharedKernelToPartnership", new SwitchFromSharedKernelToPartnershipCommand(editRecorder));
+		commandMap.put("cml.ar.extractSuggestedService", new ExtractSuggestedServiceCommand(editRecorder));
 	}
 
 	public CMLResourceCommand getCommand(String commandId) {

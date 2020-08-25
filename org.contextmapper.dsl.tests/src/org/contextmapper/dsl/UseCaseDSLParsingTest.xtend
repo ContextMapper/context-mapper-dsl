@@ -70,93 +70,6 @@ class UseCaseDSLParsingTest {
 	}
 
 	@Test
-	def void canDefineReadAttributes() {
-		// given
-		val String dslSnippet = '''
-			UseCase testUsecase {
-				reads "Obj.attr1", "Obj.attr2"
-			}
-		''';
-		// when
-		val ContextMappingModel result = parseHelper.parse(dslSnippet);
-		// then
-		assertThatNoParsingErrorsOccurred(result);
-		assertThatNoValidationErrorsOccurred(result);
-
-		assertEquals(2, result.userRequirements.get(0).nanoentitiesRead.size)
-		assertEquals("Obj.attr1", result.userRequirements.get(0).nanoentitiesRead.get(0))
-		assertEquals("Obj.attr2", result.userRequirements.get(0).nanoentitiesRead.get(1))
-	}
-
-	@Test
-	def void canDefineWriteAttributes() {
-		// given
-		val String dslSnippet = '''
-			UseCase testUsecase {
-				writes "Obj.attr1", "Obj.attr2"
-			}
-		''';
-		// when
-		val ContextMappingModel result = parseHelper.parse(dslSnippet);
-		// then
-		assertThatNoParsingErrorsOccurred(result);
-		assertThatNoValidationErrorsOccurred(result);
-
-		assertEquals(2, result.userRequirements.get(0).nanoentitiesWritten.size)
-		assertEquals("Obj.attr1", result.userRequirements.get(0).nanoentitiesWritten.get(0))
-		assertEquals("Obj.attr2", result.userRequirements.get(0).nanoentitiesWritten.get(1))
-	}
-
-	@Test
-	def void canDefineLatencyCriticalityTrue() {
-		// given
-		val String dslSnippet = '''
-			UseCase testUsecase {
-				isLatencyCritical = true
-			}
-		''';
-		// when
-		val ContextMappingModel result = parseHelper.parse(dslSnippet);
-		// then
-		assertThatNoParsingErrorsOccurred(result);
-		assertThatNoValidationErrorsOccurred(result);
-
-		assertEquals(true, result.userRequirements.get(0).isIsLatencyCritical)
-	}
-
-	@Test
-	def void canDefineLatencyCriticalityFalse() {
-		// given
-		val String dslSnippet = '''
-			UseCase testUsecase
-		''';
-		// when
-		val ContextMappingModel result = parseHelper.parse(dslSnippet);
-		// then
-		assertThatNoParsingErrorsOccurred(result);
-		assertThatNoValidationErrorsOccurred(result);
-
-		assertEquals(false, result.userRequirements.get(0).isIsLatencyCritical)
-	}
-
-	@Test
-	def void canDefineLatencyCriticalityWithoutEqualSign() {
-		// given
-		val String dslSnippet = '''
-			UseCase testUsecase {
-				isLatencyCritical true
-			}
-		''';
-		// when
-		val ContextMappingModel result = parseHelper.parse(dslSnippet);
-		// then
-		assertThatNoParsingErrorsOccurred(result);
-		assertThatNoValidationErrorsOccurred(result);
-
-		assertEquals(true, result.userRequirements.get(0).isIsLatencyCritical)
-	}
-
-	@Test
 	def void canDefineActor() {
 		// given
 		val String dslSnippet = '''
@@ -383,6 +296,66 @@ class UseCaseDSLParsingTest {
 			UseCase testUsecase {
 				actor = "Insurance Employee"
 				interactions = create an "Address" with its "firstname", "lastname" in "Customer"
+				benefit = "I can manage the customers data and ..."
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+
+		val feature = result.userRequirements.get(0).features.get(0);
+		assertEquals("Customer", feature.containerEntity);
+	}
+	
+	@Test
+	def void canDefineContainmentRelationshipSyntaxVariant7() {
+		// given
+		val String dslSnippet = '''
+			UseCase testUsecase {
+				actor = "Insurance Employee"
+				interactions = "add" an "Address" with its "firstname", "lastname" to a "Customer"
+				benefit = "I can manage the customers data and ..."
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+
+		val feature = result.userRequirements.get(0).features.get(0);
+		assertEquals("Customer", feature.containerEntity);
+	}
+	
+	@Test
+	def void canDefineContainmentRelationshipSyntaxVariant8() {
+		// given
+		val String dslSnippet = '''
+			UseCase testUsecase {
+				actor = "Insurance Employee"
+				interactions = "add" an "Address" with its "firstname", "lastname" to an "Customer"
+				benefit = "I can manage the customers data and ..."
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+
+		val feature = result.userRequirements.get(0).features.get(0);
+		assertEquals("Customer", feature.containerEntity);
+	}
+	
+	@Test
+	def void canDefineContainmentRelationshipSyntaxVariant9() {
+		// given
+		val String dslSnippet = '''
+			UseCase testUsecase {
+				actor = "Insurance Employee"
+				interactions = "add" an "Address" with its "firstname", "lastname" to "Customer"
 				benefit = "I can manage the customers data and ..."
 			}
 		''';

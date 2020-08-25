@@ -6,7 +6,6 @@ ContextMap {
 		implementationTechnology ""
 		exposedAggregates TestAggregate
 	}
-
 }
 
 BoundedContext TestBackendLogic {

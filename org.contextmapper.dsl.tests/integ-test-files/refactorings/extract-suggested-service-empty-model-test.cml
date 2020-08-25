@@ -1,0 +1,10 @@
+ContextMap {
+	contains Service_P
+	
+}
+
+BoundedContext Service_P {
+	Aggregate Aggregate_P {
+		Entity CarrierMovement
+	}
+}

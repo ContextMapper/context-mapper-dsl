@@ -81,7 +81,7 @@ class ServiceCutterUserRepresentationExampleFileGeneratorCommandTest extends Abs
 
 		// then
 		CMLCommandService.COMMAND_EXECUTED_RETURN_VALUE.assertEquals(resultVal)
-		new File(root, "test_user-representations.scl").exists.assertTrue
+		new File(root, "test_scl-syntax-example.scl").exists.assertTrue
 	}
 
 }

@@ -1,0 +1,17 @@
+BoundedContext Service_A {
+	Aggregate Aggregate1 {
+		Entity Customer {
+			String firstname
+			String lastname
+		}
+	}
+	
+}
+BoundedContext Service_B {
+	Aggregate Aggregate2 {
+		Entity CustomerDTO {
+			String firstname
+			String lastname
+		}
+	}
+}

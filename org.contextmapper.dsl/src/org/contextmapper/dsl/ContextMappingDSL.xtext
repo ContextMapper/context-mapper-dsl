@@ -22,7 +22,7 @@ generate contextMappingDSL "http://www.contextmapper.org/dsl/ContextMappingDSL"
 
 ContextMappingModel:
 	(
-		(firstLineComment=SL_COMMENT)? &
+		(topComment=SL_COMMENT | topComment=ML_COMMENT)? &
 		(imports+=Import)* &
 		(map = ContextMap)? &
 		(boundedContexts += BoundedContext)* &
@@ -46,7 +46,7 @@ ContextMap:
 ;
 
 BoundedContext:
-	(comment=SL_COMMENT)?
+	(comment=ML_COMMENT | comment=SL_COMMENT)?
 	'BoundedContext' name=ID (('implements' (implementedDomainParts+=[DomainPart]) ("," implementedDomainParts+=[DomainPart])*)? & 
 		                      ('realizes' (realizedBoundedContexts+=[BoundedContext]) ("," realizedBoundedContexts+=[BoundedContext])*)? & 
 		                      ('refines' refinedBoundedContext=[BoundedContext])?
@@ -196,25 +196,19 @@ UseCase:
 		('interactions' ('=')? features+=Feature ("," features+=Feature)*)? &
 		('benefit' ('=')? benefit=STRING)? &
 		('scope' ('=')? scope=STRING)? &
-		('level' ('=')? level=STRING)? &
-		('isLatencyCritical' ('=')? isLatencyCritical?='true')? &
-		(('reads' nanoentitiesRead+=STRING*) ("," nanoentitiesRead+=STRING)*)? &
-        (('writes' nanoentitiesWritten+=STRING*) ("," nanoentitiesWritten+=STRING)*)?)  
+		('level' ('=')? level=STRING)?)
 	CLOSE)?
 ;
 
 UserStory:
 	'UserStory' name=ID 
 	(OPEN
-		((('As a' | 'As an') role=STRING ('I want to' features+=Feature)+ 'so that' benefit=STRING)? &
-		('isLatencyCritical' ('=')? isLatencyCritical?='true')? &
-		(('reads' nanoentitiesRead+=STRING*) ("," nanoentitiesRead+=STRING)*)? &
-        (('writes' nanoentitiesWritten+=STRING*) ("," nanoentitiesWritten+=STRING)*)?)  
+		(('As a' | 'As an') role=STRING ('I want to' features+=Feature)+ 'so that' benefit=STRING)?
 	CLOSE)?
 ;
 
 Feature:
-	verb=(UserActivityDefaultVerb | STRING) ('a' | 'an')? entity=STRING (('with its' | 'with their') entityAttributes+=STRING ("," entityAttributes+=STRING)*)? (('in' | 'for')('a' | 'an')? containerEntity=STRING)?
+	verb=(STRING | UserActivityDefaultVerb) ('a' | 'an')? entity=STRING (('with its' | 'with their') entityAttributes+=STRING ("," entityAttributes+=STRING)*)? (('in' | 'for' | 'to')('a' | 'an')? containerEntity=STRING)?
 ;
 
 UserActivityDefaultVerb:

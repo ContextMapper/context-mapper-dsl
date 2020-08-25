@@ -1,0 +1,18 @@
+BoundedContext Service_A {
+	Aggregate SingleAggregate_A {
+		BasicType CustomerDTO {
+			String firstname
+			String lastname
+		}
+	}
+}
+
+BoundedContext Service_B {
+	Aggregate SingleAggregate_B {
+		Entity Customer {
+			String firstname
+			String lastname
+
+		}
+	}
+}
