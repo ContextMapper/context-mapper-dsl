@@ -15,8 +15,15 @@
  */
 package org.contextmapper.dsl.standalone;
 
-public class StandaloneGenerationIntegTest {
+/**
+ * Factory method to get an StandaloneContextMapperAPI instance.
+ * 
+ * @author Stefan Kapferer
+ */
+public class ContextMapperStandaloneSetup {
 
-	
-	
+	public static StandaloneContextMapperAPI getStandaloneAPI() {
+		return new StandaloneContextMapper();
+	}
+
 }
