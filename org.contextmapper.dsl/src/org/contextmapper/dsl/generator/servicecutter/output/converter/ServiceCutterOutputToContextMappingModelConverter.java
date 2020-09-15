@@ -15,6 +15,8 @@
  */
 package org.contextmapper.dsl.generator.servicecutter.output.converter;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -127,7 +129,7 @@ public class ServiceCutterOutputToContextMappingModelConverter {
 
 	private String generateTopComment() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("/* This CML model has been generated with Service Cutter.");
+		sb.append("/* This CML model has been generated with Service Cutter. Timestamp: " + new SimpleDateFormat("dd.MM.YYYY HH:mm:ss z").format(new Date()));
 		if (this.originalModelState != null)
 			sb.append(System.lineSeparator() + " * It decomposes the original CML model " + originalModelState.eResource().getURI().toString() + ".");
 		if (this.sclURI != null)
