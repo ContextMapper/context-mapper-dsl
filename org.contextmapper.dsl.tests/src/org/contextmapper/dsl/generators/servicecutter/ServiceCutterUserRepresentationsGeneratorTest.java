@@ -18,7 +18,6 @@ package org.contextmapper.dsl.generators.servicecutter;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,12 +31,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.xtext.generator.GeneratorContext;
 import org.eclipse.xtext.generator.IGenerator2;
-import org.eclipse.xtext.generator.JavaIoFileSystemAccess;
-import org.eclipse.xtext.parser.IEncodingProvider;
-import org.eclipse.xtext.service.AbstractGenericModule;
 import org.junit.jupiter.api.Test;
-
-import com.google.inject.Guice;
 
 class ServiceCutterUserRepresentationsGeneratorTest extends AbstractCMLInputFileTest {
 
@@ -58,31 +52,6 @@ class ServiceCutterUserRepresentationsGeneratorTest extends AbstractCMLInputFile
 		ServiceCutterUserRepresentationsModel sclModel = (ServiceCutterUserRepresentationsModel) sclResource.getContents().get(0);
 		assertNotNull(sclModel);
 		assertEquals(1, sclModel.getUseCases().size());
-	}
-
-	@Test
-	void canCreateUpdateUserRepresentationsFile() throws IOException {
-		// given
-		Resource inputResource = getResourceCopyOfTestCML("user-representations-generation-test-1.cml");
-		Resource sclResource = getResourceCopyOfTestSCL("user-representations-generation-test-1.scl");
-
-		// when
-		IGenerator2 generator = new ServiceCutterUserRepresentationsGenerator();
-		generator.doGenerate(inputResource, getFileSystemAccess(), new GeneratorContext());
-		sclResource = new ResourceSetImpl()
-				.getResource(URI.createFileURI(new File(new File(inputResource.getURI().toFileString()).getParentFile(), "user-representations-generation-test-1.scl").getAbsolutePath()), true);
-		ServiceCutterUserRepresentationsModel sclModel = (ServiceCutterUserRepresentationsModel) sclResource.getContents().get(0);
-
-		// then
-		assertNotNull(sclModel);
-		assertEquals(1, sclModel.getUseCases().size());
-		assertNotNull(sclModel.getCompatibilities());
-		assertFalse(sclModel.getCompatibilities().getAvailabilityCriticality().isEmpty());
-		assertFalse(sclModel.getCompatibilities().getConsistencyCriticality().isEmpty());
-		assertFalse(sclModel.getCompatibilities().getContentVolatility().isEmpty());
-		assertFalse(sclModel.getCompatibilities().getSecurityCriticality().isEmpty());
-		assertFalse(sclModel.getCompatibilities().getStorageSimilarity().isEmpty());
-		assertFalse(sclModel.getCompatibilities().getStructuralVolatility().isEmpty());
 	}
 
 	@Override

@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
-import org.contextmapper.dsl.contextMappingDSL.LikelihoodForChange;
+import org.contextmapper.dsl.contextMappingDSL.Volatility;
 import org.contextmapper.dsl.refactoring.ExtractAggregatesByVolatility;
 import org.contextmapper.dsl.ui.handler.wizard.ExtractAggregatesByVolatilityContext;
 import org.contextmapper.dsl.ui.handler.wizard.ExtractAggregatesByVolatilityRefactoringWizard;
@@ -56,7 +56,7 @@ public class ExtractAggregatesByVolatilityRefactoringHandler extends AbstractRef
 			return false;
 
 		BoundedContext bc = (BoundedContext) obj;
-		List<LikelihoodForChange> likelihoods = bc.getAggregates().stream().map(agg -> agg.getLikelihoodForChange()).collect(Collectors.toList());
+		List<Volatility> likelihoods = bc.getAggregates().stream().map(agg -> agg.getLikelihoodForChange()).collect(Collectors.toList());
 		return likelihoods.size() > 1;
 	}
 

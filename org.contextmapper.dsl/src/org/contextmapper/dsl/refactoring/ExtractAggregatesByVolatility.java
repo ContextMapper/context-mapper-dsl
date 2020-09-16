@@ -22,16 +22,15 @@ import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
-import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
-import org.contextmapper.dsl.contextMappingDSL.LikelihoodForChange;
+import org.contextmapper.dsl.contextMappingDSL.Volatility;
 
 public class ExtractAggregatesByVolatility extends AbstractRefactoring implements SemanticCMLRefactoring {
 
 	private String boundedContextName;
 	private BoundedContext originalBC;
-	private LikelihoodForChange likelihoodForChange;
+	private Volatility likelihoodForChange;
 
-	public ExtractAggregatesByVolatility(String boundedContextName, LikelihoodForChange likelihoodForChange) {
+	public ExtractAggregatesByVolatility(String boundedContextName, Volatility likelihoodForChange) {
 		this.boundedContextName = boundedContextName;
 		this.likelihoodForChange = likelihoodForChange;
 	}

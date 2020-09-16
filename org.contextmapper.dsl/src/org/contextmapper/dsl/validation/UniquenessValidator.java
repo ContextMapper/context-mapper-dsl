@@ -51,8 +51,6 @@ import org.eclipse.xtext.xbase.lib.IteratorExtensions;
 
 public class UniquenessValidator extends AbstractCMLValidator {
 
-	private CMLModelObjectsResolvingHelper resolvingHelper = new CMLModelObjectsResolvingHelper();
-
 	@Override
 	public void register(EValidatorRegistrar registrar) {
 		// not needed for classes used as ComposedCheck
@@ -61,11 +59,10 @@ public class UniquenessValidator extends AbstractCMLValidator {
 	@Check
 	public void validateThatBoundedContextNameIsUnique(final BoundedContext bc) {
 		if (bc != null) {
-			Iterator<BoundedContext> allBoundedContexts = resolvingHelper.resolveAllObjectsOfType(getRootCMLModel(bc), BoundedContext.class).iterator();
-			Iterator<BoundedContext> duplicateBoundedContexts = IteratorExtensions.filter(allBoundedContexts,
-					((Function1<BoundedContext, Boolean>) (BoundedContext boundedcontext) -> {
-						return boundedcontext.getName().equals(bc.getName());
-					}));
+			Iterator<BoundedContext> allBoundedContexts = new CMLModelObjectsResolvingHelper(getRootCMLModel(bc)).resolveAllObjectsOfType(BoundedContext.class).iterator();
+			Iterator<BoundedContext> duplicateBoundedContexts = IteratorExtensions.filter(allBoundedContexts, ((Function1<BoundedContext, Boolean>) (BoundedContext boundedcontext) -> {
+				return boundedcontext.getName().equals(bc.getName());
+			}));
 			if (IteratorExtensions.size(duplicateBoundedContexts) > 1)
 				error(String.format(BOUNDED_CONTEXT_NAME_NOT_UNIQUE, bc.getName()), bc, ContextMappingDSLPackage.Literals.BOUNDED_CONTEXT__NAME);
 		}
@@ -74,7 +71,7 @@ public class UniquenessValidator extends AbstractCMLValidator {
 	@Check
 	public void validateThatSubdomainNameIsUnique(final Subdomain subdomain) {
 		if (subdomain != null) {
-			Iterator<Subdomain> allSubdomains = resolvingHelper.resolveAllObjectsOfType(getRootCMLModel(subdomain), Subdomain.class).iterator();
+			Iterator<Subdomain> allSubdomains = new CMLModelObjectsResolvingHelper(getRootCMLModel(subdomain)).resolveAllObjectsOfType(Subdomain.class).iterator();
 			Iterator<Subdomain> duplicateSubdomains = IteratorExtensions.filter(allSubdomains, ((Function1<Subdomain, Boolean>) (Subdomain sd) -> {
 				return subdomain.getName().equals(sd.getName());
 			}));
@@ -86,7 +83,7 @@ public class UniquenessValidator extends AbstractCMLValidator {
 	@Check
 	public void validateThatModuleNameIsUnique(final SculptorModule module) {
 		if (module != null) {
-			Iterator<SculptorModule> allModules = resolvingHelper.resolveAllObjectsOfType(getRootCMLModel(module), SculptorModule.class).iterator();
+			Iterator<SculptorModule> allModules = new CMLModelObjectsResolvingHelper(getRootCMLModel(module)).resolveAllObjectsOfType(SculptorModule.class).iterator();
 			Iterator<SculptorModule> duplicateModules = IteratorExtensions.filter(allModules, ((Function1<SculptorModule, Boolean>) (SculptorModule m) -> {
 				return m.getName().equals(module.getName());
 			}));
@@ -98,7 +95,7 @@ public class UniquenessValidator extends AbstractCMLValidator {
 	@Check
 	public void validateThatAggregateNameIsUnique(final Aggregate aggregate) {
 		if (aggregate != null) {
-			Iterator<Aggregate> allAggregates = resolvingHelper.resolveAllObjectsOfType(getRootCMLModel(aggregate), Aggregate.class).iterator();
+			Iterator<Aggregate> allAggregates = new CMLModelObjectsResolvingHelper(getRootCMLModel(aggregate)).resolveAllObjectsOfType(Aggregate.class).iterator();
 			Iterator<Aggregate> duplicateAggregates = IteratorExtensions.filter(allAggregates, ((Function1<Aggregate, Boolean>) (Aggregate a) -> {
 				return a.getName().equals(aggregate.getName());
 			}));
@@ -138,7 +135,7 @@ public class UniquenessValidator extends AbstractCMLValidator {
 	@Check
 	public void validateThatUseCaseNameIsUnique(final UserRequirement uc) {
 		if (uc != null) {
-			Iterator<UserRequirement> allUseCases = resolvingHelper.resolveAllObjectsOfType(getRootCMLModel(uc), UserRequirement.class).iterator();
+			Iterator<UserRequirement> allUseCases = new CMLModelObjectsResolvingHelper(getRootCMLModel(uc)).resolveAllObjectsOfType(UserRequirement.class).iterator();
 			Iterator<UserRequirement> duplicateUseCases = IteratorExtensions.filter(allUseCases, ((Function1<UserRequirement, Boolean>) (UserRequirement u) -> {
 				return u.getName().equals(uc.getName());
 			}));

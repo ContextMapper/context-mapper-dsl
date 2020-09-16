@@ -39,7 +39,7 @@ public class CMLModelObjectsResolvingHelperTest extends AbstractCMLInputFileTest
 				.get();
 
 		// when
-		CMLModelObjectsResolvingHelper helper = new CMLModelObjectsResolvingHelper();
+		CMLModelObjectsResolvingHelper helper = new CMLModelObjectsResolvingHelper(input.getContextMappingModel());
 		BoundedContext bc = helper.resolveBoundedContext(domainObject);
 
 		// then
@@ -54,7 +54,7 @@ public class CMLModelObjectsResolvingHelperTest extends AbstractCMLInputFileTest
 				.get();
 
 		// when
-		CMLModelObjectsResolvingHelper helper = new CMLModelObjectsResolvingHelper();
+		CMLModelObjectsResolvingHelper helper = new CMLModelObjectsResolvingHelper(input.getContextMappingModel());
 		BoundedContext bc = helper.resolveBoundedContext(domainObject);
 
 		// then

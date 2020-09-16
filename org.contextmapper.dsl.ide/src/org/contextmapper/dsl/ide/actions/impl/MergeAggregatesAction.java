@@ -52,14 +52,14 @@ public class MergeAggregatesAction implements CMLCodeAction {
 		if (aggregates.isEmpty() || aggregates.size() > 1)
 			return false;
 
-		BoundedContext parentContext = new CMLModelObjectsResolvingHelper().resolveBoundedContext(aggregates.iterator().next());
+		BoundedContext parentContext = new CMLModelObjectsResolvingHelper(cmlResource.getContextMappingModel()).resolveBoundedContext(aggregates.iterator().next());
 		return EcoreUtil2.eAllOfType(parentContext, Aggregate.class).size() > 1;
 	}
 
 	@Override
 	public Command getCommand() {
 		Aggregate aggregate = getSelectedAggregate();
-		BoundedContext parentContext = new CMLModelObjectsResolvingHelper().resolveBoundedContext(aggregate);
+		BoundedContext parentContext = new CMLModelObjectsResolvingHelper(cmlResource.getContextMappingModel()).resolveBoundedContext(aggregate);
 		List<Object> commandArguments = Lists.newLinkedList();
 		commandArguments.add(cmlResource.getURI().toString());
 		commandArguments.add(aggregate.getName());

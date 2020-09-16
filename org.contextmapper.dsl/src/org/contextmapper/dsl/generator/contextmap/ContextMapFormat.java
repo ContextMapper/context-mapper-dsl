@@ -17,7 +17,7 @@ package org.contextmapper.dsl.generator.contextmap;
 
 public enum ContextMapFormat {
 
-	PNG("png"), SVG("svg"), DOT("dot");
+	PNG("png"), SVG("svg"), DOT("gv");
 
 	private String fileExtension;
 

@@ -21,22 +21,21 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.contextmapper.dsl.cml.CMLModelObjectsResolvingHelper;
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContextType;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.UserRequirement;
+import org.contextmapper.dsl.generator.servicecutter.input.nanoentities.NanoentityResolver;
 import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.PredefinedService;
 import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.ServiceCutterConfigurationDSLFactory;
 import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.ServiceCutterUserRepresentationsModel;
 import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.SharedOwnerGroup;
 import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.UseCase;
-import org.contextmapper.tactic.dsl.tacticdsl.Attribute;
-import org.contextmapper.tactic.dsl.tacticdsl.DomainObject;
 import org.contextmapper.tactic.dsl.tacticdsl.Entity;
 import org.eclipse.xtext.EcoreUtil2;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
@@ -52,14 +51,20 @@ public class UserRepresentationsBuilder {
 	private ServiceCutterConfigurationDSLFactory factory = ServiceCutterConfigurationDSLFactory.eINSTANCE;
 	private ContextMappingModel contextMappingModel;
 	private ServiceCutterUserRepresentationsModel model;
+	private CMLModelObjectsResolvingHelper resolvingHelper;
+	private NanoentityResolver nanoentityResolver;
+	private CompatibilityBuilder compatibilityBuilder;
 
 	public UserRepresentationsBuilder(ContextMappingModel cmlModel) {
 		this.contextMappingModel = cmlModel;
+		this.resolvingHelper = new CMLModelObjectsResolvingHelper(cmlModel);
 		this.model = factory.createServiceCutterUserRepresentationsModel();
+		this.nanoentityResolver = new NanoentityResolver();
+		this.compatibilityBuilder = new CompatibilityBuilder(cmlModel);
 	}
 
 	public UserRepresentationsBuilder(ContextMappingModel cmlModel, ServiceCutterUserRepresentationsModel serviceCutterModel) {
-		this.contextMappingModel = cmlModel;
+		this(cmlModel);
 		this.model = serviceCutterModel;
 	}
 
@@ -74,6 +79,7 @@ public class UserRepresentationsBuilder {
 		buildEntities();
 		buildPredefinedServices();
 		buildSharedOwnerGroups();
+		mapCompatibilities();
 		return model;
 	}
 
@@ -98,10 +104,10 @@ public class UserRepresentationsBuilder {
 
 	private void buildAggregates() {
 		model.getAggregates().clear();
-		for (Aggregate aggregate : getAllAggregates()) {
+		for (Aggregate aggregate : resolvingHelper.resolveAllAggregates()) {
 			org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.Aggregate scAggregate = factory.createAggregate();
 			scAggregate.setName(aggregate.getName());
-			scAggregate.getNanoentities().addAll(getAllNanoentities(aggregate));
+			scAggregate.getNanoentities().addAll(nanoentityResolver.getAllNanoentities(aggregate));
 			model.getAggregates().add(scAggregate);
 		}
 		if (!model.getAggregates().isEmpty())
@@ -113,7 +119,7 @@ public class UserRepresentationsBuilder {
 		for (Entity entity : EcoreUtil2.eAllOfType(contextMappingModel, Entity.class)) {
 			org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.Entity scEntity = factory.createEntity();
 			scEntity.setName(entity.getName());
-			scEntity.getNanoentities().addAll(getAllNanoentities(entity));
+			scEntity.getNanoentities().addAll(nanoentityResolver.getAllNanoentities(entity));
 			model.getEntities().add(scEntity);
 		}
 		if (!model.getEntities().isEmpty())
@@ -128,7 +134,7 @@ public class UserRepresentationsBuilder {
 
 			PredefinedService predefinedService = factory.createPredefinedService();
 			predefinedService.setName(bc.getName());
-			predefinedService.getNanoentities().addAll(getAllNanoentities(bc));
+			predefinedService.getNanoentities().addAll(nanoentityResolver.getAllNanoentities(bc));
 			model.getPredefinedServices().add(predefinedService);
 		}
 		if (!model.getPredefinedServices().isEmpty())
@@ -138,7 +144,7 @@ public class UserRepresentationsBuilder {
 
 	private void buildSharedOwnerGroups() {
 		model.getSharedOwnerGroups().clear();
-		List<Aggregate> allAggregatesWithOwner = getAllAggregates().stream().filter(agg -> agg.getOwner() != null).collect(Collectors.toList());
+		List<Aggregate> allAggregatesWithOwner = resolvingHelper.resolveAllAggregates().stream().filter(agg -> agg.getOwner() != null).collect(Collectors.toList());
 		if (allAggregatesWithOwner.isEmpty())
 			return;
 		Map<String, Set<String>> nanoentitiesPerOwner = Maps.newHashMap();
@@ -146,7 +152,7 @@ public class UserRepresentationsBuilder {
 			if (!nanoentitiesPerOwner.containsKey(aggregate.getOwner().getName()))
 				nanoentitiesPerOwner.put(aggregate.getOwner().getName(), Sets.newHashSet());
 
-			nanoentitiesPerOwner.get(aggregate.getOwner().getName()).addAll(getAllNanoentities(aggregate));
+			nanoentitiesPerOwner.get(aggregate.getOwner().getName()).addAll(nanoentityResolver.getAllNanoentities(aggregate));
 		}
 		for (Entry<String, Set<String>> entry : nanoentitiesPerOwner.entrySet()) {
 			SharedOwnerGroup ownerGroup = factory.createSharedOwnerGroup();
@@ -158,36 +164,8 @@ public class UserRepresentationsBuilder {
 			model.getSharedOwnerGroups().get(0).setDoc("/* These shared owner groups are generated from the CML model. Note that they are overwritten each time you use the service cut generator! */");
 	}
 
-	private List<Aggregate> getAllAggregates() {
-		List<Aggregate> allAggregates = Lists.newLinkedList();
-		for (BoundedContext bc : contextMappingModel.getBoundedContexts()) {
-			allAggregates.addAll(bc.getAggregates());
-		}
-		return allAggregates;
-	}
-
-	private Set<String> getAllNanoentities(BoundedContext bc) {
-		Set<String> nanoentities = Sets.newHashSet();
-		for (Aggregate aggregate : bc.getAggregates()) {
-			nanoentities.addAll(getAllNanoentities(aggregate));
-		}
-		return nanoentities;
-	}
-
-	private Set<String> getAllNanoentities(Aggregate aggregate) {
-		Set<String> nanoentities = Sets.newHashSet();
-		for (DomainObject domainObject : aggregate.getDomainObjects().stream().filter(o -> o instanceof DomainObject).map(o -> (DomainObject) o).collect(Collectors.toSet())) {
-			nanoentities.addAll(getAllNanoentities(domainObject));
-		}
-		return nanoentities;
-	}
-
-	private Set<String> getAllNanoentities(DomainObject domainObject) {
-		Set<String> nanoentities = Sets.newHashSet();
-		for (Attribute attr : domainObject.getAttributes()) {
-			nanoentities.add(domainObject.getName() + "." + attr.getName());
-		}
-		return nanoentities;
+	private void mapCompatibilities() {
+		model.setCompatibilities(compatibilityBuilder.buildCompatibilities());
 	}
 
 }

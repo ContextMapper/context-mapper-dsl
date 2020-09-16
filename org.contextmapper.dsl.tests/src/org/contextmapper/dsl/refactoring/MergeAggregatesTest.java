@@ -14,10 +14,9 @@ import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.KnowledgeLevel;
-import org.contextmapper.dsl.contextMappingDSL.LikelihoodForChange;
 import org.contextmapper.dsl.contextMappingDSL.SculptorModule;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
-import org.contextmapper.dsl.refactoring.MergeAggregatesRefactoring;
+import org.contextmapper.dsl.contextMappingDSL.Volatility;
 import org.contextmapper.dsl.refactoring.exception.RefactoringInputException;
 import org.contextmapper.tactic.dsl.tacticdsl.DomainObject;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -202,7 +201,7 @@ public class MergeAggregatesTest extends AbstractRefactoringTest {
 		assertEquals(1, bc.getAggregates().size());
 		Aggregate aggregate = bc.getAggregates().get(0);
 		assertEquals(KnowledgeLevel.CONCRETE, aggregate.getKnowledgeLevel());
-		assertEquals(LikelihoodForChange.NORMAL, aggregate.getLikelihoodForChange());
+		assertEquals(Volatility.NORMAL, aggregate.getLikelihoodForChange());
 		assertEquals("agg1", aggregate.getName());
 		assertEquals("TeamA", aggregate.getOwner().getName());
 	}
@@ -224,7 +223,7 @@ public class MergeAggregatesTest extends AbstractRefactoringTest {
 		assertEquals(1, bc.getAggregates().size());
 		Aggregate aggregate = bc.getAggregates().get(0);
 		assertEquals(KnowledgeLevel.META, aggregate.getKnowledgeLevel());
-		assertEquals(LikelihoodForChange.OFTEN, aggregate.getLikelihoodForChange());
+		assertEquals(Volatility.OFTEN, aggregate.getLikelihoodForChange());
 		assertEquals("agg2", aggregate.getName());
 		assertEquals("TeamB", aggregate.getOwner().getName());
 	}

@@ -76,15 +76,11 @@ public class ServiceCutterOutputToContextMappingModelConverter {
 	private ServiceCutterContext serviceCutterContext;
 	private URI sclURI;
 
-	private CMLModelObjectsResolvingHelper resolvingHelper;
-
 	public ServiceCutterOutputToContextMappingModelConverter() {
 		this.boundedContextMap = new HashMap<>();
 		this.attributeTypes = new HashMap<>();
 		this.referenceNames = new HashSet<>();
 		this.references2Reconstruct = new HashMap<>();
-
-		this.resolvingHelper = new CMLModelObjectsResolvingHelper();
 	}
 
 	public ServiceCutterOutputToContextMappingModelConverter(ContextMappingModel originalModel, ServiceCutterContext serviceCutterContext) {
@@ -175,9 +171,9 @@ public class ServiceCutterOutputToContextMappingModelConverter {
 		String attributeName = nanoEntity.split("\\.")[1];
 		for (DomainObject obj : EcoreUtil2.eAllOfType(originalModelState, DomainObject.class).stream().filter(o -> o.getName().equals(entityName)).collect(Collectors.toList())) {
 			if (obj.getAttributes().stream().anyMatch(a -> a.getName().equals(attributeName)))
-				return new CMLModelObjectsResolvingHelper().resolveBoundedContext(obj);
+				return new CMLModelObjectsResolvingHelper(originalModelState).resolveBoundedContext(obj);
 			if (obj.getReferences().stream().anyMatch(r -> r.getName().equals(attributeName)))
-				return new CMLModelObjectsResolvingHelper().resolveBoundedContext(obj);
+				return new CMLModelObjectsResolvingHelper(originalModelState).resolveBoundedContext(obj);
 		}
 		return null;
 	}
@@ -328,7 +324,7 @@ public class ServiceCutterOutputToContextMappingModelConverter {
 	}
 
 	private void reconstructReference(DomainObject sourceObject, Reference originalReference, String targetTypeName) {
-		BoundedContext parentBC = resolvingHelper.resolveBoundedContext(sourceObject);
+		BoundedContext parentBC = new CMLModelObjectsResolvingHelper(originalModelState).resolveBoundedContext(sourceObject);
 		if (parentBC == null)
 			return; // in case this source object is not part of a Bounded Context
 

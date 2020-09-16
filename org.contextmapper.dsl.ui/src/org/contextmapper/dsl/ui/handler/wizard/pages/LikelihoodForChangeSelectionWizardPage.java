@@ -19,14 +19,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.contextmapper.dsl.contextMappingDSL.LikelihoodForChange;
+import org.contextmapper.dsl.contextMappingDSL.Volatility;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.VerifyEvent;
-import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.program.Program;
@@ -38,9 +36,9 @@ public class LikelihoodForChangeSelectionWizardPage extends ContextMapperWizardP
 
 	private Combo selectionCombo;
 	private Composite container;
-	private List<LikelihoodForChange> availableLikelihoodsForChange;
+	private List<Volatility> availableLikelihoodsForChange;
 
-	public LikelihoodForChangeSelectionWizardPage(List<LikelihoodForChange> availableLikelihoodsForChange) {
+	public LikelihoodForChangeSelectionWizardPage(List<Volatility> availableLikelihoodsForChange) {
 		super("Volatility Selection Page");
 		this.availableLikelihoodsForChange = availableLikelihoodsForChange;
 	}
@@ -69,9 +67,9 @@ public class LikelihoodForChangeSelectionWizardPage extends ContextMapperWizardP
 		// selection field
 		selectionCombo = new Combo(container, SWT.DROP_DOWN);
 		selectionCombo.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		List<String> selectionStrings = Arrays.asList(LikelihoodForChange.values()).stream().map(l -> l.getName()).collect(Collectors.toList());
+		List<String> selectionStrings = Arrays.asList(Volatility.values()).stream().map(l -> l.getName()).collect(Collectors.toList());
 		selectionCombo.setItems(selectionStrings.toArray(new String[selectionStrings.size()]));
-		selectionCombo.select(selectionStrings.indexOf(LikelihoodForChange.OFTEN.getName()));
+		selectionCombo.select(selectionStrings.indexOf(Volatility.OFTEN.getName()));
 		selectionCombo.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -93,7 +91,7 @@ public class LikelihoodForChangeSelectionWizardPage extends ContextMapperWizardP
 
 	private void updateValidationMessage() {
 		setErrorMessage(null);
-		if (LikelihoodForChange.get(selectionCombo.getText()) != null && !this.availableLikelihoodsForChange.contains(LikelihoodForChange.valueOf(selectionCombo.getText()))) {
+		if (Volatility.get(selectionCombo.getText()) != null && !this.availableLikelihoodsForChange.contains(Volatility.valueOf(selectionCombo.getText()))) {
 			setErrorMessage("Your Bounded Context does not contain any Aggregates with a 'likelihood for change' of '" + selectionCombo.getText() + "'.");
 		}
 	}
@@ -104,14 +102,13 @@ public class LikelihoodForChangeSelectionWizardPage extends ContextMapperWizardP
 		this.selectionCombo.forceFocus();
 	}
 
-	public LikelihoodForChange getVolatility() {
-		return LikelihoodForChange.valueOf(this.selectionCombo.getText());
+	public Volatility getVolatility() {
+		return Volatility.valueOf(this.selectionCombo.getText());
 	}
 
 	@Override
 	public boolean isPageComplete() {
-		return this.selectionCombo.getText() != null && !"".equals(this.selectionCombo.getText())
-				&& this.availableLikelihoodsForChange.contains(LikelihoodForChange.valueOf(this.selectionCombo.getText()));
+		return this.selectionCombo.getText() != null && !"".equals(this.selectionCombo.getText()) && this.availableLikelihoodsForChange.contains(Volatility.valueOf(this.selectionCombo.getText()));
 	}
 
 	@Override

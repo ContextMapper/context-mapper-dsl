@@ -1,8 +1,8 @@
 package org.contextmapper.dsl.generators.servicecutter;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
@@ -57,6 +57,22 @@ public class NewServiceCutContextMapGeneratorTest extends AbstractCMLInputFileTe
 
 		// then
 		assertTrue(generatedFile.exists());
+	}
+
+	@Test
+	void canGenerateGraphvisScoringFile() throws IOException {
+		// given
+		CMLResource input = getResourceCopyOfTestCML("DDD_Sample_Input.cml");
+		new ServiceCutterConfigurationDSLStandaloneSetup().createInjectorAndDoEMFRegistration();
+
+		// when
+		IGenerator2 generator = new NewServiceCutContextMapGenerator();
+		generator.doGenerate(input, getFileSystemAccess(), new GeneratorContext());
+		File generatedDOTFile = new File(
+				input.getURI().trimFileExtension().trimSegments(1).appendSegment("src-gen").appendSegment("DDD_Sample_Input_Markov_Clustering_Scoring").appendFileExtension("gv").toFileString());
+
+		// then
+		assertTrue(generatedDOTFile.exists());
 	}
 
 	@Test
