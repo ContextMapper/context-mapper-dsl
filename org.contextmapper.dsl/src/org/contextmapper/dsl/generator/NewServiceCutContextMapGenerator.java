@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.config.ServiceCutterConfigHandler;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
@@ -111,10 +112,19 @@ public class NewServiceCutContextMapGenerator extends AbstractContextMappingMode
 			if (entry.getKey().nanoentityA == null || entry.getKey().nanoentityB == null)
 				continue;
 
-			String nameA = entry.getKey().nanoentityA.getContextName();
-			String nameB = entry.getKey().nanoentityB.getContextName();
 			double score = entry.getValue().values().stream().mapToDouble(Score::getPrioritizedScore).sum();
-			sb.append("  \"" + nameA + "\" -- \"" + nameB + "\" [weight=" + score + ",label=" + score + "];").append(System.lineSeparator());
+			if (score > 0) {
+				String nameA = entry.getKey().nanoentityA.getContextName();
+				String nameB = entry.getKey().nanoentityB.getContextName();
+				sb.append("  \"" + nameA + "\" -- \"" + nameB + "\" [weight=" + score + ",label=" + score + "]; // { ");
+
+				List<String> scoreEntries = entry.getValue().entrySet().stream().map(
+						scoreEntry -> scoreEntry.getKey() + ": " + scoreEntry.getValue().getPriority() + " * " + scoreEntry.getValue().getScore() + " = " + scoreEntry.getValue().getPrioritizedScore())
+						.collect(Collectors.toList());
+				sb.append(String.join(", ", scoreEntries));
+				sb.append(" }");
+				sb.append(System.lineSeparator());
+			}
 		}
 		sb.append("}").append(System.lineSeparator());
 		return sb.toString();

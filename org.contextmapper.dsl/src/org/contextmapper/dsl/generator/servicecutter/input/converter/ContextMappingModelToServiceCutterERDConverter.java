@@ -16,6 +16,7 @@
 package org.contextmapper.dsl.generator.servicecutter.input.converter;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,6 +59,7 @@ public class ContextMappingModelToServiceCutterERDConverter {
 		for (BoundedContext bc : cmlModel.getBoundedContexts()) {
 			mapBoundedContext(bc);
 		}
+		mapReferences4DomainObjects(EcoreUtil2.getAllContentsOfType(cmlModel, SimpleDomainObject.class));
 		return target;
 	}
 
@@ -102,25 +104,34 @@ public class ContextMappingModelToServiceCutterERDConverter {
 		for (Attribute attribute : dslDomainObject.getAttributes()) {
 			entityEntity.getNanoentities().add(attribute.getName());
 		}
-		for (Reference reference : dslDomainObject.getReferences()) {
+		target.getEntities().add(entityEntity);
+		return entityEntity;
+	}
+
+	private void mapReferences4DomainObjects(Collection<SimpleDomainObject> domainObjects) {
+		for (SimpleDomainObject domainObject : domainObjects) {
+			if (isDomainObjectUsed4ServiceCutter(domainObject))
+				mapReferences((DomainObject) domainObject, ((DomainObject) domainObject).getReferences());
+		}
+	}
+
+	private void mapReferences(DomainObject sourceObject, Collection<Reference> references) {
+		for (Reference reference : references) {
 			// Handle enums as attributes for now
 			if (reference.getDomainObjectType() instanceof org.contextmapper.tactic.dsl.tacticdsl.Enum) {
-				entityEntity.getNanoentities().add(reference.getName());
+				entityLookupTable.get(sourceObject.getName()).getNanoentities().add(reference.getName());
 			} else {
 				String refType = reference.getDomainObjectType().getName();
 				// entityEntity.addNanoEntity(reference.getName());
 				if (this.dslEntityLookupTable.containsKey(refType)) {
 					EntityRelation relation = new EntityRelation();
-					relation.setOrigin(entityEntity);
+					relation.setOrigin(entityLookupTable.get(sourceObject.getName()));
 					relation.setDestination(getEntity(refType));
 					relation.setType(RelationType.AGGREGATION);
 					target.getRelations().add(relation);
 				}
-				entityEntity.getNanoentities().add(reference.getName());
 			}
 		}
-		target.getEntities().add(entityEntity);
-		return entityEntity;
 	}
 
 	private void initializeEntityLookupTable(ContextMappingModel cmlModel) {
@@ -143,6 +154,8 @@ public class ContextMappingModelToServiceCutterERDConverter {
 	private Entity getEntity(String name) {
 		if (this.entityLookupTable.containsKey(name))
 			return this.entityLookupTable.get(name);
-		return new Entity(name);
+		Entity entity = new Entity(name);
+		this.entityLookupTable.put(name, entity);
+		return entity;
 	}
 }
