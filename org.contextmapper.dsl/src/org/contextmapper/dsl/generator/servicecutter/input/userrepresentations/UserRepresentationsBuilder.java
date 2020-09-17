@@ -29,6 +29,7 @@ import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.UserRequirement;
 import org.contextmapper.dsl.generator.servicecutter.input.nanoentities.NanoentityResolver;
 import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.PredefinedService;
+import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.SeparatedSecurityZone;
 import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.ServiceCutterConfigurationDSLFactory;
 import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.ServiceCutterUserRepresentationsModel;
 import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.SharedOwnerGroup;
@@ -75,6 +76,7 @@ public class UserRepresentationsBuilder {
 		buildPredefinedServices();
 		buildSharedOwnerGroups();
 		mapCompatibilities();
+		buildSeparatedSecurityZones();
 		return model;
 	}
 
@@ -157,6 +159,20 @@ public class UserRepresentationsBuilder {
 		}
 		if (!model.getSharedOwnerGroups().isEmpty())
 			model.getSharedOwnerGroups().get(0).setDoc("/* These shared owner groups are generated from the CML model. Note that they are overwritten each time you use the service cut generator! */");
+	}
+
+	private void buildSeparatedSecurityZones() {
+		model.getSeparatedSecurityZones().clear();
+		List<Aggregate> allAggregatesWithSecurityZone = resolvingHelper.resolveAllAggregates().stream().filter(agg -> agg.getSecurityZone() != null && !"".equals(agg.getSecurityZone()))
+				.collect(Collectors.toList());
+		Map<String, List<Aggregate>> aggregatesPerSecurityZone = allAggregatesWithSecurityZone.stream().collect(Collectors.groupingBy(Aggregate::getSecurityZone));
+		for (Entry<String, List<Aggregate>> entry : aggregatesPerSecurityZone.entrySet()) {
+			SeparatedSecurityZone separatedSecurityZone = factory.createSeparatedSecurityZone();
+			separatedSecurityZone.setName(entry.getKey());
+			for (Aggregate aggregate : entry.getValue())
+				separatedSecurityZone.getNanoentities().addAll(nanoentityResolver.getAllNanoentities(aggregate));
+			model.getSeparatedSecurityZones().add(separatedSecurityZone);
+		}
 	}
 
 	private void mapCompatibilities() {

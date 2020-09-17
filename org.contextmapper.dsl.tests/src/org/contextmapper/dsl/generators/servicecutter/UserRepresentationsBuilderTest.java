@@ -32,6 +32,7 @@ import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.Consist
 import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.ContentVolatility;
 import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.PredefinedService;
 import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.SecurityCriticality;
+import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.SeparatedSecurityZone;
 import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.ServiceCutterUserRepresentationsModel;
 import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.SharedOwnerGroup;
 import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.StorageSimilarity;
@@ -117,6 +118,28 @@ public class UserRepresentationsBuilderTest extends AbstractCMLInputFileTest {
 		assertEquals("TeamA", ownerGroup.getName());
 		assertEquals(1, ownerGroup.getNanoentities().size());
 		assertEquals("TestEntity.attribute1", ownerGroup.getNanoentities().get(0));
+	}
+
+	@Test
+	public void canGenerateSeparatedSecurityZonesFromCML() throws IOException {
+		// given
+		ContextMappingModel inputModel = getOriginalResourceOfTestCML("user-representations-builder-test-10.cml").getContextMappingModel();
+
+		// when
+		UserRepresentationsBuilder builder = new UserRepresentationsBuilder(inputModel);
+		ServiceCutterUserRepresentationsModel scModel = builder.build();
+
+		// then
+		assertEquals(2, scModel.getSeparatedSecurityZones().size());
+		SeparatedSecurityZone zoneA = scModel.getSeparatedSecurityZones().stream().filter(s -> s.getName().equals("ZoneA")).findFirst().get();
+		SeparatedSecurityZone zoneB = scModel.getSeparatedSecurityZones().stream().filter(s -> s.getName().equals("ZoneB")).findFirst().get();
+		assertNotNull(zoneA);
+		assertNotNull(zoneB);
+		assertEquals(2, zoneA.getNanoentities().size());
+		assertEquals(1, zoneB.getNanoentities().size());
+		assertTrue(zoneA.getNanoentities().contains("Customer.firstName"));
+		assertTrue(zoneA.getNanoentities().contains("Contract.contractId"));
+		assertTrue(zoneB.getNanoentities().contains("TestEntity.attribute1"));
 	}
 
 	@Test

@@ -268,6 +268,23 @@ class AggregateDSLParsingTest {
 	}
 	
 	@Test
+	def void canDefineSecurityZone() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext testContext {
+				Aggregate myAggregate {
+					securityZone = "MyZone"
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertEquals("MyZone", result.boundedContexts.get(0).aggregates.get(0).securityZone);
+	}
+	
+	@Test
 	def void throwErrorIfAggregateContainsMultipleRoots() {
 		// given
 		val String dslSnippet = '''
