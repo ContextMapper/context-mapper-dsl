@@ -33,6 +33,8 @@ import org.junit.jupiter.api.^extension.ExtendWith
 import static org.contextmapper.dsl.util.ParsingErrorAssertions.*
 import static org.contextmapper.dsl.validation.ValidationMessages.*
 import static org.junit.jupiter.api.Assertions.*
+import org.contextmapper.dsl.contextMappingDSL.Criticality
+import org.contextmapper.dsl.contextMappingDSL.Similarity
 
 @ExtendWith(InjectionExtension)
 @InjectWith(ContextMappingDSLInjectorProvider)
@@ -195,6 +197,74 @@ class AggregateDSLParsingTest {
 		// then
 		assertThatNoParsingErrorsOccurred(result);
 		assertEquals(Volatility.OFTEN, result.boundedContexts.get(0).aggregates.get(0).contentVolatility);
+	}
+	
+	@Test
+	def void canDefineAvailabilityCriticality() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext testContext {
+				Aggregate myAggregate {
+					availabilityCriticality = HIGH
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertEquals(Criticality.HIGH, result.boundedContexts.get(0).aggregates.get(0).availabilityCriticality);
+	}
+	
+	@Test
+	def void canDefineStorageSimilarity() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext testContext {
+				Aggregate myAggregate {
+					storageSimilarity = HUGE
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertEquals(Similarity.HUGE, result.boundedContexts.get(0).aggregates.get(0).storageSimilarity);
+	}
+	
+	@Test
+	def void canDefineSecurityCriticality() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext testContext {
+				Aggregate myAggregate {
+					securityCriticality = HIGH
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertEquals(Criticality.HIGH, result.boundedContexts.get(0).aggregates.get(0).securityCriticality);
+	}
+	
+	@Test
+	def void canDefineConsistencyCriticality() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext testContext {
+				Aggregate myAggregate {
+					consistencyCriticality = HIGH
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertEquals(Criticality.HIGH, result.boundedContexts.get(0).aggregates.get(0).consistencyCriticality);
 	}
 	
 	@Test

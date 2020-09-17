@@ -1,0 +1,24 @@
+BoundedContext TestContext {
+    Aggregate NormalAggregate {
+        availabilityCriticality NORMAL
+
+        Entity Customer {
+            String testAttr1
+        }
+    }
+    Aggregate OftenAggregate {
+        availabilityCriticality HIGH
+
+        Entity Customer {
+            String testAttr2
+        }
+    }
+    Aggregate RarelyAggregate {
+        availabilityCriticality LOW
+
+        Entity Customer {
+            String testAttr3
+        }
+    }
+}
+

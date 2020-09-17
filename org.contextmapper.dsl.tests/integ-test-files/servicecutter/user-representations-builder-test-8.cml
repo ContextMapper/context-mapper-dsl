@@ -1,0 +1,24 @@
+BoundedContext TestContext {
+    Aggregate NormalAggregate {
+        storageSimilarity NORMAL
+
+        Entity Customer {
+            String testAttr1
+        }
+    }
+    Aggregate OftenAggregate {
+        storageSimilarity HUGE
+
+        Entity Customer {
+            String testAttr2
+        }
+    }
+    Aggregate RarelyAggregate {
+        storageSimilarity TINY
+
+        Entity Customer {
+            String testAttr3
+        }
+    }
+}
+
