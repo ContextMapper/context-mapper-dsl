@@ -31,6 +31,7 @@ import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.Compati
 import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.ConsistencyCriticality;
 import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.ContentVolatility;
 import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.PredefinedService;
+import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.SecurityAccessGroup;
 import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.SecurityCriticality;
 import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.SeparatedSecurityZone;
 import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.ServiceCutterUserRepresentationsModel;
@@ -140,6 +141,28 @@ public class UserRepresentationsBuilderTest extends AbstractCMLInputFileTest {
 		assertTrue(zoneA.getNanoentities().contains("Customer.firstName"));
 		assertTrue(zoneA.getNanoentities().contains("Contract.contractId"));
 		assertTrue(zoneB.getNanoentities().contains("TestEntity.attribute1"));
+	}
+
+	@Test
+	public void canGenerateSecurityAccessGroupsFromCML() throws IOException {
+		// given
+		ContextMappingModel inputModel = getOriginalResourceOfTestCML("user-representations-builder-test-11.cml").getContextMappingModel();
+
+		// when
+		UserRepresentationsBuilder builder = new UserRepresentationsBuilder(inputModel);
+		ServiceCutterUserRepresentationsModel scModel = builder.build();
+
+		// then
+		assertEquals(2, scModel.getSecurityAccessGroups().size());
+		SecurityAccessGroup admin = scModel.getSecurityAccessGroups().stream().filter(s -> s.getName().equals("Admin")).findFirst().get();
+		SecurityAccessGroup pub = scModel.getSecurityAccessGroups().stream().filter(s -> s.getName().equals("Public")).findFirst().get();
+		assertNotNull(admin);
+		assertNotNull(pub);
+		assertEquals(2, admin.getNanoentities().size());
+		assertEquals(1, pub.getNanoentities().size());
+		assertTrue(admin.getNanoentities().contains("Customer.firstName"));
+		assertTrue(admin.getNanoentities().contains("Contract.contractId"));
+		assertTrue(pub.getNanoentities().contains("TestEntity.attribute1"));
 	}
 
 	@Test

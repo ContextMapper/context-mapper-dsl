@@ -285,6 +285,23 @@ class AggregateDSLParsingTest {
 	}
 	
 	@Test
+	def void canDefineSecurityAccessGroup() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext testContext {
+				Aggregate myAggregate {
+					securityAccessGroup = "Admin"
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertEquals("Admin", result.boundedContexts.get(0).aggregates.get(0).securityAccessGroup);
+	}
+	
+	@Test
 	def void throwErrorIfAggregateContainsMultipleRoots() {
 		// given
 		val String dslSnippet = '''

@@ -183,7 +183,8 @@ Aggregate :
     	('consistencyCriticality' ('=')? consistencyCriticality=Criticality)? &
     	('storageSimilarity' ('=')? storageSimilarity=Similarity)? &
     	('securityCriticality' ('=')? securityCriticality=Criticality)? &
-    	('securityZone' ('=')? securityZone=STRING)?
+    	('securityZone' ('=')? securityZone=STRING)? &
+    	('securityAccessGroup' ('=')? securityAccessGroup=STRING)?
     )
     ((services+=Service) |
      (resources+=Resource) |

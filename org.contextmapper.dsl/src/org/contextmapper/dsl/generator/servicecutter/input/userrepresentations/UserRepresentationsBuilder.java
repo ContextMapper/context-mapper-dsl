@@ -29,6 +29,7 @@ import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.UserRequirement;
 import org.contextmapper.dsl.generator.servicecutter.input.nanoentities.NanoentityResolver;
 import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.PredefinedService;
+import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.SecurityAccessGroup;
 import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.SeparatedSecurityZone;
 import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.ServiceCutterConfigurationDSLFactory;
 import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.ServiceCutterUserRepresentationsModel;
@@ -77,6 +78,7 @@ public class UserRepresentationsBuilder {
 		buildSharedOwnerGroups();
 		mapCompatibilities();
 		buildSeparatedSecurityZones();
+		buildSecurityAccessGroups();
 		return model;
 	}
 
@@ -172,6 +174,20 @@ public class UserRepresentationsBuilder {
 			for (Aggregate aggregate : entry.getValue())
 				separatedSecurityZone.getNanoentities().addAll(nanoentityResolver.getAllNanoentities(aggregate));
 			model.getSeparatedSecurityZones().add(separatedSecurityZone);
+		}
+	}
+
+	private void buildSecurityAccessGroups() {
+		model.getSecurityAccessGroups().clear();
+		List<Aggregate> allAggregatesWithSecurityAccessGroups = resolvingHelper.resolveAllAggregates().stream()
+				.filter(agg -> agg.getSecurityAccessGroup() != null && !"".equals(agg.getSecurityAccessGroup())).collect(Collectors.toList());
+		Map<String, List<Aggregate>> aggregatesPerSecurityAccessGroup = allAggregatesWithSecurityAccessGroups.stream().collect(Collectors.groupingBy(Aggregate::getSecurityAccessGroup));
+		for (Entry<String, List<Aggregate>> entry : aggregatesPerSecurityAccessGroup.entrySet()) {
+			SecurityAccessGroup securityAccessGroup = factory.createSecurityAccessGroup();
+			securityAccessGroup.setName(entry.getKey());
+			for (Aggregate aggregate : entry.getValue())
+				securityAccessGroup.getNanoentities().addAll(nanoentityResolver.getAllNanoentities(aggregate));
+			model.getSecurityAccessGroups().add(securityAccessGroup);
 		}
 	}
 
