@@ -17,16 +17,13 @@ package org.contextmapper.dsl.ide.commands.impl.generation;
 
 import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.ide.commands.CMLResourceCommand;
+import org.contextmapper.dsl.standalone.FileSystemHelper;
 import org.eclipse.lsp4j.ExecuteCommandParams;
 import org.eclipse.xtext.generator.GeneratorContext;
 import org.eclipse.xtext.generator.IGenerator2;
 import org.eclipse.xtext.generator.JavaIoFileSystemAccess;
 import org.eclipse.xtext.ide.server.Document;
 import org.eclipse.xtext.ide.server.ILanguageServerAccess;
-import org.eclipse.xtext.parser.IEncodingProvider;
-import org.eclipse.xtext.service.AbstractGenericModule;
-
-import com.google.inject.Guice;
 
 /**
  * Abstract command to call generators.
@@ -47,14 +44,6 @@ public abstract class AbstractGenerationCommand implements CMLResourceCommand {
 	}
 
 	protected JavaIoFileSystemAccess getFileSystemAccess() {
-		JavaIoFileSystemAccess fsa = new JavaIoFileSystemAccess();
-		Guice.createInjector(new AbstractGenericModule() {
-			@SuppressWarnings("unused")
-			public Class<? extends IEncodingProvider> bindIEncodingProvider() {
-				return IEncodingProvider.Runtime.class;
-			}
-		}).injectMembers(fsa);
-		fsa.setOutputPath("./src-gen");
-		return fsa;
+		return FileSystemHelper.getFileSystemAccess();
 	}
 }
