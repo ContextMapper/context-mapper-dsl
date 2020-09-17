@@ -69,7 +69,7 @@ public class NewServiceCutContextMapGeneratorTest extends AbstractCMLInputFileTe
 		IGenerator2 generator = new NewServiceCutContextMapGenerator();
 		generator.doGenerate(input, getFileSystemAccess(), new GeneratorContext());
 		File generatedDOTFile = new File(
-				input.getURI().trimFileExtension().trimSegments(1).appendSegment("src-gen").appendSegment("DDD_Sample_Input_Markov_Clustering_Scoring").appendFileExtension("gv").toFileString());
+				input.getURI().trimFileExtension().trimSegments(1).appendSegment("src-gen").appendSegment("DDD_Sample_Input_Markov_Clustering_Cut_1").appendFileExtension("gv").toFileString());
 
 		// then
 		assertTrue(generatedDOTFile.exists());

@@ -97,8 +97,7 @@ public class NewServiceCutContextMapGenerator extends AbstractContextMappingMode
 		}
 
 		// save scoring as graphviz DOT file
-		String dotFileName = inputFileURI.trimFileExtension().lastSegment() + "_" + solverConfig.getAlgorithm().toString().replace(" ", "_") + "_Scoring.gv";
-		fsa.generateFile(dotFileName, generateGraphvizScoringRepresentation(context));
+		fsa.generateFile(fileName.trimFileExtension().lastSegment() + ".gv", generateGraphvizScoringRepresentation(context));
 	}
 
 	private String generateGraphvizScoringRepresentation(ServiceCutterContext context) {
