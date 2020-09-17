@@ -22,6 +22,7 @@ import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.tactic.dsl.tacticdsl.Attribute;
 import org.contextmapper.tactic.dsl.tacticdsl.DomainObject;
+import org.contextmapper.tactic.dsl.tacticdsl.Reference;
 
 import com.google.common.collect.Sets;
 
@@ -47,6 +48,9 @@ public class NanoentityResolver {
 		Set<String> nanoentities = Sets.newHashSet();
 		for (Attribute attr : domainObject.getAttributes()) {
 			nanoentities.add(domainObject.getName() + "." + attr.getName());
+		}
+		for (Reference reference : domainObject.getReferences()) {
+			nanoentities.add(domainObject.getName() + "." + reference.getName());
 		}
 		return nanoentities;
 	}

@@ -2,31 +2,31 @@
   "name" : "DDD_Sample",
   "entities" : [ {
     "name" : "Cargo",
-    "nanoentities" : [ "trackingId" ]
+    "nanoentities" : [ "trackingId", "origin", "routeSpecification", "itinerary", "delivery" ]
   }, {
     "name" : "Delivery",
-    "nanoentities" : [ "misdirected", "eta", "isUnloadedAtDestination", "calculatedAt", "transportStatus", "routingStatus" ]
+    "nanoentities" : [ "misdirected", "eta", "isUnloadedAtDestination", "calculatedAt", "transportStatus", "lastKnownLocation", "currentVoyage", "nextExpectedActivity", "routingStatus", "lastEvent", "transportStatus", "routingStatus" ]
   }, {
     "name" : "HandlingActivity",
-    "nanoentities" : [ "handlingEventType" ]
+    "nanoentities" : [ "handlingEventType", "location", "voyage" ]
   }, {
     "name" : "Itinerary",
-    "nanoentities" : [ "itineraryNumber" ]
+    "nanoentities" : [ "itineraryNumber", "legs" ]
   }, {
     "name" : "Leg",
-    "nanoentities" : [ "loadTime", "unloadTime" ]
+    "nanoentities" : [ "loadTime", "unloadTime", "voyage", "loadLocation", "unloadLocation" ]
   }, {
     "name" : "RouteSpecification",
-    "nanoentities" : [ "arrivalDeadline" ]
+    "nanoentities" : [ "arrivalDeadline", "origin", "destination" ]
   }, {
     "name" : "CargoItineraryLegDeliveryRouteSpecification_Aggregate",
     "nanoentities" : [ ]
   }, {
     "name" : "HandlingEvent",
-    "nanoentities" : [ "handlingType", "completionTime", "registrationTime" ]
+    "nanoentities" : [ "handlingType", "completionTime", "registrationTime", "voyage", "location", "cargo" ]
   }, {
     "name" : "HandlingHistory",
-    "nanoentities" : [ ]
+    "nanoentities" : [ "handlingEvents" ]
   }, {
     "name" : "Handling_Aggregate",
     "nanoentities" : [ ]
@@ -35,13 +35,13 @@
     "nanoentities" : [ ]
   }, {
     "name" : "Voyage",
-    "nanoentities" : [ ]
+    "nanoentities" : [ "voyageNumber", "schedule" ]
   }, {
     "name" : "CarrierMovement",
-    "nanoentities" : [ "departureTime", "arrivalTime" ]
+    "nanoentities" : [ "departureTime", "arrivalTime", "departureLocation", "arrivalLocation" ]
   }, {
     "name" : "Schedule",
-    "nanoentities" : [ ]
+    "nanoentities" : [ "carrierMovements" ]
   }, {
     "name" : "VoyageNumber",
     "nanoentities" : [ "number" ]
@@ -53,13 +53,13 @@
     "nanoentities" : [ ]
   }, {
     "name" : "Location",
-    "nanoentities" : [ "portcode", "name" ]
+    "nanoentities" : [ "portcode", "name", "unLocode" ]
   }, {
     "name" : "UnLocode",
     "nanoentities" : [ "unLocode" ]
   }, {
     "name" : "LocationShared",
-    "nanoentities" : [ "portCode" ]
+    "nanoentities" : [ "portCode", "location" ]
   }, {
     "name" : "Location_Aggregate",
     "nanoentities" : [ ]

@@ -104,6 +104,9 @@ public class ContextMappingModelToServiceCutterERDConverter {
 		for (Attribute attribute : dslDomainObject.getAttributes()) {
 			entityEntity.getNanoentities().add(attribute.getName());
 		}
+		for (Reference reference : dslDomainObject.getReferences()) {
+			entityEntity.getNanoentities().add(reference.getName());
+		}
 		target.getEntities().add(entityEntity);
 		return entityEntity;
 	}
