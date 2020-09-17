@@ -63,11 +63,6 @@ public class UserRepresentationsBuilder {
 		this.compatibilityBuilder = new CompatibilityBuilder(cmlModel);
 	}
 
-	public UserRepresentationsBuilder(ContextMappingModel cmlModel, ServiceCutterUserRepresentationsModel serviceCutterModel) {
-		this(cmlModel);
-		this.model = serviceCutterModel;
-	}
-
 	/**
 	 * Builds the user representations from the given CML file.
 	 * 
