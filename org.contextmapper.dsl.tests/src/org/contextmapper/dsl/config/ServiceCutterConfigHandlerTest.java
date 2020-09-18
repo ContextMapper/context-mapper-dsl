@@ -20,7 +20,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Paths;
 
+import org.apache.commons.io.FileUtils;
 import org.contextmapper.dsl.AbstractDirectoryIntegrationTest;
 import org.contextmapper.dsl.exception.ContextMapperApplicationException;
 import org.junit.jupiter.api.Test;
@@ -72,6 +75,20 @@ public class ServiceCutterConfigHandlerTest extends AbstractDirectoryIntegration
 
 		// then
 		assertTrue(new File(testDir, ".servicecutter.yml").exists());
+	}
+
+	@Test
+	public void canThrowException4WrongPriorityValues() throws IOException {
+		// given
+		FileUtils.copyFile(new File(Paths.get("").toAbsolutePath().toString(), "/integ-test-files/servicecutter/.wrong-servicecutter.yml"), new File(testDir, ".servicecutter.yml"));
+
+		// when
+		ServiceCutterConfigHandler handler = new ServiceCutterConfigHandler(testDir);
+
+		// then
+		assertThrows(ContextMapperApplicationException.class, () -> {
+			handler.createAndGetServiceCutterConfig();
+		});
 	}
 
 }
