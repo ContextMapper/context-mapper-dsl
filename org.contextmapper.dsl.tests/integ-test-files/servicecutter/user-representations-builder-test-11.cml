@@ -1,0 +1,27 @@
+BoundedContext TestContext {
+
+    Aggregate TestAggregate1 {
+    	securityAccessGroup "Admin"
+    
+        Entity Customer {
+            String firstName
+        }
+    }
+
+	Aggregate TestAggregate2 {
+		securityAccessGroup "Admin"
+		
+		Entity Contract {
+            String contractId
+        }
+	}
+
+    Aggregate TestAggregate3 {
+        securityAccessGroup "Public"
+
+        Entity TestEntity {
+            String attribute1
+        }
+    }
+
+}

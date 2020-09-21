@@ -20,6 +20,9 @@ import java.util.stream.Collectors
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLPackage
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel
 import org.contextmapper.dsl.contextMappingDSL.KnowledgeLevel
+import org.contextmapper.dsl.contextMappingDSL.Volatility
+import org.contextmapper.dsl.tests.ContextMappingDSLInjectorProvider
+import org.contextmapper.tactic.dsl.tacticdsl.TacticdslPackage
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.extensions.InjectionExtension
 import org.eclipse.xtext.testing.util.ParseHelper
@@ -30,9 +33,8 @@ import org.junit.jupiter.api.^extension.ExtendWith
 import static org.contextmapper.dsl.util.ParsingErrorAssertions.*
 import static org.contextmapper.dsl.validation.ValidationMessages.*
 import static org.junit.jupiter.api.Assertions.*
-import org.contextmapper.dsl.contextMappingDSL.LikelihoodForChange
-import org.contextmapper.tactic.dsl.tacticdsl.TacticdslPackage
-import org.contextmapper.dsl.tests.ContextMappingDSLInjectorProvider
+import org.contextmapper.dsl.contextMappingDSL.Criticality
+import org.contextmapper.dsl.contextMappingDSL.Similarity
 
 @ExtendWith(InjectionExtension)
 @InjectWith(ContextMappingDSLInjectorProvider)
@@ -173,11 +175,130 @@ class AggregateDSLParsingTest {
 				}
 			}
 		''';
-			// when
+		// when
 		val ContextMappingModel result = parseHelper.parse(dslSnippet);
 		// then
 		assertThatNoParsingErrorsOccurred(result);
-		assertEquals(LikelihoodForChange.OFTEN, result.boundedContexts.get(0).aggregates.get(0).likelihoodForChange);
+		assertEquals(Volatility.OFTEN, result.boundedContexts.get(0).aggregates.get(0).likelihoodForChange);
+	}
+	
+	@Test
+	def void canDefineContentVolatility() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext testContext {
+				Aggregate myAggregate {
+					contentVolatility = OFTEN
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertEquals(Volatility.OFTEN, result.boundedContexts.get(0).aggregates.get(0).contentVolatility);
+	}
+	
+	@Test
+	def void canDefineAvailabilityCriticality() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext testContext {
+				Aggregate myAggregate {
+					availabilityCriticality = HIGH
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertEquals(Criticality.HIGH, result.boundedContexts.get(0).aggregates.get(0).availabilityCriticality);
+	}
+	
+	@Test
+	def void canDefineStorageSimilarity() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext testContext {
+				Aggregate myAggregate {
+					storageSimilarity = HUGE
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertEquals(Similarity.HUGE, result.boundedContexts.get(0).aggregates.get(0).storageSimilarity);
+	}
+	
+	@Test
+	def void canDefineSecurityCriticality() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext testContext {
+				Aggregate myAggregate {
+					securityCriticality = HIGH
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertEquals(Criticality.HIGH, result.boundedContexts.get(0).aggregates.get(0).securityCriticality);
+	}
+	
+	@Test
+	def void canDefineConsistencyCriticality() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext testContext {
+				Aggregate myAggregate {
+					consistencyCriticality = HIGH
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertEquals(Criticality.HIGH, result.boundedContexts.get(0).aggregates.get(0).consistencyCriticality);
+	}
+	
+	@Test
+	def void canDefineSecurityZone() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext testContext {
+				Aggregate myAggregate {
+					securityZone = "MyZone"
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertEquals("MyZone", result.boundedContexts.get(0).aggregates.get(0).securityZone);
+	}
+	
+	@Test
+	def void canDefineSecurityAccessGroup() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext testContext {
+				Aggregate myAggregate {
+					securityAccessGroup = "Admin"
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertEquals("Admin", result.boundedContexts.get(0).aggregates.get(0).securityAccessGroup);
 	}
 	
 	@Test
@@ -228,7 +349,7 @@ class AggregateDSLParsingTest {
 		val ContextMappingModel result = parseHelper.parse(dslSnippet);
 		// then
 		assertThatNoParsingErrorsOccurred(result);
-		assertEquals(LikelihoodForChange.OFTEN, result.boundedContexts.get(0).aggregates.get(0).likelihoodForChange);
+		assertEquals(Volatility.OFTEN, result.boundedContexts.get(0).aggregates.get(0).likelihoodForChange);
 		assertEquals("can calculate customer risks...", result.boundedContexts.get(0).aggregates.get(0).responsibilities.get(0));
 		assertEquals(KnowledgeLevel.CONCRETE, result.boundedContexts.get(0).aggregates.get(0).knowledgeLevel);
 		val useCases = result.boundedContexts.get(0).aggregates.get(0).userRequirements.stream.map[name].collect(Collectors.toList);

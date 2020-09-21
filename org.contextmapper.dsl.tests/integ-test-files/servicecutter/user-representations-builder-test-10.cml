@@ -1,0 +1,23 @@
+BoundedContext TestContext {
+
+    Aggregate TestAggregate {
+    	securityZone "ZoneA"
+    
+        Entity Customer {
+            String firstName
+        }
+
+        Entity Contract {
+            String contractId
+        }
+    }
+
+    Aggregate OwnedAggregate {
+        securityZone "ZoneB"
+
+        Entity TestEntity {
+            String attribute1
+        }
+    }
+
+}

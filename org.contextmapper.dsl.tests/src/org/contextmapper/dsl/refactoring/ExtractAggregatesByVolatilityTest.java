@@ -27,9 +27,8 @@ import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
-import org.contextmapper.dsl.contextMappingDSL.LikelihoodForChange;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
-import org.contextmapper.dsl.refactoring.ExtractAggregatesByVolatility;
+import org.contextmapper.dsl.contextMappingDSL.Volatility;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.junit.jupiter.api.Test;
 
@@ -42,7 +41,7 @@ public class ExtractAggregatesByVolatilityTest extends AbstractRefactoringTest {
 		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 
 		// when
-		ExtractAggregatesByVolatility ar = new ExtractAggregatesByVolatility("CustomerManagement", LikelihoodForChange.OFTEN);
+		ExtractAggregatesByVolatility ar = new ExtractAggregatesByVolatility("CustomerManagement", Volatility.OFTEN);
 		ar.refactor(input);
 
 		// then
@@ -64,7 +63,7 @@ public class ExtractAggregatesByVolatilityTest extends AbstractRefactoringTest {
 		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 
 		// when
-		ExtractAggregatesByVolatility ar = new ExtractAggregatesByVolatility("CustomerManagement", LikelihoodForChange.OFTEN);
+		ExtractAggregatesByVolatility ar = new ExtractAggregatesByVolatility("CustomerManagement", Volatility.OFTEN);
 		ar.refactor(input);
 
 		// then
@@ -92,7 +91,7 @@ public class ExtractAggregatesByVolatilityTest extends AbstractRefactoringTest {
 		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 
 		// when
-		ExtractAggregatesByVolatility ar = new ExtractAggregatesByVolatility("CustomerManagement", LikelihoodForChange.OFTEN);
+		ExtractAggregatesByVolatility ar = new ExtractAggregatesByVolatility("CustomerManagement", Volatility.OFTEN);
 		ar.refactor(input);
 
 		// then
@@ -106,7 +105,7 @@ public class ExtractAggregatesByVolatilityTest extends AbstractRefactoringTest {
 		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 
 		// when
-		ExtractAggregatesByVolatility ar = new ExtractAggregatesByVolatility("CustomerManagement", LikelihoodForChange.OFTEN);
+		ExtractAggregatesByVolatility ar = new ExtractAggregatesByVolatility("CustomerManagement", Volatility.OFTEN);
 		ar.refactor(input);
 
 		// then
@@ -120,7 +119,7 @@ public class ExtractAggregatesByVolatilityTest extends AbstractRefactoringTest {
 		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 
 		// when
-		ExtractAggregatesByVolatility ar = new ExtractAggregatesByVolatility("CustomerManagement", LikelihoodForChange.OFTEN);
+		ExtractAggregatesByVolatility ar = new ExtractAggregatesByVolatility("CustomerManagement", Volatility.OFTEN);
 		ar.refactor(input);
 
 		// then
@@ -134,11 +133,11 @@ public class ExtractAggregatesByVolatilityTest extends AbstractRefactoringTest {
 		ResourceSet additionalResources = getResourceSetOfTestCMLFiles("extract-aggregates-likely-to-change-test-6-input-1.cml");
 
 		// when
-		ExtractAggregatesByVolatility ar = new ExtractAggregatesByVolatility("CustomerManagement", LikelihoodForChange.OFTEN);
+		ExtractAggregatesByVolatility ar = new ExtractAggregatesByVolatility("CustomerManagement", Volatility.OFTEN);
 		ar.refactor(mainResource, additionalResources);
 		ar.persistChanges();
-		CMLResource contextMapResource = new CMLResource(additionalResources.getResources().stream()
-				.filter(r -> r.getURI().toString().endsWith("extract-aggregates-likely-to-change-test-6-input-1.cml")).findFirst().get());
+		CMLResource contextMapResource = new CMLResource(
+				additionalResources.getResources().stream().filter(r -> r.getURI().toString().endsWith("extract-aggregates-likely-to-change-test-6-input-1.cml")).findFirst().get());
 		contextMapResource = reloadResource(contextMapResource);
 
 		// then

@@ -15,6 +15,7 @@
  */
 package org.contextmapper.dsl.cml;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -31,19 +32,26 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.EcoreUtil2;
 import org.eclipse.xtext.xbase.lib.IteratorExtensions;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 public class CMLModelObjectsResolvingHelper {
 
-	private Set<ContextMappingModel> resolveImportedModels(ContextMappingModel rootModel) {
+	private ContextMappingModel rootModel;
+
+	public CMLModelObjectsResolvingHelper(ContextMappingModel rootModel) {
+		this.rootModel = rootModel;
+	}
+
+	private Set<ContextMappingModel> resolveImportedModels() {
 		Set<CMLResource> importedResources = new CMLImportResolver().resolveImportedResources(new CMLResource(rootModel.eResource()));
 		return importedResources.stream().map(r -> r.getContextMappingModel()).collect(Collectors.toSet());
 	}
 
-	public <T extends EObject> Set<T> resolveAllObjectsOfType(ContextMappingModel rootModel, Class<T> type) {
+	public <T extends EObject> Set<T> resolveAllObjectsOfType(Class<T> type) {
 		Set<T> resultSet = Sets.newHashSet();
 		resultSet.addAll(Sets.newHashSet(IteratorExtensions.filter(EcoreUtil2.eAll(rootModel), type)));
-		for (ContextMappingModel model : resolveImportedModels(rootModel)) {
+		for (ContextMappingModel model : resolveImportedModels()) {
 			resultSet.addAll(Sets.newHashSet(IteratorExtensions.filter(EcoreUtil2.eAll(model), type)));
 		}
 		return resultSet;
@@ -87,6 +95,14 @@ public class CMLModelObjectsResolvingHelper {
 			features.addAll(ur.getFeatures());
 		});
 		return features;
+	}
+
+	public List<Aggregate> resolveAllAggregates() {
+		List<Aggregate> allAggregates = Lists.newLinkedList();
+		for (BoundedContext bc : rootModel.getBoundedContexts()) {
+			allAggregates.addAll(bc.getAggregates());
+		}
+		return allAggregates;
 	}
 
 }

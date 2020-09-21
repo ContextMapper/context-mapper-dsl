@@ -15,6 +15,8 @@
  */
 package org.contextmapper.dsl.generator.servicecutter.output.converter;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -74,15 +76,11 @@ public class ServiceCutterOutputToContextMappingModelConverter {
 	private ServiceCutterContext serviceCutterContext;
 	private URI sclURI;
 
-	private CMLModelObjectsResolvingHelper resolvingHelper;
-
 	public ServiceCutterOutputToContextMappingModelConverter() {
 		this.boundedContextMap = new HashMap<>();
 		this.attributeTypes = new HashMap<>();
 		this.referenceNames = new HashSet<>();
 		this.references2Reconstruct = new HashMap<>();
-
-		this.resolvingHelper = new CMLModelObjectsResolvingHelper();
 	}
 
 	public ServiceCutterOutputToContextMappingModelConverter(ContextMappingModel originalModel, ServiceCutterContext serviceCutterContext) {
@@ -127,7 +125,7 @@ public class ServiceCutterOutputToContextMappingModelConverter {
 
 	private String generateTopComment() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("/* This CML model has been generated with Service Cutter.");
+		sb.append("/* This CML model has been generated with Service Cutter. Timestamp: " + new SimpleDateFormat("dd.MM.YYYY HH:mm:ss z").format(new Date()));
 		if (this.originalModelState != null)
 			sb.append(System.lineSeparator() + " * It decomposes the original CML model " + originalModelState.eResource().getURI().toString() + ".");
 		if (this.sclURI != null)
@@ -173,9 +171,9 @@ public class ServiceCutterOutputToContextMappingModelConverter {
 		String attributeName = nanoEntity.split("\\.")[1];
 		for (DomainObject obj : EcoreUtil2.eAllOfType(originalModelState, DomainObject.class).stream().filter(o -> o.getName().equals(entityName)).collect(Collectors.toList())) {
 			if (obj.getAttributes().stream().anyMatch(a -> a.getName().equals(attributeName)))
-				return new CMLModelObjectsResolvingHelper().resolveBoundedContext(obj);
+				return new CMLModelObjectsResolvingHelper(originalModelState).resolveBoundedContext(obj);
 			if (obj.getReferences().stream().anyMatch(r -> r.getName().equals(attributeName)))
-				return new CMLModelObjectsResolvingHelper().resolveBoundedContext(obj);
+				return new CMLModelObjectsResolvingHelper(originalModelState).resolveBoundedContext(obj);
 		}
 		return null;
 	}
@@ -326,7 +324,7 @@ public class ServiceCutterOutputToContextMappingModelConverter {
 	}
 
 	private void reconstructReference(DomainObject sourceObject, Reference originalReference, String targetTypeName) {
-		BoundedContext parentBC = resolvingHelper.resolveBoundedContext(sourceObject);
+		BoundedContext parentBC = new CMLModelObjectsResolvingHelper(originalModelState).resolveBoundedContext(sourceObject);
 		if (parentBC == null)
 			return; // in case this source object is not part of a Bounded Context
 

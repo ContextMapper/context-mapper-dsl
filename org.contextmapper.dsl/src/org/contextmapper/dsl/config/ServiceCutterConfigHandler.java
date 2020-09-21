@@ -26,6 +26,7 @@ import org.contextmapper.dsl.exception.ContextMapperApplicationException;
 import org.yaml.snakeyaml.DumperOptions.FlowStyle;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.CustomClassLoaderConstructor;
+import org.yaml.snakeyaml.error.YAMLException;
 import org.yaml.snakeyaml.nodes.Tag;
 
 import ch.hsr.servicecutter.api.SolverConfigurationFactory;
@@ -59,6 +60,8 @@ public class ServiceCutterConfigHandler {
 			return yaml.loadAs(inputStream, ServiceCutterConfig.class);
 		} catch (FileNotFoundException e) {
 			throw new ContextMapperApplicationException("Could not read '.servicecutter.yml' file!", e);
+		} catch (YAMLException e) {
+			throw new ContextMapperApplicationException("Could not parse '.servicecutter.yml' file. Allowed values for criteria priorities are: IGNORE, XS, S, M, L, XL, and XXL.", e);
 		}
 	}
 

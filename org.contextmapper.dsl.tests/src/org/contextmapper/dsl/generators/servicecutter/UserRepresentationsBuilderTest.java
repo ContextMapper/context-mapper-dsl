@@ -16,8 +16,9 @@
 package org.contextmapper.dsl.generators.servicecutter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 
@@ -25,11 +26,19 @@ import org.contextmapper.dsl.AbstractCMLInputFileTest;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.generator.servicecutter.input.userrepresentations.UserRepresentationsBuilder;
 import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.Aggregate;
+import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.AvailabilityCriticality;
+import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.Compatibilities;
+import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.ConsistencyCriticality;
+import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.ContentVolatility;
 import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.PredefinedService;
+import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.SecurityAccessGroup;
+import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.SecurityCriticality;
+import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.SeparatedSecurityZone;
 import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.ServiceCutterUserRepresentationsModel;
 import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.SharedOwnerGroup;
+import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.StorageSimilarity;
+import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.StructuralVolatility;
 import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.UseCase;
-import org.eclipse.emf.ecore.resource.Resource;
 import org.junit.jupiter.api.Test;
 
 public class UserRepresentationsBuilderTest extends AbstractCMLInputFileTest {
@@ -113,22 +122,191 @@ public class UserRepresentationsBuilderTest extends AbstractCMLInputFileTest {
 	}
 
 	@Test
-	public void canUpdateExistingSCLModel() throws IOException {
+	public void canGenerateSeparatedSecurityZonesFromCML() throws IOException {
 		// given
-		ContextMappingModel inputModel = getOriginalResourceOfTestCML("user-representations-builder-test-3.cml").getContextMappingModel();
-		Resource sclInput = getResourceCopyOfTestSCL("user-representations-builder-test-3.scl");
-		ServiceCutterUserRepresentationsModel scInputModel = (ServiceCutterUserRepresentationsModel) sclInput.getContents().get(0);
+		ContextMappingModel inputModel = getOriginalResourceOfTestCML("user-representations-builder-test-10.cml").getContextMappingModel();
 
 		// when
-		UserRepresentationsBuilder builder = new UserRepresentationsBuilder(inputModel, scInputModel);
+		UserRepresentationsBuilder builder = new UserRepresentationsBuilder(inputModel);
 		ServiceCutterUserRepresentationsModel scModel = builder.build();
 
 		// then
-		assertEquals(1, scModel.getSharedOwnerGroups().size());
+		assertEquals(2, scModel.getSeparatedSecurityZones().size());
+		SeparatedSecurityZone zoneA = scModel.getSeparatedSecurityZones().stream().filter(s -> s.getName().equals("ZoneA")).findFirst().get();
+		SeparatedSecurityZone zoneB = scModel.getSeparatedSecurityZones().stream().filter(s -> s.getName().equals("ZoneB")).findFirst().get();
+		assertNotNull(zoneA);
+		assertNotNull(zoneB);
+		assertEquals(2, zoneA.getNanoentities().size());
+		assertEquals(1, zoneB.getNanoentities().size());
+		assertTrue(zoneA.getNanoentities().contains("Customer.firstName"));
+		assertTrue(zoneA.getNanoentities().contains("Contract.contractId"));
+		assertTrue(zoneB.getNanoentities().contains("TestEntity.attribute1"));
+	}
+
+	@Test
+	public void canGenerateSecurityAccessGroupsFromCML() throws IOException {
+		// given
+		ContextMappingModel inputModel = getOriginalResourceOfTestCML("user-representations-builder-test-11.cml").getContextMappingModel();
+
+		// when
+		UserRepresentationsBuilder builder = new UserRepresentationsBuilder(inputModel);
+		ServiceCutterUserRepresentationsModel scModel = builder.build();
+
+		// then
+		assertEquals(2, scModel.getSecurityAccessGroups().size());
+		SecurityAccessGroup admin = scModel.getSecurityAccessGroups().stream().filter(s -> s.getName().equals("Admin")).findFirst().get();
+		SecurityAccessGroup pub = scModel.getSecurityAccessGroups().stream().filter(s -> s.getName().equals("Public")).findFirst().get();
+		assertNotNull(admin);
+		assertNotNull(pub);
+		assertEquals(2, admin.getNanoentities().size());
+		assertEquals(1, pub.getNanoentities().size());
+		assertTrue(admin.getNanoentities().contains("Customer.firstName"));
+		assertTrue(admin.getNanoentities().contains("Contract.contractId"));
+		assertTrue(pub.getNanoentities().contains("TestEntity.attribute1"));
+	}
+
+	@Test
+	public void canGenerateStructuralVolatilityCompatibilitiesFromCML() throws IOException {
+		// given
+		ContextMappingModel inputModel = getOriginalResourceOfTestCML("user-representations-builder-test-4.cml").getContextMappingModel();
+
+		// when
+		ServiceCutterUserRepresentationsModel scModel = new UserRepresentationsBuilder(inputModel).build();
+
+		// then
 		assertNotNull(scModel.getCompatibilities());
-		assertFalse(scModel.getCompatibilities().getStructuralVolatility().isEmpty());
-		assertFalse(scModel.getCompatibilities().getContentVolatility().isEmpty());
-		assertFalse(scModel.getCompatibilities().getStructuralVolatility().isEmpty());
+		Compatibilities compatibilities = scModel.getCompatibilities();
+		assertFalse(compatibilities.getStructuralVolatility().isEmpty());
+		assertEquals(3, compatibilities.getStructuralVolatility().size());
+		StructuralVolatility normal = compatibilities.getStructuralVolatility().stream().filter(sv -> sv.getCharacteristic().equals("Normal")).findFirst().get();
+		StructuralVolatility often = compatibilities.getStructuralVolatility().stream().filter(sv -> sv.getCharacteristic().equals("Often")).findFirst().get();
+		StructuralVolatility rarely = compatibilities.getStructuralVolatility().stream().filter(sv -> sv.getCharacteristic().equals("Rarely")).findFirst().get();
+		assertNotNull(normal);
+		assertNotNull(often);
+		assertNotNull(rarely);
+		assertTrue(normal.getNanoentities().contains("Customer.testAttr1"));
+		assertTrue(often.getNanoentities().contains("Customer.testAttr2"));
+		assertTrue(rarely.getNanoentities().contains("Customer.testAttr3"));
+	}
+
+	@Test
+	public void canGenerateContentVolatilityCompatibilitiesFromCML() throws IOException {
+		// given
+		ContextMappingModel inputModel = getOriginalResourceOfTestCML("user-representations-builder-test-5.cml").getContextMappingModel();
+
+		// when
+		ServiceCutterUserRepresentationsModel scModel = new UserRepresentationsBuilder(inputModel).build();
+
+		// then
+		assertNotNull(scModel.getCompatibilities());
+		Compatibilities compatibilities = scModel.getCompatibilities();
+		assertFalse(compatibilities.getContentVolatility().isEmpty());
+		assertEquals(3, compatibilities.getContentVolatility().size());
+		ContentVolatility normal = compatibilities.getContentVolatility().stream().filter(sv -> sv.getCharacteristic().equals("Regularly")).findFirst().get();
+		ContentVolatility often = compatibilities.getContentVolatility().stream().filter(sv -> sv.getCharacteristic().equals("Often")).findFirst().get();
+		ContentVolatility rarely = compatibilities.getContentVolatility().stream().filter(sv -> sv.getCharacteristic().equals("Rarely")).findFirst().get();
+		assertNotNull(normal);
+		assertNotNull(often);
+		assertNotNull(rarely);
+		assertTrue(normal.getNanoentities().contains("Customer.testAttr1"));
+		assertTrue(often.getNanoentities().contains("Customer.testAttr2"));
+		assertTrue(rarely.getNanoentities().contains("Customer.testAttr3"));
+	}
+
+	@Test
+	public void canGenerateAvailabilityCriticalityCompatibilitiesFromCML() throws IOException {
+		// given
+		ContextMappingModel inputModel = getOriginalResourceOfTestCML("user-representations-builder-test-6.cml").getContextMappingModel();
+
+		// when
+		ServiceCutterUserRepresentationsModel scModel = new UserRepresentationsBuilder(inputModel).build();
+
+		// then
+		assertNotNull(scModel.getCompatibilities());
+		Compatibilities compatibilities = scModel.getCompatibilities();
+		assertFalse(compatibilities.getAvailabilityCriticality().isEmpty());
+		assertEquals(3, compatibilities.getAvailabilityCriticality().size());
+		AvailabilityCriticality normal = compatibilities.getAvailabilityCriticality().stream().filter(sv -> sv.getCharacteristic().equals("Normal")).findFirst().get();
+		AvailabilityCriticality high = compatibilities.getAvailabilityCriticality().stream().filter(sv -> sv.getCharacteristic().equals("Critical")).findFirst().get();
+		AvailabilityCriticality low = compatibilities.getAvailabilityCriticality().stream().filter(sv -> sv.getCharacteristic().equals("Low")).findFirst().get();
+		assertNotNull(normal);
+		assertNotNull(high);
+		assertNotNull(low);
+		assertTrue(normal.getNanoentities().contains("Customer.testAttr1"));
+		assertTrue(high.getNanoentities().contains("Customer.testAttr2"));
+		assertTrue(low.getNanoentities().contains("Customer.testAttr3"));
+	}
+
+	@Test
+	public void canGenerateConsistencyCriticalityCompatibilitiesFromCML() throws IOException {
+		// given
+		ContextMappingModel inputModel = getOriginalResourceOfTestCML("user-representations-builder-test-7.cml").getContextMappingModel();
+
+		// when
+		ServiceCutterUserRepresentationsModel scModel = new UserRepresentationsBuilder(inputModel).build();
+
+		// then
+		assertNotNull(scModel.getCompatibilities());
+		Compatibilities compatibilities = scModel.getCompatibilities();
+		assertFalse(compatibilities.getConsistencyCriticality().isEmpty());
+		assertEquals(3, compatibilities.getConsistencyCriticality().size());
+		ConsistencyCriticality normal = compatibilities.getConsistencyCriticality().stream().filter(sv -> sv.getCharacteristic().equals("Eventually")).findFirst().get();
+		ConsistencyCriticality high = compatibilities.getConsistencyCriticality().stream().filter(sv -> sv.getCharacteristic().equals("High")).findFirst().get();
+		ConsistencyCriticality low = compatibilities.getConsistencyCriticality().stream().filter(sv -> sv.getCharacteristic().equals("Weak")).findFirst().get();
+		assertNotNull(normal);
+		assertNotNull(high);
+		assertNotNull(low);
+		assertTrue(normal.getNanoentities().contains("Customer.testAttr1"));
+		assertTrue(high.getNanoentities().contains("Customer.testAttr2"));
+		assertTrue(low.getNanoentities().contains("Customer.testAttr3"));
+	}
+
+	@Test
+	public void canGenerateStorageSimilarityCompatibilitiesFromCML() throws IOException {
+		// given
+		ContextMappingModel inputModel = getOriginalResourceOfTestCML("user-representations-builder-test-8.cml").getContextMappingModel();
+
+		// when
+		ServiceCutterUserRepresentationsModel scModel = new UserRepresentationsBuilder(inputModel).build();
+
+		// then
+		assertNotNull(scModel.getCompatibilities());
+		Compatibilities compatibilities = scModel.getCompatibilities();
+		assertFalse(compatibilities.getStorageSimilarity().isEmpty());
+		assertEquals(3, compatibilities.getStorageSimilarity().size());
+		StorageSimilarity normal = compatibilities.getStorageSimilarity().stream().filter(sv -> sv.getCharacteristic().equals("Normal")).findFirst().get();
+		StorageSimilarity high = compatibilities.getStorageSimilarity().stream().filter(sv -> sv.getCharacteristic().equals("Huge")).findFirst().get();
+		StorageSimilarity low = compatibilities.getStorageSimilarity().stream().filter(sv -> sv.getCharacteristic().equals("Tiny")).findFirst().get();
+		assertNotNull(normal);
+		assertNotNull(high);
+		assertNotNull(low);
+		assertTrue(normal.getNanoentities().contains("Customer.testAttr1"));
+		assertTrue(high.getNanoentities().contains("Customer.testAttr2"));
+		assertTrue(low.getNanoentities().contains("Customer.testAttr3"));
+	}
+
+	@Test
+	public void canGenerateSecurityCriticalityCompatibilitiesFromCML() throws IOException {
+		// given
+		ContextMappingModel inputModel = getOriginalResourceOfTestCML("user-representations-builder-test-9.cml").getContextMappingModel();
+
+		// when
+		ServiceCutterUserRepresentationsModel scModel = new UserRepresentationsBuilder(inputModel).build();
+
+		// then
+		assertNotNull(scModel.getCompatibilities());
+		Compatibilities compatibilities = scModel.getCompatibilities();
+		assertFalse(compatibilities.getSecurityCriticality().isEmpty());
+		assertEquals(3, compatibilities.getSecurityCriticality().size());
+		SecurityCriticality normal = compatibilities.getSecurityCriticality().stream().filter(sv -> sv.getCharacteristic().equals("Internal")).findFirst().get();
+		SecurityCriticality high = compatibilities.getSecurityCriticality().stream().filter(sv -> sv.getCharacteristic().equals("Critical")).findFirst().get();
+		SecurityCriticality low = compatibilities.getSecurityCriticality().stream().filter(sv -> sv.getCharacteristic().equals("Public")).findFirst().get();
+		assertNotNull(normal);
+		assertNotNull(high);
+		assertNotNull(low);
+		assertTrue(normal.getNanoentities().contains("Customer.testAttr1"));
+		assertTrue(high.getNanoentities().contains("Customer.testAttr2"));
+		assertTrue(low.getNanoentities().contains("Customer.testAttr3"));
 	}
 
 	@Override

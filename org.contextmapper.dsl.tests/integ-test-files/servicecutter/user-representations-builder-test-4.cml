@@ -1,0 +1,24 @@
+BoundedContext TestContext {
+    Aggregate NormalAggregate {
+        likelihoodForChange NORMAL
+
+        Entity Customer {
+            String testAttr1
+        }
+    }
+    Aggregate OftenAggregate {
+        likelihoodForChange OFTEN
+
+        Entity Customer {
+            String testAttr2
+        }
+    }
+    Aggregate RarelyAggregate {
+        likelihoodForChange RARELY
+
+        Entity Customer {
+            String testAttr3
+        }
+    }
+}
+

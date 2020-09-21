@@ -15,7 +15,7 @@
  */
 package org.contextmapper.dsl.ide.commands.impl.refactoring;
 
-import org.contextmapper.dsl.contextMappingDSL.LikelihoodForChange;
+import org.contextmapper.dsl.contextMappingDSL.Volatility;
 import org.contextmapper.dsl.ide.edit.WorkspaceEditRecorder;
 import org.contextmapper.dsl.refactoring.ExtractAggregatesByVolatility;
 import org.contextmapper.dsl.refactoring.SemanticCMLRefactoring;
@@ -37,7 +37,7 @@ public class ExtractAggregatesByVolatilityCommand extends AbstractRefactoringCom
 		JsonPrimitive boundedContextName = (JsonPrimitive) refactoringParams.get(0);
 		JsonPrimitive volatilityToExtract = (JsonPrimitive) refactoringParams.get(1);
 
-		return new ExtractAggregatesByVolatility(boundedContextName.getAsString(), LikelihoodForChange.valueOf(volatilityToExtract.getAsString()));
+		return new ExtractAggregatesByVolatility(boundedContextName.getAsString(), Volatility.valueOf(volatilityToExtract.getAsString()));
 	}
 
 }

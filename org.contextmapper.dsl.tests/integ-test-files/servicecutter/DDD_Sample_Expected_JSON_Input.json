@@ -5,7 +5,7 @@
     "nanoentities" : [ "trackingId", "origin", "routeSpecification", "itinerary", "delivery" ]
   }, {
     "name" : "Delivery",
-    "nanoentities" : [ "misdirected", "eta", "isUnloadedAtDestination", "calculatedAt", "transportStatus", "lastKnownLocation", "currentVoyage", "nextExpectedActivity", "routingStatus", "lastEvent" ]
+    "nanoentities" : [ "misdirected", "eta", "isUnloadedAtDestination", "calculatedAt", "transportStatus", "lastKnownLocation", "currentVoyage", "nextExpectedActivity", "routingStatus", "lastEvent", "transportStatus", "routingStatus" ]
   }, {
     "name" : "HandlingActivity",
     "nanoentities" : [ "handlingEventType", "location", "voyage" ]
@@ -68,88 +68,24 @@
     "nanoentities" : [ ]
   } ],
   "relations" : [ {
-    "origin" : "Cargo",
-    "destination" : "LocationShared",
-    "type" : "AGGREGATION"
-  }, {
-    "origin" : "Cargo",
-    "destination" : "RouteSpecification",
-    "type" : "AGGREGATION"
-  }, {
-    "origin" : "Cargo",
-    "destination" : "Itinerary",
-    "type" : "AGGREGATION"
-  }, {
-    "origin" : "Cargo",
-    "destination" : "Delivery",
-    "type" : "AGGREGATION"
-  }, {
     "origin" : "CargoItineraryLegDeliveryRouteSpecification_Aggregate",
     "destination" : "Cargo",
     "type" : "AGGREGATION"
   }, {
-    "origin" : "Delivery",
-    "destination" : "LocationShared",
-    "type" : "AGGREGATION"
-  }, {
-    "origin" : "Delivery",
-    "destination" : "Voyage",
-    "type" : "AGGREGATION"
-  }, {
-    "origin" : "Delivery",
-    "destination" : "HandlingActivity",
-    "type" : "AGGREGATION"
-  }, {
-    "origin" : "Delivery",
-    "destination" : "HandlingEvent",
-    "type" : "AGGREGATION"
-  }, {
     "origin" : "CargoItineraryLegDeliveryRouteSpecification_Aggregate",
     "destination" : "Delivery",
     "type" : "AGGREGATION"
   }, {
-    "origin" : "HandlingActivity",
-    "destination" : "LocationShared",
-    "type" : "AGGREGATION"
-  }, {
-    "origin" : "HandlingActivity",
-    "destination" : "Voyage",
-    "type" : "AGGREGATION"
-  }, {
     "origin" : "CargoItineraryLegDeliveryRouteSpecification_Aggregate",
     "destination" : "HandlingActivity",
-    "type" : "AGGREGATION"
-  }, {
-    "origin" : "Itinerary",
-    "destination" : "Leg",
     "type" : "AGGREGATION"
   }, {
     "origin" : "CargoItineraryLegDeliveryRouteSpecification_Aggregate",
     "destination" : "Itinerary",
     "type" : "AGGREGATION"
   }, {
-    "origin" : "Leg",
-    "destination" : "Voyage",
-    "type" : "AGGREGATION"
-  }, {
-    "origin" : "Leg",
-    "destination" : "LocationShared",
-    "type" : "AGGREGATION"
-  }, {
-    "origin" : "Leg",
-    "destination" : "LocationShared",
-    "type" : "AGGREGATION"
-  }, {
     "origin" : "CargoItineraryLegDeliveryRouteSpecification_Aggregate",
     "destination" : "Leg",
-    "type" : "AGGREGATION"
-  }, {
-    "origin" : "RouteSpecification",
-    "destination" : "LocationShared",
-    "type" : "AGGREGATION"
-  }, {
-    "origin" : "RouteSpecification",
-    "destination" : "LocationShared",
     "type" : "AGGREGATION"
   }, {
     "origin" : "CargoItineraryLegDeliveryRouteSpecification_Aggregate",
@@ -160,23 +96,7 @@
     "destination" : "CargoItineraryLegDeliveryRouteSpecification_Aggregate",
     "type" : "AGGREGATION"
   }, {
-    "origin" : "HandlingEvent",
-    "destination" : "Voyage",
-    "type" : "AGGREGATION"
-  }, {
-    "origin" : "HandlingEvent",
-    "destination" : "LocationShared",
-    "type" : "AGGREGATION"
-  }, {
-    "origin" : "HandlingEvent",
-    "destination" : "Cargo",
-    "type" : "AGGREGATION"
-  }, {
     "origin" : "Handling_Aggregate",
-    "destination" : "HandlingEvent",
-    "type" : "AGGREGATION"
-  }, {
-    "origin" : "HandlingHistory",
     "destination" : "HandlingEvent",
     "type" : "AGGREGATION"
   }, {
@@ -188,31 +108,11 @@
     "destination" : "Handling_Aggregate",
     "type" : "AGGREGATION"
   }, {
-    "origin" : "Voyage",
-    "destination" : "VoyageNumber",
-    "type" : "AGGREGATION"
-  }, {
-    "origin" : "Voyage",
-    "destination" : "Schedule",
-    "type" : "AGGREGATION"
-  }, {
     "origin" : "Voyage_Aggregate",
     "destination" : "Voyage",
     "type" : "AGGREGATION"
   }, {
-    "origin" : "CarrierMovement",
-    "destination" : "LocationShared",
-    "type" : "AGGREGATION"
-  }, {
-    "origin" : "CarrierMovement",
-    "destination" : "LocationShared",
-    "type" : "AGGREGATION"
-  }, {
     "origin" : "Voyage_Aggregate",
-    "destination" : "CarrierMovement",
-    "type" : "AGGREGATION"
-  }, {
-    "origin" : "Schedule",
     "destination" : "CarrierMovement",
     "type" : "AGGREGATION"
   }, {
@@ -228,20 +128,12 @@
     "destination" : "Voyage_Aggregate",
     "type" : "AGGREGATION"
   }, {
-    "origin" : "Location",
-    "destination" : "UnLocode",
-    "type" : "AGGREGATION"
-  }, {
     "origin" : "Location_Aggregate",
     "destination" : "Location",
     "type" : "AGGREGATION"
   }, {
     "origin" : "Location_Aggregate",
     "destination" : "UnLocode",
-    "type" : "AGGREGATION"
-  }, {
-    "origin" : "LocationShared",
-    "destination" : "Location",
     "type" : "AGGREGATION"
   }, {
     "origin" : "Location_Aggregate",
@@ -250,6 +142,114 @@
   }, {
     "origin" : "LocationContext_BC",
     "destination" : "Location_Aggregate",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "Cargo",
+    "destination" : "LocationShared",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "Cargo",
+    "destination" : "RouteSpecification",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "Cargo",
+    "destination" : "Itinerary",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "Cargo",
+    "destination" : "Delivery",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "Delivery",
+    "destination" : "LocationShared",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "Delivery",
+    "destination" : "Voyage",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "Delivery",
+    "destination" : "HandlingActivity",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "Delivery",
+    "destination" : "HandlingEvent",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "HandlingActivity",
+    "destination" : "LocationShared",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "HandlingActivity",
+    "destination" : "Voyage",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "Itinerary",
+    "destination" : "Leg",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "Leg",
+    "destination" : "Voyage",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "Leg",
+    "destination" : "LocationShared",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "Leg",
+    "destination" : "LocationShared",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "RouteSpecification",
+    "destination" : "LocationShared",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "RouteSpecification",
+    "destination" : "LocationShared",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "HandlingEvent",
+    "destination" : "Voyage",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "HandlingEvent",
+    "destination" : "LocationShared",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "HandlingEvent",
+    "destination" : "Cargo",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "HandlingHistory",
+    "destination" : "HandlingEvent",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "Voyage",
+    "destination" : "VoyageNumber",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "Voyage",
+    "destination" : "Schedule",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "CarrierMovement",
+    "destination" : "LocationShared",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "CarrierMovement",
+    "destination" : "LocationShared",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "Schedule",
+    "destination" : "CarrierMovement",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "Location",
+    "destination" : "UnLocode",
+    "type" : "AGGREGATION"
+  }, {
+    "origin" : "LocationShared",
+    "destination" : "Location",
     "type" : "AGGREGATION"
   } ]
 }

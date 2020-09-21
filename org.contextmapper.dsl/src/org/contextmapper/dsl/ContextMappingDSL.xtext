@@ -177,7 +177,14 @@ Aggregate :
     	)? &
     	('owner' ('=')? owner=[BoundedContext])? & 
     	('knowledgeLevel' ('=')? knowledgeLevel=KnowledgeLevel)? &
-    	('likelihoodForChange' ('=')? likelihoodForChange=LikelihoodForChange)?
+    	(('likelihoodForChange' | 'structuralVolatility') ('=')? likelihoodForChange=Volatility)? & 
+    	('contentVolatility' ('=')? contentVolatility=Volatility)? &
+    	('availabilityCriticality' ('=')? availabilityCriticality=Criticality)? &
+    	('consistencyCriticality' ('=')? consistencyCriticality=Criticality)? &
+    	('storageSimilarity' ('=')? storageSimilarity=Similarity)? &
+    	('securityCriticality' ('=')? securityCriticality=Criticality)? &
+    	('securityZone' ('=')? securityZone=STRING)? &
+    	('securityAccessGroup' ('=')? securityAccessGroup=STRING)?
     )
     ((services+=Service) |
      (resources+=Resource) |
@@ -260,8 +267,16 @@ enum KnowledgeLevel :
   META="META" | CONCRETE="CONCRETE"
 ;
 
-enum LikelihoodForChange : 
-	NORMAL | RARELY | OFTEN
+enum Volatility : 
+	UNDEFINED | NORMAL | RARELY | OFTEN
+;
+
+enum Criticality : 
+	UNDEFINED | NORMAL | HIGH | LOW
+;
+
+enum Similarity : 
+	UNDEFINED | NORMAL | HUGE | TINY
 ;
 
 // define terminals

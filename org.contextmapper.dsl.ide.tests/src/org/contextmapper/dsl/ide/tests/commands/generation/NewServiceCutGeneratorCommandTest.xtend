@@ -62,6 +62,7 @@ class NewServiceCutGeneratorCommandTest extends AbstractCMLCommandTest {
 		CMLCommandService.COMMAND_EXECUTED_RETURN_VALUE.assertEquals(resultVal)
 		new File(root, "test.scl").exists.assertTrue
 		new File(root, "test_Markov_Clustering_Cut_1.cml").exists.assertTrue
+		new File(root, "test_Markov_Clustering_Cut_1.gv").exists.assertTrue
 		new File(root, ".servicecutter.yml").exists.assertTrue
 	}
 

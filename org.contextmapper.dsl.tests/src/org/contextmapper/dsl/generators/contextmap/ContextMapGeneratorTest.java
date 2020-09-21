@@ -86,7 +86,7 @@ class ContextMapGeneratorTest {
 		this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem, new IGeneratorContextMock());
 
 		// then
-		assertTrue(filesystem.getGeneratedFilesSet().contains("testmodel_ContextMap.dot"));
+		assertTrue(filesystem.getGeneratedFilesSet().contains("testmodel_ContextMap.gv"));
 	}
 
 	@Test

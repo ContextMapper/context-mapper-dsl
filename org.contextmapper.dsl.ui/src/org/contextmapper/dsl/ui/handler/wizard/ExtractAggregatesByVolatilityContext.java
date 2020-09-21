@@ -17,26 +17,26 @@ package org.contextmapper.dsl.ui.handler.wizard;
 
 import java.util.List;
 
-import org.contextmapper.dsl.contextMappingDSL.LikelihoodForChange;
+import org.contextmapper.dsl.contextMappingDSL.Volatility;
 
 public class ExtractAggregatesByVolatilityContext {
 
-	private LikelihoodForChange volatilityToExtract;
-	private List<LikelihoodForChange> availableLikelihoods;
+	private Volatility volatilityToExtract;
+	private List<Volatility> availableLikelihoods;
 
-	public ExtractAggregatesByVolatilityContext(List<LikelihoodForChange> availableLikelihoods) {
+	public ExtractAggregatesByVolatilityContext(List<Volatility> availableLikelihoods) {
 		this.availableLikelihoods = availableLikelihoods;
 	}
 
-	public void setVolatilityToExtract(LikelihoodForChange volatilityToExtract) {
+	public void setVolatilityToExtract(Volatility volatilityToExtract) {
 		this.volatilityToExtract = volatilityToExtract;
 	}
 
-	public LikelihoodForChange getVolatilityToExtract() {
+	public Volatility getVolatilityToExtract() {
 		return volatilityToExtract;
 	}
 
-	public List<LikelihoodForChange> getAvailableLikelihoods() {
+	public List<Volatility> getAvailableLikelihoods() {
 		return availableLikelihoods;
 	}
 

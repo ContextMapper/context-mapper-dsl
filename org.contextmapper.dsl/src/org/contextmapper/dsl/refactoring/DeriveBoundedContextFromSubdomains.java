@@ -59,7 +59,7 @@ public class DeriveBoundedContextFromSubdomains extends AbstractRefactoring impl
 	public DeriveBoundedContextFromSubdomains(String boundedContextName, Set<String> subdomainIds) {
 		this.boundedContextName = boundedContextName;
 		this.subdomainIds = subdomainIds;
-		this.objectResolver = new CMLModelObjectsResolvingHelper();
+		this.objectResolver = new CMLModelObjectsResolvingHelper(model);
 	}
 
 	@Override

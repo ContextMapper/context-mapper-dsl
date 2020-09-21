@@ -18,6 +18,9 @@ package org.contextmapper.dsl.generator;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.config.ServiceCutterConfigHandler;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
@@ -31,7 +34,6 @@ import org.contextmapper.servicecutter.dsl.serviceCutterConfigurationDSL.Service
 import org.contextmapper.tactic.dsl.tacticdsl.Attribute;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.xtext.EcoreUtil2;
 import org.eclipse.xtext.generator.IFileSystemAccess2;
 
@@ -44,6 +46,9 @@ import ch.hsr.servicecutter.api.SolverConfigurationFactory;
 import ch.hsr.servicecutter.api.model.EntityRelationDiagram;
 import ch.hsr.servicecutter.api.model.SolverResult;
 import ch.hsr.servicecutter.api.model.UserRepresentationContainer;
+import ch.hsr.servicecutter.model.solver.EntityPair;
+import ch.hsr.servicecutter.scorer.Score;
+import ch.hsr.servicecutter.scorer.Scorer;
 import ch.hsr.servicecutter.solver.SolverConfiguration;
 
 /**
@@ -90,6 +95,38 @@ public class NewServiceCutContextMapGenerator extends AbstractContextMappingMode
 		} catch (IOException e) {
 			throw new RuntimeException("Saving CML model was not possible.", e);
 		}
+
+		// save scoring as graphviz DOT file
+		fsa.generateFile(fileName.trimFileExtension().lastSegment() + ".gv", generateGraphvizScoringRepresentation(context));
+	}
+
+	private String generateGraphvizScoringRepresentation(ServiceCutterContext context) {
+		StringBuilder sb = new StringBuilder();
+		Scorer scorer = new Scorer(context.getCouplingInstances(), context.getNanoEntities());
+		Map<EntityPair, Map<String, Score>> scores = scorer.getScores((final String key) -> {
+			return context.getSolverConfiguration().getPriorityForCouplingCriterion(key).toValue();
+		});
+		sb.append("graph G {" + System.lineSeparator());
+		for (Entry<EntityPair, Map<String, Score>> entry : scores.entrySet()) {
+			if (entry.getKey().nanoentityA == null || entry.getKey().nanoentityB == null)
+				continue;
+
+			double score = entry.getValue().values().stream().mapToDouble(Score::getPrioritizedScore).sum();
+			if (score > 0) {
+				String nameA = entry.getKey().nanoentityA.getContextName();
+				String nameB = entry.getKey().nanoentityB.getContextName();
+				sb.append("  \"" + nameA + "\" -- \"" + nameB + "\" [weight=" + score + ",label=" + score + "]; // { ");
+
+				List<String> scoreEntries = entry.getValue().entrySet().stream().map(
+						scoreEntry -> scoreEntry.getKey() + ": " + scoreEntry.getValue().getPriority() + " * " + scoreEntry.getValue().getScore() + " = " + scoreEntry.getValue().getPrioritizedScore())
+						.collect(Collectors.toList());
+				sb.append(String.join(", ", scoreEntries));
+				sb.append(" }");
+				sb.append(System.lineSeparator());
+			}
+		}
+		sb.append("}").append(System.lineSeparator());
+		return sb.toString();
 	}
 
 	/**

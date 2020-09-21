@@ -21,6 +21,7 @@ import java.nio.file.Paths;
 
 import org.apache.commons.io.FileUtils;
 import org.contextmapper.dsl.cml.CMLResource;
+import org.contextmapper.dsl.standalone.FileSystemHelper;
 import org.contextmapper.servicecutter.dsl.ServiceCutterConfigurationDSLStandaloneSetup;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -99,13 +100,7 @@ public abstract class AbstractCMLInputFileTest extends AbstractDirectoryIntegrat
 	}
 
 	protected JavaIoFileSystemAccess getFileSystemAccess() {
-		JavaIoFileSystemAccess fsa = new JavaIoFileSystemAccess();
-		Guice.createInjector(new AbstractGenericModule() {
-			public Class<? extends IEncodingProvider> bindIEncodingProvider() {
-				return IEncodingProvider.Runtime.class;
-			}
-		}).injectMembers(fsa);
-		return fsa;
+		return FileSystemHelper.getFileSystemAccess(testDir.getAbsolutePath() + "/src-gen");
 	}
 
 	/**
