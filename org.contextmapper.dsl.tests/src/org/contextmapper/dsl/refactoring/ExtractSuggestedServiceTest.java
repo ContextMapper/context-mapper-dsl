@@ -79,7 +79,7 @@ public class ExtractSuggestedServiceTest extends AbstractRefactoringTest {
 		assertEquals(1, newBC.getAggregates().size());
 		SculptorModule mod1 = origBC.getModules().stream().filter(m -> m.getName().equals("Module1")).findFirst().get();
 		assertNotNull(mod1);
-		assertEquals(0, mod1.getDomainObjects().size());
+		assertEquals(1, mod1.getDomainObjects().size());
 	}
 
 	@Test

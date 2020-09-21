@@ -18,6 +18,7 @@ package org.contextmapper.dsl.refactoring;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -25,7 +26,6 @@ import java.util.stream.Collectors;
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
-import org.contextmapper.dsl.contextMappingDSL.SculptorModule;
 import org.contextmapper.dsl.exception.ContextMapperApplicationException;
 import org.contextmapper.tactic.dsl.tacticdsl.Attribute;
 import org.contextmapper.tactic.dsl.tacticdsl.DomainEvent;
@@ -100,9 +100,6 @@ public class ExtractSuggestedService extends AbstractRefactoring implements Sema
 
 		// remove attribute from original domain object
 		removeElementFromEList(parentObject.getAttributes(), attribute);
-
-		// remove original domain object if necessary
-		removeDomainObjectIfEmpty(parentObject);
 	}
 
 	private void moveReference(Reference reference, Aggregate newBCAggregate) {
@@ -114,9 +111,6 @@ public class ExtractSuggestedService extends AbstractRefactoring implements Sema
 
 		// remove attribute from original domain object
 		removeElementFromEList(parentObject.getReferences(), reference);
-
-		// remove original domain object if necessary
-		removeDomainObjectIfEmpty(parentObject);
 	}
 
 	private Attribute findAttributeInOriginalModel(Attribute serviceCutAttribute) {
@@ -160,22 +154,21 @@ public class ExtractSuggestedService extends AbstractRefactoring implements Sema
 			domainObject = TacticdslFactory.eINSTANCE.createValueObject();
 		if (originalDomainObject instanceof DomainEvent)
 			domainObject = TacticdslFactory.eINSTANCE.createDomainEvent();
-		domainObject.setName(originalDomainObject.getName());
+		domainObject.setName(getUniqueDomainObjectName(originalDomainObject.getName()));
 		addElementToEList(newBCAggregate.getDomainObjects(), domainObject);
 		this.domainObjectMap.put(originalDomainObject.getName(), domainObject);
 		return domainObject;
 	}
 
-	private void removeDomainObjectIfEmpty(DomainObject domainObject) {
-		if (!domainObject.getAttributes().isEmpty())
-			return;
-		if (!domainObject.getReferences().isEmpty())
-			return;
-
-		if (domainObject.eContainer() instanceof Aggregate)
-			removeElementFromEList(((Aggregate) domainObject.eContainer()).getDomainObjects(), domainObject);
-		else if (domainObject.eContainer() instanceof SculptorModule)
-			removeElementFromEList(((SculptorModule) domainObject.eContainer()).getDomainObjects(), domainObject);
+	private String getUniqueDomainObjectName(String inputName) {
+		String name = inputName;
+		int counter = 2;
+		Set<String> existingNames = EcoreUtil2.eAllOfType(model, DomainObject.class).stream().map(o -> o.getName()).collect(Collectors.toSet());
+		while (existingNames.contains(name)) {
+			name = inputName + "_" + counter;
+			counter++;
+		}
+		return name;
 	}
 
 	public URI constructOriginalModelUri() {
