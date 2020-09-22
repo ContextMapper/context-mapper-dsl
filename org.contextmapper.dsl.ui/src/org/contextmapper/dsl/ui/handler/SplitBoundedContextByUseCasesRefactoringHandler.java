@@ -32,7 +32,7 @@ public class SplitBoundedContextByUseCasesRefactoringHandler extends AbstractRef
 		BoundedContext bc = (BoundedContext) getSelectedElement();
 		SemanticCMLRefactoring ar = new SplitBoundedContextByFeatures(bc.getName());
 		ar.refactor(resource, getAllResources());
-		ar.persistChanges();
+		ar.persistChanges(serializer);
 	}
 
 	@Override

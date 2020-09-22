@@ -258,7 +258,7 @@ public class MergeAggregatesTest extends AbstractRefactoringTest {
 		// when
 		MergeAggregatesRefactoring ar = new MergeAggregatesRefactoring("Customers", "Addresses");
 		ar.refactor(mainResource, additionalResources);
-		ar.persistChanges();
+		ar.persistChanges(serializer);
 		CMLResource contextMapResource = new CMLResource(
 				additionalResources.getResources().stream().filter(r -> r.getURI().toString().endsWith("merge-aggregates-test-7-input-1.cml")).findFirst().get());
 		contextMapResource = reloadResource(contextMapResource);

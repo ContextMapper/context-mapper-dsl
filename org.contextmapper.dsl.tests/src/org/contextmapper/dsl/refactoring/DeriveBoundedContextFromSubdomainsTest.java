@@ -60,7 +60,7 @@ public class DeriveBoundedContextFromSubdomainsTest extends AbstractRefactoringT
 		Set<String> subdomains = Sets.newHashSet(Arrays.asList(new String[] { "CustomerDomain" }));
 		DeriveBoundedContextFromSubdomains ar = new DeriveBoundedContextFromSubdomains("NewTestBC", subdomains);
 		ar.refactor(input);
-		ar.persistChanges();
+		ar.persistChanges(serializer);
 
 		// then
 		ContextMappingModel model = reloadResource(input).getContextMappingModel();
@@ -100,7 +100,7 @@ public class DeriveBoundedContextFromSubdomainsTest extends AbstractRefactoringT
 		Set<String> subdomains = Sets.newHashSet(Arrays.asList(new String[] { "CustomerDomain" }));
 		DeriveBoundedContextFromSubdomains ar = new DeriveBoundedContextFromSubdomains("NewTestBC", subdomains);
 		ar.refactor(input);
-		ar.persistChanges();
+		ar.persistChanges(serializer);
 
 		// then
 		ContextMappingModel model = reloadResource(input).getContextMappingModel();
@@ -139,7 +139,7 @@ public class DeriveBoundedContextFromSubdomainsTest extends AbstractRefactoringT
 		Set<String> subdomains = Sets.newHashSet(Arrays.asList(new String[] { "CustomerDomain" }));
 		DeriveBoundedContextFromSubdomains ar = new DeriveBoundedContextFromSubdomains("NewTestBC", subdomains);
 		ar.refactor(input);
-		ar.persistChanges();
+		ar.persistChanges(serializer);
 
 		// then
 		ContextMappingModel model = reloadResource(input).getContextMappingModel();
@@ -160,7 +160,7 @@ public class DeriveBoundedContextFromSubdomainsTest extends AbstractRefactoringT
 		Set<String> subdomains = Sets.newHashSet(Arrays.asList(new String[] { "CustomerDomain" }));
 		DeriveBoundedContextFromSubdomains ar = new DeriveBoundedContextFromSubdomains("NewTestBC", subdomains);
 		ar.refactor(input);
-		ar.persistChanges();
+		ar.persistChanges(serializer);
 
 		// then
 		ContextMappingModel model = reloadResource(input).getContextMappingModel();
@@ -191,7 +191,7 @@ public class DeriveBoundedContextFromSubdomainsTest extends AbstractRefactoringT
 		Set<String> subdomains = Sets.newHashSet(Arrays.asList(new String[] { "CustomerDomain" }));
 		DeriveBoundedContextFromSubdomains ar = new DeriveBoundedContextFromSubdomains("NewTestBC", subdomains);
 		ar.refactor(input);
-		ar.persistChanges();
+		ar.persistChanges(serializer);
 
 		// then
 		ContextMappingModel model = reloadResource(input).getContextMappingModel();
@@ -240,7 +240,7 @@ public class DeriveBoundedContextFromSubdomainsTest extends AbstractRefactoringT
 		Set<String> subdomains = Sets.newHashSet(Arrays.asList(new String[] { "CustomerDomain" }));
 		DeriveBoundedContextFromSubdomains ar = new DeriveBoundedContextFromSubdomains("NewTestBC", subdomains);
 		ar.refactor(input);
-		ar.persistChanges();
+		ar.persistChanges(serializer);
 
 		// then
 		ContextMappingModel model = reloadResource(input).getContextMappingModel();
@@ -314,7 +314,7 @@ public class DeriveBoundedContextFromSubdomainsTest extends AbstractRefactoringT
 		Set<String> subdomains = Sets.newHashSet(Arrays.asList(new String[] { "ClaimsManagement" }));
 		DeriveBoundedContextFromSubdomains ar = new DeriveBoundedContextFromSubdomains("ClaimsManagement", subdomains);
 		ar.refactor(input);
-		ar.persistChanges();
+		ar.persistChanges(serializer);
 
 		// then
 		String dslText = FileUtils.readFileToString(new File(input.getURI().toFileString()), "UTF-8");

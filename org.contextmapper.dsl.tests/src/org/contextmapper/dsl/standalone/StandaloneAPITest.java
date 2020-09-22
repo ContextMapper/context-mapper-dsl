@@ -22,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.nio.file.Paths;
 
 import org.apache.commons.io.FileUtils;
 import org.contextmapper.dsl.cml.CMLResource;

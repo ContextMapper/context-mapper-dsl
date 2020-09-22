@@ -19,14 +19,15 @@ import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.cml.CMLResource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.xtext.serializer.ISerializer;
 
 public class SplitBoundedContextByFeatures implements SemanticCMLRefactoring {
 
 	private SplitBoundedContextByAggregateAttribute coreAR;
 
 	public SplitBoundedContextByFeatures(String boundedContextName) {
-		this.coreAR = new SplitBoundedContextByAggregateAttribute(
-				aggregate -> new CompoundKey(aggregate.getUserRequirements().stream().map(uc -> uc.getName()).collect(Collectors.toSet())), boundedContextName);
+		this.coreAR = new SplitBoundedContextByAggregateAttribute(aggregate -> new CompoundKey(aggregate.getUserRequirements().stream().map(uc -> uc.getName()).collect(Collectors.toSet())),
+				boundedContextName);
 	}
 
 	@Override
@@ -40,8 +41,8 @@ public class SplitBoundedContextByFeatures implements SemanticCMLRefactoring {
 	}
 
 	@Override
-	public void persistChanges() {
-		this.coreAR.persistChanges();
+	public void persistChanges(ISerializer serializer) {
+		this.coreAR.persistChanges(serializer);
 	}
 
 }

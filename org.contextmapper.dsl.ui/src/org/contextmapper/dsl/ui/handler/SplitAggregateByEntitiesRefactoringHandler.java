@@ -34,7 +34,7 @@ public class SplitAggregateByEntitiesRefactoringHandler extends AbstractRefactor
 		Aggregate aggregate = (Aggregate) getSelectedElement();
 		SemanticCMLRefactoring ar = new SplitAggregateByEntitiesRefactoring(aggregate.getName());
 		ar.refactor(resource, getAllResources());
-		ar.persistChanges();
+		ar.persistChanges(serializer);
 	}
 
 	@Override

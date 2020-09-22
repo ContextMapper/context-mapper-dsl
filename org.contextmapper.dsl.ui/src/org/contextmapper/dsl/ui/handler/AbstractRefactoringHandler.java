@@ -7,6 +7,7 @@ import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.Import;
 import org.contextmapper.dsl.exception.ContextMapperApplicationException;
+import org.contextmapper.dsl.exception.RefactoringSerializationException;
 import org.contextmapper.dsl.ui.editor.XtextEditorHelper;
 import org.contextmapper.dsl.ui.internal.DslActivator;
 import org.eclipse.core.commands.AbstractHandler;
@@ -27,6 +28,7 @@ import org.eclipse.ui.statushandlers.StatusManager;
 import org.eclipse.xtext.resource.IResourceDescription;
 import org.eclipse.xtext.resource.IResourceDescriptions;
 import org.eclipse.xtext.resource.impl.ResourceDescriptionsProvider;
+import org.eclipse.xtext.serializer.ISerializer;
 import org.eclipse.xtext.ui.editor.XtextEditor;
 import org.eclipse.xtext.ui.editor.utils.EditorUtils;
 import org.eclipse.xtext.ui.resource.XtextLiveScopeResourceSetProvider;
@@ -47,6 +49,9 @@ public abstract class AbstractRefactoringHandler extends AbstractHandler impleme
 	@Inject
 	private XtextEditorHelper xtextEditorHelper;
 
+	@Inject
+	protected ISerializer serializer;
+
 	protected Resource currentResource;
 	protected ResourceSet currentResourceSet;
 
@@ -58,6 +63,11 @@ public abstract class AbstractRefactoringHandler extends AbstractHandler impleme
 			currentResourceSet = resourceSetProvider.get(xResource.getProject());
 			currentResource = getCurrentResource();
 			executeRefactoring(new CMLResource(currentResource), event);
+		} catch (RefactoringSerializationException e) {
+			String message = e.getMessage() != null && !"".equals(e.getMessage()) ? e.getMessage() : e.getClass().getName() + " occurred in " + this.getClass().getName();
+			Status status = new Status(IStatus.ERROR, DslActivator.PLUGIN_ID, message, e);
+			StatusManager.getManager().handle(status);
+			MessageDialog.openInformation(HandlerUtil.getActiveShell(event), "Model Input", e.getMessage());
 		} catch (ContextMapperApplicationException e) {
 			MessageDialog.openInformation(HandlerUtil.getActiveShell(event), "Model Input", e.getMessage());
 		} catch (Exception e) {
@@ -81,8 +91,7 @@ public abstract class AbstractRefactoringHandler extends AbstractHandler impleme
 	protected ContextMappingModel getCurrentContextMappingModel() {
 		Resource resource = currentResource == null ? getCurrentResource() : currentResource;
 
-		List<ContextMappingModel> contextMappingModels = IteratorExtensions
-				.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(resource.getAllContents(), ContextMappingModel.class));
+		List<ContextMappingModel> contextMappingModels = IteratorExtensions.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(resource.getAllContents(), ContextMappingModel.class));
 
 		if (contextMappingModels.size() > 0) {
 			return contextMappingModels.get(0);

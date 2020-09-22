@@ -17,6 +17,7 @@ package org.contextmapper.dsl.refactoring;
 
 import org.contextmapper.dsl.cml.CMLResource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.xtext.serializer.ISerializer;
 
 public interface SemanticCMLRefactoring {
 
@@ -50,7 +51,10 @@ public interface SemanticCMLRefactoring {
 	/**
 	 * Can be called after the 'refactor' method, in case one wants to save/persist
 	 * the changes to the CML files.
+	 * 
+	 * @param serializer the serializer that will be used to check whether the model
+	 *                   can be persisted.
 	 */
-	void persistChanges();
+	void persistChanges(ISerializer serializer);
 
 }

@@ -57,7 +57,7 @@ public class DeriveSubdomainFromUserRequirementsTest extends AbstractRefactoring
 		Set<String> userStories = Sets.newHashSet(Arrays.asList(new String[] { "US1_Create", "Story_to_be_Ignored", "UseCase_to_be_Ignored" }));
 		DeriveSubdomainFromUserRequirements ar = new DeriveSubdomainFromUserRequirements("InsuranceDomain", "Customers", userStories);
 		ar.refactor(input);
-		ar.persistChanges();
+		ar.persistChanges(serializer);
 
 		// then
 		ContextMappingModel model = reloadResource(input).getContextMappingModel();
@@ -97,7 +97,7 @@ public class DeriveSubdomainFromUserRequirementsTest extends AbstractRefactoring
 		Set<String> userStories = Sets.newHashSet(Arrays.asList(new String[] { "US1_Create", "Story_to_be_Ignored" }));
 		DeriveSubdomainFromUserRequirements ar = new DeriveSubdomainFromUserRequirements("InsuranceDomain", "Customers", userStories);
 		ar.refactor(input);
-		ar.persistChanges();
+		ar.persistChanges(serializer);
 
 		// then
 		ContextMappingModel model = reloadResource(input).getContextMappingModel();
@@ -167,7 +167,7 @@ public class DeriveSubdomainFromUserRequirementsTest extends AbstractRefactoring
 		Set<String> userStories = Sets.newHashSet(Arrays.asList(new String[] { "US1_Create" }));
 		DeriveSubdomainFromUserRequirements ar = new DeriveSubdomainFromUserRequirements("InsuranceDomain", "Customers", userStories);
 		ar.refactor(input);
-		ar.persistChanges();
+		ar.persistChanges(serializer);
 
 		// then
 		ContextMappingModel model = reloadResource(input).getContextMappingModel();
@@ -191,7 +191,7 @@ public class DeriveSubdomainFromUserRequirementsTest extends AbstractRefactoring
 		Set<String> userStories = Sets.newHashSet(Arrays.asList(new String[] { "US1_Create" }));
 		DeriveSubdomainFromUserRequirements ar = new DeriveSubdomainFromUserRequirements("InsuranceDomain", "Customers", userStories);
 		ar.refactor(input);
-		ar.persistChanges();
+		ar.persistChanges(serializer);
 
 		// then
 		ContextMappingModel model = reloadResource(input).getContextMappingModel();

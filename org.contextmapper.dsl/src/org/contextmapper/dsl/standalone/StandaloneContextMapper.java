@@ -26,11 +26,19 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.xtext.generator.GeneratorContext;
 import org.eclipse.xtext.generator.IGenerator2;
+import org.eclipse.xtext.serializer.ISerializer;
+
+import com.google.inject.Inject;
+import com.google.inject.Injector;
 
 public class StandaloneContextMapper implements StandaloneContextMapperAPI {
 
+	@Inject
+	private ISerializer serializer;
+
 	public StandaloneContextMapper() {
-		ContextMappingDSLStandaloneSetup.doSetup();
+		Injector injector = new ContextMappingDSLStandaloneSetup().createInjectorAndDoEMFRegistration();
+		injector.injectMembers(this);
 	}
 
 	@Override
@@ -72,7 +80,7 @@ public class StandaloneContextMapper implements StandaloneContextMapperAPI {
 	@Override
 	public void applyRefactoring(CMLResource cml, SemanticCMLRefactoring refactoring) {
 		refactoring.refactor(cml);
-		refactoring.persistChanges();
+		refactoring.persistChanges(serializer);
 	}
 
 }

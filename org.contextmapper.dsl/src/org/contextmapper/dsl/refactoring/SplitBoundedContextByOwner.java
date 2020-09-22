@@ -17,6 +17,7 @@ package org.contextmapper.dsl.refactoring;
 
 import org.contextmapper.dsl.cml.CMLResource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.xtext.serializer.ISerializer;
 
 import com.google.common.collect.Sets;
 
@@ -44,8 +45,8 @@ public class SplitBoundedContextByOwner implements SemanticCMLRefactoring {
 	}
 
 	@Override
-	public void persistChanges() {
-		this.coreAR.persistChanges();
+	public void persistChanges(ISerializer serializer) {
+		this.coreAR.persistChanges(serializer);
 	}
 
 }
