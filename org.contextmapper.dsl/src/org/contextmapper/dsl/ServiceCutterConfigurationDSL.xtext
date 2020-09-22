@@ -117,7 +117,7 @@ RelatedGroup:
 
 Aggregate:
 	(doc=ML_COMMENT)?
-	'Aggregate' name=ID 
+	'Aggregate' name=STRING 
 	OPEN
 		(((nanoentities+=STRING) ("," nanoentities+=STRING)*)?)
 	CLOSE
@@ -125,7 +125,7 @@ Aggregate:
 
 Entity:
 	(doc=ML_COMMENT)?
-	'Entity' name=ID 
+	'Entity' name=STRING 
 	OPEN
 		(((nanoentities+=STRING) ("," nanoentities+=STRING)*)?)
 	CLOSE
@@ -133,7 +133,7 @@ Entity:
 
 PredefinedService:
 	(doc=ML_COMMENT)?
-	'PredefinedService' name=ID 
+	'PredefinedService' name=STRING 
 	OPEN
 		(((nanoentities+=STRING) ("," nanoentities+=STRING)*)?)
 	CLOSE
@@ -141,7 +141,7 @@ PredefinedService:
 
 SecurityAccessGroup:
 	(doc=ML_COMMENT)?
-	'SecurityAccessGroup' name=ID 
+	'SecurityAccessGroup' name=STRING 
 	OPEN
 		((nanoentities+=STRING) ("," nanoentities+=STRING)*)?
 	CLOSE
@@ -149,7 +149,7 @@ SecurityAccessGroup:
 
 SeparatedSecurityZone:
 	(doc=ML_COMMENT)?
-	'SeparatedSecurityZone' name=ID 
+	'SeparatedSecurityZone' name=STRING 
 	OPEN
 		(((nanoentities+=STRING) ("," nanoentities+=STRING)*)?)
 	CLOSE
@@ -157,7 +157,7 @@ SeparatedSecurityZone:
 
 SharedOwnerGroup:
 	(doc=ML_COMMENT)?
-	'SharedOwnerGroup' name=ID 
+	'SharedOwnerGroup' name=STRING 
 	OPEN
 		(((nanoentities+=STRING) ("," nanoentities+=STRING)*)?)
 	CLOSE
