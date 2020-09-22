@@ -86,7 +86,7 @@ public class DeriveFrontendAndBackendSystemsFromFeatureTest extends AbstractRefa
 
 		// when
 		ar.refactor(input);
-		ar.persistChanges();
+		ar.persistChanges(serializer);
 
 		// then
 		ContextMappingModel model = reloadResource(input).getContextMappingModel();
@@ -114,7 +114,7 @@ public class DeriveFrontendAndBackendSystemsFromFeatureTest extends AbstractRefa
 
 		// when
 		ar.refactor(input);
-		ar.persistChanges();
+		ar.persistChanges(serializer);
 
 		// then
 		String dslText = FileUtils.readFileToString(new File(input.getURI().toFileString()), "UTF-8");
@@ -131,7 +131,7 @@ public class DeriveFrontendAndBackendSystemsFromFeatureTest extends AbstractRefa
 
 		// when
 		ar.refactor(input);
-		ar.persistChanges();
+		ar.persistChanges(serializer);
 
 		// then
 		ContextMappingModel model = reloadResource(input).getContextMappingModel();
@@ -158,7 +158,7 @@ public class DeriveFrontendAndBackendSystemsFromFeatureTest extends AbstractRefa
 
 		// when
 		ar.refactor(input);
-		ar.persistChanges();
+		ar.persistChanges(serializer);
 
 		// then
 		UpstreamDownstreamRelationship relationship = (UpstreamDownstreamRelationship) reloadResource(input).getContextMappingModel().getMap().getRelationships().get(0);
@@ -175,7 +175,7 @@ public class DeriveFrontendAndBackendSystemsFromFeatureTest extends AbstractRefa
 
 		// when
 		ar.refactor(input);
-		ar.persistChanges();
+		ar.persistChanges(serializer);
 
 		// then
 		BoundedContext backend = reloadResource(input).getContextMappingModel().getBoundedContexts().stream().filter(bc -> bc.getName().equals("TestFeatureBackend")).findFirst().get();
@@ -207,7 +207,7 @@ public class DeriveFrontendAndBackendSystemsFromFeatureTest extends AbstractRefa
 
 		// when
 		ar.refactor(input);
-		ar.persistChanges();
+		ar.persistChanges(serializer);
 
 		// then
 		BoundedContext frontend = reloadResource(input).getContextMappingModel().getBoundedContexts().stream().filter(bc -> bc.getName().equals("TestFeatureFrontend")).findFirst().get();
@@ -233,7 +233,7 @@ public class DeriveFrontendAndBackendSystemsFromFeatureTest extends AbstractRefa
 
 		// when
 		ar.refactor(input);
-		ar.persistChanges();
+		ar.persistChanges(serializer);
 
 		// then
 		UpstreamDownstreamRelationship relationship = (UpstreamDownstreamRelationship) reloadResource(input).getContextMappingModel().getMap().getRelationships().get(0);
@@ -253,7 +253,7 @@ public class DeriveFrontendAndBackendSystemsFromFeatureTest extends AbstractRefa
 
 		// when
 		ar.refactor(input);
-		ar.persistChanges();
+		ar.persistChanges(serializer);
 
 		// then
 		BoundedContext frontend = reloadResource(input).getContextMappingModel().getBoundedContexts().stream().filter(bc -> bc.getName().equals("TestFeatureFrontend")).findFirst().get();
@@ -274,7 +274,7 @@ public class DeriveFrontendAndBackendSystemsFromFeatureTest extends AbstractRefa
 
 		// when
 		ar.refactor(input);
-		ar.persistChanges();
+		ar.persistChanges(serializer);
 
 		// then
 		ContextMappingModel model = reloadResource(input).getContextMappingModel();

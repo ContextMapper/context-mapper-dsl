@@ -174,7 +174,7 @@ public class ExtractAggregatesByCohesionTest extends AbstractRefactoringTest {
 		List<String> aggregatesToExtract = Arrays.asList(new String[] { "Addresses" });
 		ExtractAggregatesByCohesion ar = new ExtractAggregatesByCohesion("CustomerManagement", "CustomerManagement_Extracted", aggregatesToExtract);
 		ar.refactor(mainResource, additionalResources);
-		ar.persistChanges();
+		ar.persistChanges(serializer);
 		CMLResource contextMapResource = new CMLResource(
 				additionalResources.getResources().stream().filter(r -> r.getURI().toString().endsWith("extract-aggregates-by-nfr-test-4-input-1.cml")).findFirst().get());
 		contextMapResource = reloadResource(contextMapResource);

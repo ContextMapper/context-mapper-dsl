@@ -33,7 +33,7 @@ public class SplitAggregateByEntitiesTest extends AbstractRefactoringTest {
 
 		// when
 		refactoring.refactor(input);
-		refactoring.persistChanges();
+		refactoring.persistChanges(serializer);
 
 		// then
 		BoundedContext bc = reloadResource(input).getContextMappingModel().getBoundedContexts().get(0);
@@ -80,7 +80,7 @@ public class SplitAggregateByEntitiesTest extends AbstractRefactoringTest {
 
 		// when
 		refactoring.refactor(input);
-		refactoring.persistChanges();
+		refactoring.persistChanges(serializer);
 
 		// then
 		BoundedContext bc = reloadResource(input).getContextMappingModel().getBoundedContexts().get(0);
@@ -107,7 +107,7 @@ public class SplitAggregateByEntitiesTest extends AbstractRefactoringTest {
 
 		// when
 		refactoring.refactor(input);
-		refactoring.persistChanges();
+		refactoring.persistChanges(serializer);
 
 		// then
 		ContextMappingModel model = reloadResource(input).getContextMappingModel();
@@ -136,7 +136,7 @@ public class SplitAggregateByEntitiesTest extends AbstractRefactoringTest {
 		// when
 		SplitAggregateByEntitiesRefactoring ar = new SplitAggregateByEntitiesRefactoring("Customers");
 		ar.refactor(mainResource, additionalResources);
-		ar.persistChanges();
+		ar.persistChanges(serializer);
 		CMLResource contextMapResource = new CMLResource(
 				additionalResources.getResources().stream().filter(r -> r.getURI().toString().endsWith("split-agg-by-entities-test-4-input-1.cml")).findFirst().get());
 		contextMapResource = reloadResource(contextMapResource);

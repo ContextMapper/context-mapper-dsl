@@ -29,7 +29,7 @@ public class SwitchFromSharedKernelToPartnershipRefactoringHandler extends Abstr
 		SharedKernel sk = (SharedKernel) getSelectedElement();
 		SemanticCMLRefactoring ar = new SwitchFromSharedKernelToPartnershipRefactoring(sk.getParticipant1().getName(), sk.getParticipant2().getName());
 		ar.refactor(resource);
-		ar.persistChanges();
+		ar.persistChanges(serializer);
 	}
 
 	@Override

@@ -28,11 +28,13 @@ import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.Domain;
 import org.contextmapper.dsl.contextMappingDSL.Import;
 import org.contextmapper.dsl.contextMappingDSL.UserRequirement;
+import org.contextmapper.dsl.exception.RefactoringSerializationException;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.xtext.resource.SaveOptions;
+import org.eclipse.xtext.serializer.ISerializer;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -74,20 +76,20 @@ public abstract class AbstractRefactoring implements SemanticCMLRefactoring {
 	}
 
 	@Override
-	public void persistChanges() {
-		Resource rootResource = this.rootResource;
+	public void persistChanges(ISerializer serializer) {
+		CMLResource rootResource = this.rootResource;
 		if (rootResource.isModified())
-			persistResource(rootResource);
+			persistResource(rootResource, serializer);
 		if (rootResource.getResourceSet() != null)
-			persistChanges(rootResource.getResourceSet());
+			persistChanges(rootResource.getResourceSet(), serializer);
 		if (this.consistencyCheckResources != null)
-			persistChanges(consistencyCheckResources);
+			persistChanges(consistencyCheckResources, serializer);
 	}
 
-	private void persistChanges(ResourceSet rs) {
+	private void persistChanges(ResourceSet rs, ISerializer serializer) {
 		for (Resource resource : rs.getResources()) {
 			if (resource.isModified())
-				persistResource(resource);
+				persistResource(new CMLResource(resource), serializer);
 		}
 	}
 
@@ -121,12 +123,34 @@ public abstract class AbstractRefactoring implements SemanticCMLRefactoring {
 		return Sets.newHashSet(this.userRequirementMap.keySet());
 	}
 
-	private void persistResource(Resource resource) {
+	private void persistResource(CMLResource resource, ISerializer serializer) {
+		Set<String> serializationErrors = serializationDryRun(resource, serializer);
+		if (!serializationErrors.isEmpty())
+			throw new RefactoringSerializationException(serializationErrors);
+
 		try {
 			resource.save(SaveOptions.newBuilder().format().getOptions().toOptionsMap());
 		} catch (IOException e) {
 			throw new RuntimeException("Document cannot be formatted.");
 		}
+	}
+
+	/**
+	 * Tries to serialize a CML resource and returns a set of error messages if it
+	 * does not work.
+	 * 
+	 * @param resource the resource that shall be persisted
+	 * @return an empty set, if there was no error, a non-empty set (with error
+	 *         messages) otherwise
+	 */
+	private Set<String> serializationDryRun(CMLResource resource, ISerializer serializer) {
+		Set<String> errors = Sets.newHashSet();
+		try {
+			serializer.serialize(resource.getContextMappingModel());
+		} catch (Exception e) {
+			errors.add(e.getMessage());
+		}
+		return errors;
 	}
 
 	protected CMLResource getResource(BoundedContext bc) {

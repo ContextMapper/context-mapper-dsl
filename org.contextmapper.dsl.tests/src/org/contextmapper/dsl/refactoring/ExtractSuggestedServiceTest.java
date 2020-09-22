@@ -43,7 +43,7 @@ public class ExtractSuggestedServiceTest extends AbstractRefactoringTest {
 		// when
 		ExtractSuggestedService ar = new ExtractSuggestedService(contextToExtract, "ExtractedBC");
 		ar.refactor(model);
-		ar.persistChanges();
+		ar.persistChanges(serializer);
 		model = reloadResource(model);
 
 		// then
@@ -66,7 +66,7 @@ public class ExtractSuggestedServiceTest extends AbstractRefactoringTest {
 		// when
 		ExtractSuggestedService ar = new ExtractSuggestedService(contextToExtract, "ExtractedBC");
 		ar.refactor(model);
-		ar.persistChanges();
+		ar.persistChanges(serializer);
 		model = reloadResource(model);
 
 		// then

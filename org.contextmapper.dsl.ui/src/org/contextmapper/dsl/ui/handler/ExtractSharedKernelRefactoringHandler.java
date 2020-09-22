@@ -29,7 +29,7 @@ public class ExtractSharedKernelRefactoringHandler extends AbstractRefactoringHa
 		SharedKernel sk = (SharedKernel) getSelectedElement();
 		SemanticCMLRefactoring ar = new ExtractSharedKernelRefactoring(sk.getParticipant1().getName(), sk.getParticipant2().getName());
 		ar.refactor(resource);
-		ar.persistChanges();
+		ar.persistChanges(serializer);
 	}
 
 	@Override

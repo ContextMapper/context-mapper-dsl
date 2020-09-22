@@ -28,25 +28,30 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.xtext.generator.JavaIoFileSystemAccess;
-import org.eclipse.xtext.parser.IEncodingProvider;
-import org.eclipse.xtext.service.AbstractGenericModule;
+import org.eclipse.xtext.serializer.ISerializer;
 import org.junit.jupiter.api.BeforeEach;
 
-import com.google.inject.Guice;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
 
 public abstract class AbstractCMLInputFileTest extends AbstractDirectoryIntegrationTest {
 	protected ResourceSet resourceSet;
+	protected Injector injector;
+
+	@Inject
+	protected ISerializer serializer;
 
 	@BeforeEach
 	public void prepare() {
 		super.prepare();
 		this.resourceSet = new ResourceSetImpl();
+		this.injector = new ContextMappingDSLStandaloneSetup().createInjectorAndDoEMFRegistration();
+		injector.injectMembers(this);
 	}
 
 	protected CMLResource getResourceCopyOfTestCML(String testCMLName) throws IOException {
 		File testFile = new File(testDir, testCMLName);
 		FileUtils.copyFile(getTestFile(testCMLName), testFile);
-		new ContextMappingDSLStandaloneSetup().createInjectorAndDoEMFRegistration();
 		return new CMLResource(resourceSet.getResource(URI.createFileURI(testFile.getAbsolutePath()), true));
 	}
 
@@ -72,7 +77,6 @@ public abstract class AbstractCMLInputFileTest extends AbstractDirectoryIntegrat
 	 */
 	protected CMLResource getOriginalResourceOfTestCML(String testCMLName) throws IOException {
 		File testFile = getTestFile(testCMLName);
-		new ContextMappingDSLStandaloneSetup().createInjectorAndDoEMFRegistration();
 		return new CMLResource(resourceSet.getResource(URI.createFileURI(testFile.getAbsolutePath()), true));
 	}
 

@@ -299,7 +299,7 @@ public class MergeBoundedContextsTest extends AbstractRefactoringTest {
 		// when
 		MergeBoundedContextsRefactoring ar = new MergeBoundedContextsRefactoring("CustomerManagement", "AnotherContext");
 		ar.refactor(mainResource, additionalResources);
-		ar.persistChanges();
+		ar.persistChanges(serializer);
 		mainResource = reloadResource(mainResource);
 
 		// then
@@ -325,7 +325,7 @@ public class MergeBoundedContextsTest extends AbstractRefactoringTest {
 		// when
 		MergeBoundedContextsRefactoring ar = new MergeBoundedContextsRefactoring("CustomerManagement", "AnotherContext");
 		ar.refactor(mainResource, additionalResources);
-		ar.persistChanges();
+		ar.persistChanges(serializer);
 		mainResource = reloadResource(mainResource);
 
 		// then

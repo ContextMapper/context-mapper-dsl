@@ -27,9 +27,7 @@ import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.Relationship;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
-import org.contextmapper.dsl.refactoring.ChangePartnershipToUpstreamDownstreamRefactoring;
 import org.contextmapper.dsl.refactoring.exception.RefactoringInputException;
-import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtext.xbase.lib.IteratorExtensions;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -46,7 +44,7 @@ public class ChangePartnershipToUpstreamDownstreamRefactoringTest extends Abstra
 		// when
 		SemanticCMLRefactoring ar = new ChangePartnershipToUpstreamDownstreamRefactoring("CustomerManagement", "AnotherContext");
 		ar.refactor(input);
-		ar.persistChanges();
+		ar.persistChanges(serializer);
 
 		// then
 		List<ContextMappingModel> contextMappingModels = IteratorExtensions

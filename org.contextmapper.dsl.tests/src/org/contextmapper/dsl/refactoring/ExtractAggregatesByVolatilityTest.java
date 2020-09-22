@@ -135,7 +135,7 @@ public class ExtractAggregatesByVolatilityTest extends AbstractRefactoringTest {
 		// when
 		ExtractAggregatesByVolatility ar = new ExtractAggregatesByVolatility("CustomerManagement", Volatility.OFTEN);
 		ar.refactor(mainResource, additionalResources);
-		ar.persistChanges();
+		ar.persistChanges(serializer);
 		CMLResource contextMapResource = new CMLResource(
 				additionalResources.getResources().stream().filter(r -> r.getURI().toString().endsWith("extract-aggregates-likely-to-change-test-6-input-1.cml")).findFirst().get());
 		contextMapResource = reloadResource(contextMapResource);

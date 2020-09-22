@@ -83,7 +83,7 @@ public class SplitSystemIntoSubsystemsTest extends AbstractRefactoringTest {
 
 		// when
 		ar.refactor(input);
-		ar.persistChanges();
+		ar.persistChanges(serializer);
 
 		// then
 		ContextMappingModel model = reloadResource(input).getContextMappingModel();
@@ -102,7 +102,7 @@ public class SplitSystemIntoSubsystemsTest extends AbstractRefactoringTest {
 
 		// when
 		ar.refactor(input);
-		ar.persistChanges();
+		ar.persistChanges(serializer);
 
 		// then
 		String dslText = FileUtils.readFileToString(new File(input.getURI().toFileString()), "UTF-8");
@@ -120,7 +120,7 @@ public class SplitSystemIntoSubsystemsTest extends AbstractRefactoringTest {
 
 		// when
 		ar.refactor(input);
-		ar.persistChanges();
+		ar.persistChanges(serializer);
 
 		// then
 		String dslText = FileUtils.readFileToString(new File(input.getURI().toFileString()), "UTF-8");
@@ -137,7 +137,7 @@ public class SplitSystemIntoSubsystemsTest extends AbstractRefactoringTest {
 
 		// when
 		ar.refactor(input);
-		ar.persistChanges();
+		ar.persistChanges(serializer);
 
 		// then
 		ContextMappingModel model = reloadResource(input).getContextMappingModel();
@@ -159,7 +159,7 @@ public class SplitSystemIntoSubsystemsTest extends AbstractRefactoringTest {
 
 		// when
 		ar.refactor(input);
-		ar.persistChanges();
+		ar.persistChanges(serializer);
 
 		// then
 		ContextMappingModel model = reloadResource(input).getContextMappingModel();
@@ -179,7 +179,7 @@ public class SplitSystemIntoSubsystemsTest extends AbstractRefactoringTest {
 
 		// when
 		ar.refactor(input);
-		ar.persistChanges();
+		ar.persistChanges(serializer);
 
 		// then
 		ContextMappingModel model = reloadResource(input).getContextMappingModel();
@@ -201,7 +201,7 @@ public class SplitSystemIntoSubsystemsTest extends AbstractRefactoringTest {
 
 		// when
 		ar.refactor(input);
-		ar.persistChanges();
+		ar.persistChanges(serializer);
 
 		// then
 		ContextMappingModel model = reloadResource(input).getContextMappingModel();
@@ -223,7 +223,7 @@ public class SplitSystemIntoSubsystemsTest extends AbstractRefactoringTest {
 
 		// when
 		ar.refactor(input);
-		ar.persistChanges();
+		ar.persistChanges(serializer);
 
 		// then
 		ContextMappingModel model = reloadResource(input).getContextMappingModel();
@@ -252,7 +252,7 @@ public class SplitSystemIntoSubsystemsTest extends AbstractRefactoringTest {
 
 		// when
 		ar.refactor(input);
-		ar.persistChanges();
+		ar.persistChanges(serializer);
 
 		// then
 		ContextMappingModel model = reloadResource(input).getContextMappingModel();
@@ -310,7 +310,7 @@ public class SplitSystemIntoSubsystemsTest extends AbstractRefactoringTest {
 
 		// when
 		ar.refactor(input);
-		ar.persistChanges();
+		ar.persistChanges(serializer);
 
 		// then
 		ContextMappingModel model = reloadResource(input).getContextMappingModel();
