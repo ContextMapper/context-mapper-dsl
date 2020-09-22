@@ -17,7 +17,9 @@ package org.contextmapper.dsl.ide.edit;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
+import org.contextmapper.dsl.exception.RefactoringSerializationException;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -35,6 +37,7 @@ import org.eclipse.xtext.util.CollectionBasedAcceptor;
 import org.eclipse.xtext.xbase.lib.ListExtensions;
 
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
@@ -58,7 +61,13 @@ public class WorkspaceEditRecorder {
 		EcoreUtil.resolveAll(copy);
 		serializer.addModification(copy, mod);
 		List<IEmfResourceChange> documentchanges = new ArrayList<>();
-		serializer.applyModifications(CollectionBasedAcceptor.of(documentchanges));
+		try {
+			serializer.applyModifications(CollectionBasedAcceptor.of(documentchanges));
+		} catch (Exception e) {
+			Set<String> serializationErrorMessages = Sets.newHashSet();
+			serializationErrorMessages.add(e.getMessage());
+			throw new RefactoringSerializationException(serializationErrorMessages);
+		}
 		WorkspaceEdit workspaceEdit = new WorkspaceEdit();
 		for (ITextDocumentChange documentchange : Iterables.filter(documentchanges, ITextDocumentChange.class)) {
 			List<TextEdit> edits = ListExtensions.map(documentchange.getReplacements(), (ITextReplacement replacement) -> {
