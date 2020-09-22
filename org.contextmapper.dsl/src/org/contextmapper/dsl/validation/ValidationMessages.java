@@ -55,4 +55,5 @@ public class ValidationMessages {
 	public static final String PRIMITIVE_ID_TYPE = "This attribute seems to be an identifier. Have you thought about creating a Value Object?";
 	public static final String REFERENCE_IS_AMBIGUOUS = "The reference to the type '%s' is ambiguous, since there exist multiple domain objects with that name in your model. We suggest to keep the names of domain objects distinct.";
 	public static final String DOMAIN_OBJECT_NAME_ALREADY_EXISTS = "The name '%s' is used for multiple domain objects. We suggest to keep the names of domain objects distinct.";
+	public static final String REFERENCE_TO_NOT_REACHABLE_TYPE = "The object '%s' is not part of this Bounded Context and not reachable through Context Map relationships. Maybe you want to create a relationship with the context that contains that object?";
 }

@@ -18,11 +18,16 @@ package org.contextmapper.dsl.validation;
 import static org.contextmapper.dsl.validation.ValidationMessages.DOMAIN_OBJECT_NAME_ALREADY_EXISTS;
 import static org.contextmapper.dsl.validation.ValidationMessages.PRIMITIVE_ID_TYPE;
 import static org.contextmapper.dsl.validation.ValidationMessages.REFERENCE_IS_AMBIGUOUS;
+import static org.contextmapper.dsl.validation.ValidationMessages.REFERENCE_TO_NOT_REACHABLE_TYPE;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.contextmapper.dsl.cml.CMLModelObjectsResolvingHelper;
 import org.contextmapper.dsl.cml.CMLTypeChecker;
+import org.contextmapper.dsl.contextMappingDSL.Aggregate;
+import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.Subdomain;
 import org.contextmapper.tactic.dsl.tacticdsl.Attribute;
 import org.contextmapper.tactic.dsl.tacticdsl.CollectionType;
@@ -34,6 +39,8 @@ import org.eclipse.xtext.EcoreUtil2;
 import org.eclipse.xtext.validation.AbstractDeclarativeValidator;
 import org.eclipse.xtext.validation.Check;
 import org.eclipse.xtext.validation.EValidatorRegistrar;
+
+import com.google.common.collect.Sets;
 
 public class DomainObjectValidator extends AbstractDeclarativeValidator {
 
@@ -83,6 +90,19 @@ public class DomainObjectValidator extends AbstractDeclarativeValidator {
 				.filter(o -> o.getName().equals(simpleDomainObject.getName())).collect(Collectors.toList());
 		if (objects.size() > 1)
 			warning(String.format(DOMAIN_OBJECT_NAME_ALREADY_EXISTS, simpleDomainObject.getName()), simpleDomainObject, TacticdslPackage.Literals.SIMPLE_DOMAIN_OBJECT__NAME);
+	}
+
+	@Check
+	public void checkForInterBCReferencesThatRequireRelationship(Reference reference) {
+		if (reference.getDomainObjectType() == null || !(EcoreUtil2.getRootContainer(reference) instanceof ContextMappingModel))
+			return;
+		CMLModelObjectsResolvingHelper helper = new CMLModelObjectsResolvingHelper((ContextMappingModel) EcoreUtil2.getRootContainer(reference));
+		SimpleDomainObject containingObject = (SimpleDomainObject) reference.eContainer();
+		Set<String> domainObjectScope = Sets.newHashSet();
+		for (Aggregate aggregate : helper.resolveAllAccessibleAggregates(helper.resolveBoundedContext(containingObject)))
+			domainObjectScope.addAll(EcoreUtil2.eAllOfType(aggregate, SimpleDomainObject.class).stream().map(o -> o.getName()).collect(Collectors.toSet()));
+		if (!domainObjectScope.contains(reference.getDomainObjectType().getName()))
+			warning(String.format(REFERENCE_TO_NOT_REACHABLE_TYPE, reference.getDomainObjectType().getName()), reference, TacticdslPackage.Literals.REFERENCE__DOMAIN_OBJECT_TYPE);
 	}
 
 }

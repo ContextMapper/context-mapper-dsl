@@ -149,5 +149,181 @@ class DomainObjectValidatorTest {
 		validationTestHelper.assertIssue(result, TacticdslPackage.Literals.REFERENCE, "", Severity.WARNING,
 			String.format(REFERENCE_IS_AMBIGUOUS, "TestEntity"));
 	}
+	
+	@Test
+	def void canCreateWarning4UnreachableReference1() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext ContextA {
+				Aggregate TestAggregate1 {
+					Entity TestEntity
+				}
+			}
+			BoundedContext ContextB {
+				Aggregate TestAggregate2 {
+					Entity TestEntity2 {
+						- TestEntity ref
+					}
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		validationTestHelper.assertIssue(result, TacticdslPackage.Literals.REFERENCE, "", Severity.WARNING,
+			String.format(REFERENCE_TO_NOT_REACHABLE_TYPE, "TestEntity"));
+	}
+	
+	@Test
+	def void canCreateWarning4UnreachableReference2() {
+		// given
+		val String dslSnippet = '''
+			ContextMap {
+				contains ContextA, ContextB
+				
+				ContextB -> ContextA
+			}
+			BoundedContext ContextA {
+				Aggregate TestAggregate1 {
+					Entity TestEntity
+				}
+			}
+			BoundedContext ContextB {
+				Aggregate TestAggregate2 {
+					Entity TestEntity2 {
+						- TestEntity ref
+					}
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		validationTestHelper.assertIssue(result, TacticdslPackage.Literals.REFERENCE, "", Severity.WARNING,
+			String.format(REFERENCE_TO_NOT_REACHABLE_TYPE, "TestEntity"));
+	}
+	
+	@Test
+	def void canCreateWarning4UnreachableReference3() {
+		// given
+		val String dslSnippet = '''
+			ContextMap {
+				contains ContextA, ContextB
+				
+				ContextB <- ContextA {
+					exposedAggregates TestAggregate3
+				}
+			}
+			BoundedContext ContextA {
+				Aggregate TestAggregate1 {
+					Entity TestEntity
+				}
+				
+				Aggregate TestAggregate3
+			}
+			BoundedContext ContextB {
+				Aggregate TestAggregate2 {
+					Entity TestEntity2 {
+						- TestEntity ref
+					}
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		validationTestHelper.assertIssue(result, TacticdslPackage.Literals.REFERENCE, "", Severity.WARNING,
+			String.format(REFERENCE_TO_NOT_REACHABLE_TYPE, "TestEntity"));
+	}
+	
+	@Test
+	def void doNotCreateWarning4UnreachableReferenceIfRelExists1() {
+		// given
+		val String dslSnippet = '''
+			ContextMap {
+				contains ContextA, ContextB
+				
+				ContextA -> ContextB
+			}
+			BoundedContext ContextA {
+				Aggregate TestAggregate1 {
+					Entity TestEntity
+				}
+			}
+			BoundedContext ContextB {
+				Aggregate TestAggregate2 {
+					Entity TestEntity2 {
+						- TestEntity ref
+					}
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+	}
+	
+	@Test
+	def void doNotCreateWarning4UnreachableReferenceIfRelExists2() {
+		// given
+		val String dslSnippet = '''
+			ContextMap {
+				contains ContextA, ContextB
+				
+				ContextA <-> ContextB
+			}
+			BoundedContext ContextA {
+				Aggregate TestAggregate1 {
+					Entity TestEntity
+				}
+			}
+			BoundedContext ContextB {
+				Aggregate TestAggregate2 {
+					Entity TestEntity2 {
+						- TestEntity ref
+					}
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+	}
+	
+	@Test
+	def void doNotCreateWarning4UnreachableReferenceIfRelExists3() {
+		// given
+		val String dslSnippet = '''
+			ContextMap {
+				contains ContextA, ContextB
+				
+				ContextB <-> ContextA
+			}
+			BoundedContext ContextA {
+				Aggregate TestAggregate1 {
+					Entity TestEntity
+				}
+			}
+			BoundedContext ContextB {
+				Aggregate TestAggregate2 {
+					Entity TestEntity2 {
+						- TestEntity ref
+					}
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+	}
 
 }
