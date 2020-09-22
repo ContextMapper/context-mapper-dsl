@@ -97,4 +97,57 @@ class DomainObjectValidatorTest {
 		assertThatNoValidationErrorsOccurred(result);
 	}
 
+	@Test
+	def void canCreateWarning4DuplicateObjectNames() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext ContextA {
+				Aggregate TestAggregate1 {
+					Entity TestEntity {
+						
+					}
+				}
+				Aggregate TestAggregate2 {
+					Entity TestEntity {
+						
+					}
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		validationTestHelper.assertIssue(result, TacticdslPackage.Literals.SIMPLE_DOMAIN_OBJECT, "", Severity.WARNING,
+			String.format(DOMAIN_OBJECT_NAME_ALREADY_EXISTS, "TestEntity"));
+	}
+
+	@Test
+	def void canCreateWarning4AmbiguousReference() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext ContextA {
+				Aggregate TestAggregate1 {
+					Entity TestEntity {
+						
+					}
+				}
+				Aggregate TestAggregate2 {
+					Entity TestEntity {
+						
+					}
+					Entity TestEntity2 {
+						- TestEntity ref
+					}
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		validationTestHelper.assertIssue(result, TacticdslPackage.Literals.REFERENCE, "", Severity.WARNING,
+			String.format(REFERENCE_IS_AMBIGUOUS, "TestEntity"));
+	}
+
 }
