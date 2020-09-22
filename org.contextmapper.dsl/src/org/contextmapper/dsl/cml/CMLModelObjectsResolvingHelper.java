@@ -21,13 +21,17 @@ import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
+import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.DomainPart;
 import org.contextmapper.dsl.contextMappingDSL.Feature;
+import org.contextmapper.dsl.contextMappingDSL.Relationship;
 import org.contextmapper.dsl.contextMappingDSL.SculptorModule;
 import org.contextmapper.dsl.contextMappingDSL.Subdomain;
+import org.contextmapper.dsl.contextMappingDSL.SymmetricRelationship;
+import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
 import org.contextmapper.dsl.contextMappingDSL.UserRequirement;
-import org.contextmapper.tactic.dsl.tacticdsl.DomainObject;
+import org.contextmapper.tactic.dsl.tacticdsl.SimpleDomainObject;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.EcoreUtil2;
 import org.eclipse.xtext.xbase.lib.IteratorExtensions;
@@ -68,13 +72,34 @@ public class CMLModelObjectsResolvingHelper {
 		return (BoundedContext) module.eContainer();
 	}
 
-	public BoundedContext resolveBoundedContext(DomainObject domainObject) {
+	public BoundedContext resolveBoundedContext(SimpleDomainObject domainObject) {
 		if (domainObject.eContainer() != null && domainObject.eContainer() instanceof Aggregate)
 			return resolveBoundedContext((Aggregate) domainObject.eContainer());
 		else if (domainObject.eContainer() != null && domainObject.eContainer() instanceof SculptorModule)
 			return resolveBoundedContext((SculptorModule) domainObject.eContainer());
 		else
 			return null; // can happen if domain object is not part of Bounded Context but Subdomain
+	}
+
+	public List<Aggregate> resolveAllAccessibleAggregates(BoundedContext bc) {
+		List<Aggregate> aggregates = Lists.newLinkedList();
+		aggregates.addAll(EcoreUtil2.eAllOfType(bc, Aggregate.class));
+		ContextMap contextMap = getContextMap(bc);
+		if (contextMap != null) {
+			for (Relationship rel : contextMap.getRelationships()) {
+				if (isBCDownstreamInRelationship(rel, bc))
+					aggregates.addAll(getExposedAggregates(rel));
+			}
+		}
+		return aggregates;
+	}
+
+	public ContextMap getContextMap(BoundedContext bc) {
+		if (EcoreUtil2.getRootContainer(bc) instanceof ContextMappingModel) {
+			ContextMappingModel rootModel = (ContextMappingModel) EcoreUtil2.getRootContainer(bc);
+			return rootModel.getMap();
+		}
+		return null;
 	}
 
 	public Set<UserRequirement> resolveUserRequirements(BoundedContext boundedContext) {
@@ -103,6 +128,33 @@ public class CMLModelObjectsResolvingHelper {
 			allAggregates.addAll(bc.getAggregates());
 		}
 		return allAggregates;
+	}
+
+	private boolean isBCDownstreamInRelationship(Relationship relationship, BoundedContext bc) {
+		if (relationship instanceof SymmetricRelationship) {
+			SymmetricRelationship symRel = (SymmetricRelationship) relationship;
+			return symRel.getParticipant1().getName().equals(bc.getName()) || symRel.getParticipant2().getName().equals(bc.getName());
+		} else if (relationship instanceof UpstreamDownstreamRelationship) {
+			UpstreamDownstreamRelationship upDownRel = (UpstreamDownstreamRelationship) relationship;
+			return upDownRel.getDownstream().getName().equals(bc.getName());
+		}
+		return false;
+	}
+
+	private List<Aggregate> getExposedAggregates(Relationship relationship) {
+		List<Aggregate> aggregates = Lists.newLinkedList();
+		if (relationship instanceof SymmetricRelationship) {
+			aggregates.addAll(EcoreUtil2.eAllOfType(((SymmetricRelationship) relationship).getParticipant1(), Aggregate.class));
+			aggregates.addAll(EcoreUtil2.eAllOfType(((SymmetricRelationship) relationship).getParticipant2(), Aggregate.class));
+		} else if (relationship instanceof UpstreamDownstreamRelationship) {
+			UpstreamDownstreamRelationship upDownRel = (UpstreamDownstreamRelationship) relationship;
+			if (upDownRel.getUpstreamExposedAggregates() != null && !upDownRel.getUpstreamExposedAggregates().isEmpty()) {
+				aggregates.addAll(upDownRel.getUpstreamExposedAggregates());
+			} else {
+				aggregates.addAll(EcoreUtil2.eAllOfType(upDownRel.getUpstream(), Aggregate.class));
+			}
+		}
+		return aggregates;
 	}
 
 }
