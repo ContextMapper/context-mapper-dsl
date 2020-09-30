@@ -552,7 +552,7 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 	}
 
 	@Test
-	public void canCreateInheritance() {
+	public void canCreateInheritance4Entity() {
 		// given
 		BoundedContext boundedContext = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
 		Aggregate aggregate = ContextMappingDSLFactory.eINSTANCE.createAggregate();
@@ -573,6 +573,78 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 		assertTrue(plantUML.contains("	class Customer <<(E,DarkSeaGreen) Entity>> {" + System.lineSeparator() + "	}" + System.lineSeparator()));
 		assertTrue(plantUML.contains("	class AbstractEntity <<(E,DarkSeaGreen) Entity>> {" + System.lineSeparator() + "	}" + System.lineSeparator()));
 		assertTrue(plantUML.contains("Customer --|> AbstractEntity" + System.lineSeparator()));
+	}
+	
+	@Test
+	public void canCreateInheritance4VO() {
+		// given
+		BoundedContext boundedContext = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
+		Aggregate aggregate = ContextMappingDSLFactory.eINSTANCE.createAggregate();
+		aggregate.setName("testAggregate");
+		boundedContext.getAggregates().add(aggregate);
+		ValueObject vo1 = TacticdslFactory.eINSTANCE.createValueObject();
+		vo1.setName("Customer");
+		ValueObject vo2 = TacticdslFactory.eINSTANCE.createValueObject();
+		vo2.setName("AbstractVO");
+		vo1.setExtends(vo2);
+		aggregate.getDomainObjects().add(vo1);
+		aggregate.getDomainObjects().add(vo2);
+
+		// when
+		String plantUML = this.creator.createDiagram(boundedContext);
+
+		// then
+		assertTrue(plantUML.contains("	class Customer <<(V,DarkSeaGreen) Value Object>> {" + System.lineSeparator() + "	}" + System.lineSeparator()));
+		assertTrue(plantUML.contains("	class AbstractVO <<(V,DarkSeaGreen) Value Object>> {" + System.lineSeparator() + "	}" + System.lineSeparator()));
+		assertTrue(plantUML.contains("Customer --|> AbstractVO" + System.lineSeparator()));
+	}
+	
+	@Test
+	public void canCreateInheritance4CommandEvent() {
+		// given
+		BoundedContext boundedContext = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
+		Aggregate aggregate = ContextMappingDSLFactory.eINSTANCE.createAggregate();
+		aggregate.setName("testAggregate");
+		boundedContext.getAggregates().add(aggregate);
+		CommandEvent event1 = TacticdslFactory.eINSTANCE.createCommandEvent();
+		event1.setName("Customer");
+		CommandEvent event2 = TacticdslFactory.eINSTANCE.createCommandEvent();
+		event2.setName("AbstractEvent");
+		event1.setExtends(event2);
+		aggregate.getDomainObjects().add(event1);
+		aggregate.getDomainObjects().add(event2);
+
+		// when
+		String plantUML = this.creator.createDiagram(boundedContext);
+
+		// then
+		assertTrue(plantUML.contains("	class Customer <<(C,#3bc5e9) Command>> {" + System.lineSeparator() + "	}" + System.lineSeparator()));
+		assertTrue(plantUML.contains("	class AbstractEvent <<(C,#3bc5e9) Command>> {" + System.lineSeparator() + "	}" + System.lineSeparator()));
+		assertTrue(plantUML.contains("Customer --|> AbstractEvent" + System.lineSeparator()));
+	}
+	
+	@Test
+	public void canCreateInheritance4DomainEvent() {
+		// given
+		BoundedContext boundedContext = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
+		Aggregate aggregate = ContextMappingDSLFactory.eINSTANCE.createAggregate();
+		aggregate.setName("testAggregate");
+		boundedContext.getAggregates().add(aggregate);
+		DomainEvent event1 = TacticdslFactory.eINSTANCE.createDomainEvent();
+		event1.setName("Customer");
+		DomainEvent event2 = TacticdslFactory.eINSTANCE.createDomainEvent();
+		event2.setName("AbstractEvent");
+		event1.setExtends(event2);
+		aggregate.getDomainObjects().add(event1);
+		aggregate.getDomainObjects().add(event2);
+
+		// when
+		String plantUML = this.creator.createDiagram(boundedContext);
+
+		// then
+		assertTrue(plantUML.contains("	class Customer <<(E,#ff9f4b) Domain Event>> {" + System.lineSeparator() + "	}" + System.lineSeparator()));
+		assertTrue(plantUML.contains("	class AbstractEvent <<(E,#ff9f4b) Domain Event>> {" + System.lineSeparator() + "	}" + System.lineSeparator()));
+		assertTrue(plantUML.contains("Customer --|> AbstractEvent" + System.lineSeparator()));
 	}
 	
 	@Test
