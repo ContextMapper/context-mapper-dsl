@@ -93,20 +93,22 @@ abstract public class AbstractPlantUMLClassDiagramCreator<T extends EObject> ext
 		linebreak();
 		printAttributes(object.getAttributes(), indentation + 1);
 		printReferenceAttributes(object.getReferences(), indentation + 1);
-		
+
 		addReferences2List(object, object.getReferences());
-		
+
 		printDomainObjectOperations(object.getName(), object.getOperations(), indentation + 1);
 		printIndentation(indentation);
 		sb.append("}");
 		linebreak();
-		if (object instanceof Entity && ((Entity) object).getExtends() != null)
+		if (object.getExtendsName() != null && !"".equals(object.getExtendsName()))
+			addExtensionToList(object.getName(), object.getExtendsName());
+		else if (object instanceof Entity && ((Entity) object).getExtends() != null)
 			addExtensionToList(object.getName(), ((Entity) object).getExtends());
-		if (object instanceof CommandEvent && ((CommandEvent) object).getExtends() != null)
+		else if (object instanceof CommandEvent && ((CommandEvent) object).getExtends() != null)
 			addExtensionToList(object.getName(), ((CommandEvent) object).getExtends());
-		if (object instanceof DomainEvent && ((DomainEvent) object).getExtends() != null)
+		else if (object instanceof DomainEvent && ((DomainEvent) object).getExtends() != null)
 			addExtensionToList(object.getName(), ((DomainEvent) object).getExtends());
-		if (object instanceof ValueObject && ((ValueObject) object).getExtends() != null)
+		else if (object instanceof ValueObject && ((ValueObject) object).getExtends() != null)
 			addExtensionToList(object.getName(), ((ValueObject) object).getExtends());
 	}
 
@@ -125,11 +127,14 @@ abstract public class AbstractPlantUMLClassDiagramCreator<T extends EObject> ext
 	}
 
 	private void addExtensionToList(String sourceDomainObject, SimpleDomainObject extendedDomainObject) {
-		if (this.domainObjects.contains(extendedDomainObject)) {
-			UMLRelationship relationship = new UMLRelationship(sourceDomainObject, extendedDomainObject.getName(), "");
-			if (!this.extensions.contains(relationship))
-				this.extensions.add(relationship);
-		}
+		if (this.domainObjects.contains(extendedDomainObject))
+			addExtensionToList(sourceDomainObject, extendedDomainObject.getName());
+	}
+
+	private void addExtensionToList(String sourceDomainObject, String extendedDomainObject) {
+		UMLRelationship relationship = new UMLRelationship(sourceDomainObject, extendedDomainObject, "");
+		if (!this.extensions.contains(relationship))
+			this.extensions.add(relationship);
 	}
 
 	private void printAttributes(List<Attribute> attributes, int indentation) {
