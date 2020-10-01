@@ -114,13 +114,16 @@ abstract public class AbstractPlantUMLClassDiagramCreator<T extends EObject> ext
 
 	private void addReferences2List(SimpleDomainObject sourceDomainObject, List<Reference> references) {
 		for (Reference reference : references) {
-			addDomainObjectReference2List(sourceDomainObject.getName(), reference.getDomainObjectType(), reference.getName());
+			if (reference.getCollectionType() != null && reference.getCollectionType() != CollectionType.NONE)
+				addDomainObjectReference2List(sourceDomainObject.getName(), reference.getDomainObjectType(), reference.getName(), ClassRelationType.AGGREGATION);
+			else
+				addDomainObjectReference2List(sourceDomainObject.getName(), reference.getDomainObjectType(), reference.getName(), ClassRelationType.DEFAULT);
 		}
 	}
 
-	private void addDomainObjectReference2List(String sourceDomainObject, SimpleDomainObject targetDomainObject, String label) {
+	private void addDomainObjectReference2List(String sourceDomainObject, SimpleDomainObject targetDomainObject, String label, ClassRelationType type) {
 		if (this.domainObjects.contains(targetDomainObject)) {
-			UMLRelationship relationship = new UMLRelationship(sourceDomainObject, targetDomainObject.getName(), label);
+			UMLRelationship relationship = new UMLRelationship(sourceDomainObject, targetDomainObject.getName(), label, type);
 			if (!this.relationships.contains(relationship))
 				this.relationships.add(relationship);
 		}
@@ -132,7 +135,7 @@ abstract public class AbstractPlantUMLClassDiagramCreator<T extends EObject> ext
 	}
 
 	private void addExtensionToList(String sourceDomainObject, String extendedDomainObject) {
-		UMLRelationship relationship = new UMLRelationship(sourceDomainObject, extendedDomainObject, "");
+		UMLRelationship relationship = new UMLRelationship(sourceDomainObject, extendedDomainObject, "", ClassRelationType.EXTENSION);
 		if (!this.extensions.contains(relationship))
 			this.extensions.add(relationship);
 	}
@@ -195,7 +198,7 @@ abstract public class AbstractPlantUMLClassDiagramCreator<T extends EObject> ext
 		String genericType = "Object";
 		if (type.getDomainObjectType() != null) {
 			genericType = type.getDomainObjectType().getName();
-			addDomainObjectReference2List(containingObjectName4References, type.getDomainObjectType(), methodName);
+			addDomainObjectReference2List(containingObjectName4References, type.getDomainObjectType(), methodName, ClassRelationType.DEFAULT);
 		} else {
 			genericType = type.getType();
 		}
@@ -214,14 +217,14 @@ abstract public class AbstractPlantUMLClassDiagramCreator<T extends EObject> ext
 	protected void printReferences(int indentation) {
 		for (UMLRelationship reference : relationships) {
 			printIndentation(indentation);
-			sb.append(reference.getSource()).append(" --> ").append(reference.getTarget());
+			sb.append(reference.getSource()).append(" ").append(reference.getSymbol()).append(" ").append(reference.getTarget());
 			if (!"".equals(reference.getLabel()))
 				sb.append(" : ").append(reference.getLabel());
 			linebreak();
 		}
 		for (UMLRelationship extension : extensions) {
 			printIndentation(indentation);
-			sb.append(extension.getSource()).append(" --|> ").append(extension.getTarget());
+			sb.append(extension.getSource()).append(" ").append(extension.getSymbol()).append(" ").append(extension.getTarget());
 			linebreak();
 		}
 	}

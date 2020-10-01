@@ -337,9 +337,9 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 		assertTrue(plantUML.contains("	class Customer <<(E,DarkSeaGreen) Entity>> {" + System.lineSeparator() + "		Address entity2Ref" + System.lineSeparator()
 				+ "		List<AnotherObject> myListReference" + System.lineSeparator() + "	}" + System.lineSeparator()));
 		assertTrue(plantUML.contains("Customer --> Address : entity2Ref" + System.lineSeparator()));
-		assertTrue(plantUML.contains("Customer --> AnotherObject : myListReference" + System.lineSeparator()));
+		assertTrue(plantUML.contains("Customer o-- AnotherObject : myListReference" + System.lineSeparator()));
 	}
-
+	
 	@Test
 	public void createsNoteIfBoundedContextIsEmpty() {
 		// given
