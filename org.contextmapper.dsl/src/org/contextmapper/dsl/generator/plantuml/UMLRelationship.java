@@ -19,11 +19,13 @@ class UMLRelationship {
 	private String source;
 	private String target;
 	private String label;
+	private ClassRelationType type;
 
-	public UMLRelationship(String source, String target, String label) {
+	public UMLRelationship(String source, String target, String label, ClassRelationType type) {
 		this.source = source;
 		this.target = target;
 		this.label = label;
+		this.type = type;
 	}
 
 	public String getSource() {
@@ -33,9 +35,13 @@ class UMLRelationship {
 	public String getTarget() {
 		return target;
 	}
-	
+
 	public String getLabel() {
 		return label;
+	}
+
+	public String getSymbol() {
+		return type.getSymbol();
 	}
 
 	@Override
@@ -46,6 +52,7 @@ class UMLRelationship {
 		UMLRelationship otherRelationship = (UMLRelationship) obj;
 		boolean sourceEqual = (this.source == null ? otherRelationship.source == null : this.source.equals(otherRelationship.source));
 		boolean targetEqual = (this.target == null ? otherRelationship.target == null : this.target.equals(otherRelationship.target));
-		return sourceEqual && targetEqual;
+		boolean typeEqual = (this.type == null ? otherRelationship.type == null : this.type.getSymbol().equals(otherRelationship.type.getSymbol()));
+		return sourceEqual && targetEqual && typeEqual;
 	}
 }
