@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
 
 import org.contextmapper.contextmap.generator.model.BoundedContext;
+import org.contextmapper.contextmap.generator.model.BoundedContextType;
 import org.contextmapper.contextmap.generator.model.ContextMap;
 import org.contextmapper.contextmap.generator.model.DownstreamPatterns;
 import org.contextmapper.contextmap.generator.model.Partnership;
@@ -58,17 +59,14 @@ public class ContextMapModelConverterTest extends AbstractCMLInputFileTest {
 		assertTrue(contextMap.getBoundedContexts().contains(new BoundedContext("RiskManagementContext")));
 		assertTrue(contextMap.getBoundedContexts().contains(new BoundedContext("DebtCollection")));
 
-		UpstreamDownstreamRelationship rel1 = contextMap.getRelationships().stream().filter(r -> r instanceof UpstreamDownstreamRelationship)
-				.map(r -> (UpstreamDownstreamRelationship) r).filter(r -> r.getUpstreamBoundedContext().getName().equals("CustomerManagementContext")
-						&& r.getDownstreamBoundedContext().getName().equals("CustomerSelfServiceContext"))
-				.findFirst().get();
+		UpstreamDownstreamRelationship rel1 = contextMap.getRelationships().stream().filter(r -> r instanceof UpstreamDownstreamRelationship).map(r -> (UpstreamDownstreamRelationship) r)
+				.filter(r -> r.getUpstreamBoundedContext().getName().equals("CustomerManagementContext") && r.getDownstreamBoundedContext().getName().equals("CustomerSelfServiceContext")).findFirst()
+				.get();
 		assertNotNull(rel1);
 		assertTrue(rel1.isCustomerSupplier());
 
-		UpstreamDownstreamRelationship rel2 = contextMap.getRelationships().stream().filter(r -> r instanceof UpstreamDownstreamRelationship)
-				.map(r -> (UpstreamDownstreamRelationship) r)
-				.filter(r -> r.getUpstreamBoundedContext().getName().equals("PrintingContext") && r.getDownstreamBoundedContext().getName().equals("CustomerManagementContext"))
-				.findFirst().get();
+		UpstreamDownstreamRelationship rel2 = contextMap.getRelationships().stream().filter(r -> r instanceof UpstreamDownstreamRelationship).map(r -> (UpstreamDownstreamRelationship) r)
+				.filter(r -> r.getUpstreamBoundedContext().getName().equals("PrintingContext") && r.getDownstreamBoundedContext().getName().equals("CustomerManagementContext")).findFirst().get();
 		assertNotNull(rel2);
 		assertFalse(rel2.isCustomerSupplier());
 		assertTrue(rel2.getUpstreamPatterns().contains(UpstreamPatterns.OPEN_HOST_SERVICE));
@@ -76,14 +74,12 @@ public class ContextMapModelConverterTest extends AbstractCMLInputFileTest {
 		assertTrue(rel2.getDownstreamPatterns().contains(DownstreamPatterns.ANTICORRUPTION_LAYER));
 
 		Partnership rel3 = contextMap.getRelationships().stream().filter(r -> r instanceof Partnership).map(r -> (Partnership) r)
-				.filter(r -> r.getFirstParticipant().getName().equals("RiskManagementContext") && r.getSecondParticipant().getName().equals("PolicyManagementContext")).findFirst()
-				.get();
+				.filter(r -> r.getFirstParticipant().getName().equals("RiskManagementContext") && r.getSecondParticipant().getName().equals("PolicyManagementContext")).findFirst().get();
 		assertNotNull(rel3);
 
-		UpstreamDownstreamRelationship rel4 = contextMap.getRelationships().stream().filter(r -> r instanceof UpstreamDownstreamRelationship)
-				.map(r -> (UpstreamDownstreamRelationship) r).filter(r -> r.getUpstreamBoundedContext().getName().equals("CustomerManagementContext")
-						&& r.getDownstreamBoundedContext().getName().equals("PolicyManagementContext"))
-				.findFirst().get();
+		UpstreamDownstreamRelationship rel4 = contextMap.getRelationships().stream().filter(r -> r instanceof UpstreamDownstreamRelationship).map(r -> (UpstreamDownstreamRelationship) r)
+				.filter(r -> r.getUpstreamBoundedContext().getName().equals("CustomerManagementContext") && r.getDownstreamBoundedContext().getName().equals("PolicyManagementContext")).findFirst()
+				.get();
 		assertNotNull(rel4);
 		assertFalse(rel4.isCustomerSupplier());
 		assertTrue(rel4.getUpstreamPatterns().contains(UpstreamPatterns.OPEN_HOST_SERVICE));
@@ -92,6 +88,48 @@ public class ContextMapModelConverterTest extends AbstractCMLInputFileTest {
 		SharedKernel rel5 = contextMap.getRelationships().stream().filter(r -> r instanceof SharedKernel).map(r -> (SharedKernel) r)
 				.filter(r -> r.getFirstParticipant().getName().equals("PolicyManagementContext") && r.getSecondParticipant().getName().equals("DebtCollection")).findFirst().get();
 		assertNotNull(rel5);
+	}
+
+	@Test
+	public void canConvertSimpleTeamMap() throws IOException {
+		// given
+		CMLResource input = getResourceCopyOfTestCML("test-team-map-1.cml");
+		ContextMappingModel model = input.getContextMappingModel();
+
+		// when
+		ContextMap contextMap = new ContextMapModelConverter().convert(model.getMap());
+
+		// then
+		assertEquals(1, contextMap.getRelationships().size());
+		assertEquals(2, contextMap.getBoundedContexts().size());
+		assertEquals(BoundedContextType.TEAM, contextMap.getBoundedContexts().stream().filter(bc -> bc.getName().equals("CustomersTeam")).findFirst().get().getType());
+		assertEquals(BoundedContextType.TEAM, contextMap.getBoundedContexts().stream().filter(bc -> bc.getName().equals("ContractsTeam")).findFirst().get().getType());
+	}
+
+	@Test
+	public void canConvertTeamMapWithRealizingRelationships() throws IOException {
+		// given
+		CMLResource input = getResourceCopyOfTestCML("test-team-map-2.cml");
+		ContextMappingModel model = input.getContextMappingModel();
+
+		// when
+		ContextMap contextMap = new ContextMapModelConverter().convert(model.getMap());
+
+		// then
+		assertEquals(2, contextMap.getRelationships().size());
+		assertEquals(4, contextMap.getBoundedContexts().size());
+		BoundedContext customersTeam = contextMap.getBoundedContexts().stream().filter(bc -> bc.getName().equals("CustomersTeam")).findFirst().get();
+		BoundedContext contractsTeam = contextMap.getBoundedContexts().stream().filter(bc -> bc.getName().equals("ContractsTeam")).findFirst().get();
+		BoundedContext customerContext = contextMap.getBoundedContexts().stream().filter(bc -> bc.getName().equals("CustomerManagementContext")).findFirst().get();
+		BoundedContext policyContext = contextMap.getBoundedContexts().stream().filter(bc -> bc.getName().equals("PolicyManagementContext")).findFirst().get();
+		assertEquals(BoundedContextType.TEAM, customersTeam.getType());
+		assertEquals(BoundedContextType.TEAM, contractsTeam.getType());
+		assertEquals(BoundedContextType.GENERIC, customerContext.getType());
+		assertEquals(BoundedContextType.GENERIC, policyContext.getType());
+		assertEquals(1, customersTeam.getRealizedBoundedContexts().size());
+		assertEquals(1, contractsTeam.getRealizedBoundedContexts().size());
+		assertEquals("CustomerManagementContext", customersTeam.getRealizedBoundedContexts().iterator().next().getName());
+		assertEquals("PolicyManagementContext", contractsTeam.getRealizedBoundedContexts().iterator().next().getName());
 	}
 
 	@Override

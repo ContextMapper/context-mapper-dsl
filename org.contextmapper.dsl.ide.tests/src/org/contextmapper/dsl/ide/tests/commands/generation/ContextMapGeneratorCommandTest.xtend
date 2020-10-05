@@ -62,6 +62,7 @@ class ContextMapGeneratorCommandTest extends AbstractCMLCommandTest {
 		paramObject.add("fixHeight", new JsonPrimitive(false))
 		paramObject.add("generateLabels", new JsonPrimitive(false))
 		paramObject.add("labelSpacingFactor", new JsonPrimitive(5))
+		paramObject.add("clusterTeams", new JsonPrimitive(true))
 		val paramArray = new JsonArray
 		paramArray.add(paramObject)
 		val result = languageServer.executeCommand(
@@ -100,6 +101,7 @@ class ContextMapGeneratorCommandTest extends AbstractCMLCommandTest {
 		paramObject.add("fixHeight", new JsonPrimitive(false))
 		paramObject.add("generateLabels", new JsonPrimitive(false))
 		paramObject.add("labelSpacingFactor", new JsonPrimitive(5))
+		paramObject.add("clusterTeams", new JsonPrimitive(true))
 		val paramArray = new JsonArray
 		paramArray.add(paramObject)
 		val result = languageServer.executeCommand(
@@ -140,6 +142,7 @@ class ContextMapGeneratorCommandTest extends AbstractCMLCommandTest {
 		paramObject.add("fixWidth", new JsonPrimitive(false))
 		paramObject.add("generateLabels", new JsonPrimitive(false))
 		paramObject.add("labelSpacingFactor", new JsonPrimitive(5))
+		paramObject.add("clusterTeams", new JsonPrimitive(true))
 		val paramArray = new JsonArray
 		paramArray.add(paramObject)
 		val result = languageServer.executeCommand(

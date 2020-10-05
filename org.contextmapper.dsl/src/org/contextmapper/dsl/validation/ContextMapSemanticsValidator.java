@@ -19,13 +19,14 @@ import static org.contextmapper.dsl.contextMappingDSL.BoundedContextType.TEAM;
 import static org.contextmapper.dsl.contextMappingDSL.ContextMapType.ORGANIZATIONAL;
 import static org.contextmapper.dsl.contextMappingDSL.ContextMapType.SYSTEM_LANDSCAPE;
 import static org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLPackage.Literals.CONTEXT_MAP__BOUNDED_CONTEXTS;
+import static org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLPackage.Literals.CONTEXT_MAP__TYPE;
 import static org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLPackage.Literals.SYMMETRIC_RELATIONSHIP__PARTICIPANT1;
 import static org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLPackage.Literals.SYMMETRIC_RELATIONSHIP__PARTICIPANT2;
 import static org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLPackage.Literals.UPSTREAM_DOWNSTREAM_RELATIONSHIP__DOWNSTREAM;
 import static org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLPackage.Literals.UPSTREAM_DOWNSTREAM_RELATIONSHIP__UPSTREAM;
 import static org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLPackage.Literals.UPSTREAM_DOWNSTREAM_RELATIONSHIP__UPSTREAM_EXPOSED_AGGREGATES;
 import static org.contextmapper.dsl.validation.ValidationMessages.EXPOSED_AGGREGATE_NOT_PART_OF_UPSTREAM_CONTEXT;
-import static org.contextmapper.dsl.validation.ValidationMessages.ORGANIZATIONAL_MAP_CONTEXT_IS_NOT_TYPE_TEAM;
+import static org.contextmapper.dsl.validation.ValidationMessages.ORGANIZATIONAL_MAP_DOES_NOT_CONTAIN_TEAM;
 import static org.contextmapper.dsl.validation.ValidationMessages.RELATIONSHIP_CONTEXT_NOT_ON_MAP_ERROR_MESSAGE;
 import static org.contextmapper.dsl.validation.ValidationMessages.SYSTEM_LANDSCAPE_MAP_CONTAINS_TEAM;
 
@@ -34,6 +35,7 @@ import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
+import org.contextmapper.dsl.contextMappingDSL.BoundedContextType;
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.SculptorModule;
 import org.contextmapper.dsl.contextMappingDSL.Relationship;
@@ -101,10 +103,8 @@ public class ContextMapSemanticsValidator extends AbstractDeclarativeValidator {
 	@Check
 	public void validateBoundedContextTypes(final ContextMap map) {
 		if (ORGANIZATIONAL.equals(map.getType())) {
-			for (BoundedContext bc : map.getBoundedContexts()) {
-				if (!TEAM.equals(bc.getType()))
-					error(String.format(ORGANIZATIONAL_MAP_CONTEXT_IS_NOT_TYPE_TEAM, bc.getType()), map, CONTEXT_MAP__BOUNDED_CONTEXTS);
-			}
+			if (!map.getBoundedContexts().stream().anyMatch(bc -> bc.getType() == BoundedContextType.TEAM))
+				warning(ORGANIZATIONAL_MAP_DOES_NOT_CONTAIN_TEAM, map, CONTEXT_MAP__TYPE);
 		} else if (SYSTEM_LANDSCAPE.equals(map.getType())) {
 			for (BoundedContext bc : map.getBoundedContexts()) {
 				if (TEAM.equals(bc.getType()))

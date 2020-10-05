@@ -58,10 +58,12 @@ public class ContextMapGenerationCommand extends AbstractGenerationCommand {
 		boolean fixHeight = paramObject.get("fixHeight").getAsBoolean();
 		boolean generateLabels = paramObject.get("generateLabels").getAsBoolean();
 		int labelSpacingFactor = paramObject.get("labelSpacingFactor").getAsInt();
+		boolean clusterTeams = paramObject.get("clusterTeams").getAsBoolean();
 
 		generator.setContextMapFormats(formats);
 		generator.setLabelSpacingFactor(labelSpacingFactor);
 		generator.printAdditionalLabels(generateLabels);
+		generator.clusterTeams(clusterTeams);
 		if (fixWidth)
 			generator.setWidth(paramObject.get("width").getAsInt());
 		else if (fixHeight)

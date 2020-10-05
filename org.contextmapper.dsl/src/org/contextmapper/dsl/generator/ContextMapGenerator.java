@@ -45,6 +45,7 @@ public class ContextMapGenerator extends AbstractContextMapGenerator {
 	private int height = -1;
 	private boolean useWidth = true;
 	private boolean printAdditionalLabels = false;
+	private boolean clusterTeams = true;
 
 	public ContextMapGenerator() {
 		this.formats = new HashSet<>();
@@ -60,6 +61,7 @@ public class ContextMapGenerator extends AbstractContextMapGenerator {
 		ContextMap contextMap = new ContextMapModelConverter().convert(cmlContextMap, printAdditionalLabels);
 		org.contextmapper.contextmap.generator.ContextMapGenerator generator = createContextMapGenerator();
 		generator.setLabelSpacingFactor(labelSpacingFactor);
+		generator.clusterTeams(clusterTeams);
 		if (this.width > 0 && useWidth)
 			generator.setWidth(width);
 		else if (this.height > 0)
@@ -125,9 +127,29 @@ public class ContextMapGenerator extends AbstractContextMapGenerator {
 	public void printAdditionalLabels(boolean printAdditionalLabels) {
 		this.printAdditionalLabels = printAdditionalLabels;
 	}
-	
+
 	public boolean printAdditionalLabels() {
 		return printAdditionalLabels;
+	}
+
+	/**
+	 * Defines whether team BCs and generic BCs in the generated Context Map ar
+	 * clustered or not. Only relevant for team maps.
+	 * 
+	 * @param clusterTeams boolean that indicates whether team BCs and generic BCs
+	 *                     shall be clustered
+	 */
+	public void clusterTeams(boolean clusterTeams) {
+		this.clusterTeams = clusterTeams;
+	}
+
+	/**
+	 * Indicates whether team BCs and generic BCs are clustered or not.
+	 * 
+	 * @return true, if team BCs and generic BCs are clustered, false otherwise
+	 */
+	public boolean clusterTeams() {
+		return clusterTeams;
 	}
 
 	private Format getGraphvizLibFormat(ContextMapFormat format) {

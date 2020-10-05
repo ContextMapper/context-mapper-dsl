@@ -68,6 +68,7 @@ public class ContextMapGenerationHandler extends AbstractGenerationHandler {
 			persistContext(event, executionContext);
 			generator.setContextMapFormats(context.getFormats().toArray(new ContextMapFormat[context.getFormats().size()]));
 			generator.setLabelSpacingFactor(context.getLabelSpacingFactor());
+			generator.clusterTeams(context.clusterTeams());
 			if (context.isFixWidth())
 				generator.setWidth(context.getWidth());
 			else if (context.isFixHeight())
