@@ -10,7 +10,7 @@ dependencies {
 	compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.9.9'
 	compile group: 'org.yaml', name: 'snakeyaml', version: '1.14'
 	compile group: 'org.contextmapper', name: 'henshin-interpreter', version: '1.4.0'
-	compile group: 'org.contextmapper', name: 'context-map-generator', version: '1.1.1'
+	compile group: 'org.contextmapper', name: 'context-map-generator', version: '1.2.0'
 	compile group: 'org.contextmapper', name: 'service-cutter-library', version: '1.2.1'
 }
 configurations {
