@@ -19,9 +19,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.contextmapper.contextmap.generator.model.AbstractRelationship;
 import org.contextmapper.contextmap.generator.model.BoundedContext;
+import org.contextmapper.contextmap.generator.model.BoundedContextType;
 import org.contextmapper.contextmap.generator.model.ContextMap;
 import org.contextmapper.contextmap.generator.model.DownstreamPatterns;
 import org.contextmapper.contextmap.generator.model.Partnership;
@@ -60,6 +62,12 @@ public class ContextMapModelConverter {
 			contextMap.addRelationship(convert(cmlRelationship));
 		}
 
+		for (org.contextmapper.dsl.contextMappingDSL.BoundedContext team : cmlContextMap.getBoundedContexts().stream()
+				.filter(bc -> bc.getType() == org.contextmapper.dsl.contextMappingDSL.BoundedContextType.TEAM && bc.getRealizedBoundedContexts() != null && !bc.getRealizedBoundedContexts().isEmpty())
+				.collect(Collectors.toList())) {
+			setRealizedContexts4Team(team, team.getRealizedBoundedContexts());
+		}
+
 		return contextMap;
 	}
 
@@ -81,7 +89,11 @@ public class ContextMapModelConverter {
 	}
 
 	private BoundedContext convert(org.contextmapper.dsl.contextMappingDSL.BoundedContext cmlBoundedContext) {
-		BoundedContext boundedContext = new BoundedContext(cmlBoundedContext.getName());
+		BoundedContextType type = BoundedContextType.GENERIC;
+		if (cmlBoundedContext.getType().equals(org.contextmapper.dsl.contextMappingDSL.BoundedContextType.TEAM))
+			type = BoundedContextType.TEAM;
+
+		BoundedContext boundedContext = new BoundedContext(cmlBoundedContext.getName(), type);
 		this.bcMap.put(cmlBoundedContext.getName(), boundedContext);
 		return boundedContext;
 	}
@@ -113,6 +125,18 @@ public class ContextMapModelConverter {
 			relationship.setImplementationTechnology(cmlRelationship.getImplementationTechnology());
 
 		return relationship;
+	}
+
+	private void setRealizedContexts4Team(org.contextmapper.dsl.contextMappingDSL.BoundedContext cmlTeam, List<org.contextmapper.dsl.contextMappingDSL.BoundedContext> cmlRealizedBoundedContexts) {
+		if (!bcMap.containsKey(cmlTeam.getName()))
+			return;
+
+		BoundedContext team = bcMap.get(cmlTeam.getName());
+		for (org.contextmapper.dsl.contextMappingDSL.BoundedContext realizedBC : cmlRealizedBoundedContexts) {
+			if (!bcMap.containsKey(realizedBC.getName()))
+				continue;
+			team.realizing(bcMap.get(realizedBC.getName()));
+		}
 	}
 
 	private UpstreamPatterns[] convertUpstreamRoles(List<UpstreamRole> upstreamRoles) {

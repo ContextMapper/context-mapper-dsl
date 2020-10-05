@@ -53,6 +53,7 @@ public class GenerateContextMapWizard extends Wizard {
 		context.setHeight(page.getHeight());
 		context.setWidth(page.getWidth());
 		context.setGenerateAdditionalLabels(page.generateLabels());
+		context.clusterTeams(page.clusterTeams());
 		return finishFunction.apply(context);
 	}
 

@@ -180,6 +180,25 @@ class ContextMapGeneratorTest {
 	}
 
 	@Test
+	void canSetTeamClusterungToFalse() {
+		// given
+		ContextMappingModel model = ContextMappingDSLFactory.eINSTANCE.createContextMappingModel();
+		ContextMap contextMap = ContextMappingDSLFactory.eINSTANCE.createContextMap();
+		model.setMap(contextMap);
+
+		// when
+		IFileSystemAccess2Mock filesystem = new IFileSystemAccess2Mock();
+		TestGraphvizContextMapGenerator graphvizGenerator = new TestGraphvizContextMapGenerator();
+		this.generator = new TestContextMapGenerator(graphvizGenerator);
+		this.generator.clusterTeams(false);
+		this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem, new IGeneratorContextMock());
+
+		// then
+		assertTrue(filesystem.getGeneratedFilesSet().contains("testmodel_ContextMap.png"));
+		assertFalse(generator.clusterTeams());
+	}
+
+	@Test
 	void canUseWidthIfLastSet() {
 		// given
 		ContextMappingModel model = ContextMappingDSLFactory.eINSTANCE.createContextMappingModel();
@@ -255,7 +274,7 @@ class ContextMapGeneratorTest {
 			this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem, new IGeneratorContextMock());
 		});
 	}
-	
+
 	private class TestGraphvizContextMapGenerator extends org.contextmapper.contextmap.generator.ContextMapGenerator {
 		public int getLabelSpacingFactor() {
 			return labelSpacingFactor;

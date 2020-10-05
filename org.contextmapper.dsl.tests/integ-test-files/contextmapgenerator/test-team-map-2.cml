@@ -1,0 +1,18 @@
+ContextMap InsuranceTeamMap {
+    type ORGANIZATIONAL
+
+	contains ContractsTeam, CustomersTeam
+    contains CustomerManagementContext, PolicyManagementContext
+	
+	ContractsTeam [D,CF]<-[U,OHS] CustomersTeam
+	
+	PolicyManagementContext [D,CF]<-[U,OHS] CustomerManagementContext
+}
+
+BoundedContext CustomersTeam realizes CustomerManagementContext { type TEAM }
+
+BoundedContext ContractsTeam realizes PolicyManagementContext { type TEAM }
+
+BoundedContext CustomerManagementContext
+
+BoundedContext PolicyManagementContext

@@ -30,6 +30,7 @@ public class GenerateContextMapContext {
 	private int width = 1500;
 	private int height = 1000;
 	private boolean generateAdditionalLabels = false;
+	private boolean clusterTeams = true;
 
 	public void setFormats(Set<ContextMapFormat> formats) {
 		this.formats = formats;
@@ -77,6 +78,14 @@ public class GenerateContextMapContext {
 
 	public void setHeight(int height) {
 		this.height = height;
+	}
+
+	public void clusterTeams(boolean clusterTeams) {
+		this.clusterTeams = clusterTeams;
+	}
+
+	public boolean clusterTeams() {
+		return this.clusterTeams;
 	}
 
 	public void setGenerateAdditionalLabels(boolean generateAdditionalLabels) {

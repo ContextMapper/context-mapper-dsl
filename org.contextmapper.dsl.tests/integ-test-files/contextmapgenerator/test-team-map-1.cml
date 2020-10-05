@@ -1,0 +1,12 @@
+ContextMap InsuranceTeamMap {
+    type ORGANIZATIONAL
+
+	contains ContractsTeam, CustomersTeam
+	
+	ContractsTeam [D,CF]<-[U,OHS] CustomersTeam
+}
+
+BoundedContext CustomersTeam { type TEAM }
+
+BoundedContext ContractsTeam { type TEAM }
+

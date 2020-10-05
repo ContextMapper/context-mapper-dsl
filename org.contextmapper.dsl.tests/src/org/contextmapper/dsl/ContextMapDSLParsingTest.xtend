@@ -54,7 +54,7 @@ class ContextMapDSLParsingTest {
 		assertThatNoValidationErrorsOccurred(result);
 		assertNotNull(result.map);
 	}
-	
+
 	@Test
 	def void canDefineContextMapWithName() {
 		// given
@@ -67,7 +67,7 @@ class ContextMapDSLParsingTest {
 		assertThatNoParsingErrorsOccurred(result);
 		assertThatNoValidationErrorsOccurred(result);
 		assertNotNull(result.map);
-		
+
 		assertEquals("myContextMap", result.map.name)
 	}
 
@@ -95,7 +95,7 @@ class ContextMapDSLParsingTest {
 		assertTrue(contextNames.contains("testContext"));
 		assertTrue(contextNames.contains("anotherTestContext"));
 	}
-	
+
 	@Test
 	def void canAddBoundedContextToMapInOneLine() {
 		// given
@@ -153,7 +153,7 @@ class ContextMapDSLParsingTest {
 	}
 
 	@Test
-	def void throwErrorIfBoundedContextsOnOrganizationalMapAreNotOfTypeTeam() {
+	def void showWarningIfBoundedContextsOnOrganizationalMapAreNotOfTypeTeam() {
 		// given
 		val String dslSnippet = '''
 			ContextMap {
@@ -170,8 +170,8 @@ class ContextMapDSLParsingTest {
 		val ContextMappingModel result = parseHelper.parse(dslSnippet);
 		// then
 		assertThatNoParsingErrorsOccurred(result);
-		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.CONTEXT_MAP, "",
-			String.format(ORGANIZATIONAL_MAP_CONTEXT_IS_NOT_TYPE_TEAM, "SYSTEM"));
+		validationTestHelper.assertWarning(result, ContextMappingDSLPackage.Literals.CONTEXT_MAP, "",
+			ORGANIZATIONAL_MAP_DOES_NOT_CONTAIN_TEAM);
 	}
 
 	@Test
@@ -240,7 +240,7 @@ class ContextMapDSLParsingTest {
 		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.CONTEXT_MAP, "",
 			String.format(SELF_RELATIONSHIP_NOT_ALLOWED));
 	}
-	
+
 	@Test
 	def void canDefineAttributesWithoutEqualSign() {
 		// given

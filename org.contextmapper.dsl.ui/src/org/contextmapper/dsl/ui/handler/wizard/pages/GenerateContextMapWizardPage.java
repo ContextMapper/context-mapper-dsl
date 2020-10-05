@@ -44,6 +44,7 @@ public class GenerateContextMapWizardPage extends ContextMapperWizardPage {
 	private Button heightCheckBox;
 	private Spinner heightSpinner;
 	private Button generateLabelsCheckBox;
+	private Button clusterTeamsCheckBox;
 
 	private GenerateContextMapContext context;
 	private Set<ContextMapFormat> selectedFormats;
@@ -166,6 +167,13 @@ public class GenerateContextMapWizardPage extends ContextMapperWizardPage {
 		generateLabelsCheckBox.setText("Labels for relationship names and implementation technologies");
 		generateLabelsCheckBox.setSelection(context.generateAdditionalLabels());
 
+		// cluster teams checkbox
+		Label clusterTeamsLabel = new Label(container, SWT.NONE);
+		clusterTeamsLabel.setText("Cluster team contexts:");
+		clusterTeamsCheckBox = new Button(container, SWT.CHECK);
+		clusterTeamsCheckBox.setText("Separate team/generic Bounded Contexts into clusters (team maps only)");
+		clusterTeamsCheckBox.setSelection(context.clusterTeams());
+
 		// spacing factor label
 		Label labelSpacingFactorLabel = new Label(container, SWT.NONE);
 		labelSpacingFactorLabel.setText("Spacing factor:");
@@ -226,6 +234,10 @@ public class GenerateContextMapWizardPage extends ContextMapperWizardPage {
 
 	public boolean generateLabels() {
 		return generateLabelsCheckBox.getSelection();
+	}
+
+	public boolean clusterTeams() {
+		return clusterTeamsCheckBox.getSelection();
 	}
 
 	@Override
