@@ -128,13 +128,8 @@ public class ContextMapModelConverter {
 	}
 
 	private void setRealizedContexts4Team(org.contextmapper.dsl.contextMappingDSL.BoundedContext cmlTeam, List<org.contextmapper.dsl.contextMappingDSL.BoundedContext> cmlRealizedBoundedContexts) {
-		if (!bcMap.containsKey(cmlTeam.getName()))
-			return;
-
 		BoundedContext team = bcMap.get(cmlTeam.getName());
 		for (org.contextmapper.dsl.contextMappingDSL.BoundedContext realizedBC : cmlRealizedBoundedContexts) {
-			if (!bcMap.containsKey(realizedBC.getName()))
-				continue;
 			team.realizing(bcMap.get(realizedBC.getName()));
 		}
 	}
