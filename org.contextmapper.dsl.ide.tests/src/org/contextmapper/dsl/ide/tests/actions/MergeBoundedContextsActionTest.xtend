@@ -36,4 +36,36 @@ class MergeBoundedContextsActionTest extends AbstractBoundedContextCodeActionTes
 		]
 	}
 	
+	@Test
+	def void dontOfferAction4NotExistingBoundedContext() {
+		testCodeAction [
+			model = '''
+				ContextMap {
+					contains SomeContext
+				}
+				BoundedContext TestContext1
+				BoundedContext TestContext2
+			'''
+			line = 1
+			column = 12 
+			expectedCodeActions = '''
+				title : Create a Bounded Context named 'SomeContext'.
+				kind : quickfix
+				command : 
+				codes : org.eclipse.xtext.diagnostics.Diagnostic.Linking
+				edit : changes :
+				    MyModel.cml : ContextMap {
+				        contains SomeContext
+				    }
+				    
+				    BoundedContext TestContext1
+				    
+				    BoundedContext TestContext2
+				    
+				    BoundedContext SomeContext [[0, 0] .. [5, 0]]
+				documentChanges : 
+			'''
+		]
+	}
+	
 }
