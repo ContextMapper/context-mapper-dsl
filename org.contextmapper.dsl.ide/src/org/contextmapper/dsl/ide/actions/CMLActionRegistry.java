@@ -18,6 +18,8 @@ package org.contextmapper.dsl.ide.actions;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.cml.CMLResource;
@@ -40,6 +42,7 @@ import org.contextmapper.dsl.ide.actions.impl.SwitchFromPartnershipToSharedKerne
 import org.contextmapper.dsl.ide.actions.impl.SwitchFromSharedKernelToPartnershipAction;
 import org.contextmapper.dsl.ide.edit.WorkspaceEditRecorder;
 import org.contextmapper.dsl.quickfixes.CMLQuickFix;
+import org.contextmapper.dsl.quickfixes.CreateMissingBoundedContextQuickFix;
 import org.contextmapper.dsl.quickfixes.tactic.ExtractIDValueObjectQuickFix;
 import org.contextmapper.dsl.validation.DomainObjectValidator;
 import org.eclipse.emf.ecore.EObject;
@@ -70,6 +73,8 @@ public class CMLActionRegistry {
 	@Inject
 	private SelectionContextResolver selectionResolver;
 	private Map<String, List<CMLQuickFix<? extends EObject>>> quickFixRegistry;
+
+	private static final String XTEXT_DIAGNOSTICS_PREFIX = "org.eclipse.xtext.diagnostics";
 
 	public CMLActionRegistry() {
 		this.quickFixRegistry = Maps.newHashMap();
@@ -117,6 +122,9 @@ public class CMLActionRegistry {
 			return quickFixCodeActions;
 
 		String key = (String) diagnostic.getCode().get();
+		if (key.startsWith(XTEXT_DIAGNOSTICS_PREFIX))
+			quickFixCodeActions.addAll(createQuickFixes4XtextDiagnostics(diagnostic, options));
+
 		if (!quickFixRegistry.containsKey(key) || quickFixRegistry.get(key).isEmpty())
 			return quickFixCodeActions;
 
@@ -127,26 +135,44 @@ public class CMLActionRegistry {
 	private List<CodeAction> createQuickFixCodeActions4ValidationMessage(String validationId, Diagnostic diagnostic, ICodeActionService2.Options options) {
 		List<CodeAction> codeActions = Lists.newLinkedList();
 		for (CMLQuickFix<? extends EObject> quickFix : quickFixRegistry.get(validationId)) {
-			codeActions.add(createQuickFixCodeAction(quickFix, diagnostic, options));
+			codeActions.add(createQuickFixCodeAction(quickFix, diagnostic, options, false));
 		}
 		return codeActions;
 	}
 
-	private CodeAction createQuickFixCodeAction(CMLQuickFix<? extends EObject> quickFix, Diagnostic diagnostic, ICodeActionService2.Options options) {
+	private CodeAction createQuickFixCodeAction(CMLQuickFix<? extends EObject> quickFix, Diagnostic diagnostic, ICodeActionService2.Options options, boolean useRootContext) {
 		CodeAction action = new CodeAction(quickFix.getName());
 		action.setDiagnostics(Arrays.asList(new Diagnostic[] { diagnostic }));
 		action.setKind(CodeActionKind.QuickFix);
 		action.setEdit(editRecorder.recordWorkspaceEdit(options.getLanguageServerAccess(), options.getResource().getURI(), options.getDocument(), (Resource resource) -> {
 			CMLResource cmlResource = new CMLResource(resource);
-			List<EObject> objects = selectionResolver.resolveAllSelectedEObjects(cmlResource, options.getDocument().getOffSet(diagnostic.getRange().getStart()),
-					options.getDocument().getOffSet(diagnostic.getRange().getEnd()));
-			if (objects.isEmpty())
-				throw new ContextMapperApplicationException("Selected object for quick fix could not be found.");
+			if (useRootContext) {
+				quickFix.applyQuickfix2EObject(cmlResource.getContextMappingModel());
+			} else {
+				List<EObject> objects = selectionResolver.resolveAllSelectedEObjects(cmlResource, options.getDocument().getOffSet(diagnostic.getRange().getStart()),
+						options.getDocument().getOffSet(diagnostic.getRange().getEnd()));
+				if (objects.isEmpty())
+					throw new ContextMapperApplicationException("Selected object for quick fix could not be found.");
 
-			// we can assume that there is only one object per validation message
-			quickFix.applyQuickfix2EObject(EcoreUtil.resolve(objects.get(0), resource));
+				// we can assume that there is only one object per validation message
+				quickFix.applyQuickfix2EObject(EcoreUtil.resolve(objects.get(0), resource));
+			}
 		}));
 		return action;
+	}
+
+	private List<? extends CodeAction> createQuickFixes4XtextDiagnostics(Diagnostic diagnostic, ICodeActionService2.Options options) {
+		List<CodeAction> quickFixCodeActions = Lists.newLinkedList();
+		if (diagnostic.getCode().get().equals(org.eclipse.xtext.diagnostics.Diagnostic.LINKING_DIAGNOSTIC)
+				&& diagnostic.getMessage().matches(String.format(CreateMissingBoundedContextQuickFix.LINK_DIAGNOSTIC_MESSAGE_PATTERN, "BoundedContext"))) {
+			Pattern pattern = Pattern.compile(String.format(CreateMissingBoundedContextQuickFix.LINK_DIAGNOSTIC_MESSAGE_PATTERN, "BoundedContext"));
+			Matcher matcher = pattern.matcher(diagnostic.getMessage());
+			if (matcher.find()) {
+				CreateMissingBoundedContextQuickFix quickFix = new CreateMissingBoundedContextQuickFix(matcher.group(1));
+				quickFixCodeActions.add(createQuickFixCodeAction(quickFix, diagnostic, options, true));
+			}
+		}
+		return quickFixCodeActions;
 	}
 
 	private void registerQuickFix(String validationId, CMLQuickFix<? extends EObject> quickFix) {

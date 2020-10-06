@@ -13,59 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.contextmapper.dsl.ide.tests.actions
+package org.contextmapper.dsl.ide.tests.quickfixes
 
+import org.contextmapper.dsl.ide.tests.AbstractCMLLanguageServerTest
 import org.junit.jupiter.api.Test
 
-class MergeBoundedContextsActionTest extends AbstractBoundedContextCodeActionTest {
+class CreateMissingBoundedContextQuickFixTest extends AbstractCMLLanguageServerTest {
 
 	@Test
-	def void canOfferAction4BoundedContext() {
-		testCodeAction [
-			model = '''
-				BoundedContext TestContext1
-				BoundedContext TestContext2
-			'''
-			line = 0
-			expectedCodeActions = '''
-				command : cml.ar.mergeBoundedContexts.proxy
-				title : Merge Bounded Contexts
-				args : 
-				    file://«this.root»/MyModel.cml,TestContext1,TestContext2
-			'''
-		]
-	}
-	
-	@Test
-	def void dontOfferAction4NotExistingBoundedContext() {
+	def void canOfferToCreateMissingContext() {
 		testCodeAction [
 			model = '''
 				ContextMap {
-					contains SomeContext
+					contains MissingContext
 				}
-				BoundedContext TestContext1
-				BoundedContext TestContext2
 			'''
-			line = 1
-			column = 12 
 			expectedCodeActions = '''
-				title : Create a Bounded Context named 'SomeContext'.
+				title : Create a Bounded Context named 'MissingContext'.
 				kind : quickfix
 				command : 
 				codes : org.eclipse.xtext.diagnostics.Diagnostic.Linking
 				edit : changes :
 				    MyModel.cml : ContextMap {
-				        contains SomeContext
+				        contains MissingContext
 				    }
 				    
-				    BoundedContext TestContext1
-				    
-				    BoundedContext TestContext2
-				    
-				    BoundedContext SomeContext [[0, 0] .. [5, 0]]
+				    BoundedContext MissingContext [[0, 0] .. [3, 0]]
 				documentChanges : 
 			'''
 		]
 	}
-	
+
 }

@@ -1,0 +1,3 @@
+ContextMap {
+	contains MissingContext // context does not exist
+}
