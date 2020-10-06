@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 
-import org.contextmapper.dsl.cml.CMLResourceContainer;
+import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.junit.jupiter.api.Test;
 
@@ -28,7 +28,7 @@ public class CreateMissingBoundedContextQuickFixTest extends AbstractQuickFixTes
 	@Test
 	public void canCreateBoundedContext() throws IOException {
 		// given
-		CMLResourceContainer cmlResource = getResourceCopyOfTestCML("create-missing-bounded-context-test-1.cml");
+		CMLResource cmlResource = getResourceCopyOfTestCML("create-missing-bounded-context-test-1.cml");
 		ContextMappingModel model = cmlResource.getContextMappingModel();
 
 		// when
@@ -42,7 +42,7 @@ public class CreateMissingBoundedContextQuickFixTest extends AbstractQuickFixTes
 	@Test
 	public void canCreateBoundedContext4ContextMapContext() throws IOException {
 		// given
-		CMLResourceContainer cmlResource = getResourceCopyOfTestCML("create-missing-bounded-context-test-1.cml");
+		CMLResource cmlResource = getResourceCopyOfTestCML("create-missing-bounded-context-test-1.cml");
 		ContextMappingModel model = cmlResource.getContextMappingModel();
 
 		// when
