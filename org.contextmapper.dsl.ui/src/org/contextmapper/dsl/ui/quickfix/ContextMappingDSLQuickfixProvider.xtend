@@ -53,7 +53,7 @@ class ContextMappingDSLQuickfixProvider extends DefaultQuickfixProvider {
 
 	def applyCMLQuickfix(Issue issue, IssueResolutionAcceptor acceptor, CMLQuickFix<? extends EObject> quickfix) {
 		acceptor.accept(issue, quickfix.name, quickfix.description,
-			"upcase.png", [ EObject element, IModificationContext context |
+			null, [ EObject element, IModificationContext context |
 				quickfix.applyQuickfix2EObject(element)
 			]);
 		val xEditor = EditorUtils.getActiveXtextEditor();

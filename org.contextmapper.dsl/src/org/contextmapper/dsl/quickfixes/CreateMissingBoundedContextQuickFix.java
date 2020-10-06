@@ -35,6 +35,9 @@ public class CreateMissingBoundedContextQuickFix implements CMLQuickFix<ContextM
 		bc.setName(missingContextName);
 
 		model.getBoundedContexts().add(bc);
+
+		if (model.getMap() != null)
+			model.getMap().getBoundedContexts().add(bc);
 	}
 
 	@Override
