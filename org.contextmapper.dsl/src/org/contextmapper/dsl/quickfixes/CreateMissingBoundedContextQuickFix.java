@@ -15,6 +15,8 @@
  */
 package org.contextmapper.dsl.quickfixes;
 
+import java.util.Optional;
+
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
@@ -22,6 +24,8 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 public class CreateMissingBoundedContextQuickFix implements CMLQuickFix<ContextMappingModel> {
+
+	public static final String LINK_DIAGNOSTIC_MESSAGE_PATTERN = "^Couldn't resolve reference to %s '([a-zA-Z_][a-zA-Z0-9_]*)'.";
 
 	private String missingContextName;
 
@@ -31,6 +35,9 @@ public class CreateMissingBoundedContextQuickFix implements CMLQuickFix<ContextM
 
 	@Override
 	public void applyQuickfix(ContextMappingModel model) {
+		if (model.getBoundedContexts().stream().anyMatch(bc -> bc.getName().equals(missingContextName)))
+			return;
+
 		BoundedContext bc = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
 		bc.setName(missingContextName);
 

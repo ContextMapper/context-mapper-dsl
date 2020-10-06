@@ -51,7 +51,11 @@ public class MergeBoundedContextsAction implements CMLCodeAction {
 		if (boundedContexts.isEmpty() || boundedContexts.size() > 1)
 			return false;
 
-		ContextMappingModel model = (ContextMappingModel) EcoreUtil2.getRootContainer(boundedContexts.iterator().next());
+		EObject root = EcoreUtil2.getRootContainer(boundedContexts.iterator().next());
+		if (!(root instanceof ContextMappingModel))
+			return false;
+
+		ContextMappingModel model = (ContextMappingModel) root;
 		return model.getBoundedContexts().size() > 1;
 	}
 

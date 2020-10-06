@@ -17,6 +17,7 @@ package org.contextmapper.dsl.ui.quickfix
 
 import java.util.regex.Pattern
 import org.contextmapper.dsl.quickfixes.CMLQuickFix
+import org.contextmapper.dsl.quickfixes.CreateMissingBoundedContextQuickFix
 import org.contextmapper.dsl.quickfixes.tactic.ExtractIDValueObjectQuickFix
 import org.contextmapper.dsl.validation.DomainObjectValidator
 import org.eclipse.emf.ecore.EObject
@@ -29,14 +30,13 @@ import org.eclipse.xtext.ui.editor.quickfix.Fix
 import org.eclipse.xtext.ui.editor.quickfix.IssueResolutionAcceptor
 import org.eclipse.xtext.ui.editor.utils.EditorUtils
 import org.eclipse.xtext.validation.Issue
-import org.contextmapper.dsl.quickfixes.CreateMissingBoundedContextQuickFix
+
+import static org.contextmapper.dsl.quickfixes.CreateMissingBoundedContextQuickFix.LINK_DIAGNOSTIC_MESSAGE_PATTERN
 
 /**
  * Custom quickfix registry.
  */
 class ContextMappingDSLQuickfixProvider extends DefaultQuickfixProvider {
-
-	static final String LINK_DIAGNOSTIC_MESSAGE_PATTERN = "^Couldn't resolve reference to %s '([a-zA-Z_][a-zA-Z0-9_]*)'.";
 
 	@Fix(DomainObjectValidator.ID_IS_PRIMITIVE_CODE)
 	def extractValueObject(Issue issue, IssueResolutionAcceptor acceptor) {
