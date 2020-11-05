@@ -32,6 +32,8 @@ import org.eclipse.xtext.ui.editor.utils.EditorUtils
 import org.eclipse.xtext.validation.Issue
 
 import static org.contextmapper.dsl.quickfixes.CreateMissingBoundedContextQuickFix.LINK_DIAGNOSTIC_MESSAGE_PATTERN
+import org.contextmapper.dsl.validation.UserRequirementsValidator
+import org.contextmapper.dsl.quickfixes.SplitStoryByVerb
 
 /**
  * Custom quickfix registry.
@@ -41,6 +43,11 @@ class ContextMappingDSLQuickfixProvider extends DefaultQuickfixProvider {
 	@Fix(DomainObjectValidator.ID_IS_PRIMITIVE_CODE)
 	def extractValueObject(Issue issue, IssueResolutionAcceptor acceptor) {
 		applyCMLQuickfix(issue, acceptor, new ExtractIDValueObjectQuickFix());
+	}
+
+	@Fix(UserRequirementsValidator.ID_SPLIT_FEATURE_BY_VERB_SUGGESTION)
+	def splitStoryByVerb(Issue issue, IssueResolutionAcceptor acceptor) {
+		applyCMLQuickfix(issue, acceptor, new SplitStoryByVerb);
 	}
 
 	@Fix(Diagnostic.LINKING_DIAGNOSTIC)

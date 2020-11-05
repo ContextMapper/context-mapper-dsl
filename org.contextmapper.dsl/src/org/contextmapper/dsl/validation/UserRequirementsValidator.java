@@ -17,6 +17,7 @@ package org.contextmapper.dsl.validation;
 
 import static org.contextmapper.dsl.validation.ValidationMessages.ENTITY_NAME_CONTAINS_INVALID_CHARACTERS;
 import static org.contextmapper.dsl.validation.ValidationMessages.VERB_CONTAINS_INVALID_CHARACTERS;
+import static org.contextmapper.dsl.validation.ValidationMessages.SPLIT_STORY_BY_VERB_SUGGESTION;
 
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLPackage;
 import org.contextmapper.dsl.contextMappingDSL.Feature;
@@ -25,6 +26,8 @@ import org.eclipse.xtext.validation.Check;
 import org.eclipse.xtext.validation.EValidatorRegistrar;
 
 public class UserRequirementsValidator extends AbstractDeclarativeValidator {
+
+	public static final String ID_SPLIT_FEATURE_BY_VERB_SUGGESTION = "split-feature-by-verb-suggestion";
 
 	@Override
 	public void register(EValidatorRegistrar registrar) {
@@ -44,6 +47,12 @@ public class UserRequirementsValidator extends AbstractDeclarativeValidator {
 
 		if (!feature.getVerb().matches(AbstractCMLValidator.ID_VALIDATION_PATTERN))
 			warning(VERB_CONTAINS_INVALID_CHARACTERS, feature, ContextMappingDSLPackage.Literals.FEATURE__VERB);
+	}
+
+	@Check
+	public void provideStorySplittingSuggestion(final Feature feature) {
+		if (feature.getVerb() != null && !"".equals(feature.getVerb()))
+			info(SPLIT_STORY_BY_VERB_SUGGESTION, feature, ContextMappingDSLPackage.Literals.FEATURE__VERB, ID_SPLIT_FEATURE_BY_VERB_SUGGESTION);
 	}
 
 }

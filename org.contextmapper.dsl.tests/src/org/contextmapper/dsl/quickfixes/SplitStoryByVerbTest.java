@@ -36,9 +36,9 @@ public class SplitStoryByVerbTest {
 		UserStory story = ContextMappingDSLFactory.eINSTANCE.createUserStory();
 		story.setName("TestStory");
 		Feature feature = ContextMappingDSLFactory.eINSTANCE.createFeature();
-		story.setRole("Tester"); // as a
-		feature.setVerb("create"); // I want to
-		feature.setEntity("UnitTest"); // a
+		story.setRole("Tester"); // as a _
+		feature.setVerb("create"); // I want to _
+		feature.setEntity("UnitTest"); // a _
 		story.getFeatures().add(feature);
 
 		// when
@@ -49,7 +49,7 @@ public class SplitStoryByVerbTest {
 		assertEquals(2, story.getFeatures().size());
 		Set<String> verbs = story.getFeatures().stream().map(f -> f.getVerb()).collect(Collectors.toSet());
 		assertTrue(verbs.contains("create"));
-		assertTrue(verbs.contains("{verb}"));
+		assertTrue(verbs.contains("\"{verb}\""));
 	}
 
 	@Test

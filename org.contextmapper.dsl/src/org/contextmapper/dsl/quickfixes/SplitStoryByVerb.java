@@ -30,7 +30,7 @@ public class SplitStoryByVerb implements CMLQuickFix<Feature> {
 
 		UserRequirement story = (UserRequirement) contextObject.eContainer();
 		Feature newFeature = EcoreUtil2.copy(contextObject);
-		newFeature.setVerb("{verb}");
+		newFeature.setVerb("\"{verb}\"");
 		story.getFeatures().add(newFeature);
 	}
 
