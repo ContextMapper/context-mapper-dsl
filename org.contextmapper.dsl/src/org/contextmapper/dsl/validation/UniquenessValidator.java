@@ -19,10 +19,11 @@ import static org.contextmapper.dsl.validation.ValidationMessages.AGGREGATE_NAME
 import static org.contextmapper.dsl.validation.ValidationMessages.BOUNDED_CONTEXT_NAME_NOT_UNIQUE;
 import static org.contextmapper.dsl.validation.ValidationMessages.DOMAIN_OBJECT_NOT_UNIQUE;
 import static org.contextmapper.dsl.validation.ValidationMessages.MODULE_NAME_NOT_UNIQUE;
-import static org.contextmapper.dsl.validation.ValidationMessages.USE_CASE_NAME_NOT_UNIQUE;
 import static org.contextmapper.dsl.validation.ValidationMessages.SERVICE_NAME_NOT_UNIQUE_IN_BC;
 import static org.contextmapper.dsl.validation.ValidationMessages.SERVICE_NAME_NOT_UNIQUE_IN_SUBDOMAIN;
 import static org.contextmapper.dsl.validation.ValidationMessages.SUBDOMAIN_OBJECT_NOT_UNIQUE;
+import static org.contextmapper.dsl.validation.ValidationMessages.USE_CASE_NAME_NOT_UNIQUE;
+import static org.contextmapper.dsl.validation.ValidationMessages.DOMAIN_NOT_UNIQUE;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -34,6 +35,7 @@ import org.contextmapper.dsl.cml.CMLModelObjectsResolvingHelper;
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLPackage;
+import org.contextmapper.dsl.contextMappingDSL.Domain;
 import org.contextmapper.dsl.contextMappingDSL.SculptorModule;
 import org.contextmapper.dsl.contextMappingDSL.Subdomain;
 import org.contextmapper.dsl.contextMappingDSL.UserRequirement;
@@ -44,10 +46,9 @@ import org.eclipse.xtext.EcoreUtil2;
 import org.eclipse.xtext.validation.Check;
 import org.eclipse.xtext.validation.EValidatorRegistrar;
 import org.eclipse.xtext.xbase.lib.Functions.Function1;
+import org.eclipse.xtext.xbase.lib.IteratorExtensions;
 
 import com.google.common.collect.Sets;
-
-import org.eclipse.xtext.xbase.lib.IteratorExtensions;
 
 public class UniquenessValidator extends AbstractCMLValidator {
 
@@ -65,6 +66,18 @@ public class UniquenessValidator extends AbstractCMLValidator {
 			}));
 			if (IteratorExtensions.size(duplicateBoundedContexts) > 1)
 				error(String.format(BOUNDED_CONTEXT_NAME_NOT_UNIQUE, bc.getName()), bc, ContextMappingDSLPackage.Literals.BOUNDED_CONTEXT__NAME);
+		}
+	}
+
+	@Check
+	public void validateThatDomainNameIsUnique(final Domain domain) {
+		if (domain != null) {
+			Iterator<Domain> allDomains = new CMLModelObjectsResolvingHelper(getRootCMLModel(domain)).resolveAllObjectsOfType(Domain.class).iterator();
+			Iterator<Domain> duplicateDomains = IteratorExtensions.filter(allDomains, ((Function1<Domain, Boolean>) (Domain d) -> {
+				return domain.getName().equals(d.getName());
+			}));
+			if (IteratorExtensions.size(duplicateDomains) > 1)
+				error(String.format(DOMAIN_NOT_UNIQUE, domain.getName()), domain, ContextMappingDSLPackage.Literals.DOMAIN_PART__NAME);
 		}
 	}
 
