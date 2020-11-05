@@ -15,8 +15,6 @@
  */
 package org.contextmapper.dsl.quickfixes;
 
-import java.util.Optional;
-
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
