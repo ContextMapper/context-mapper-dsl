@@ -37,7 +37,7 @@ class UniquenessValidatorTest {
 	ParseHelper<ContextMappingModel> parseHelper
 
 	ValidationTestHelper validationTestHelper = new ValidationTestHelper();
-	
+
 	@Test
 	def void cannotDefineDuplicateBC() {
 		// given
@@ -54,7 +54,41 @@ class UniquenessValidatorTest {
 		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.BOUNDED_CONTEXT, "",
 			String.format(BOUNDED_CONTEXT_NAME_NOT_UNIQUE, "ContextA"));
 	}
-	
+
+	@Test
+	def void cannotDefineDuplicateDomain() {
+		// given
+		val String dslSnippet = '''
+			Domain TestDomain {
+			}
+			Domain TestDomain {
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.DOMAIN, "",
+			String.format(DOMAIN_NOT_UNIQUE, "TestDomain"));
+	}
+
+	@Test
+	def void cannotDefineSubdomainWithDomainName() {
+		// given
+		val String dslSnippet = '''
+			Domain TestDomain {
+				Subdomain TestDomain {
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.SUBDOMAIN, "",
+			String.format(SUBDOMAIN_NAME_EQUALS_DOMAIN_NAME, "TestDomain"));
+	}
+
 	@Test
 	def void cannotDefineDuplicateSubdomain() {
 		// given
@@ -73,7 +107,7 @@ class UniquenessValidatorTest {
 		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.SUBDOMAIN, "",
 			String.format(SUBDOMAIN_OBJECT_NOT_UNIQUE, "TestSubdomain"));
 	}
-	
+
 	@Test
 	def void cannotDefineDuplicateModule() {
 		// given
@@ -90,7 +124,7 @@ class UniquenessValidatorTest {
 		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.SCULPTOR_MODULE, "",
 			String.format(MODULE_NAME_NOT_UNIQUE, "Mod"));
 	}
-	
+
 	@Test
 	def void cannotDefineDuplicateAggregate() {
 		// given
@@ -107,7 +141,7 @@ class UniquenessValidatorTest {
 		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.AGGREGATE, "",
 			String.format(AGGREGATE_NAME_NOT_UNIQUE, "agg"));
 	}
-	
+
 	@Test
 	def void cannotDefineDuplicateUseCases() {
 		// given
@@ -122,7 +156,7 @@ class UniquenessValidatorTest {
 		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.USER_REQUIREMENT, "",
 			String.format(USE_CASE_NAME_NOT_UNIQUE, "uc"));
 	}
-	
+
 	@Test
 	def void canDefineDuplicateEntityInDifferentAggregates() {
 		// given
@@ -142,7 +176,7 @@ class UniquenessValidatorTest {
 		assertThatNoParsingErrorsOccurred(result);
 		assertThatNoValidationErrorsOccurred(result);
 	}
-	
+
 	@Test
 	def void cannotDefineDuplicateDomainObjectWithinAggregate() {
 		// given
@@ -161,7 +195,7 @@ class UniquenessValidatorTest {
 		validationTestHelper.assertError(result, TacticdslPackage.Literals.SIMPLE_DOMAIN_OBJECT, "",
 			String.format(DOMAIN_OBJECT_NOT_UNIQUE, "Account"));
 	}
-	
+
 	@Test
 	def void cannotDefineDuplicateDomainObjectWithinModule() {
 		// given
@@ -180,7 +214,7 @@ class UniquenessValidatorTest {
 		validationTestHelper.assertError(result, TacticdslPackage.Literals.SIMPLE_DOMAIN_OBJECT, "",
 			String.format(DOMAIN_OBJECT_NOT_UNIQUE, "Account"));
 	}
-	
+
 	@Test
 	def void cannotDefineDuplicateDomainObjectWithinSubdomain() {
 		// given
@@ -218,7 +252,7 @@ class UniquenessValidatorTest {
 		validationTestHelper.assertError(result, TacticdslPackage.Literals.SERVICE_REPOSITORY_OPTION, "",
 			String.format(SERVICE_NAME_NOT_UNIQUE_IN_BC, "TestService"));
 	}
-	
+
 	@Test
 	def void cannotDefineDuplicateServiceInSubdomain() {
 		// given
