@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
 import org.contextmapper.dsl.contextMappingDSL.Feature;
+import org.contextmapper.dsl.contextMappingDSL.StoryFeature;
 import org.contextmapper.dsl.contextMappingDSL.UserStory;
 import org.contextmapper.dsl.exception.ContextMapperApplicationException;
 import org.junit.jupiter.api.Test;
@@ -35,7 +36,7 @@ public class SplitStoryByVerbTest {
 		// given
 		UserStory story = ContextMappingDSLFactory.eINSTANCE.createUserStory();
 		story.setName("TestStory");
-		Feature feature = ContextMappingDSLFactory.eINSTANCE.createFeature();
+		StoryFeature feature = ContextMappingDSLFactory.eINSTANCE.createStoryFeature();
 		story.setRole("Tester"); // as a _
 		feature.setVerb("create"); // I want to _
 		feature.setEntity("UnitTest"); // a _

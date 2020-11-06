@@ -16,6 +16,7 @@
 package org.contextmapper.dsl.quickfixes;
 
 import org.contextmapper.dsl.contextMappingDSL.Feature;
+import org.contextmapper.dsl.contextMappingDSL.StoryFeature;
 import org.contextmapper.dsl.contextMappingDSL.UserRequirement;
 import org.contextmapper.dsl.exception.ContextMapperApplicationException;
 import org.eclipse.emf.ecore.EObject;
@@ -29,7 +30,11 @@ public class SplitStoryByVerb implements CMLQuickFix<Feature> {
 			throw new ContextMapperApplicationException("Cannot apply quickfix, as the provided feature is not embedded into to a user story or use case.");
 
 		UserRequirement story = (UserRequirement) contextObject.eContainer();
-		Feature newFeature = EcoreUtil2.copy(contextObject);
+		Feature newFeature;
+		if (contextObject instanceof StoryFeature)
+			newFeature = EcoreUtil2.copy((StoryFeature) contextObject);
+		else
+			newFeature = EcoreUtil2.copy(contextObject);
 		newFeature.setVerb("\"{verb}\"");
 		story.getFeatures().add(newFeature);
 	}

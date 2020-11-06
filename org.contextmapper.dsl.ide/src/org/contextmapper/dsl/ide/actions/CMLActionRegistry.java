@@ -43,8 +43,11 @@ import org.contextmapper.dsl.ide.actions.impl.SwitchFromSharedKernelToPartnershi
 import org.contextmapper.dsl.ide.edit.WorkspaceEditRecorder;
 import org.contextmapper.dsl.quickfixes.CMLQuickFix;
 import org.contextmapper.dsl.quickfixes.CreateMissingBoundedContextQuickFix;
+import org.contextmapper.dsl.quickfixes.SplitStoryByVerb;
 import org.contextmapper.dsl.quickfixes.tactic.ExtractIDValueObjectQuickFix;
 import org.contextmapper.dsl.validation.DomainObjectValidator;
+import org.contextmapper.dsl.validation.DomainValidator;
+import org.contextmapper.dsl.validation.UserRequirementsValidator;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
@@ -108,6 +111,7 @@ public class CMLActionRegistry {
 	private void registerAllQuickFixes() {
 		// register quick fixes here:
 		registerQuickFix(DomainObjectValidator.ID_IS_PRIMITIVE_CODE, new ExtractIDValueObjectQuickFix());
+		registerQuickFix(UserRequirementsValidator.ID_SPLIT_FEATURE_BY_VERB_SUGGESTION, new SplitStoryByVerb());
 	}
 
 	public List<? extends Command> getApplicableActionCommands(CMLResource resource, List<EObject> selectedObjects) {

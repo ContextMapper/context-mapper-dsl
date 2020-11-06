@@ -210,12 +210,20 @@ UseCase:
 UserStory:
 	'UserStory' name=ID 
 	(OPEN
-		(('As a' | 'As an') role=STRING ('I want to' features+=Feature)+ 'so that' benefit=STRING)?
+		(('As a' | 'As an') role=STRING (features+=Feature)+ 'so that' benefit=STRING)?
 	CLOSE)?
 ;
 
 Feature:
+	NormalFeature | StoryFeature
+;
+
+NormalFeature:
 	verb=(UserActivityDefaultVerb | STRING) (entityArticle='a' | entityArticle='an')? entity=STRING ((entityAttributesPreposition='with its' | entityAttributesPreposition='with their') entityAttributes+=STRING ("," entityAttributes+=STRING)*)? ((containerEntityPreposition='in' | containerEntityPreposition='for' | containerEntityPreposition='to')(containerEntityArticle='a' | containerEntityArticle='an')? containerEntity=STRING)?
+;
+
+StoryFeature:
+	'I want to' verb=(UserActivityDefaultVerb | STRING) (entityArticle='a' | entityArticle='an')? entity=STRING ((entityAttributesPreposition='with its' | entityAttributesPreposition='with their') entityAttributes+=STRING ("," entityAttributes+=STRING)*)? ((containerEntityPreposition='in' | containerEntityPreposition='for' | containerEntityPreposition='to')(containerEntityArticle='a' | containerEntityArticle='an')? containerEntity=STRING)?
 ;
 
 UserActivityDefaultVerb:
