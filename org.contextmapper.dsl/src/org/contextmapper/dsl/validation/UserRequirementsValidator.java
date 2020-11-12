@@ -21,6 +21,7 @@ import static org.contextmapper.dsl.validation.ValidationMessages.SPLIT_STORY_BY
 
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLPackage;
 import org.contextmapper.dsl.contextMappingDSL.Feature;
+import org.contextmapper.dsl.contextMappingDSL.UserStory;
 import org.eclipse.xtext.validation.AbstractDeclarativeValidator;
 import org.eclipse.xtext.validation.Check;
 import org.eclipse.xtext.validation.EValidatorRegistrar;
@@ -51,8 +52,15 @@ public class UserRequirementsValidator extends AbstractDeclarativeValidator {
 
 	@Check
 	public void provideStorySplittingSuggestion(final Feature feature) {
-		if (feature.getVerb() != null && !"".equals(feature.getVerb()))
-			info(SPLIT_STORY_BY_VERB_SUGGESTION, feature, ContextMappingDSLPackage.Literals.FEATURE__VERB, ID_SPLIT_FEATURE_BY_VERB_SUGGESTION);
+		if (feature.getVerb() == null || "".equals(feature.getVerb()))
+			return;
+
+		if (feature.eContainer() instanceof UserStory) {
+			UserStory story = (UserStory) feature.eContainer();
+			if (story.getSplittingStory() == null && story.getFeatures().size() == 1)
+				info(SPLIT_STORY_BY_VERB_SUGGESTION, feature, ContextMappingDSLPackage.Literals.FEATURE__VERB, ID_SPLIT_FEATURE_BY_VERB_SUGGESTION);
+		}
+
 	}
 
 }

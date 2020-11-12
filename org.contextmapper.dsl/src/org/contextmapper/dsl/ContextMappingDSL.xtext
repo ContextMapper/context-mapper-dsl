@@ -208,7 +208,7 @@ UseCase:
 ;
 
 UserStory:
-	'UserStory' name=ID 
+	'UserStory' name=ID ('split by' splittingStory=[UserStory])?
 	(OPEN
 		(('As a' | 'As an') role=STRING (features+=Feature)+ 'so that' benefit=STRING)?
 	CLOSE)?

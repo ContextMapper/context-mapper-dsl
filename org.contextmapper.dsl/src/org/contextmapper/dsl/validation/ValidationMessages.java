@@ -60,5 +60,5 @@ public class ValidationMessages {
 	public static final String REFERENCE_TO_NOT_REACHABLE_TYPE = "The object '%s' is not part of this Bounded Context and not reachable through Context Map relationships. Maybe you want to create a relationship with the context that contains that object?";
 
 	/* Quickfix suggestions */
-	public static final String SPLIT_STORY_BY_VERB_SUGGESTION = "You could split your story to provide other verbs (operations).";
+	public static final String SPLIT_STORY_BY_VERB_SUGGESTION = "You could split your story by its operation/verb.";
 }

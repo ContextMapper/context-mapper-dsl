@@ -15,10 +15,16 @@
  */
 package org.contextmapper.dsl.ide.tests.quickfixes
 
-import org.contextmapper.dsl.ide.tests.AbstractCMLLanguageServerTest
+import com.google.gson.JsonArray
+import com.google.gson.JsonPrimitive
+import org.contextmapper.dsl.ide.commands.CMLCommandService
+import org.contextmapper.dsl.ide.tests.commands.AbstractCMLCommandTest
+import org.eclipse.lsp4j.ExecuteCommandParams
 import org.junit.jupiter.api.Test
 
-class SplitStoryByVerbQuickFixTest extends AbstractCMLLanguageServerTest {
+import static org.junit.jupiter.api.Assertions.*
+
+class SplitStoryByVerbQuickFixTest extends AbstractCMLCommandTest {
 
 	@Test
 	def void canOfferCodeAction() {
@@ -37,13 +43,78 @@ class SplitStoryByVerbQuickFixTest extends AbstractCMLLanguageServerTest {
 				    file://«this.root»/MyModel.cml,TestStory
 				title : Split Story by Verb/Operation
 				kind : quickfix
-				command : 
+				command : Command [
+				  title = "Split Story by Verb/Operation"
+				  command = "cml.quickfix.command.splitStoryByVerb.proxy"
+				  arguments = LinkedList (
+				    "file://«this.root»/MyModel.cml",
+				    "TestStory"
+				  )
+				]
 				codes : split-feature-by-verb-suggestion
-				edit : changes :
-				    MyModel.cml :  I want to "{verb}" a "UnitTest" [[2, 30] .. [2, 30]]
-				documentChanges : 
+				edit : 
 			'''
 		]
+	}
+
+	@Test
+	def void testExecuteQuickfix() {
+		// given
+		initializeCommandsDynamically()
+		val model = '''
+			UserStory TestStory {
+			  As an "Insurance Employee" I want to "create" a "Customer" so that "I am able to manage customer data ..."
+			}
+		'''
+		val fileURI = 'test.cml'.writeFile(model)
+
+		// when
+		val selectedVerbs = new JsonArray
+		selectedVerbs.add("search")
+		selectedVerbs.add("update")
+		selectedVerbs.add("delete")
+
+		val quickFixParams = new JsonArray
+		quickFixParams.add("TestStory")
+		quickFixParams.add(selectedVerbs)
+		val result = languageServer.executeCommand(
+			new ExecuteCommandParams("cml.quickfix.command.splitStoryByVerb",
+				#[new JsonPrimitive(fileURI), quickFixParams]))
+		val resultVal = result.get as String
+
+		// then
+		CMLCommandService.COMMAND_EXECUTED_RETURN_VALUE.assertEquals(resultVal)
+	}
+
+	@Test
+	def void cannotExecuteQuickfix4MultipleFeatures() {
+		// given
+		initializeCommandsDynamically()
+		val model = '''
+			UserStory TestStory {
+			  As an "Insurance Employee" 
+			  	I want to "create" a "Customer"
+			  	I want to "update" a "Customer" 
+			  so that "I am able to manage customer data ..."
+			}
+		'''
+		val fileURI = 'test.cml'.writeFile(model)
+
+		// when
+		val selectedVerbs = new JsonArray
+		selectedVerbs.add("search")
+		selectedVerbs.add("delete")
+
+		val quickFixParams = new JsonArray
+		quickFixParams.add("TestStory")
+		quickFixParams.add(selectedVerbs)
+		val result = languageServer.executeCommand(
+			new ExecuteCommandParams("cml.quickfix.command.splitStoryByVerb",
+				#[new JsonPrimitive(fileURI), quickFixParams]))
+		val resultVal = result.get as String
+
+		// then
+		assertTrue(resultVal.startsWith(CMLCommandService.COMMAND_EXECUTION_ERROR_PREFIX));
 	}
 
 }

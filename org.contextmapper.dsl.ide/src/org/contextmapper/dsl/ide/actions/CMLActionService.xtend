@@ -15,12 +15,14 @@
  */
 package org.contextmapper.dsl.ide.actions
 
+import com.google.common.collect.Lists
 import com.google.inject.Inject
-import java.util.stream.Collectors
+import java.util.List
+import org.contextmapper.dsl.cml.CMLResource
+import org.eclipse.lsp4j.CodeAction
+import org.eclipse.lsp4j.Command
 import org.eclipse.lsp4j.jsonrpc.messages.Either
 import org.eclipse.xtext.ide.server.codeActions.ICodeActionService2
-import com.google.common.collect.Lists
-import org.contextmapper.dsl.cml.CMLResource
 
 class CMLActionService implements ICodeActionService2 {
 
@@ -37,7 +39,7 @@ class CMLActionService implements ICodeActionService2 {
 		val selectedObjects = selectionResolver.resolveAllSelectedEObjects(resource,
 			options.document.getOffSet(startPosition), options.document.getOffSet(endPosition));
 
-		val allActions = Lists.newLinkedList
+		val List<Either<Command, CodeAction>> allActions = Lists.newLinkedList
 
 		// general actions that can be applied (such as refactorings)
 		allActions.addAll(actionRegistry.getApplicableActionCommands(resource, selectedObjects).map [
@@ -47,9 +49,7 @@ class CMLActionService implements ICodeActionService2 {
 		// quick fix commands (actions bound to validation message)
 		if (!params.context.diagnostics.isEmpty) {
 			for (d : params.context.diagnostics) {
-				allActions.addAll(actionRegistry.getApplicableQuickfixes(d, options).stream.map [
-					Either.forRight(it)
-				].collect(Collectors.toList));
+				allActions.addAll(actionRegistry.getApplicableQuickfixes(d, options));
 			}
 		}
 		return allActions;

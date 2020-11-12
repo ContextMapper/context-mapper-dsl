@@ -15,28 +15,50 @@
  */
 package org.contextmapper.dsl.quickfixes;
 
+import java.util.Arrays;
+import java.util.Set;
+
+import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.Feature;
 import org.contextmapper.dsl.contextMappingDSL.StoryFeature;
-import org.contextmapper.dsl.contextMappingDSL.UserRequirement;
+import org.contextmapper.dsl.contextMappingDSL.UserStory;
 import org.contextmapper.dsl.exception.ContextMapperApplicationException;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.EcoreUtil2;
 
+import com.google.common.collect.Sets;
+
 public class SplitStoryByVerb implements CMLQuickFix<Feature> {
+
+	private Set<String> defaultVerbs = Sets.newHashSet(Arrays.asList(new String[] { "create", "read", "update", "delete" }));
+	private Set<String> verbs = Sets.newHashSet(Arrays.asList(new String[] { "create", "read", "update", "delete" }));
 
 	@Override
 	public void applyQuickfix(Feature contextObject) {
-		if (!(contextObject.eContainer() instanceof UserRequirement))
+		if (!(contextObject.eContainer() instanceof UserStory))
 			throw new ContextMapperApplicationException("Cannot apply quickfix, as the provided feature is not embedded into to a user story or use case.");
 
-		UserRequirement story = (UserRequirement) contextObject.eContainer();
-		Feature newFeature;
-		if (contextObject instanceof StoryFeature)
-			newFeature = EcoreUtil2.copy((StoryFeature) contextObject);
-		else
-			newFeature = EcoreUtil2.copy(contextObject);
-		newFeature.setVerb("\"{verb}\"");
-		story.getFeatures().add(newFeature);
+		UserStory story = (UserStory) contextObject.eContainer();
+		if (!(story.eContainer() instanceof ContextMappingModel))
+			throw new ContextMapperApplicationException("Cannot apply quickfix, as the given story is not part of a CML model.");
+
+		UserStory splitStory = EcoreUtil2.copy(story);
+		splitStory.setName(story.getName() + "_Split");
+		StoryFeature feature = (StoryFeature) splitStory.getFeatures().get(0);
+		splitStory.getFeatures().clear();
+
+		for (String verb : verbs) {
+			StoryFeature newFeature = EcoreUtil2.copy(feature);
+			if (defaultVerbs.contains(verb))
+				newFeature.setVerb(verb);
+			else
+				newFeature.setVerb("\"" + verb + "\"");
+			splitStory.getFeatures().add(newFeature);
+		}
+
+		ContextMappingModel model = (ContextMappingModel) story.eContainer();
+		model.getUserRequirements().add(splitStory);
+		story.setSplittingStory(splitStory);
 	}
 
 	@Override
@@ -45,6 +67,10 @@ public class SplitStoryByVerb implements CMLQuickFix<Feature> {
 			applyQuickfix((Feature) contextObject);
 		else
 			throw new ContextMapperApplicationException("Cannot apply quickfix, as the given context object is no user story feature.");
+	}
+
+	public void setVerbs(Set<String> verbs) {
+		this.verbs = Sets.newHashSet(verbs);
 	}
 
 	@Override

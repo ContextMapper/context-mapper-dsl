@@ -19,38 +19,69 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
+import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.Feature;
 import org.contextmapper.dsl.contextMappingDSL.StoryFeature;
 import org.contextmapper.dsl.contextMappingDSL.UserStory;
 import org.contextmapper.dsl.exception.ContextMapperApplicationException;
 import org.junit.jupiter.api.Test;
 
+import com.google.common.collect.Sets;
+
 public class SplitStoryByVerbTest {
 
 	@Test
 	public void canSplitStoryFeature() {
 		// given
+		ContextMappingModel model = ContextMappingDSLFactory.eINSTANCE.createContextMappingModel();
 		UserStory story = ContextMappingDSLFactory.eINSTANCE.createUserStory();
 		story.setName("TestStory");
 		StoryFeature feature = ContextMappingDSLFactory.eINSTANCE.createStoryFeature();
 		story.setRole("Tester"); // as a _
-		feature.setVerb("create"); // I want to _
+		feature.setVerb("develop"); // I want to _
 		feature.setEntity("UnitTest"); // a _
 		story.getFeatures().add(feature);
+		model.getUserRequirements().add(story);
 
 		// when
 		SplitStoryByVerb qf = new SplitStoryByVerb();
+		qf.setVerbs(Sets.newHashSet(Arrays.asList(new String[] { "create", "run", "evolve" })));
 		qf.applyQuickfix(feature);
 
 		// then
-		assertEquals(2, story.getFeatures().size());
-		Set<String> verbs = story.getFeatures().stream().map(f -> f.getVerb()).collect(Collectors.toSet());
+		assertEquals(2, model.getUserRequirements().size());
+		UserStory originalStory = (UserStory) model.getUserRequirements().get(0);
+		UserStory splitStory = (UserStory) model.getUserRequirements().get(1);
+		assertEquals("TestStory", originalStory.getName());
+		assertEquals("TestStory_Split", splitStory.getName());
+		assertEquals("TestStory_Split", originalStory.getSplittingStory().getName());
+		assertEquals(3, splitStory.getFeatures().size());
+		Set<String> verbs = splitStory.getFeatures().stream().map(f -> f.getVerb()).collect(Collectors.toSet());
 		assertTrue(verbs.contains("create"));
-		assertTrue(verbs.contains("\"{verb}\""));
+		assertTrue(verbs.contains("\"run\""));
+		assertTrue(verbs.contains("\"evolve\""));
+	}
+
+	@Test
+	public void cannotApplyQuickFixIfStoryIsNotEmbeddedInCMLModel() {
+		UserStory story = ContextMappingDSLFactory.eINSTANCE.createUserStory();
+		story.setName("TestStory");
+		StoryFeature feature = ContextMappingDSLFactory.eINSTANCE.createStoryFeature();
+		story.setRole("Tester"); // as a _
+		feature.setVerb("develop"); // I want to _
+		feature.setEntity("UnitTest"); // a _
+		story.getFeatures().add(feature);
+
+		// when, then
+		assertThrows(ContextMapperApplicationException.class, () -> {
+			SplitStoryByVerb qf = new SplitStoryByVerb();
+			qf.applyQuickfix(feature);
+		});
 	}
 
 	@Test
