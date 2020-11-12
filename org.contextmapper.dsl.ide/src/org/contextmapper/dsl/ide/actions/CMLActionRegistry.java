@@ -41,10 +41,14 @@ import org.contextmapper.dsl.ide.actions.impl.SuspendPartnershipAction;
 import org.contextmapper.dsl.ide.actions.impl.SwitchFromPartnershipToSharedKernelAction;
 import org.contextmapper.dsl.ide.actions.impl.SwitchFromSharedKernelToPartnershipAction;
 import org.contextmapper.dsl.ide.edit.WorkspaceEditRecorder;
+import org.contextmapper.dsl.ide.quickfix.QuickfixCommandMapper;
+import org.contextmapper.dsl.ide.quickfix.impl.SplitStoryByVerbCommandMapper;
 import org.contextmapper.dsl.quickfixes.CMLQuickFix;
 import org.contextmapper.dsl.quickfixes.CreateMissingBoundedContextQuickFix;
+import org.contextmapper.dsl.quickfixes.SplitStoryByVerb;
 import org.contextmapper.dsl.quickfixes.tactic.ExtractIDValueObjectQuickFix;
 import org.contextmapper.dsl.validation.DomainObjectValidator;
+import org.contextmapper.dsl.validation.UserRequirementsValidator;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
@@ -52,6 +56,7 @@ import org.eclipse.lsp4j.CodeAction;
 import org.eclipse.lsp4j.CodeActionKind;
 import org.eclipse.lsp4j.Command;
 import org.eclipse.lsp4j.Diagnostic;
+import org.eclipse.lsp4j.jsonrpc.messages.Either;
 import org.eclipse.xtext.ide.server.codeActions.ICodeActionService2;
 
 import com.google.common.collect.Lists;
@@ -72,12 +77,14 @@ public class CMLActionRegistry {
 	private WorkspaceEditRecorder editRecorder;
 	@Inject
 	private SelectionContextResolver selectionResolver;
-	private Map<String, List<CMLQuickFix<? extends EObject>>> quickFixRegistry;
+	private Map<String, List<CMLQuickFix<? extends EObject>>> quickFixActionRegistry;
+	private Map<String, List<QuickfixCommandMapper>> quickFixCommandRegistry;
 
 	private static final String XTEXT_DIAGNOSTICS_PREFIX = "org.eclipse.xtext.diagnostics";
 
 	public CMLActionRegistry() {
-		this.quickFixRegistry = Maps.newHashMap();
+		this.quickFixActionRegistry = Maps.newHashMap();
+		this.quickFixCommandRegistry = Maps.newHashMap();
 		this.registerAllQuickFixes();
 	}
 
@@ -107,7 +114,8 @@ public class CMLActionRegistry {
 
 	private void registerAllQuickFixes() {
 		// register quick fixes here:
-		registerQuickFix(DomainObjectValidator.ID_IS_PRIMITIVE_CODE, new ExtractIDValueObjectQuickFix());
+		registerActionQuickFix(DomainObjectValidator.ID_IS_PRIMITIVE_CODE, new ExtractIDValueObjectQuickFix());
+		registerCommandQuickFix(UserRequirementsValidator.ID_SPLIT_FEATURE_BY_VERB_SUGGESTION, new SplitStoryByVerb(), "cml.quickfix.command.splitStoryByVerb");
 	}
 
 	public List<? extends Command> getApplicableActionCommands(CMLResource resource, List<EObject> selectedObjects) {
@@ -115,8 +123,8 @@ public class CMLActionRegistry {
 		return result;
 	}
 
-	public List<? extends CodeAction> getApplicableQuickfixes(Diagnostic diagnostic, ICodeActionService2.Options options) {
-		List<CodeAction> quickFixCodeActions = Lists.newLinkedList();
+	public List<Either<Command, CodeAction>> getApplicableQuickfixes(Diagnostic diagnostic, ICodeActionService2.Options options) {
+		List<Either<Command, CodeAction>> quickFixCodeActions = Lists.newLinkedList();
 
 		if (diagnostic.getCode() == null || diagnostic.getCode().get() == null || !(diagnostic.getCode().get() instanceof String))
 			return quickFixCodeActions;
@@ -125,17 +133,38 @@ public class CMLActionRegistry {
 		if (key.startsWith(XTEXT_DIAGNOSTICS_PREFIX))
 			quickFixCodeActions.addAll(createQuickFixes4XtextDiagnostics(diagnostic, options));
 
-		if (!quickFixRegistry.containsKey(key) || quickFixRegistry.get(key).isEmpty())
-			return quickFixCodeActions;
-
-		quickFixCodeActions.addAll(createQuickFixCodeActions4ValidationMessage(key, diagnostic, options));
+		quickFixCodeActions.addAll(createActionQuickFix4ValidationMessage(key, diagnostic, options));
+		quickFixCodeActions.addAll(createCommandQuickFix4ValidationMessage(key, diagnostic, options));
 		return quickFixCodeActions;
 	}
 
-	private List<CodeAction> createQuickFixCodeActions4ValidationMessage(String validationId, Diagnostic diagnostic, ICodeActionService2.Options options) {
-		List<CodeAction> codeActions = Lists.newLinkedList();
-		for (CMLQuickFix<? extends EObject> quickFix : quickFixRegistry.get(validationId)) {
-			codeActions.add(createQuickFixCodeAction(quickFix, diagnostic, options, false));
+	private List<Either<Command, CodeAction>> createActionQuickFix4ValidationMessage(String validationId, Diagnostic diagnostic, ICodeActionService2.Options options) {
+		List<Either<Command, CodeAction>> codeActions = Lists.newLinkedList();
+		if (quickFixActionRegistry.get(validationId) == null || quickFixActionRegistry.get(validationId).isEmpty())
+			return codeActions;
+
+		for (CMLQuickFix<? extends EObject> quickFix : quickFixActionRegistry.get(validationId)) {
+			codeActions.add(Either.forRight(createQuickFixCodeAction(quickFix, diagnostic, options, false)));
+		}
+		return codeActions;
+	}
+
+	private List<Either<Command, CodeAction>> createCommandQuickFix4ValidationMessage(String validationId, Diagnostic diagnostic, ICodeActionService2.Options options) {
+		List<Either<Command, CodeAction>> codeActions = Lists.newLinkedList();
+		if (quickFixCommandRegistry.get(validationId) == null || quickFixCommandRegistry.get(validationId).isEmpty())
+			return codeActions;
+
+		CMLResource cmlResource = new CMLResource(options.getResource());
+		List<EObject> objects = selectionResolver.resolveAllSelectedEObjects(cmlResource, options.getDocument().getOffSet(diagnostic.getRange().getStart()),
+				options.getDocument().getOffSet(diagnostic.getRange().getEnd()));
+		if (objects.isEmpty())
+			throw new ContextMapperApplicationException("We could not find the selected object for the triggered quickfix.");
+		for (QuickfixCommandMapper quickFixCommand : quickFixCommandRegistry.get(validationId)) {
+			CodeAction action = quickFixCommand.getCodeAction(cmlResource, objects.get(0));
+			List<Diagnostic> diagnostics = Lists.newLinkedList();
+			diagnostics.add(diagnostic);
+			action.setDiagnostics(diagnostics);
+			codeActions.add(Either.forRight(action));
 		}
 		return codeActions;
 	}
@@ -161,24 +190,30 @@ public class CMLActionRegistry {
 		return action;
 	}
 
-	private List<? extends CodeAction> createQuickFixes4XtextDiagnostics(Diagnostic diagnostic, ICodeActionService2.Options options) {
-		List<CodeAction> quickFixCodeActions = Lists.newLinkedList();
+	private List<Either<Command, CodeAction>> createQuickFixes4XtextDiagnostics(Diagnostic diagnostic, ICodeActionService2.Options options) {
+		List<Either<Command, CodeAction>> quickFixCodeActions = Lists.newLinkedList();
 		if (diagnostic.getCode().get().equals(org.eclipse.xtext.diagnostics.Diagnostic.LINKING_DIAGNOSTIC)
 				&& diagnostic.getMessage().matches(String.format(CreateMissingBoundedContextQuickFix.LINK_DIAGNOSTIC_MESSAGE_PATTERN, "BoundedContext"))) {
 			Pattern pattern = Pattern.compile(String.format(CreateMissingBoundedContextQuickFix.LINK_DIAGNOSTIC_MESSAGE_PATTERN, "BoundedContext"));
 			Matcher matcher = pattern.matcher(diagnostic.getMessage());
 			if (matcher.find()) {
 				CreateMissingBoundedContextQuickFix quickFix = new CreateMissingBoundedContextQuickFix(matcher.group(1));
-				quickFixCodeActions.add(createQuickFixCodeAction(quickFix, diagnostic, options, true));
+				quickFixCodeActions.add(Either.forRight(createQuickFixCodeAction(quickFix, diagnostic, options, true)));
 			}
 		}
 		return quickFixCodeActions;
 	}
 
-	private void registerQuickFix(String validationId, CMLQuickFix<? extends EObject> quickFix) {
-		if (!quickFixRegistry.containsKey(validationId))
-			quickFixRegistry.put(validationId, Lists.newLinkedList());
-		quickFixRegistry.get(validationId).add(quickFix);
+	private void registerActionQuickFix(String validationId, CMLQuickFix<? extends EObject> quickFix) {
+		if (!quickFixActionRegistry.containsKey(validationId))
+			quickFixActionRegistry.put(validationId, Lists.newLinkedList());
+		quickFixActionRegistry.get(validationId).add(quickFix);
+	}
+
+	private void registerCommandQuickFix(String validationId, CMLQuickFix<? extends EObject> quickFix, String commandId) {
+		if (!quickFixCommandRegistry.containsKey(validationId))
+			quickFixCommandRegistry.put(validationId, Lists.newLinkedList());
+		quickFixCommandRegistry.get(validationId).add(new SplitStoryByVerbCommandMapper(quickFix));
 	}
 
 }

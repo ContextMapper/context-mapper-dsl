@@ -159,6 +159,13 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 			requirement.regionFor.keyword("UserStory").prepend[newLines = 2]
 			requirement.regionFor.keyword("As a").prepend[newLine]
 			requirement.regionFor.keyword("As an").prepend[newLine]
+			
+			if(requirement.features.size > 1) {
+				for (feature : requirement.features) {
+					feature.prepend[newLine]
+				}
+				requirement.regionFor.keyword("so that").prepend[newLine]
+			}
 		}
 
 		requirement.regionFor.keyword("isLatencyCritical").prepend[newLine]

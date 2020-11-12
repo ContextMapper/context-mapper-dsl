@@ -26,6 +26,7 @@ import org.contextmapper.dsl.ide.commands.impl.generation.PlantUMLGenerationComm
 import org.contextmapper.dsl.ide.commands.impl.generation.ServiceCutterInputGenerationCommand;
 import org.contextmapper.dsl.ide.commands.impl.generation.ServiceCutterUserRepresentationExampleFileGenerationCommand;
 import org.contextmapper.dsl.ide.commands.impl.generation.ServiceCutterUserRepresentationsGenerationCommand;
+import org.contextmapper.dsl.ide.commands.impl.quickfix.SplitStoryByVerbCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.DeriveBoundedContextFromSubdomainsCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.DeriveFrontendAndBackendFromFeatureBCCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.DeriveSubdomainFromUserRequirementsCommand;
@@ -91,6 +92,7 @@ public class CMLCommandRegistry {
 		commandMap.put("cml.ar.switchPartnershipToSharedKernel", new SwitchFromPartnershipToSharedKernelCommand(editRecorder));
 		commandMap.put("cml.ar.switchSharedKernelToPartnership", new SwitchFromSharedKernelToPartnershipCommand(editRecorder));
 		commandMap.put("cml.ar.extractSuggestedService", new ExtractSuggestedServiceCommand(editRecorder));
+		commandMap.put("cml.quickfix.command.splitStoryByVerb", new SplitStoryByVerbCommand(editRecorder));
 	}
 
 	public CMLResourceCommand getCommand(String commandId) {

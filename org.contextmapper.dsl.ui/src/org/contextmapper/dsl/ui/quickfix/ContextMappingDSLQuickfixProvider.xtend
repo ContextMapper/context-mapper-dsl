@@ -18,8 +18,11 @@ package org.contextmapper.dsl.ui.quickfix
 import java.util.regex.Pattern
 import org.contextmapper.dsl.quickfixes.CMLQuickFix
 import org.contextmapper.dsl.quickfixes.CreateMissingBoundedContextQuickFix
+import org.contextmapper.dsl.quickfixes.SplitStoryByVerb
 import org.contextmapper.dsl.quickfixes.tactic.ExtractIDValueObjectQuickFix
+import org.contextmapper.dsl.ui.quickfix.context.SelectStoryVerbsContextCreator
 import org.contextmapper.dsl.validation.DomainObjectValidator
+import org.contextmapper.dsl.validation.UserRequirementsValidator
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.jface.text.source.ISourceViewer
 import org.eclipse.jface.text.source.SourceViewer
@@ -43,6 +46,19 @@ class ContextMappingDSLQuickfixProvider extends DefaultQuickfixProvider {
 		applyCMLQuickfix(issue, acceptor, new ExtractIDValueObjectQuickFix());
 	}
 
+	@Fix(UserRequirementsValidator.ID_SPLIT_FEATURE_BY_VERB_SUGGESTION)
+	def splitStoryByVerb(Issue issue, IssueResolutionAcceptor acceptor) {
+		val quickfix = new SplitStoryByVerb;
+		acceptor.accept(issue, quickfix.name, quickfix.description,
+			null, [ EObject element, IModificationContext context |
+				val quickFixContext = new SelectStoryVerbsContextCreator().context;
+				quickfix.verbs = quickFixContext.selectedVerbs
+				if (quickFixContext.finishedWizard)
+					quickfix.applyQuickfix2EObject(element);
+			]);
+		format();
+	}
+
 	@Fix(Diagnostic.LINKING_DIAGNOSTIC)
 	def provideQuickFix4WrongReference(Issue issue, IssueResolutionAcceptor acceptor) {
 		if (isValidationMessageLinkingProblem("BoundedContext", issue.message)) {
@@ -56,6 +72,10 @@ class ContextMappingDSLQuickfixProvider extends DefaultQuickfixProvider {
 			null, [ EObject element, IModificationContext context |
 				quickfix.applyQuickfix2EObject(element)
 			]);
+		format();
+	}
+
+	def format() {
 		val xEditor = EditorUtils.getActiveXtextEditor();
 		if (xEditor !== null) {
 			(xEditor.internalSourceViewer as SourceViewer).doOperation(ISourceViewer.FORMAT);
