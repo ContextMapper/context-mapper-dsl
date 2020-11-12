@@ -15,11 +15,12 @@ Require-Bundle: org.contextmapper.dsl,
  org.apache.log4j;bundle-version="1.2.15",
  com.google.gson;bundle-version="2.8.2"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Export-Package: org.contextmapper.dsl.ide.contentassist.antlr.internal,
+Export-Package: org.contextmapper.dsl.ide.commands,
  org.contextmapper.dsl.ide.contentassist.antlr,
- org.contextmapper.tactic.dsl.ide.contentassist.antlr.internal,
- org.contextmapper.tactic.dsl.ide.contentassist.antlr,
+ org.contextmapper.dsl.ide.contentassist.antlr.internal,
+ org.contextmapper.dsl.ide.quickfix.impl,
+ org.contextmapper.servicecutter.dsl.ide.commands,
  org.contextmapper.servicecutter.dsl.ide.contentassist.antlr,
  org.contextmapper.servicecutter.dsl.ide.contentassist.antlr.internal,
- org.contextmapper.dsl.ide.commands,
- org.contextmapper.servicecutter.dsl.ide.commands
+ org.contextmapper.tactic.dsl.ide.contentassist.antlr,
+ org.contextmapper.tactic.dsl.ide.contentassist.antlr.internal

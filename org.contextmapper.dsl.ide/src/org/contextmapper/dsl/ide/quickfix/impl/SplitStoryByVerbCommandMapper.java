@@ -43,21 +43,22 @@ public class SplitStoryByVerbCommandMapper implements QuickfixCommandMapper {
 		if (!(selectedObject instanceof Feature))
 			throw new ContextMapperApplicationException("Mapping exception: this quickfix was mapped to an object that is not of the type 'Feature'.");
 
+		UserStory story = getSelectedStory((Feature) selectedObject);
+
 		CodeAction codeAction = new CodeAction(quickFix.getName());
 		codeAction.setKind(CodeActionKind.QuickFix);
 
 		Command command = new Command(quickFix.getName(), "cml.quickfix.command.splitStoryByVerb.proxy");
-		command.setArguments(Lists.newLinkedList(Arrays.asList(new String[] { cmlResource.getURI().toString(), getSelectedStory(selectedObject).getName() })));
+		command.setArguments(Lists.newLinkedList(Arrays.asList(new String[] { cmlResource.getURI().toString(), story.getName() })));
 		codeAction.setCommand(command);
 
 		return codeAction;
 	}
 
-	private UserStory getSelectedStory(EObject selectedObject) {
-		Feature feature = (Feature) selectedObject;
+	private UserStory getSelectedStory(Feature feature) {
 		if (!(feature.eContainer() instanceof UserStory))
 			throw new ContextMapperApplicationException("Quick fix mapping exception: this quickfix can only be applied on User Stories.");
-		return (UserStory) selectedObject.eContainer();
+		return (UserStory) feature.eContainer();
 	}
 
 }
