@@ -171,7 +171,6 @@ Aggregate :
   "Aggregate" name=ID (OPEN
     (
     	(('responsibilities' ('=')? responsibilities+=STRING) ("," responsibilities+=STRING)*)? &
-    	('statesEnum' ('=')? statesEnum=[tacticdsl::Enum])? &
     	(
     		(('useCases' ('=')? userRequirements += [UseCase]) ("," userRequirements += [UseCase])*) |
     		(('userStories' ('=')? userRequirements += [UserStory]) ("," userRequirements += [UserStory])*) |
@@ -211,15 +210,27 @@ FlowStep:
 ;
 
 DomainEventProductionStep:
-	action=EitherCommandOrOperation ('invoked on' aggregate=[Aggregate] ('[' stateTransition=StateTransition ']')?)? 'produces event' eventProduction=EventProduction
+	action=EitherCommandOrOperation ('delegated to' aggregate=[Aggregate] ('[' stateTransition=StateTransition ']')?)? 'emits event' eventProduction=EventProduction
 ;
 
 StateTransition:
-	from=[tacticdsl::EnumValue] '->' to=[tacticdsl::EnumValue]
+	(from=[tacticdsl::EnumValue])? '->' target=StateTransitionTarget
+;
+
+StateTransitionTarget:
+	SingleStateTransitionTarget | AlternativeStateTransitionTarget
+;
+
+SingleStateTransitionTarget:
+	to+=[tacticdsl::EnumValue]
+;
+
+AlternativeStateTransitionTarget:
+	to+=[tacticdsl::EnumValue] ('X' to+=[tacticdsl::EnumValue])+
 ;
 
 CommandInvokationProductionStep:
-	'event' event=[tacticdsl::DomainEvent] 'issues' action=EitherCommandOrOperationInvokation
+	'event' event=[tacticdsl::DomainEvent] 'triggers' action=EitherCommandOrOperationInvokation
 ;
 
 EitherCommandOrOperation:
