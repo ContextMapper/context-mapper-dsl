@@ -29,6 +29,7 @@ import org.eclipse.xtext.testing.util.ParseHelper
 import org.eclipse.xtext.testing.validation.ValidationTestHelper
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.^extension.ExtendWith
+import org.contextmapper.tactic.dsl.tacticdsl.Enum
 
 import static org.contextmapper.dsl.util.ParsingErrorAssertions.*
 import static org.contextmapper.dsl.validation.ValidationMessages.*
@@ -357,4 +358,35 @@ class AggregateDSLParsingTest {
 		assertTrue(useCases.contains("testUseCase2"));
 		assertEquals("teamA", result.boundedContexts.get(0).aggregates.get(0).owner.name);
 	}
+	
+	@Test
+	def void canDefineAggregateStatesWithEnum() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext testContext {
+				Aggregate myAggregate {
+					enum States {
+						aggregateStates
+						STATE1, STATE2
+					}
+					enum NotStates {
+						STATE1, STATE2
+					}
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		val aggregate = result.boundedContexts.get(0).aggregates.get(0);
+		assertEquals(2, aggregate.domainObjects.size);
+		val Enum enum1 = aggregate.domainObjects.get(0) as Enum;
+		val Enum enum2 = aggregate.domainObjects.get(1) as Enum;
+		assertEquals("States", enum1.name);
+		assertEquals("NotStates", enum2.name);
+		assertTrue(enum1.definesAggregateStates);
+		assertFalse(enum2.definesAggregateStates);
+	}
+	
+	
 }

@@ -267,7 +267,7 @@ DomainEvent :
 CommandEvent :
   (comment=ML_COMMENT)?
   (doc=STRING)?
-  (abstract?="abstract")? "CommandEvent" name=ID ("extends" (("@"extends=[CommandEvent]) | (extendsName=JavaIdentifier)))?
+  (abstract?="abstract")? ("Command" | "CommandEvent") name=ID ("extends" (("@"extends=[CommandEvent]) | (extendsName=JavaIdentifier)))?
   ("with" ("@")?traits+=[Trait])* ("{"
     ("package" "=" package=JavaIdentifier )?
     (

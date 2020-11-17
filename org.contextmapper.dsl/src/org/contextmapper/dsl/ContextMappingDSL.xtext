@@ -206,7 +206,7 @@ Flow:
 	CLOSE)?;
 
 FlowStep:
-	DomainEventProductionStep | CommandInvokationProductionStep
+	DomainEventProductionStep | CommandInvokationStep
 ;
 
 DomainEventProductionStep:
@@ -218,26 +218,18 @@ StateTransition:
 ;
 
 StateTransitionTarget:
-	SingleStateTransitionTarget | ConcurrentStateTransitionTarget | ExclusiveAlternativeStateTransitionTarget | InclusiveAlternativeStateTransitionTarget
+	SingleStateTransitionTarget | ExclusiveAlternativeStateTransitionTarget
 ;
 
 SingleStateTransitionTarget:
 	to+=[tacticdsl::EnumValue]
 ;
 
-ConcurrentStateTransitionTarget:
-	to+=[tacticdsl::EnumValue] ('+' to+=[tacticdsl::EnumValue])+
-;
-
 ExclusiveAlternativeStateTransitionTarget:
 	to+=[tacticdsl::EnumValue] (('X' | 'x') to+=[tacticdsl::EnumValue])+
 ;
 
-InclusiveAlternativeStateTransitionTarget:
-	to+=[tacticdsl::EnumValue] (('O' | 'o') to+=[tacticdsl::EnumValue])+
-;
-
-CommandInvokationProductionStep:
+CommandInvokationStep:
 	'event' event=[tacticdsl::DomainEvent] 'triggers' action=EitherCommandOrOperationInvokation
 ;
 
