@@ -214,19 +214,27 @@ DomainEventProductionStep:
 ;
 
 StateTransition:
-	(from=[tacticdsl::EnumValue])? '->' target=StateTransitionTarget
+	(from+=[tacticdsl::EnumValue] (',' from+=[tacticdsl::EnumValue])?)? '->' target=StateTransitionTarget
 ;
 
 StateTransitionTarget:
-	SingleStateTransitionTarget | AlternativeStateTransitionTarget
+	SingleStateTransitionTarget | ConcurrentStateTransitionTarget | ExclusiveAlternativeStateTransitionTarget | InclusiveAlternativeStateTransitionTarget
 ;
 
 SingleStateTransitionTarget:
 	to+=[tacticdsl::EnumValue]
 ;
 
-AlternativeStateTransitionTarget:
-	to+=[tacticdsl::EnumValue] ('X' to+=[tacticdsl::EnumValue])+
+ConcurrentStateTransitionTarget:
+	to+=[tacticdsl::EnumValue] ('+' to+=[tacticdsl::EnumValue])+
+;
+
+ExclusiveAlternativeStateTransitionTarget:
+	to+=[tacticdsl::EnumValue] (('X' | 'x') to+=[tacticdsl::EnumValue])+
+;
+
+InclusiveAlternativeStateTransitionTarget:
+	to+=[tacticdsl::EnumValue] (('O' | 'o') to+=[tacticdsl::EnumValue])+
 ;
 
 CommandInvokationProductionStep:
@@ -242,7 +250,7 @@ EitherCommandOrOperationInvokation:
 ;
 
 CommandInvokation:
-	'command' (SingleCommandInvokation | ConcurrentCommandInvokation | AlternativeCommandInvokation)
+	'command' (SingleCommandInvokation | ConcurrentCommandInvokation | ExclusiveAlternativeCommandInvokation | InclusiveAlternativeCommandInvokation)
 ;
 
 SingleCommandInvokation:
@@ -250,15 +258,19 @@ SingleCommandInvokation:
 ;
 
 ConcurrentCommandInvokation:
-	commands+=[tacticdsl::CommandEvent] ('&' commands+=[tacticdsl::CommandEvent])+
+	commands+=[tacticdsl::CommandEvent] ('+' commands+=[tacticdsl::CommandEvent])+
 ;
 
-AlternativeCommandInvokation:
-	commands+=[tacticdsl::CommandEvent] ('X' commands+=[tacticdsl::CommandEvent])+
+ExclusiveAlternativeCommandInvokation:
+	commands+=[tacticdsl::CommandEvent] (('X' | 'x') commands+=[tacticdsl::CommandEvent])+
+;
+
+InclusiveAlternativeCommandInvokation:
+	commands+=[tacticdsl::CommandEvent] (('O' | 'o') commands+=[tacticdsl::CommandEvent])+
 ;
 
 OperationInvokation:
-	'operation' (SingleOperationInvokation | ConcurrentOperationInvokation | AlternativeOperationInvokation)
+	'operation' (SingleOperationInvokation | ConcurrentOperationInvokation | ExclusiveAlternativeOperationInvokation | InclusiveAlternativeOperationInvokation)
 ;
 
 SingleOperationInvokation:
@@ -266,15 +278,19 @@ SingleOperationInvokation:
 ;
 
 ConcurrentOperationInvokation:
-	operations+=[tacticdsl::ServiceOperation] ('&' operations+=[tacticdsl::ServiceOperation])+
+	operations+=[tacticdsl::ServiceOperation] ('+' operations+=[tacticdsl::ServiceOperation])+
 ;
 
-AlternativeOperationInvokation:
-	operations+=[tacticdsl::ServiceOperation] ('X' operations+=[tacticdsl::ServiceOperation])+
+ExclusiveAlternativeOperationInvokation:
+	operations+=[tacticdsl::ServiceOperation] (('X' | 'x') operations+=[tacticdsl::ServiceOperation])+
+;
+
+InclusiveAlternativeOperationInvokation:
+	operations+=[tacticdsl::ServiceOperation] (('O' | 'o') operations+=[tacticdsl::ServiceOperation])+
 ;
 
 EventProduction:
-	SingleEventProduction | MultipleEventProduction | AlternativeEventProduction
+	SingleEventProduction | MultipleEventProduction | ExclusiveAlternativeEventProduction | InclusiveAlternativeEventProduction
 ;
 
 SingleEventProduction:
@@ -282,11 +298,15 @@ SingleEventProduction:
 ;
 
 MultipleEventProduction:
-	events+=[tacticdsl::DomainEvent] ('&' events+=[tacticdsl::DomainEvent])+
+	events+=[tacticdsl::DomainEvent] ('+' events+=[tacticdsl::DomainEvent])+
 ;
 
-AlternativeEventProduction:
-	events+=[tacticdsl::DomainEvent] ('X' events+=[tacticdsl::DomainEvent])+
+ExclusiveAlternativeEventProduction:
+	events+=[tacticdsl::DomainEvent] (('X' | 'x') events+=[tacticdsl::DomainEvent])+
+;
+
+InclusiveAlternativeEventProduction:
+	events+=[tacticdsl::DomainEvent] (('O' | 'o') events+=[tacticdsl::DomainEvent])+
 ;
 
 UserRequirement:
