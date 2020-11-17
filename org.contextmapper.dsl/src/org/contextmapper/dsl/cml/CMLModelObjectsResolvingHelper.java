@@ -81,6 +81,18 @@ public class CMLModelObjectsResolvingHelper {
 			return null; // can happen if domain object is not part of Bounded Context but Subdomain
 	}
 
+	public BoundedContext resolveBoundedContext(EObject anyCMLObject) {
+		if (anyCMLObject instanceof BoundedContext)
+			return (BoundedContext) anyCMLObject;
+		EObject parent = anyCMLObject.eContainer();
+		while (parent != null) {
+			if (parent instanceof BoundedContext)
+				return (BoundedContext) parent;
+			parent = parent.eContainer();
+		}
+		return null;
+	}
+
 	public List<Aggregate> resolveAllAccessibleAggregates(BoundedContext bc) {
 		List<Aggregate> aggregates = Lists.newLinkedList();
 		aggregates.addAll(EcoreUtil2.eAllOfType(bc, Aggregate.class));

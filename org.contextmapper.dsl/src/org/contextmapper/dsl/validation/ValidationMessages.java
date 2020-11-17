@@ -27,9 +27,12 @@ public class ValidationMessages {
 	public static final String SELF_RELATIONSHIP_NOT_ALLOWED = "Bounded context relationships must be declared between two different bounded contexts.";
 	public static final String OWNER_BC_IS_NOT_TEAM = "'%s' is not a team. The owner attribute must refer to a Bounded Context representing a team (type = TEAM)!";
 	public static final String AGGREGATE_CAN_ONLY_HAVE_ONE_AGGREGATE_ROOT = "Your aggregate '%s' contains multiple aggregate roots. An aggregate must only contain one root.";
+	public static final String AGGREGATE_CAN_ONLY_HAVE_ONE_STATES_ENUM = "Your aggregate '%s' contains multiple enums that define its states. Ensure that only one enum declares the states of the Aggregate.";
 	public static final String ALREADY_IMPLEMENTED_SUBDOMAIN = "The subdomain '%s' is already implemented through its domain '%s'.";
 	public static final String MULTIPLE_DOMAINS_IMPLEMENTED = "Are you sure you want to implement multiple Domains within one Bounded Context? A Bounded Context should typically implement only a part of your Domain; one or multiple Subdomains.";
 	public static final String ORGANIZATIONAL_MAP_DOES_NOT_CONTAIN_TEAM = "Your Context Map is of the type ORGANIZATIONAL but does not contain Bounded Contexts of the type TEAM. This type of Context Map is intended to model team relationships.";
+	public static final String COMMAND_OR_OPERATION_IS_NOT_PART_OF_BOUNDED_CONTEXT = "The command or operation '%s' is not part of the '%s' Bounded Context. Please ensure that your workflow only uses commands, operations and events that are part of the same Bounded Context.";
+	public static final String STATE_VALUE_DOES_NOT_BELONG_TO_AGGREGATE = "'%s' is not a state of the Aggregate '%s'.";
 
 	/* Uniqueness problems */
 	public static final String BOUNDED_CONTEXT_NAME_NOT_UNIQUE = "Multiple bounded contexts with the name '%s' have been declared.";

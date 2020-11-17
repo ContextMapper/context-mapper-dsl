@@ -1,19 +1,19 @@
 /*
  * Copyright 2018 The Context Mapper Project Team
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *    http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- package org.contextmapper.dsl
+package org.contextmapper.dsl
 
 import com.google.inject.Inject
 import java.util.stream.Collectors
@@ -78,7 +78,8 @@ class AggregateDSLParsingTest {
 		assertThatNoParsingErrorsOccurred(result);
 		assertThatNoValidationErrorsOccurred(result);
 		assertEquals(1, result.boundedContexts.get(0).aggregates.get(0).responsibilities.size);
-		assertEquals("can calculate customer risks...", result.boundedContexts.get(0).aggregates.get(0).responsibilities.get(0));
+		assertEquals("can calculate customer risks...",
+			result.boundedContexts.get(0).aggregates.get(0).responsibilities.get(0));
 	}
 
 	@Test
@@ -98,7 +99,7 @@ class AggregateDSLParsingTest {
 		assertThatNoValidationErrorsOccurred(result);
 		assertEquals(KnowledgeLevel.CONCRETE, result.boundedContexts.get(0).aggregates.get(0).knowledgeLevel);
 	}
-	
+
 	@Test
 	def void canAssignUsesCases() {
 		// given
@@ -118,11 +119,12 @@ class AggregateDSLParsingTest {
 		assertThatNoParsingErrorsOccurred(result);
 		assertThatNoValidationErrorsOccurred(result);
 		assertEquals(2, result.boundedContexts.get(0).aggregates.get(0).userRequirements.size);
-		val useCases = result.boundedContexts.get(0).aggregates.get(0).userRequirements.stream.map[name].collect(Collectors.toList);
+		val useCases = result.boundedContexts.get(0).aggregates.get(0).userRequirements.stream.map[name].collect(
+			Collectors.toList);
 		assertTrue(useCases.contains("testUseCase1"));
 		assertTrue(useCases.contains("testUseCase2"));
 	}
-	
+
 	@Test
 	def void canAssignOwner() {
 		// given
@@ -144,7 +146,7 @@ class AggregateDSLParsingTest {
 		assertThatNoValidationErrorsOccurred(result);
 		assertEquals("teamA", result.boundedContexts.get(0).aggregates.get(0).owner.name);
 	}
-	
+
 	@Test
 	def void throwErrorIfOwnerContextIsNotTeam() {
 		// given
@@ -165,7 +167,7 @@ class AggregateDSLParsingTest {
 		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.AGGREGATE, "",
 			String.format(OWNER_BC_IS_NOT_TEAM, "teamA"));
 	}
-	
+
 	@Test
 	def void canDefineLikelihoodForChange() {
 		// given
@@ -182,7 +184,7 @@ class AggregateDSLParsingTest {
 		assertThatNoParsingErrorsOccurred(result);
 		assertEquals(Volatility.OFTEN, result.boundedContexts.get(0).aggregates.get(0).likelihoodForChange);
 	}
-	
+
 	@Test
 	def void canDefineContentVolatility() {
 		// given
@@ -199,7 +201,7 @@ class AggregateDSLParsingTest {
 		assertThatNoParsingErrorsOccurred(result);
 		assertEquals(Volatility.OFTEN, result.boundedContexts.get(0).aggregates.get(0).contentVolatility);
 	}
-	
+
 	@Test
 	def void canDefineAvailabilityCriticality() {
 		// given
@@ -216,7 +218,7 @@ class AggregateDSLParsingTest {
 		assertThatNoParsingErrorsOccurred(result);
 		assertEquals(Criticality.HIGH, result.boundedContexts.get(0).aggregates.get(0).availabilityCriticality);
 	}
-	
+
 	@Test
 	def void canDefineStorageSimilarity() {
 		// given
@@ -233,7 +235,7 @@ class AggregateDSLParsingTest {
 		assertThatNoParsingErrorsOccurred(result);
 		assertEquals(Similarity.HUGE, result.boundedContexts.get(0).aggregates.get(0).storageSimilarity);
 	}
-	
+
 	@Test
 	def void canDefineSecurityCriticality() {
 		// given
@@ -250,7 +252,7 @@ class AggregateDSLParsingTest {
 		assertThatNoParsingErrorsOccurred(result);
 		assertEquals(Criticality.HIGH, result.boundedContexts.get(0).aggregates.get(0).securityCriticality);
 	}
-	
+
 	@Test
 	def void canDefineConsistencyCriticality() {
 		// given
@@ -267,7 +269,7 @@ class AggregateDSLParsingTest {
 		assertThatNoParsingErrorsOccurred(result);
 		assertEquals(Criticality.HIGH, result.boundedContexts.get(0).aggregates.get(0).consistencyCriticality);
 	}
-	
+
 	@Test
 	def void canDefineSecurityZone() {
 		// given
@@ -284,7 +286,7 @@ class AggregateDSLParsingTest {
 		assertThatNoParsingErrorsOccurred(result);
 		assertEquals("MyZone", result.boundedContexts.get(0).aggregates.get(0).securityZone);
 	}
-	
+
 	@Test
 	def void canDefineSecurityAccessGroup() {
 		// given
@@ -301,7 +303,7 @@ class AggregateDSLParsingTest {
 		assertThatNoParsingErrorsOccurred(result);
 		assertEquals("Admin", result.boundedContexts.get(0).aggregates.get(0).securityAccessGroup);
 	}
-	
+
 	@Test
 	def void throwErrorIfAggregateContainsMultipleRoots() {
 		// given
@@ -324,7 +326,32 @@ class AggregateDSLParsingTest {
 		validationTestHelper.assertError(result, TacticdslPackage.Literals.ENTITY, "",
 			String.format(AGGREGATE_CAN_ONLY_HAVE_ONE_AGGREGATE_ROOT, "myAggregate"));
 	}
-	
+
+	@Test
+	def void throwErrorIfAggregateContainsMultipleStateEnums() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext testContext {
+				Aggregate myAggregate {
+					enum States1 {
+						aggregateStates
+						STATE1, STATE2
+					}
+					enum States2 {
+						aggregateStates
+						STATE1, STATE2
+					}
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		validationTestHelper.assertError(result, TacticdslPackage.Literals.ENUM, "",
+			String.format(AGGREGATE_CAN_ONLY_HAVE_ONE_STATES_ENUM, "myAggregate"));
+	}
+
 	@Test
 	def void canDefineAttributesWithoutEqualSign() {
 		// given
@@ -351,14 +378,16 @@ class AggregateDSLParsingTest {
 		// then
 		assertThatNoParsingErrorsOccurred(result);
 		assertEquals(Volatility.OFTEN, result.boundedContexts.get(0).aggregates.get(0).likelihoodForChange);
-		assertEquals("can calculate customer risks...", result.boundedContexts.get(0).aggregates.get(0).responsibilities.get(0));
+		assertEquals("can calculate customer risks...",
+			result.boundedContexts.get(0).aggregates.get(0).responsibilities.get(0));
 		assertEquals(KnowledgeLevel.CONCRETE, result.boundedContexts.get(0).aggregates.get(0).knowledgeLevel);
-		val useCases = result.boundedContexts.get(0).aggregates.get(0).userRequirements.stream.map[name].collect(Collectors.toList);
+		val useCases = result.boundedContexts.get(0).aggregates.get(0).userRequirements.stream.map[name].collect(
+			Collectors.toList);
 		assertTrue(useCases.contains("testUseCase1"));
 		assertTrue(useCases.contains("testUseCase2"));
 		assertEquals("teamA", result.boundedContexts.get(0).aggregates.get(0).owner.name);
 	}
-	
+
 	@Test
 	def void canDefineAggregateStatesWithEnum() {
 		// given
@@ -387,6 +416,5 @@ class AggregateDSLParsingTest {
 		assertTrue(enum1.definesAggregateStates);
 		assertFalse(enum2.definesAggregateStates);
 	}
-	
-	
+
 }
