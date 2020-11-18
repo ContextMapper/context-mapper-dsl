@@ -108,7 +108,23 @@ ServiceOperation :
 	  ("hint" "=" hint=STRING)? &
 	  (publish=Publish)?
     )
-    (delegateHolder=ServiceOperationDelegate)? ";"
+    (delegateHolder=ServiceOperationDelegate)? (':' (readOnlyOperation?='read-only' | (writeOperation?='write' ('[' stateTransition=StateTransition ']')?)))? ";"
+;
+
+StateTransition:
+	(from+=[EnumValue] (',' from+=[EnumValue])?)? '->' target=StateTransitionTarget
+;
+
+StateTransitionTarget:
+	SingleStateTransitionTarget | ExclusiveAlternativeStateTransitionTarget
+;
+
+SingleStateTransitionTarget:
+	to+=[EnumValue]
+;
+
+ExclusiveAlternativeStateTransitionTarget:
+	to+=[EnumValue] (('X' | 'x') to+=[EnumValue])+
 ;
 
 ServiceOperationDelegate :
@@ -267,7 +283,7 @@ DomainEvent :
 CommandEvent :
   (comment=ML_COMMENT)?
   (doc=STRING)?
-  (abstract?="abstract")? "CommandEvent" name=ID ("extends" (("@"extends=[CommandEvent]) | (extendsName=JavaIdentifier)))?
+  (abstract?="abstract")? ("Command" | "CommandEvent") name=ID ("extends" (("@"extends=[CommandEvent]) | (extendsName=JavaIdentifier)))?
   ("with" ("@")?traits+=[Trait])* ("{"
     ("package" "=" package=JavaIdentifier )?
     (
@@ -312,7 +328,7 @@ DomainObjectOperation :
       ("throws" throws=ThrowsIdentifier)? &
 	  ("hint" "=" hint=STRING)?
     )
-    ";";
+    (':' (readOnlyOperation?='read-only' | (writeOperation?='write' ('[' stateTransition=StateTransition ']')?)))? ";";
 
 DataTransferObject :
   (comment=ML_COMMENT)?
@@ -470,9 +486,10 @@ Dependency :
 Enum :
   (doc=STRING)?
   "enum" name=ID "{"
-    ("package" "=" package=JavaIdentifier )?
-    ("hint" "=" hint=STRING)?
-    (ordinal?="ordinal")?
+    (("package" "=" package=JavaIdentifier )? &
+    ("hint" "=" hint=STRING)? &
+    (definesAggregateStates?="aggregateStates")? &
+    (ordinal?="ordinal")?)
     (attributes+=EnumAttribute)*
     (values+=EnumValue) ("," values+=EnumValue)* (";")?
   "}";
@@ -513,7 +530,7 @@ enum CollectionType :
 
 terminal MAP_COLLECTION_TYPE :
   "Map";
-
+  
 enum Visibility :
   public="public" | protected="protected" | private="private" | package="package";
 

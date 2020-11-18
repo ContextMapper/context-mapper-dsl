@@ -16,6 +16,7 @@
 package org.contextmapper.dsl.cml;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -31,6 +32,7 @@ import org.contextmapper.dsl.contextMappingDSL.Subdomain;
 import org.contextmapper.dsl.contextMappingDSL.SymmetricRelationship;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
 import org.contextmapper.dsl.contextMappingDSL.UserRequirement;
+import org.contextmapper.tactic.dsl.tacticdsl.Enum;
 import org.contextmapper.tactic.dsl.tacticdsl.SimpleDomainObject;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.EcoreUtil2;
@@ -81,6 +83,30 @@ public class CMLModelObjectsResolvingHelper {
 			return null; // can happen if domain object is not part of Bounded Context but Subdomain
 	}
 
+	public BoundedContext resolveBoundedContext(EObject anyCMLObject) {
+		if (anyCMLObject instanceof BoundedContext)
+			return (BoundedContext) anyCMLObject;
+		EObject parent = anyCMLObject.eContainer();
+		while (parent != null) {
+			if (parent instanceof BoundedContext)
+				return (BoundedContext) parent;
+			parent = parent.eContainer();
+		}
+		return null;
+	}
+
+	public Aggregate resolveAggregate(EObject anyCMLObject) {
+		if (anyCMLObject instanceof Aggregate)
+			return (Aggregate) anyCMLObject;
+		EObject parent = anyCMLObject.eContainer();
+		while (parent != null) {
+			if (parent instanceof Aggregate)
+				return (Aggregate) parent;
+			parent = parent.eContainer();
+		}
+		return null;
+	}
+
 	public List<Aggregate> resolveAllAccessibleAggregates(BoundedContext bc) {
 		List<Aggregate> aggregates = Lists.newLinkedList();
 		aggregates.addAll(EcoreUtil2.eAllOfType(bc, Aggregate.class));
@@ -128,6 +154,17 @@ public class CMLModelObjectsResolvingHelper {
 			allAggregates.addAll(bc.getAggregates());
 		}
 		return allAggregates;
+	}
+
+	public Set<String> resolveAggregateStates(Aggregate aggregate) {
+		Set<String> aggregateStates = Sets.newHashSet();
+
+		Optional<org.contextmapper.tactic.dsl.tacticdsl.Enum> optStatesEnum = aggregate.getDomainObjects().stream().filter(o -> o instanceof Enum).map(o -> (Enum) o)
+				.filter(o -> o.isDefinesAggregateStates()).findFirst();
+		if (optStatesEnum.isPresent())
+			aggregateStates.addAll(optStatesEnum.get().getValues().stream().map(v -> v.getName()).collect(Collectors.toSet()));
+
+		return aggregateStates;
 	}
 
 	private boolean isBCDownstreamInRelationship(Relationship relationship, BoundedContext bc) {

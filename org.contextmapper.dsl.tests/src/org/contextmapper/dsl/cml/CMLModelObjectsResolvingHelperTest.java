@@ -21,8 +21,15 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import java.io.IOException;
 
 import org.contextmapper.dsl.AbstractCMLInputFileTest;
+import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
+import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
+import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
+import org.contextmapper.dsl.contextMappingDSL.UseCase;
 import org.contextmapper.tactic.dsl.tacticdsl.DomainObject;
+import org.contextmapper.tactic.dsl.tacticdsl.Entity;
+import org.contextmapper.tactic.dsl.tacticdsl.TacticdslFactory;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.EcoreUtil2;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -59,6 +66,54 @@ public class CMLModelObjectsResolvingHelperTest extends AbstractCMLInputFileTest
 
 		// then
 		assertNull(bc);
+	}
+
+	@Test
+	public void canResolveAggregate() {
+		// given
+		ContextMappingModel model = ContextMappingDSLFactory.eINSTANCE.createContextMappingModel();
+		Aggregate aggregate = ContextMappingDSLFactory.eINSTANCE.createAggregate();
+		Entity subObject = TacticdslFactory.eINSTANCE.createEntity();
+		BoundedContext bc = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
+		aggregate.getDomainObjects().add(subObject);
+		bc.getAggregates().add(aggregate);
+		model.getBoundedContexts().add(bc);
+
+		// when
+		CMLModelObjectsResolvingHelper helper = new CMLModelObjectsResolvingHelper(model);
+		Aggregate direct = helper.resolveAggregate(aggregate);
+		Aggregate sub = helper.resolveAggregate(subObject);
+		Aggregate noContainingObject = helper.resolveAggregate(bc);
+
+		// then
+		assertEquals(aggregate, direct);
+		assertEquals(aggregate, sub);
+		assertNull(noContainingObject);
+	}
+
+	@Test
+	public void canResolveBoundedContext() {
+		// given
+		ContextMappingModel model = ContextMappingDSLFactory.eINSTANCE.createContextMappingModel();
+		Aggregate aggregate = ContextMappingDSLFactory.eINSTANCE.createAggregate();
+		Entity subObject = TacticdslFactory.eINSTANCE.createEntity();
+		BoundedContext bc = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
+		aggregate.getDomainObjects().add(subObject);
+		bc.getAggregates().add(aggregate);
+		model.getBoundedContexts().add(bc);
+		UseCase useCase = ContextMappingDSLFactory.eINSTANCE.createUseCase();
+		model.getUserRequirements().add(useCase);
+
+		// when
+		CMLModelObjectsResolvingHelper helper = new CMLModelObjectsResolvingHelper(model);
+		BoundedContext direct = helper.resolveBoundedContext((EObject) bc);
+		BoundedContext sub = helper.resolveBoundedContext((EObject) aggregate);
+		BoundedContext noContainingObject = helper.resolveBoundedContext((EObject) useCase);
+
+		// then
+		assertEquals(bc, direct);
+		assertEquals(bc, sub);
+		assertNull(noContainingObject);
 	}
 
 	@Override

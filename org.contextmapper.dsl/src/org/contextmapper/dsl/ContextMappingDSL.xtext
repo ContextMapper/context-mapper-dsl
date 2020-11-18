@@ -58,8 +58,9 @@ BoundedContext:
 			(('responsibilities' ('=')? responsibilities+=STRING) ("," responsibilities+=STRING)*)? &
 			('implementationTechnology' ('=')? implementationTechnology=STRING)? &
 			('knowledgeLevel' ('=')? knowledgeLevel=KnowledgeLevel)?)
-			modules += SculptorModule*
-			aggregates += Aggregate*
+			((application = Application)? &
+			(modules += SculptorModule)* &
+			(aggregates += Aggregate)*)
 		CLOSE
 	)?
 ;
@@ -191,6 +192,98 @@ Aggregate :
      (consumers+=Consumer) |
      (domainObjects+=SimpleDomainObject))*
   CLOSE)?;
+
+Application:
+	"Application" (OPEN
+		((commands+=CommandEvent)* &
+		(services+=Service)* &
+		(flows+=Flow)*)
+CLOSE)?;
+
+Flow:
+	"Flow" (OPEN 
+		(steps+=FlowStep)*
+	CLOSE)?;
+
+FlowStep:
+	DomainEventProductionStep | CommandInvokationStep
+;
+
+DomainEventProductionStep:
+	action=EitherCommandOrOperation ('delegated to' aggregate=[Aggregate] ('[' stateTransition=StateTransition ']')?)? 'emits event' eventProduction=EventProduction
+;
+
+CommandInvokationStep:
+	'event' event=[tacticdsl::DomainEvent] 'triggers' action=EitherCommandOrOperationInvokation
+;
+
+EitherCommandOrOperation:
+	('command' command=[tacticdsl::CommandEvent] | 'operation' operation=[tacticdsl::ServiceOperation])
+;
+
+EitherCommandOrOperationInvokation:
+	CommandInvokation | OperationInvokation
+;
+
+CommandInvokation:
+	'command' (SingleCommandInvokation | ConcurrentCommandInvokation | ExclusiveAlternativeCommandInvokation | InclusiveAlternativeCommandInvokation)
+;
+
+SingleCommandInvokation:
+	commands+=[tacticdsl::CommandEvent]
+;
+
+ConcurrentCommandInvokation:
+	commands+=[tacticdsl::CommandEvent] ('+' commands+=[tacticdsl::CommandEvent])+
+;
+
+ExclusiveAlternativeCommandInvokation:
+	commands+=[tacticdsl::CommandEvent] (('X' | 'x') commands+=[tacticdsl::CommandEvent])+
+;
+
+InclusiveAlternativeCommandInvokation:
+	commands+=[tacticdsl::CommandEvent] (('O' | 'o') commands+=[tacticdsl::CommandEvent])+
+;
+
+OperationInvokation:
+	'operation' (SingleOperationInvokation | ConcurrentOperationInvokation | ExclusiveAlternativeOperationInvokation | InclusiveAlternativeOperationInvokation)
+;
+
+SingleOperationInvokation:
+	operations+=[tacticdsl::ServiceOperation]
+;
+
+ConcurrentOperationInvokation:
+	operations+=[tacticdsl::ServiceOperation] ('+' operations+=[tacticdsl::ServiceOperation])+
+;
+
+ExclusiveAlternativeOperationInvokation:
+	operations+=[tacticdsl::ServiceOperation] (('X' | 'x') operations+=[tacticdsl::ServiceOperation])+
+;
+
+InclusiveAlternativeOperationInvokation:
+	operations+=[tacticdsl::ServiceOperation] (('O' | 'o') operations+=[tacticdsl::ServiceOperation])+
+;
+
+EventProduction:
+	SingleEventProduction | MultipleEventProduction | ExclusiveAlternativeEventProduction | InclusiveAlternativeEventProduction
+;
+
+SingleEventProduction:
+	events+=[tacticdsl::DomainEvent]
+;
+
+MultipleEventProduction:
+	events+=[tacticdsl::DomainEvent] ('+' events+=[tacticdsl::DomainEvent])+
+;
+
+ExclusiveAlternativeEventProduction:
+	events+=[tacticdsl::DomainEvent] (('X' | 'x') events+=[tacticdsl::DomainEvent])+
+;
+
+InclusiveAlternativeEventProduction:
+	events+=[tacticdsl::DomainEvent] (('O' | 'o') events+=[tacticdsl::DomainEvent])+
+;
 
 UserRequirement:
 	UseCase | UserStory
