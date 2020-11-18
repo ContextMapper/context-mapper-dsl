@@ -70,10 +70,7 @@ public class ApplicationFlowSemanticsValidator extends AbstractDeclarativeValida
 		} else {
 			referencedContext = helper.resolveBoundedContext(commandOrOperation.getOperation());
 			name = commandOrOperation.getOperation().getName();
-			if (currentContext == null || referencedContext == null)
-				return;
-
-			if (!currentContext.getName().equals(referencedContext.getName()))
+			if (referencedContext == null || !currentContext.getName().equals(referencedContext.getName()))
 				error(String.format(COMMAND_OR_OPERATION_IS_NOT_PART_OF_BOUNDED_CONTEXT, name, currentContext.getName()), commandOrOperation,
 						ContextMappingDSLPackage.Literals.EITHER_COMMAND_OR_OPERATION__OPERATION);
 		}
@@ -88,9 +85,7 @@ public class ApplicationFlowSemanticsValidator extends AbstractDeclarativeValida
 
 		for (CommandEvent commandEvent : commandInvokation.getCommands()) {
 			BoundedContext commandContext = helper.resolveBoundedContext((EObject) commandEvent);
-			if (commandContext == null)
-				continue;
-			if (!currentContext.getName().equals(commandContext.getName()))
+			if (commandContext == null || !currentContext.getName().equals(commandContext.getName()))
 				error(String.format(COMMAND_OR_OPERATION_IS_NOT_PART_OF_BOUNDED_CONTEXT, commandEvent.getName(), currentContext.getName()), commandInvokation,
 						ContextMappingDSLPackage.Literals.COMMAND_INVOKATION__COMMANDS, commandInvokation.getCommands().indexOf(commandEvent));
 		}
@@ -104,9 +99,7 @@ public class ApplicationFlowSemanticsValidator extends AbstractDeclarativeValida
 
 		for (ServiceOperation operation : operationInvokation.getOperations()) {
 			BoundedContext commandContext = helper.resolveBoundedContext(operation);
-			if (commandContext == null)
-				continue;
-			if (!currentContext.getName().equals(commandContext.getName()))
+			if (commandContext == null || !currentContext.getName().equals(commandContext.getName()))
 				error(String.format(COMMAND_OR_OPERATION_IS_NOT_PART_OF_BOUNDED_CONTEXT, operation.getName(), currentContext.getName()), operationInvokation,
 						ContextMappingDSLPackage.Literals.OPERATION_INVOKATION__OPERATIONS, operationInvokation.getOperations().indexOf(operation));
 		}
