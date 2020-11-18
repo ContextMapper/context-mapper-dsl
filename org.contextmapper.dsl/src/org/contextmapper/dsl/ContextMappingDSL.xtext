@@ -210,7 +210,7 @@ FlowStep:
 ;
 
 DomainEventProductionStep:
-	action=EitherCommandOrOperation ('delegated to' aggregate=[Aggregate] ('[' stateTransition=StateTransition ']')?)? 'emits event' eventProduction=EventProduction
+	action=EitherCommandOrOperation ('delegates to' aggregate=[Aggregate] ('[' stateTransition=StateTransition ']')?)? 'emits event' eventProduction=EventProduction
 ;
 
 CommandInvokationStep:

@@ -488,7 +488,7 @@ Enum :
   "enum" name=ID "{"
     (("package" "=" package=JavaIdentifier )? &
     ("hint" "=" hint=STRING)? &
-    (definesAggregateStates?="aggregateStates")? &
+    (definesAggregateLifecycle?="aggregateLifecycle")? &
     (ordinal?="ordinal")?)
     (attributes+=EnumAttribute)*
     (values+=EnumValue) ("," values+=EnumValue)* (";")?

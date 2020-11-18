@@ -103,7 +103,7 @@ class TacticDDDOperationsGrammarAndValidationTest {
 					}
 					
 					enum States {
-						aggregateStates
+						aggregateLifecycle
 						
 						STATE1, STATE2
 					}
@@ -137,7 +137,7 @@ class TacticDDDOperationsGrammarAndValidationTest {
 					}
 					
 					enum States {
-						aggregateStates
+						aggregateLifecycle
 						
 						STATE1, STATE2, STATE3
 					}
@@ -172,7 +172,7 @@ class TacticDDDOperationsGrammarAndValidationTest {
 					}
 					
 					enum States {
-						aggregateStates
+						aggregateLifecycle
 						
 						STATE1, STATE2, STATE3
 					}
@@ -206,7 +206,7 @@ class TacticDDDOperationsGrammarAndValidationTest {
 					}
 					
 					enum States {
-						aggregateStates
+						aggregateLifecycle
 						
 						STATE1, STATE2, STATE3
 					}
@@ -294,7 +294,7 @@ class TacticDDDOperationsGrammarAndValidationTest {
 					}
 					
 					enum States {
-						aggregateStates
+						aggregateLifecycle
 						
 						STATE1, STATE2
 					}
@@ -329,7 +329,7 @@ class TacticDDDOperationsGrammarAndValidationTest {
 					}
 					
 					enum States {
-						aggregateStates
+						aggregateLifecycle
 						
 						STATE1, STATE2, STATE3
 					}
@@ -364,7 +364,7 @@ class TacticDDDOperationsGrammarAndValidationTest {
 					}
 					
 					enum States {
-						aggregateStates
+						aggregateLifecycle
 						
 						STATE1, STATE2, STATE3
 					}
@@ -398,7 +398,7 @@ class TacticDDDOperationsGrammarAndValidationTest {
 					}
 					
 					enum States {
-						aggregateStates
+						aggregateLifecycle
 						
 						STATE1, STATE2, STATE3
 					}
@@ -433,7 +433,7 @@ class TacticDDDOperationsGrammarAndValidationTest {
 					}
 					
 					enum States {
-						aggregateStates
+						aggregateLifecycle
 						
 						STATE1, STATE2, STATE3
 					}
@@ -462,7 +462,7 @@ class TacticDDDOperationsGrammarAndValidationTest {
 					}
 					
 					enum States {
-						aggregateStates
+						aggregateLifecycle
 						
 						STATE1, STATE2, STATE3
 					}
@@ -491,7 +491,7 @@ class TacticDDDOperationsGrammarAndValidationTest {
 					}
 					
 					enum States {
-						aggregateStates
+						aggregateLifecycle
 						
 						STATE1, STATE2, STATE3
 					}
@@ -520,7 +520,7 @@ class TacticDDDOperationsGrammarAndValidationTest {
 					}
 					
 					enum States {
-						aggregateStates
+						aggregateLifecycle
 						
 						STATE1, STATE2, STATE3
 					}
@@ -549,7 +549,7 @@ class TacticDDDOperationsGrammarAndValidationTest {
 					}
 					
 					enum States {
-						aggregateStates
+						aggregateLifecycle
 						
 						STATE1, STATE2, STATE3
 					}
