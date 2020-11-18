@@ -119,29 +119,20 @@ public class ApplicationFlowSemanticsValidator extends AbstractDeclarativeValida
 		if (step.getStateTransition() == null)
 			return;
 
-		Set<String> aggregateStates = resolveAggregateStates(step.getAggregate());
+		CMLModelObjectsResolvingHelper helper = new CMLModelObjectsResolvingHelper((ContextMappingModel) EcoreUtil2.getRootContainer(step));
+
+		Set<String> aggregateStates = helper.resolveAggregateStates(step.getAggregate());
 		for (EnumValue value : step.getStateTransition().getFrom()) {
 			if (!aggregateStates.contains(value.getName()))
 				error(String.format(STATE_VALUE_DOES_NOT_BELONG_TO_AGGREGATE, value.getName(), step.getAggregate().getName()), step.getStateTransition(),
-						ContextMappingDSLPackage.Literals.STATE_TRANSITION__FROM, step.getStateTransition().getFrom().indexOf(value));
+						TacticdslPackage.Literals.STATE_TRANSITION__FROM, step.getStateTransition().getFrom().indexOf(value));
 		}
 
 		for (EnumValue value : step.getStateTransition().getTarget().getTo()) {
 			if (!aggregateStates.contains(value.getName()))
 				error(String.format(STATE_VALUE_DOES_NOT_BELONG_TO_AGGREGATE, value.getName(), step.getAggregate().getName()), step.getStateTransition().getTarget(),
-						ContextMappingDSLPackage.Literals.STATE_TRANSITION_TARGET__TO, step.getStateTransition().getTarget().getTo().indexOf(value));
+						TacticdslPackage.Literals.STATE_TRANSITION_TARGET__TO, step.getStateTransition().getTarget().getTo().indexOf(value));
 		}
-	}
-
-	private Set<String> resolveAggregateStates(Aggregate aggregate) {
-		Set<String> aggregateStates = Sets.newHashSet();
-
-		Optional<org.contextmapper.tactic.dsl.tacticdsl.Enum> optStatesEnum = aggregate.getDomainObjects().stream().filter(o -> o instanceof Enum).map(o -> (Enum) o)
-				.filter(o -> o.isDefinesAggregateStates()).findFirst();
-		if (optStatesEnum.isPresent())
-			aggregateStates.addAll(optStatesEnum.get().getValues().stream().map(v -> v.getName()).collect(Collectors.toSet()));
-
-		return aggregateStates;
 	}
 
 }

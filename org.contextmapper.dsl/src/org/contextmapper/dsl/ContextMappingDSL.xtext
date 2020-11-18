@@ -213,22 +213,6 @@ DomainEventProductionStep:
 	action=EitherCommandOrOperation ('delegated to' aggregate=[Aggregate] ('[' stateTransition=StateTransition ']')?)? 'emits event' eventProduction=EventProduction
 ;
 
-StateTransition:
-	(from+=[tacticdsl::EnumValue] (',' from+=[tacticdsl::EnumValue])?)? '->' target=StateTransitionTarget
-;
-
-StateTransitionTarget:
-	SingleStateTransitionTarget | ExclusiveAlternativeStateTransitionTarget
-;
-
-SingleStateTransitionTarget:
-	to+=[tacticdsl::EnumValue]
-;
-
-ExclusiveAlternativeStateTransitionTarget:
-	to+=[tacticdsl::EnumValue] (('X' | 'x') to+=[tacticdsl::EnumValue])+
-;
-
 CommandInvokationStep:
 	'event' event=[tacticdsl::DomainEvent] 'triggers' action=EitherCommandOrOperationInvokation
 ;

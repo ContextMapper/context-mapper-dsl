@@ -28,6 +28,7 @@ import org.junit.jupiter.api.^extension.ExtendWith
 
 import static org.contextmapper.dsl.util.ParsingErrorAssertions.*
 import static org.contextmapper.dsl.validation.ValidationMessages.*
+import org.contextmapper.tactic.dsl.tacticdsl.TacticdslPackage
 
 @ExtendWith(InjectionExtension)
 @InjectWith(ContextMappingDSLInjectorProvider)
@@ -187,7 +188,7 @@ class ApplicationLayerValidationTest {
 		val ContextMappingModel result = parseHelper.parse(dslSnippet);
 		// then
 		assertThatNoParsingErrorsOccurred(result);
-		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.STATE_TRANSITION, "",
+		validationTestHelper.assertError(result, TacticdslPackage.Literals.STATE_TRANSITION, "",
 			String.format(STATE_VALUE_DOES_NOT_BELONG_TO_AGGREGATE, "STATE3", "AggA"));
 	}
 
@@ -221,7 +222,7 @@ class ApplicationLayerValidationTest {
 		val ContextMappingModel result = parseHelper.parse(dslSnippet);
 		// then
 		assertThatNoParsingErrorsOccurred(result);
-		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.STATE_TRANSITION_TARGET, "",
+		validationTestHelper.assertError(result, TacticdslPackage.Literals.STATE_TRANSITION_TARGET, "",
 			String.format(STATE_VALUE_DOES_NOT_BELONG_TO_AGGREGATE, "STATE3", "AggA"));
 	}
 

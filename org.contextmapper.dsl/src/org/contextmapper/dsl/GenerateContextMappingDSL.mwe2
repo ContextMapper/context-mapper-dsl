@@ -48,7 +48,7 @@ Workflow {
 			}
 		}
 		language = StandardLanguage {
-			name = "org.contextmapper.dsl.TacticDSL"
+			name = "org.contextmapper.tactic.dsl.TacticDDDLanguage"
 			fileExtensions = "bcdesign"
 
 			fragment = exporting.SimpleNamesFragment2 {}
@@ -82,10 +82,10 @@ Workflow {
 			}
 		}
 		language = StandardLanguage {
-			name = "org.contextmapper.dsl.ServiceCutterConfigurationDSL"
+			name = "org.contextmapper.servicecutter.dsl.ServiceCutterConfigurationDSL"
 			fileExtensions = "scl"
 
-			referencedResource = "platform:/resource/org.contextmapper.dsl/src/org/contextmapper/dsl/TacticDSL.xtext"
+			referencedResource = "platform:/resource/org.contextmapper.dsl/src/org/contextmapper/tactic/dsl/TacticDDDLanguage.xtext"
 
 			serializer = {
 				generateStub = false
@@ -112,8 +112,8 @@ Workflow {
 			name = "org.contextmapper.dsl.ContextMappingDSL"
 			fileExtensions = "cml"
 
-			referencedResource = "platform:/resource/org.contextmapper.dsl/src/org/contextmapper/dsl/ServiceCutterConfigurationDSL.xtext"
-			referencedResource = "platform:/resource/org.contextmapper.dsl/src/org/contextmapper/dsl/TacticDSL.xtext"
+			referencedResource = "platform:/resource/org.contextmapper.dsl/src/org/contextmapper/servicecutter/dsl/ServiceCutterConfigurationDSL.xtext"
+			referencedResource = "platform:/resource/org.contextmapper.dsl/src/org/contextmapper/tactic/dsl/TacticDDDLanguage.xtext"
 
 			fragment = exporting.SimpleNamesFragment2 {}
 			fragment = builder.BuilderIntegrationFragment2 {}
@@ -142,6 +142,7 @@ Workflow {
 				composedCheck = "org.contextmapper.dsl.validation.TacticDDDModuleValidator"
 				composedCheck = "org.contextmapper.dsl.validation.DomainObjectValidator"
 				composedCheck = "org.contextmapper.dsl.validation.DomainValidator"
+				composedCheck = "org.contextmapper.dsl.validation.TacticDDDOperationsValidator"
 
 				// Generates checks for @Deprecated grammar annotations, an IssueProvider and a corresponding PropertyPage
 				generateDeprecationValidation = true

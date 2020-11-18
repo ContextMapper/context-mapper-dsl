@@ -108,7 +108,23 @@ ServiceOperation :
 	  ("hint" "=" hint=STRING)? &
 	  (publish=Publish)?
     )
-    (delegateHolder=ServiceOperationDelegate)? ";"
+    (delegateHolder=ServiceOperationDelegate)? (':' (readOnlyOperation?='read-only' | (writeOperation?='write' ('[' stateTransition=StateTransition ']')?)))? ";"
+;
+
+StateTransition:
+	(from+=[EnumValue] (',' from+=[EnumValue])?)? '->' target=StateTransitionTarget
+;
+
+StateTransitionTarget:
+	SingleStateTransitionTarget | ExclusiveAlternativeStateTransitionTarget
+;
+
+SingleStateTransitionTarget:
+	to+=[EnumValue]
+;
+
+ExclusiveAlternativeStateTransitionTarget:
+	to+=[EnumValue] (('X' | 'x') to+=[EnumValue])+
 ;
 
 ServiceOperationDelegate :
@@ -312,7 +328,7 @@ DomainObjectOperation :
       ("throws" throws=ThrowsIdentifier)? &
 	  ("hint" "=" hint=STRING)?
     )
-    ";";
+    (':' (readOnlyOperation?='read-only' | (writeOperation?='write' ('[' stateTransition=StateTransition ']')?)))? ";";
 
 DataTransferObject :
   (comment=ML_COMMENT)?
@@ -514,7 +530,7 @@ enum CollectionType :
 
 terminal MAP_COLLECTION_TYPE :
   "Map";
-
+  
 enum Visibility :
   public="public" | protected="protected" | private="private" | package="package";
 
