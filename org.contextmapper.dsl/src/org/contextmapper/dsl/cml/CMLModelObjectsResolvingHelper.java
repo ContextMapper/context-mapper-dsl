@@ -160,7 +160,7 @@ public class CMLModelObjectsResolvingHelper {
 		Set<String> aggregateStates = Sets.newHashSet();
 
 		Optional<org.contextmapper.tactic.dsl.tacticdsl.Enum> optStatesEnum = aggregate.getDomainObjects().stream().filter(o -> o instanceof Enum).map(o -> (Enum) o)
-				.filter(o -> o.isDefinesAggregateStates()).findFirst();
+				.filter(o -> o.isDefinesAggregateLifecycle()).findFirst();
 		if (optStatesEnum.isPresent())
 			aggregateStates.addAll(optStatesEnum.get().getValues().stream().map(v -> v.getName()).collect(Collectors.toSet()));
 

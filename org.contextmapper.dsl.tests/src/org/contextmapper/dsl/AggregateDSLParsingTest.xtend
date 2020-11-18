@@ -334,11 +334,11 @@ class AggregateDSLParsingTest {
 			BoundedContext testContext {
 				Aggregate myAggregate {
 					enum States1 {
-						aggregateStates
+						aggregateLifecycle
 						STATE1, STATE2
 					}
 					enum States2 {
-						aggregateStates
+						aggregateLifecycle
 						STATE1, STATE2
 					}
 				}
@@ -395,7 +395,7 @@ class AggregateDSLParsingTest {
 			BoundedContext testContext {
 				Aggregate myAggregate {
 					enum States {
-						aggregateStates
+						aggregateLifecycle
 						STATE1, STATE2
 					}
 					enum NotStates {
@@ -413,8 +413,8 @@ class AggregateDSLParsingTest {
 		val Enum enum2 = aggregate.domainObjects.get(1) as Enum;
 		assertEquals("States", enum1.name);
 		assertEquals("NotStates", enum2.name);
-		assertTrue(enum1.definesAggregateStates);
-		assertFalse(enum2.definesAggregateStates);
+		assertTrue(enum1.definesAggregateLifecycle);
+		assertFalse(enum2.definesAggregateLifecycle);
 	}
 
 }

@@ -325,7 +325,7 @@ class ApplicationLayerDSLParsingTest {
 					}
 					
 					Flow {
-						operation testOperation delegated to TestAggregate emits event TestEvent1 X TestEvent2
+						operation testOperation delegates to TestAggregate emits event TestEvent1 X TestEvent2
 					}
 				}
 				
@@ -356,7 +356,7 @@ class ApplicationLayerDSLParsingTest {
 					}
 					
 					Flow {
-						operation testOperation delegated to TestAggregate [STATE1 -> STATE2] emits event TestEvent1 X TestEvent2
+						operation testOperation delegates to TestAggregate [STATE1 -> STATE2] emits event TestEvent1 X TestEvent2
 					}
 				}
 				
@@ -365,7 +365,7 @@ class ApplicationLayerDSLParsingTest {
 					DomainEvent TestEvent2
 					
 					enum States {
-						aggregateStates
+						aggregateLifecycle
 						
 						STATE1, STATE2
 					}
@@ -396,7 +396,7 @@ class ApplicationLayerDSLParsingTest {
 					}
 					
 					Flow {
-						operation testOperation delegated to TestAggregate [STATE1, STATE2 -> STATE3] emits event TestEvent1 X TestEvent2
+						operation testOperation delegates to TestAggregate [STATE1, STATE2 -> STATE3] emits event TestEvent1 X TestEvent2
 					}
 				}
 				
@@ -405,7 +405,7 @@ class ApplicationLayerDSLParsingTest {
 					DomainEvent TestEvent2
 					
 					enum States {
-						aggregateStates
+						aggregateLifecycle
 						
 						STATE1, STATE2, STATE3
 					}
@@ -437,7 +437,7 @@ class ApplicationLayerDSLParsingTest {
 					}
 					
 					Flow {
-						operation testOperation delegated to TestAggregate [STATE1 -> STATE2 X STATE3] emits event TestEvent1 X TestEvent2
+						operation testOperation delegates to TestAggregate [STATE1 -> STATE2 X STATE3] emits event TestEvent1 X TestEvent2
 					}
 				}
 				
@@ -446,7 +446,7 @@ class ApplicationLayerDSLParsingTest {
 					DomainEvent TestEvent2
 					
 					enum States {
-						aggregateStates
+						aggregateLifecycle
 						
 						STATE1, STATE2, STATE3
 					}

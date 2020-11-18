@@ -18,7 +18,7 @@ package org.contextmapper.dsl.validation;
 import static org.contextmapper.dsl.validation.ValidationMessages.AGGREGATE_CAN_ONLY_HAVE_ONE_AGGREGATE_ROOT;
 import static org.contextmapper.dsl.validation.ValidationMessages.AGGREGATE_CAN_ONLY_HAVE_ONE_STATES_ENUM;
 import static org.contextmapper.tactic.dsl.tacticdsl.TacticdslPackage.Literals.DOMAIN_OBJECT__AGGREGATE_ROOT;
-import static org.contextmapper.tactic.dsl.tacticdsl.TacticdslPackage.Literals.ENUM__DEFINES_AGGREGATE_STATES;
+import static org.contextmapper.tactic.dsl.tacticdsl.TacticdslPackage.Literals.ENUM__DEFINES_AGGREGATE_LIFECYCLE;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -51,11 +51,12 @@ public class AggregateSemanticsValidator extends AbstractDeclarativeValidator {
 
 	@Check
 	public void validateThatAggregateContainsOnlyOneStatesEnum(final Aggregate aggregate) {
-		List<Enum> stateEnums = aggregate.getDomainObjects().stream().filter(o -> o instanceof Enum).map(o -> (Enum) o).filter(o -> o.isDefinesAggregateStates()).collect(Collectors.toList());
+		List<Enum> stateEnums = aggregate.getDomainObjects().stream().filter(o -> o instanceof Enum).map(o -> (Enum) o).filter(o -> o.isDefinesAggregateLifecycle())
+				.collect(Collectors.toList());
 
 		if (stateEnums.size() > 1) {
 			for (Enum enumm : stateEnums) {
-				error(String.format(AGGREGATE_CAN_ONLY_HAVE_ONE_STATES_ENUM, aggregate.getName()), enumm, ENUM__DEFINES_AGGREGATE_STATES);
+				error(String.format(AGGREGATE_CAN_ONLY_HAVE_ONE_STATES_ENUM, aggregate.getName()), enumm, ENUM__DEFINES_AGGREGATE_LIFECYCLE);
 			}
 		}
 	}

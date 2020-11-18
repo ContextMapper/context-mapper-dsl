@@ -167,7 +167,7 @@ class ApplicationLayerValidationTest {
 					Command CommandA
 					
 					Flow {
-						command CommandA delegated to AggA [STATE3 -> STATE1] emits event EventA
+						command CommandA delegates to AggA [STATE3 -> STATE1] emits event EventA
 					}
 				}
 				
@@ -175,7 +175,7 @@ class ApplicationLayerValidationTest {
 					DomainEvent EventA
 					
 					enum States {
-						aggregateStates
+						aggregateLifecycle
 						STATE1, STATE2
 					}
 					enum AnotherEnum {
@@ -201,7 +201,7 @@ class ApplicationLayerValidationTest {
 					Command CommandA
 					
 					Flow {
-						command CommandA delegated to AggA [STATE1 -> STATE3] emits event EventA
+						command CommandA delegates to AggA [STATE1 -> STATE3] emits event EventA
 					}
 				}
 				
@@ -209,7 +209,7 @@ class ApplicationLayerValidationTest {
 					DomainEvent EventA
 					
 					enum States {
-						aggregateStates
+						aggregateLifecycle
 						STATE1, STATE2
 					}
 					enum AnotherEnum {
