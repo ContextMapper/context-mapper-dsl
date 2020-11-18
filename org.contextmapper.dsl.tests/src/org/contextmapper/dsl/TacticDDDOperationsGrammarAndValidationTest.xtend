@@ -537,5 +537,34 @@ class TacticDDDOperationsGrammarAndValidationTest {
 		validationTestHelper.assertError(result, TacticdslPackage.Literals.STATE_TRANSITION, "",
 			String.format(STATE_VALUE_DOES_NOT_BELONG_TO_AGGREGATE, "OTHERSTATE", "TestAggregate"));
 	}
+	
+	@Test
+	def void ignoreModules4Now() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext TestContext {
+				Module TestModule {
+					Service TestService {
+						void testOperation() : write [OTHERSTATE -> STATE2];
+					}
+					
+					enum States {
+						aggregateStates
+						
+						STATE1, STATE2, STATE3
+					}
+					enum OtherStates {
+						OTHERSTATE
+					}
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+	}
+	
 
 }
