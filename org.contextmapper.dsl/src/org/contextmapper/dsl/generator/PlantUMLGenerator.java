@@ -88,13 +88,12 @@ public class PlantUMLGenerator extends AbstractContextMappingModelGenerator {
 	}
 
 	private boolean hasFlowWithStates(BoundedContext bc) {
-		if (bc.getApplication() != null) {
+		if (bc.getApplication() != null)
 			for (Flow flow : bc.getApplication().getFlows()) {
 				List<StateTransition> stateTransitionList = EcoreUtil2.eAllOfType(flow, StateTransition.class);
 				if (!stateTransitionList.isEmpty())
 					return true;
 			}
-		}
 		return false;
 	}
 
