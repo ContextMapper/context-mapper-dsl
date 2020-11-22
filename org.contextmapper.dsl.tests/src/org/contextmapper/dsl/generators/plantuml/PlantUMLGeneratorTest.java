@@ -17,8 +17,12 @@ package org.contextmapper.dsl.generators.plantuml;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.io.IOException;
+
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
+import org.contextmapper.dsl.AbstractCMLInputFileTest;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
@@ -36,12 +40,13 @@ import org.contextmapper.tactic.dsl.tacticdsl.TacticdslFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class PlantUMLGeneratorTest {
+class PlantUMLGeneratorTest extends AbstractCMLInputFileTest {
 
 	private PlantUMLGenerator generator;
 
 	@BeforeEach
 	public void prepare() {
+		super.prepare();
 		this.generator = new PlantUMLGenerator();
 	}
 
@@ -109,6 +114,32 @@ class PlantUMLGeneratorTest {
 	}
 
 	@Test
+	void canCreateStateDiagram4ApplicationFlowIfAvailable() throws IOException {
+		// given
+		ContextMappingModel model = getOriginalResourceOfTestCML("state-diagram-generation-flow-test.cml").getContextMappingModel();
+
+		// when
+		IFileSystemAccess2Mock filesystem = new IFileSystemAccess2Mock();
+		this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem, new IGeneratorContextMock());
+
+		// then
+		assertTrue(filesystem.getGeneratedFilesSet().contains("testmodel_BC_InsuranceQuotes_Flow1_StateDiagram.puml"));
+	}
+	
+	@Test
+	void canCreateStateDiagram4AggregateIfAvailable() throws IOException {
+		// given
+		ContextMappingModel model = getOriginalResourceOfTestCML("state-diagram-generation-aggregate-test.cml").getContextMappingModel();
+
+		// when
+		IFileSystemAccess2Mock filesystem = new IFileSystemAccess2Mock();
+		this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem, new IGeneratorContextMock());
+
+		// then
+		assertTrue(filesystem.getGeneratedFilesSet().contains("testmodel_BC_InsuranceQuotes_QuoteRequest_StateDiagram.puml"));		
+	}
+
+	@Test
 	void expectExceptionForEmptyResource() {
 		IFileSystemAccess2Mock filesystem = new IFileSystemAccess2Mock();
 		assertThrows(GeneratorInputException.class, () -> {
@@ -141,6 +172,11 @@ class PlantUMLGeneratorTest {
 		Entity testEntity = TacticdslFactory.eINSTANCE.createEntity();
 		testEntity.setName(name);
 		return testEntity;
+	}
+
+	@Override
+	protected String getTestFileDirectory() {
+		return "/integ-test-files/generators/plantuml/";
 	}
 
 }

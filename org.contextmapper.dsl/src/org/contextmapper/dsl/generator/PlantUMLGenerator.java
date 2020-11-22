@@ -15,18 +15,27 @@
  */
 package org.contextmapper.dsl.generator;
 
+import java.util.List;
 import java.util.Optional;
 
+import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.Domain;
+import org.contextmapper.dsl.contextMappingDSL.Flow;
 import org.contextmapper.dsl.contextMappingDSL.Subdomain;
 import org.contextmapper.dsl.generator.exception.GeneratorInputException;
 import org.contextmapper.dsl.generator.plantuml.PlantUMLBoundedContextClassDiagramCreator;
 import org.contextmapper.dsl.generator.plantuml.PlantUMLComponentDiagramCreator;
+import org.contextmapper.dsl.generator.plantuml.PlantUMLStateDiagramCreator4Aggregate;
+import org.contextmapper.dsl.generator.plantuml.PlantUMLStateDiagramCreator4Flow;
 import org.contextmapper.dsl.generator.plantuml.PlantUMLSubdomainClassDiagramCreator;
+import org.contextmapper.tactic.dsl.tacticdsl.StateTransition;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.xtext.EcoreUtil2;
 import org.eclipse.xtext.generator.IFileSystemAccess2;
+
+import com.google.common.collect.Lists;
 
 public class PlantUMLGenerator extends AbstractContextMappingModelGenerator {
 
@@ -41,10 +50,26 @@ public class PlantUMLGenerator extends AbstractContextMappingModelGenerator {
 		if (model.getMap() != null)
 			fsa.generateFile(fileName + "_ContextMap." + PLANT_UML_FILE_EXT, new PlantUMLComponentDiagramCreator().createDiagram(model.getMap()));
 
-		// generate class diagrams for Bounded Contexts
+		// generate class and state diagrams for Bounded Contexts
 		for (BoundedContext boundedContext : model.getBoundedContexts()) {
 			fsa.generateFile(fileName + "_BC_" + boundedContext.getName() + "." + PLANT_UML_FILE_EXT,
 					new PlantUMLBoundedContextClassDiagramCreator().createDiagram(boundedContext));
+
+			List<Aggregate> aggregatesWithStates = getAggregatesWithStatesAndTransitions(boundedContext);
+			for (Aggregate aggregate : aggregatesWithStates) {
+				fsa.generateFile(fileName + "_BC_" + boundedContext.getName() + "_" + aggregate.getName() + "_StateDiagram" + "." + PLANT_UML_FILE_EXT,
+						new PlantUMLStateDiagramCreator4Aggregate().createDiagram(aggregate));
+			}
+
+			if (!hasFlowWithStates(boundedContext))
+				continue;
+
+			int flowNr = 1;
+			for (Flow flow : boundedContext.getApplication().getFlows()) {
+				fsa.generateFile(fileName + "_BC_" + boundedContext.getName() + "_Flow" + flowNr + "_StateDiagram." + PLANT_UML_FILE_EXT,
+						new PlantUMLStateDiagramCreator4Flow().createDiagram(flow));
+				flowNr++;
+			}
 		}
 
 		// generate class diagrams for subdomains (that have entities)
@@ -60,6 +85,31 @@ public class PlantUMLGenerator extends AbstractContextMappingModelGenerator {
 		if (this.contextMappingModel.getMap() == null && this.contextMappingModel.getBoundedContexts().isEmpty() && !modelHasSubdomainWithEntities())
 			throw new GeneratorInputException(
 					"Your model does not contain a Context Map, a Bounded Context, or a Subdomain. Therefore we have nothing to generate. Create at least one of the mentioned Objects.");
+	}
+
+	private boolean hasFlowWithStates(BoundedContext bc) {
+		if (bc.getApplication() != null) {
+			for (Flow flow : bc.getApplication().getFlows()) {
+				List<StateTransition> stateTransitionList = EcoreUtil2.eAllOfType(flow, StateTransition.class);
+				if (!stateTransitionList.isEmpty())
+					return true;
+			}
+		}
+		return false;
+	}
+
+	private List<Aggregate> getAggregatesWithStatesAndTransitions(BoundedContext bc) {
+		List<Aggregate> aggregates = Lists.newLinkedList();
+		for (Aggregate aggregate : EcoreUtil2.eAllOfType(bc, Aggregate.class)) {
+			Optional<org.contextmapper.tactic.dsl.tacticdsl.Enum> statesEnum = EcoreUtil2.eAllOfType(aggregate, org.contextmapper.tactic.dsl.tacticdsl.Enum.class).stream()
+					.filter(e -> e.isDefinesAggregateLifecycle()).findFirst();
+			if (statesEnum.isEmpty())
+				continue;
+			List<StateTransition> stateTransitions = EcoreUtil2.eAllOfType(aggregate, StateTransition.class);
+			if (!stateTransitions.isEmpty())
+				aggregates.add(aggregate);
+		}
+		return aggregates;
 	}
 
 	private boolean modelHasSubdomainWithEntities() {
