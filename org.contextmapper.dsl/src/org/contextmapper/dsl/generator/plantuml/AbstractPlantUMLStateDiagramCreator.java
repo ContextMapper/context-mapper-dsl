@@ -15,10 +15,15 @@
  */
 package org.contextmapper.dsl.generator.plantuml;
 
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.contextmapper.tactic.dsl.tacticdsl.EnumValue;
 import org.contextmapper.tactic.dsl.tacticdsl.StateTransition;
 import org.eclipse.emf.ecore.EObject;
+
+import com.google.common.collect.Sets;
 
 abstract public class AbstractPlantUMLStateDiagramCreator<T extends EObject> extends AbstractPlantUMLDiagramCreator<T> {
 
@@ -29,17 +34,32 @@ abstract public class AbstractPlantUMLStateDiagramCreator<T extends EObject> ext
 
 	protected void printTransition(StateTransition transition) {
 		if (transition.getFrom() == null || transition.getFrom().isEmpty()) {
-			for (String target : transition.getTarget().getTo().stream().map(s -> s.getName()).collect(Collectors.toSet())) {
+			for (String target : mapStatesToStrings(transition.getTarget().getTo())) {
 				sb.append("[*] --> ").append(target);
 				linebreak();
 			}
 		}
 		for (String from : transition.getFrom().stream().map(s -> s.getName()).collect(Collectors.toSet())) {
-			for (String target : transition.getTarget().getTo().stream().map(s -> s.getName()).collect(Collectors.toSet())) {
+			for (String target : mapStatesToStrings(transition.getTarget().getTo())) {
 				sb.append(from).append(" --> ").append(target);
 				linebreak();
 			}
 		}
+	}
+
+	protected Set<String> collectStates(List<StateTransition> transitions) {
+		Set<String> states = Sets.newHashSet();
+		for (StateTransition transition : transitions) {
+			states.addAll(mapStatesToStrings(transition.getFrom()));
+			states.addAll(mapStatesToStrings(transition.getTarget().getTo()));
+		}
+		return states;
+	}
+
+	private Set<String> mapStatesToStrings(List<EnumValue> states) {
+		if (states != null && !states.isEmpty())
+			return states.stream().map(s -> s.getName()).collect(Collectors.toSet());
+		return Sets.newHashSet();
 	}
 
 }

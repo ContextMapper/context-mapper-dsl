@@ -61,11 +61,8 @@ public class PlantUMLGenerator extends AbstractContextMappingModelGenerator {
 						new PlantUMLStateDiagramCreator4Aggregate().createDiagram(aggregate));
 			}
 
-			if (!hasFlowWithStates(boundedContext))
-				continue;
-
 			int flowNr = 1;
-			for (Flow flow : boundedContext.getApplication().getFlows()) {
+			for (Flow flow : getFlowsWithStates(boundedContext)) {
 				fsa.generateFile(fileName + "_BC_" + boundedContext.getName() + "_Flow" + flowNr + "_StateDiagram." + PLANT_UML_FILE_EXT,
 						new PlantUMLStateDiagramCreator4Flow().createDiagram(flow));
 				flowNr++;
@@ -87,14 +84,15 @@ public class PlantUMLGenerator extends AbstractContextMappingModelGenerator {
 					"Your model does not contain a Context Map, a Bounded Context, or a Subdomain. Therefore we have nothing to generate. Create at least one of the mentioned Objects.");
 	}
 
-	private boolean hasFlowWithStates(BoundedContext bc) {
-		if (bc.getApplication() != null)
+	private List<Flow> getFlowsWithStates(BoundedContext bc) {
+		List<Flow> flows = Lists.newLinkedList();
+		if (bc.getApplication() != null) {
 			for (Flow flow : bc.getApplication().getFlows()) {
-				List<StateTransition> stateTransitionList = EcoreUtil2.eAllOfType(flow, StateTransition.class);
-				if (!stateTransitionList.isEmpty())
-					return true;
+				if (!EcoreUtil2.eAllOfType(flow, StateTransition.class).isEmpty())
+					flows.add(flow);
 			}
-		return false;
+		}
+		return flows;
 	}
 
 	private List<Aggregate> getAggregatesWithStatesAndTransitions(BoundedContext bc) {
@@ -114,7 +112,8 @@ public class PlantUMLGenerator extends AbstractContextMappingModelGenerator {
 	private boolean modelHasSubdomainWithEntities() {
 		for (Domain domain : this.contextMappingModel.getDomains()) {
 			Optional<Subdomain> optSubdomain = domain.getSubdomains().stream().filter(subdomain -> !subdomain.getEntities().isEmpty()).findAny();
-			return optSubdomain.isPresent();
+			if (optSubdomain.isPresent())
+				return true;
 		}
 		return false;
 	}

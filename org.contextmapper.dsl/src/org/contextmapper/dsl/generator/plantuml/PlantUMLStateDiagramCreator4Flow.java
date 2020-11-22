@@ -15,34 +15,19 @@
  */
 package org.contextmapper.dsl.generator.plantuml;
 
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import org.contextmapper.dsl.contextMappingDSL.Flow;
 import org.contextmapper.tactic.dsl.tacticdsl.StateTransition;
 import org.eclipse.xtext.EcoreUtil2;
-
-import com.google.common.collect.Sets;
 
 public class PlantUMLStateDiagramCreator4Flow extends AbstractPlantUMLStateDiagramCreator<Flow> implements PlantUMLDiagramCreator<Flow> {
 
 	@Override
 	protected void printDiagramContent(Flow flow) {
-		for (String state : collectStates(flow)) {
+		for (String state : collectStates(EcoreUtil2.eAllOfType(flow, StateTransition.class))) {
 			printState(state);
 		}
 		for (StateTransition transition : EcoreUtil2.eAllOfType(flow, StateTransition.class))
 			printTransition(transition);
-	}
-
-	private Set<String> collectStates(Flow flow) {
-		Set<String> states = Sets.newHashSet();
-		for (StateTransition transition : EcoreUtil2.eAllOfType(flow, StateTransition.class)) {
-			if (transition.getFrom() != null && !transition.getFrom().isEmpty())
-				states.addAll(transition.getFrom().stream().map(s -> s.getName()).collect(Collectors.toSet()));
-			states.addAll(transition.getTarget().getTo().stream().map(s -> s.getName()).collect(Collectors.toSet()));
-		}
-		return states;
 	}
 
 }

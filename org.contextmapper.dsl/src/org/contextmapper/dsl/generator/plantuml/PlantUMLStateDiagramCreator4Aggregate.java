@@ -15,34 +15,19 @@
  */
 package org.contextmapper.dsl.generator.plantuml;
 
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.tactic.dsl.tacticdsl.StateTransition;
 import org.eclipse.xtext.EcoreUtil2;
-
-import com.google.common.collect.Sets;
 
 public class PlantUMLStateDiagramCreator4Aggregate extends AbstractPlantUMLStateDiagramCreator<Aggregate> implements PlantUMLDiagramCreator<Aggregate> {
 
 	@Override
 	protected void printDiagramContent(Aggregate aggregate) {
-		for (String state : collectStates(aggregate)) {
+		for (String state : collectStates(EcoreUtil2.eAllOfType(aggregate, StateTransition.class))) {
 			printState(state);
 		}
 		for (StateTransition transition : EcoreUtil2.eAllOfType(aggregate, StateTransition.class))
 			printTransition(transition);
-	}
-
-	private Set<String> collectStates(Aggregate aggregate) {
-		Set<String> states = Sets.newHashSet();
-		for (StateTransition transition : EcoreUtil2.eAllOfType(aggregate, StateTransition.class)) {
-			if (transition.getFrom() != null && !transition.getFrom().isEmpty())
-				states.addAll(transition.getFrom().stream().map(s -> s.getName()).collect(Collectors.toSet()));
-			states.addAll(transition.getTarget().getTo().stream().map(s -> s.getName()).collect(Collectors.toSet()));
-		}
-		return states;
 	}
 
 }
