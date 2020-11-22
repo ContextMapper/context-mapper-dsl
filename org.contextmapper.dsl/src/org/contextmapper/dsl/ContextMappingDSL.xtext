@@ -214,7 +214,7 @@ DomainEventProductionStep:
 ;
 
 CommandInvokationStep:
-	'event' event=[tacticdsl::DomainEvent] 'triggers' action=EitherCommandOrOperationInvokation
+	'event' events+=[tacticdsl::DomainEvent] ('+' events+=[tacticdsl::DomainEvent])* 'triggers' action=EitherCommandOrOperationInvokation
 ;
 
 EitherCommandOrOperation:

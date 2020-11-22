@@ -497,7 +497,7 @@ class ApplicationLayerDSLParsingTest {
 		var OperationInvokation action = flowStep.action as OperationInvokation;
 
 		assertTrue(action instanceof SingleOperationInvokation);
-		assertEquals("TestEvent", flowStep.event.name);
+		assertEquals("TestEvent", flowStep.events.get(0).name);
 		assertEquals(1, action.operations.size);
 		assertEquals("testOperation", action.operations.get(0).name);
 	}
@@ -533,7 +533,7 @@ class ApplicationLayerDSLParsingTest {
 		var OperationInvokation action = flowStep.action as OperationInvokation;
 
 		assertTrue(action instanceof ConcurrentOperationInvokation);
-		assertEquals("TestEvent", flowStep.event.name);
+		assertEquals("TestEvent", flowStep.events.get(0).name);
 		assertEquals(2, action.operations.size);
 		assertEquals("testOperation1", action.operations.get(0).name);
 		assertEquals("testOperation2", action.operations.get(1).name);
@@ -570,7 +570,7 @@ class ApplicationLayerDSLParsingTest {
 		var OperationInvokation action = flowStep.action as OperationInvokation;
 
 		assertTrue(action instanceof ExclusiveAlternativeOperationInvokation);
-		assertEquals("TestEvent", flowStep.event.name);
+		assertEquals("TestEvent", flowStep.events.get(0).name);
 		assertEquals(2, action.operations.size);
 		assertEquals("testOperation1", action.operations.get(0).name);
 		assertEquals("testOperation2", action.operations.get(1).name);
@@ -607,7 +607,7 @@ class ApplicationLayerDSLParsingTest {
 		var OperationInvokation action = flowStep.action as OperationInvokation;
 
 		assertTrue(action instanceof InclusiveAlternativeOperationInvokation);
-		assertEquals("TestEvent", flowStep.event.name);
+		assertEquals("TestEvent", flowStep.events.get(0).name);
 		assertEquals(2, action.operations.size);
 		assertEquals("testOperation1", action.operations.get(0).name);
 		assertEquals("testOperation2", action.operations.get(1).name);
@@ -641,7 +641,7 @@ class ApplicationLayerDSLParsingTest {
 		var CommandInvokation action = flowStep.action as CommandInvokation;
 
 		assertTrue(action instanceof SingleCommandInvokation);
-		assertEquals("TestEvent", flowStep.event.name);
+		assertEquals("TestEvent", flowStep.events.get(0).name);
 		assertEquals(1, action.commands.size);
 		assertEquals("TestCommand", action.commands.get(0).name);
 	}
@@ -675,7 +675,7 @@ class ApplicationLayerDSLParsingTest {
 		var CommandInvokation action = flowStep.action as CommandInvokation;
 
 		assertTrue(action instanceof ConcurrentCommandInvokation);
-		assertEquals("TestEvent", flowStep.event.name);
+		assertEquals("TestEvent", flowStep.events.get(0).name);
 		assertEquals(2, action.commands.size);
 		assertEquals("TestCommand1", action.commands.get(0).name);
 		assertEquals("TestCommand2", action.commands.get(1).name);
@@ -710,7 +710,7 @@ class ApplicationLayerDSLParsingTest {
 		var CommandInvokation action = flowStep.action as CommandInvokation;
 
 		assertTrue(action instanceof ExclusiveAlternativeCommandInvokation);
-		assertEquals("TestEvent", flowStep.event.name);
+		assertEquals("TestEvent", flowStep.events.get(0).name);
 		assertEquals(2, action.commands.size);
 		assertEquals("TestCommand1", action.commands.get(0).name);
 		assertEquals("TestCommand2", action.commands.get(1).name);
@@ -745,10 +745,46 @@ class ApplicationLayerDSLParsingTest {
 		var CommandInvokation action = flowStep.action as CommandInvokation;
 
 		assertTrue(action instanceof InclusiveAlternativeCommandInvokation);
-		assertEquals("TestEvent", flowStep.event.name);
+		assertEquals("TestEvent", flowStep.events.get(0).name);
 		assertEquals(2, action.commands.size);
 		assertEquals("TestCommand1", action.commands.get(0).name);
 		assertEquals("TestCommand2", action.commands.get(1).name);
+	}
+
+	@Test
+	def void canDefineCommandInvokationThatRequiresMultipleEvents() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext TestContext {
+				Application {
+					Command TestCommand1
+					
+					Flow {
+						event TestEvent1 + TestEvent2 triggers command TestCommand1
+					}
+				}
+				
+				Aggregate TestAggregate {
+					DomainEvent TestEvent1
+					DomainEvent TestEvent2
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		var CommandInvokationStep flowStep = result.boundedContexts.get(0).application.flows.get(0).steps.
+			get(0) as CommandInvokationStep;
+		var CommandInvokation action = flowStep.action as CommandInvokation;
+
+		assertTrue(action instanceof SingleCommandInvokation);
+		assertEquals(2, flowStep.events.size);
+		assertEquals("TestEvent1", flowStep.events.get(0).name);
+		assertEquals("TestEvent2", flowStep.events.get(1).name);
+		assertEquals(1, action.commands.size);
+		assertEquals("TestCommand1", action.commands.get(0).name);
 	}
 
 }
