@@ -121,7 +121,7 @@ public class ApplicationFlowSemanticsValidator extends AbstractDeclarativeValida
 						TacticdslPackage.Literals.STATE_TRANSITION__FROM, step.getStateTransition().getFrom().indexOf(value));
 		}
 
-		for (EnumValue value : step.getStateTransition().getTarget().getTo()) {
+		for (EnumValue value : step.getStateTransition().getTarget().getTo().stream().map(s -> s.getValue()).collect(Collectors.toList())) {
 			if (!aggregateStates.contains(value.getName()))
 				error(String.format(STATE_VALUE_DOES_NOT_BELONG_TO_AGGREGATE, value.getName(), step.getAggregate().getName()), step.getStateTransition().getTarget(),
 						TacticdslPackage.Literals.STATE_TRANSITION_TARGET__TO, step.getStateTransition().getTarget().getTo().indexOf(value));

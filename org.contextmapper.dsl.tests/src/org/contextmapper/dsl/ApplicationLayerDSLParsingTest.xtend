@@ -382,7 +382,7 @@ class ApplicationLayerDSLParsingTest {
 		assertEquals("TestAggregate", flowStep.aggregate.name);
 		assertNotNull(flowStep.stateTransition);
 		assertEquals("STATE1", flowStep.stateTransition.from.get(0).name);
-		assertEquals("STATE2", flowStep.stateTransition.target.to.get(0).name);
+		assertEquals("STATE2", flowStep.stateTransition.target.to.get(0).value.name);
 	}
 
 	@Test
@@ -423,7 +423,7 @@ class ApplicationLayerDSLParsingTest {
 		assertNotNull(flowStep.stateTransition);
 		assertEquals("STATE1", flowStep.stateTransition.from.get(0).name);
 		assertEquals("STATE2", flowStep.stateTransition.from.get(1).name);
-		assertEquals("STATE3", flowStep.stateTransition.target.to.get(0).name);
+		assertEquals("STATE3", flowStep.stateTransition.target.to.get(0).value.name);
 	}
 
 	@Test
@@ -463,8 +463,8 @@ class ApplicationLayerDSLParsingTest {
 		assertEquals("TestAggregate", flowStep.aggregate.name);
 		assertNotNull(flowStep.stateTransition);
 		assertEquals("STATE1", flowStep.stateTransition.from.get(0).name);
-		assertEquals("STATE2", flowStep.stateTransition.target.to.get(0).name);
-		assertEquals("STATE3", flowStep.stateTransition.target.to.get(1).name);
+		assertEquals("STATE2", flowStep.stateTransition.target.to.get(0).value.name);
+		assertEquals("STATE3", flowStep.stateTransition.target.to.get(1).value.name);
 	}
 
 	@Test
@@ -824,8 +824,8 @@ class ApplicationLayerDSLParsingTest {
 		assertEquals("TestAggregate", flowStep.aggregate.name);
 		assertNotNull(flowStep.stateTransition);
 		assertEquals("STATE1", flowStep.stateTransition.from.get(0).name);
-		assertEquals("STATE2", flowStep.stateTransition.target.to.get(0).name);
-		assertEquals("STATE3", flowStep.stateTransition.target.to.get(1).name);
+		assertEquals("STATE2", flowStep.stateTransition.target.to.get(0).value.name);
+		assertEquals("STATE3", flowStep.stateTransition.target.to.get(1).value.name);
 		assertEquals("TestUser", flowStep.action.actor)
 	}
 	
@@ -864,9 +864,50 @@ class ApplicationLayerDSLParsingTest {
 		assertEquals("TestAggregate", flowStep.aggregate.name);
 		assertNotNull(flowStep.stateTransition);
 		assertEquals("STATE1", flowStep.stateTransition.from.get(0).name);
-		assertEquals("STATE2", flowStep.stateTransition.target.to.get(0).name);
-		assertEquals("STATE3", flowStep.stateTransition.target.to.get(1).name);
+		assertEquals("STATE2", flowStep.stateTransition.target.to.get(0).value.name);
+		assertEquals("STATE3", flowStep.stateTransition.target.to.get(1).value.name);
 		assertEquals("TestUser", flowStep.action.actor)
+	}
+	
+	@Test
+	def void canDefineEndState() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext TestContext {
+				Application {
+					Command TestCommand
+					
+					Flow {
+						command TestCommand delegates to TestAggregate [STATE1 -> STATE2* x STATE3] emits event TestEvent1 X TestEvent2
+					}
+				}
+				
+				Aggregate TestAggregate {
+					DomainEvent TestEvent1
+					DomainEvent TestEvent2
+					
+					enum States {
+						aggregateLifecycle
+						
+						STATE1, STATE2, STATE3
+					}
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		var DomainEventProductionStep flowStep = result.boundedContexts.get(0).application.flows.get(0).steps.
+			get(0) as DomainEventProductionStep;
+		assertEquals("TestAggregate", flowStep.aggregate.name);
+		assertNotNull(flowStep.stateTransition);
+		assertEquals("STATE1", flowStep.stateTransition.from.get(0).name);
+		assertEquals("STATE2", flowStep.stateTransition.target.to.get(0).value.name);
+		assertEquals("STATE3", flowStep.stateTransition.target.to.get(1).value.name);
+		assertTrue(flowStep.stateTransition.target.to.get(0).isEndState);
+		assertFalse(flowStep.stateTransition.target.to.get(1).isEndState);
 	}
 
 }

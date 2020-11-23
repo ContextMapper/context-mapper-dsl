@@ -18,6 +18,7 @@ package org.contextmapper.dsl.validation;
 import static org.contextmapper.dsl.validation.ValidationMessages.STATE_VALUE_DOES_NOT_BELONG_TO_AGGREGATE;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.cml.CMLModelObjectsResolvingHelper;
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
@@ -67,7 +68,7 @@ public class TacticDDDOperationsValidator extends AbstractDeclarativeValidator {
 						TacticdslPackage.Literals.STATE_TRANSITION__FROM, stateTransition.getFrom().indexOf(value));
 		}
 
-		for (EnumValue value : stateTransition.getTarget().getTo()) {
+		for (EnumValue value : stateTransition.getTarget().getTo().stream().map(s -> s.getValue()).collect(Collectors.toList())) {
 			if (!aggregateStates.contains(value.getName()))
 				error(String.format(STATE_VALUE_DOES_NOT_BELONG_TO_AGGREGATE, value.getName(), aggregate.getName()), stateTransition.getTarget(),
 						TacticdslPackage.Literals.STATE_TRANSITION_TARGET__TO, stateTransition.getTarget().getTo().indexOf(value));

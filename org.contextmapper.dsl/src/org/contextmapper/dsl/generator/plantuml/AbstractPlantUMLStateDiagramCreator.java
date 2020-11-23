@@ -34,13 +34,13 @@ abstract public class AbstractPlantUMLStateDiagramCreator<T extends EObject> ext
 
 	protected void printTransition(StateTransition transition) {
 		if (transition.getFrom() == null || transition.getFrom().isEmpty()) {
-			for (String target : mapStatesToStrings(transition.getTarget().getTo())) {
+			for (String target : mapStatesToStrings(transition.getTarget().getTo().stream().map(s -> s.getValue()).collect(Collectors.toList()))) {
 				sb.append("[*] --> ").append(target);
 				linebreak();
 			}
 		}
 		for (String from : transition.getFrom().stream().map(s -> s.getName()).collect(Collectors.toSet())) {
-			for (String target : mapStatesToStrings(transition.getTarget().getTo())) {
+			for (String target : mapStatesToStrings(transition.getTarget().getTo().stream().map(s -> s.getValue()).collect(Collectors.toList()))) {
 				sb.append(from).append(" --> ").append(target);
 				linebreak();
 			}
@@ -51,7 +51,7 @@ abstract public class AbstractPlantUMLStateDiagramCreator<T extends EObject> ext
 		Set<String> states = Sets.newHashSet();
 		for (StateTransition transition : transitions) {
 			states.addAll(mapStatesToStrings(transition.getFrom()));
-			states.addAll(mapStatesToStrings(transition.getTarget().getTo()));
+			states.addAll(mapStatesToStrings(transition.getTarget().getTo().stream().map(s -> s.getValue()).collect(Collectors.toList())));
 		}
 		return states;
 	}
