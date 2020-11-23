@@ -123,7 +123,7 @@ class TacticDDDOperationsGrammarAndValidationTest {
 		assertFalse(operation.isReadOnlyOperation);
 		assertTrue(operation.isWriteOperation);
 		assertEquals("STATE1", stateTransition.from.get(0).name);
-		assertEquals("STATE2", stateTransition.target.to.get(0).name);
+		assertEquals("STATE2", stateTransition.target.to.get(0).value.name);
 	}
 
 	@Test
@@ -158,7 +158,7 @@ class TacticDDDOperationsGrammarAndValidationTest {
 		assertTrue(operation.isWriteOperation);
 		assertEquals("STATE1", stateTransition.from.get(0).name);
 		assertEquals("STATE2", stateTransition.from.get(1).name);
-		assertEquals("STATE3", stateTransition.target.to.get(0).name);
+		assertEquals("STATE3", stateTransition.target.to.get(0).value.name);
 	}
 
 	@Test
@@ -192,7 +192,7 @@ class TacticDDDOperationsGrammarAndValidationTest {
 		assertFalse(operation.isReadOnlyOperation);
 		assertTrue(operation.isWriteOperation);
 		assertEquals(0, stateTransition.from.size);
-		assertEquals("STATE3", stateTransition.target.to.get(0).name);
+		assertEquals("STATE3", stateTransition.target.to.get(0).value.name);
 	}
 
 	@Test
@@ -226,8 +226,8 @@ class TacticDDDOperationsGrammarAndValidationTest {
 		assertFalse(operation.isReadOnlyOperation);
 		assertTrue(operation.isWriteOperation);
 		assertEquals("STATE1", stateTransition.from.get(0).name);
-		assertEquals("STATE2", stateTransition.target.to.get(0).name);
-		assertEquals("STATE3", stateTransition.target.to.get(1).name);
+		assertEquals("STATE2", stateTransition.target.to.get(0).value.name);
+		assertEquals("STATE3", stateTransition.target.to.get(1).value.name);
 	}
 
 	@Test
@@ -314,7 +314,7 @@ class TacticDDDOperationsGrammarAndValidationTest {
 		assertFalse(operation.isReadOnlyOperation);
 		assertTrue(operation.isWriteOperation);
 		assertEquals("STATE1", stateTransition.from.get(0).name);
-		assertEquals("STATE2", stateTransition.target.to.get(0).name);
+		assertEquals("STATE2", stateTransition.target.to.get(0).value.name);
 	}
 
 	@Test
@@ -350,7 +350,7 @@ class TacticDDDOperationsGrammarAndValidationTest {
 		assertTrue(operation.isWriteOperation);
 		assertEquals("STATE1", stateTransition.from.get(0).name);
 		assertEquals("STATE2", stateTransition.from.get(1).name);
-		assertEquals("STATE3", stateTransition.target.to.get(0).name);
+		assertEquals("STATE3", stateTransition.target.to.get(0).value.name);
 	}
 
 	@Test
@@ -384,7 +384,7 @@ class TacticDDDOperationsGrammarAndValidationTest {
 		assertFalse(operation.isReadOnlyOperation);
 		assertTrue(operation.isWriteOperation);
 		assertEquals(0, stateTransition.from.size);
-		assertEquals("STATE3", stateTransition.target.to.get(0).name);
+		assertEquals("STATE3", stateTransition.target.to.get(0).value.name);
 	}
 
 	@Test
@@ -418,8 +418,8 @@ class TacticDDDOperationsGrammarAndValidationTest {
 		assertFalse(operation.isReadOnlyOperation);
 		assertTrue(operation.isWriteOperation);
 		assertEquals("STATE1", stateTransition.from.get(0).name);
-		assertEquals("STATE2", stateTransition.target.to.get(0).name);
-		assertEquals("STATE3", stateTransition.target.to.get(1).name);
+		assertEquals("STATE2", stateTransition.target.to.get(0).value.name);
+		assertEquals("STATE3", stateTransition.target.to.get(1).value.name);
 	}
 
 	@Test

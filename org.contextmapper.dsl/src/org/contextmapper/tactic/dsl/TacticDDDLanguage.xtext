@@ -120,11 +120,15 @@ StateTransitionTarget:
 ;
 
 SingleStateTransitionTarget:
-	to+=[EnumValue]
+	to+=TargetState
 ;
 
 ExclusiveAlternativeStateTransitionTarget:
-	to+=[EnumValue] (('X' | 'x') to+=[EnumValue])+
+	to+=TargetState (('X' | 'x') to+=TargetState)+
+;
+
+TargetState:
+	value=[EnumValue]((endState?='*'))?
 ;
 
 ServiceOperationDelegate :
