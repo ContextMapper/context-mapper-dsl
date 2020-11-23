@@ -786,5 +786,87 @@ class ApplicationLayerDSLParsingTest {
 		assertEquals(1, action.commands.size);
 		assertEquals("TestCommand1", action.commands.get(0).name);
 	}
+	
+	@Test
+	def void canDefineEventProductionFlowStepWithActorThatTriggeredOperation() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext TestContext {
+				Application {
+					Service TestService {
+						void testOperation();
+					}
+					
+					Flow {
+						operation testOperation [triggered by "TestUser"] delegates to TestAggregate [STATE1 -> STATE2 X STATE3] emits event TestEvent1 X TestEvent2
+					}
+				}
+				
+				Aggregate TestAggregate {
+					DomainEvent TestEvent1
+					DomainEvent TestEvent2
+					
+					enum States {
+						aggregateLifecycle
+						
+						STATE1, STATE2, STATE3
+					}
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		var DomainEventProductionStep flowStep = result.boundedContexts.get(0).application.flows.get(0).steps.
+			get(0) as DomainEventProductionStep;
+		assertEquals("TestAggregate", flowStep.aggregate.name);
+		assertNotNull(flowStep.stateTransition);
+		assertEquals("STATE1", flowStep.stateTransition.from.get(0).name);
+		assertEquals("STATE2", flowStep.stateTransition.target.to.get(0).name);
+		assertEquals("STATE3", flowStep.stateTransition.target.to.get(1).name);
+		assertEquals("TestUser", flowStep.action.actor)
+	}
+	
+	@Test
+	def void canDefineEventProductionFlowStepWithActorThatTriggeredCommand() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext TestContext {
+				Application {
+					Command TestCommand
+					
+					Flow {
+						command TestCommand [triggered by "TestUser"] delegates to TestAggregate [STATE1 -> STATE2 X STATE3] emits event TestEvent1 X TestEvent2
+					}
+				}
+				
+				Aggregate TestAggregate {
+					DomainEvent TestEvent1
+					DomainEvent TestEvent2
+					
+					enum States {
+						aggregateLifecycle
+						
+						STATE1, STATE2, STATE3
+					}
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		var DomainEventProductionStep flowStep = result.boundedContexts.get(0).application.flows.get(0).steps.
+			get(0) as DomainEventProductionStep;
+		assertEquals("TestAggregate", flowStep.aggregate.name);
+		assertNotNull(flowStep.stateTransition);
+		assertEquals("STATE1", flowStep.stateTransition.from.get(0).name);
+		assertEquals("STATE2", flowStep.stateTransition.target.to.get(0).name);
+		assertEquals("STATE3", flowStep.stateTransition.target.to.get(1).name);
+		assertEquals("TestUser", flowStep.action.actor)
+	}
 
 }
