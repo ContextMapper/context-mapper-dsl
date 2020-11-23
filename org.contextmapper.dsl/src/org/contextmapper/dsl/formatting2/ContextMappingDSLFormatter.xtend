@@ -17,19 +17,24 @@ package org.contextmapper.dsl.formatting2
 
 import com.google.inject.Inject
 import org.contextmapper.dsl.contextMappingDSL.Aggregate
+import org.contextmapper.dsl.contextMappingDSL.Application
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext
+import org.contextmapper.dsl.contextMappingDSL.CommandInvokationStep
 import org.contextmapper.dsl.contextMappingDSL.ContextMap
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel
 import org.contextmapper.dsl.contextMappingDSL.Domain
+import org.contextmapper.dsl.contextMappingDSL.DomainEventProductionStep
+import org.contextmapper.dsl.contextMappingDSL.EitherCommandOrOperation
+import org.contextmapper.dsl.contextMappingDSL.Flow
 import org.contextmapper.dsl.contextMappingDSL.Relationship
 import org.contextmapper.dsl.contextMappingDSL.SculptorModule
 import org.contextmapper.dsl.contextMappingDSL.Subdomain
+import org.contextmapper.dsl.contextMappingDSL.UseCase
+import org.contextmapper.dsl.contextMappingDSL.UserRequirement
+import org.contextmapper.dsl.contextMappingDSL.UserStory
 import org.contextmapper.dsl.services.ContextMappingDSLGrammarAccess
 import org.contextmapper.tactic.dsl.formatting2.TacticDDDLanguageFormatter
 import org.eclipse.xtext.formatting2.IFormattableDocument
-import org.contextmapper.dsl.contextMappingDSL.UserRequirement
-import org.contextmapper.dsl.contextMappingDSL.UseCase
-import org.contextmapper.dsl.contextMappingDSL.UserStory
 
 class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 
@@ -45,7 +50,8 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 			}
 		}
 
-		contextMappingModel.map.format
+		if (contextMappingModel.map !== null)
+			contextMappingModel.map.format
 
 		for (boundedContext : contextMappingModel.boundedContexts) {
 			boundedContext.format
@@ -103,6 +109,49 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 		for (module : boundedContext.modules) {
 			module.format
 		}
+		if (boundedContext.application !== null)
+			boundedContext.application.format
+	}
+
+	def dispatch void format(Application application, extension IFormattableDocument document) {
+		interior(
+			application.regionFor.ruleCallTo(OPENRule).append[newLine],
+			application.regionFor.ruleCallTo(CLOSERule).prepend[newLine].append[newLines = 2]
+		)[indent]
+
+		for (command : application.commands) {
+			command.format
+		}
+		for (service : application.services) {
+			service.format
+		}
+		for (flow : application.flows) {
+			flow.format
+		}
+	}
+
+	def dispatch void format(Flow flow, extension IFormattableDocument document) {
+		interior(
+			flow.regionFor.ruleCallTo(OPENRule).append[newLine],
+			flow.regionFor.ruleCallTo(CLOSERule).prepend[newLine].append[newLines = 2]
+		)[indent]
+
+		for (step : flow.steps) {
+			step.format
+		}
+	}
+
+	def dispatch void format(DomainEventProductionStep step, extension IFormattableDocument document) {
+		step.action.format
+	}
+
+	def dispatch void format(CommandInvokationStep step, extension IFormattableDocument document) {
+		step.regionFor.keyword("event").prepend[newLine]
+	}
+
+	def dispatch void format(EitherCommandOrOperation commandOrOperation, extension IFormattableDocument document) {
+		commandOrOperation.regionFor.keyword("command").prepend[newLine]
+		commandOrOperation.regionFor.keyword("operation").prepend[newLine]
 	}
 
 	def dispatch void format(Domain domain, extension IFormattableDocument document) {
@@ -159,8 +208,8 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 			requirement.regionFor.keyword("UserStory").prepend[newLines = 2]
 			requirement.regionFor.keyword("As a").prepend[newLine]
 			requirement.regionFor.keyword("As an").prepend[newLine]
-			
-			if(requirement.features.size > 1) {
+
+			if (requirement.features.size > 1) {
 				for (feature : requirement.features) {
 					feature.prepend[newLine]
 				}
