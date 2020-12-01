@@ -7,7 +7,7 @@ ContextMapper is an open source tool providing a Domain-specific Language based 
 With the ContextMapper DSL language you can express DDD context maps. Once you have modeled your system with the language you can use the provided generators to create UML diagrams, service contracts, and calculate proposals for service decomposition with [Service Cutter](https://github.com/ServiceCutter/ServiceCutter).
 
 Checkout our website [https://contextmapper.org/](https://contextmapper.org/) to get started.
-The Context Mapper project has been developed as part of research projects at [HSR](https://www.hsr.ch) and you can find the project reports and further background information [here](https://contextmapper.org/background-and-publications/).
+The Context Mapper project has been developed as part of research projects at [OST (former HSR)](https://www.ost.ch) and you can find the project reports and further background information [here](https://contextmapper.org/background-and-publications/).
 
  * **Installation links:**
  Context Mapper is available for Visual Studio Code and Eclipse:
