@@ -17,7 +17,7 @@ The Context Mapper project has been developed as part of research projects at [O
    * Eclipse:
      * [Eclipse Marketplace](https://marketplace.eclipse.org/content/context-mapper)
      * Update Site: https://dl.bintray.com/contextmapper/context-mapping-dsl/updates/
- * [Release notes for latest releases](https://github.com/ContextMapper/context-mapper-dsl/releases)
+ * [Release notes for latest releases](https://contextmapper.org/allnews)
 
 ## Features
 * ContextMapper DSL language support (CML files)
