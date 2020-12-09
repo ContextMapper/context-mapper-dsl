@@ -45,27 +45,27 @@ class PlantUMLStateDiagramCreatorTest extends AbstractCMLInputFileTest {
 		String stateDiagram = new PlantUMLStateDiagramCreator4Flow().createDiagram(flow);
 
 		// then
-		assertEquals("@startuml\n"
-				+ "\n"
-				+ "skinparam componentStyle uml2\n"
-				+ "\n"
-				+ "RECEIVED : \n"
-				+ "ACCEPTED : \n"
-				+ "POLICY_CREATED : \n"
-				+ "EXPIRED : \n"
-				+ "SUBMITTED : \n"
-				+ "REJECTED : \n"
-				+ "[*] --> SUBMITTED\n"
-				+ "SUBMITTED --> RECEIVED\n"
-				+ "SUBMITTED --> REJECTED\n"
-				+ "RECEIVED --> ACCEPTED\n"
-				+ "RECEIVED --> EXPIRED\n"
-				+ "RECEIVED --> REJECTED\n"
-				+ "ACCEPTED --> POLICY_CREATED\n"
-				+ "ACCEPTED --> EXPIRED\n"
-				+ "\n"
-				+ "\n"
-				+ "@enduml\n" + "", stateDiagram);
+		assertEquals("@startuml" + System.lineSeparator()
+				+ System.lineSeparator()
+				+ "skinparam componentStyle uml2" + System.lineSeparator()
+				+ System.lineSeparator()
+				+ "RECEIVED : " + System.lineSeparator()
+				+ "ACCEPTED : " + System.lineSeparator()
+				+ "POLICY_CREATED : " + System.lineSeparator()
+				+ "EXPIRED : " + System.lineSeparator()
+				+ "SUBMITTED : " + System.lineSeparator()
+				+ "REJECTED : " + System.lineSeparator()
+				+ "[*] --> SUBMITTED" + System.lineSeparator()
+				+ "SUBMITTED --> RECEIVED" + System.lineSeparator()
+				+ "SUBMITTED --> REJECTED" + System.lineSeparator()
+				+ "RECEIVED --> ACCEPTED" + System.lineSeparator()
+				+ "RECEIVED --> EXPIRED" + System.lineSeparator()
+				+ "RECEIVED --> REJECTED" + System.lineSeparator()
+				+ "ACCEPTED --> POLICY_CREATED" + System.lineSeparator()
+				+ "ACCEPTED --> EXPIRED" + System.lineSeparator()
+				+ System.lineSeparator()
+				+ System.lineSeparator()
+				+ "@enduml" + System.lineSeparator() + "", stateDiagram);
 	}
 
 	@Test
@@ -78,28 +78,28 @@ class PlantUMLStateDiagramCreatorTest extends AbstractCMLInputFileTest {
 		String stateDiagram = new PlantUMLStateDiagramCreator4Aggregate().createDiagram(aggregate);
 
 		// then
-		assertEquals("@startuml\n"
-				+ "\n"
-				+ "skinparam componentStyle uml2\n"
-				+ "\n"
-				+ "QUOTE_EXPIRED : \n"
-				+ "REQUEST_SUBMITTED : \n"
-				+ "QUOTE_ACCEPTED : \n"
-				+ "POLICY_CREATED : \n"
-				+ "QUOTE_RECEIVED : \n"
-				+ "QUOTE_REJECTED : \n"
-				+ "REQUEST_REJECTED : \n"
-				+ "[*] --> REQUEST_SUBMITTED\n"
-				+ "REQUEST_SUBMITTED --> REQUEST_REJECTED\n"
-				+ "REQUEST_SUBMITTED --> QUOTE_RECEIVED\n"
-				+ "QUOTE_RECEIVED --> QUOTE_EXPIRED\n"
-				+ "QUOTE_RECEIVED --> QUOTE_ACCEPTED\n"
-				+ "QUOTE_RECEIVED --> QUOTE_REJECTED\n"
-				+ "QUOTE_ACCEPTED --> QUOTE_EXPIRED\n"
-				+ "QUOTE_ACCEPTED --> POLICY_CREATED\n"
-				+ "\n"
-				+ "\n"
-				+ "@enduml\n"
+		assertEquals("@startuml" + System.lineSeparator()
+				+ System.lineSeparator()
+				+ "skinparam componentStyle uml2" + System.lineSeparator()
+				+ System.lineSeparator()
+				+ "QUOTE_EXPIRED : " + System.lineSeparator()
+				+ "REQUEST_SUBMITTED : " + System.lineSeparator()
+				+ "QUOTE_ACCEPTED : " + System.lineSeparator()
+				+ "POLICY_CREATED : " + System.lineSeparator()
+				+ "QUOTE_RECEIVED : " + System.lineSeparator()
+				+ "QUOTE_REJECTED : " + System.lineSeparator()
+				+ "REQUEST_REJECTED : " + System.lineSeparator()
+				+ "[*] --> REQUEST_SUBMITTED" + System.lineSeparator()
+				+ "REQUEST_SUBMITTED --> REQUEST_REJECTED" + System.lineSeparator()
+				+ "REQUEST_SUBMITTED --> QUOTE_RECEIVED" + System.lineSeparator()
+				+ "QUOTE_RECEIVED --> QUOTE_EXPIRED" + System.lineSeparator()
+				+ "QUOTE_RECEIVED --> QUOTE_ACCEPTED" + System.lineSeparator()
+				+ "QUOTE_RECEIVED --> QUOTE_REJECTED" + System.lineSeparator()
+				+ "QUOTE_ACCEPTED --> QUOTE_EXPIRED" + System.lineSeparator()
+				+ "QUOTE_ACCEPTED --> POLICY_CREATED" + System.lineSeparator()
+				+ System.lineSeparator()
+				+ System.lineSeparator()
+				+ "@enduml" + System.lineSeparator()
 				+ "", stateDiagram);
 	}
 
