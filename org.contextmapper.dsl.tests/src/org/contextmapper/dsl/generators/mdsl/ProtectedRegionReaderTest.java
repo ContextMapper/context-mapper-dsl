@@ -34,13 +34,16 @@ public class ProtectedRegionReaderTest {
 	@Test
 	void canIdentifyProtectedRegion() throws IOException {
 		// given
-		File expectedResultFile = new File(Paths.get("").toAbsolutePath().toString(), "/integ-test-files/mdsl/protected-region-reader-test.mdsl");
+		File expectedResultFile = new File(Paths.get("").toAbsolutePath().toString(),
+				"/integ-test-files/mdsl/protected-region-reader-test.mdsl");
 		String mdslInputFile = FileUtils.readFileToString(expectedResultFile);
 
 		// when
 		ProtectedRegionReader reader = new ProtectedRegionReader();
-		boolean containsDataTypeRegion = reader.containsProtectedRegion(mdslInputFile, ProtectedRegionIdentifier.DATA_TYPE_REGION);
-		boolean containsClientRegion = reader.containsProtectedRegion(mdslInputFile, ProtectedRegionIdentifier.CLIENT_REGION);
+		boolean containsDataTypeRegion = reader.containsProtectedRegion(mdslInputFile,
+				ProtectedRegionIdentifier.DATA_TYPE_REGION);
+		boolean containsClientRegion = reader.containsProtectedRegion(mdslInputFile,
+				ProtectedRegionIdentifier.CLIENT_REGION);
 
 		// then
 		assertTrue(containsDataTypeRegion);
@@ -50,7 +53,8 @@ public class ProtectedRegionReaderTest {
 	@Test
 	void canReadProtectedRegionContent() throws IOException {
 		// given
-		File expectedResultFile = new File(Paths.get("").toAbsolutePath().toString(), "/integ-test-files/mdsl/protected-region-reader-test.mdsl");
+		File expectedResultFile = new File(Paths.get("").toAbsolutePath().toString(),
+				"/integ-test-files/mdsl/protected-region-reader-test.mdsl");
 		String mdslInputFile = FileUtils.readFileToString(expectedResultFile);
 
 		// when
@@ -58,68 +62,81 @@ public class ProtectedRegionReaderTest {
 		String protectedRegion = reader.getProtectedRegionContent(mdslInputFile, ProtectedRegionIdentifier.DATA_TYPE_REGION);
 
 		// then
-		assertEquals("data type Parameter1Type P\ndata type YetAnotherDataType P", protectedRegion);
+		assertEquals("data type Parameter1Type P" + System.lineSeparator() + "data type YetAnotherDataType P",
+				protectedRegion);
 	}
 
 	@Test
 	void canGetIdentifiersInDataTypeProtectedRegion() throws IOException {
 		// given
-		File expectedResultFile = new File(Paths.get("").toAbsolutePath().toString(), "/integ-test-files/mdsl/protected-region-identifier-test.mdsl");
+		File expectedResultFile = new File(Paths.get("").toAbsolutePath().toString(),
+				"/integ-test-files/mdsl/protected-region-identifier-test.mdsl");
 		String mdslInputFile = FileUtils.readFileToString(expectedResultFile);
 
 		// when
 		ProtectedRegionReader reader = new ProtectedRegionReader();
-		String protectedRegion = reader.getProtectedRegionContent(mdslInputFile, ProtectedRegionIdentifier.DATA_TYPE_REGION);
-		Set<String> identifiers = reader.getIdentifiersInProtectedRegion(protectedRegion, ProtectedRegionIdentifier.DATA_TYPE_REGION);
+		String protectedRegion = reader.getProtectedRegionContent(mdslInputFile,
+				ProtectedRegionIdentifier.DATA_TYPE_REGION);
+		Set<String> identifiers = reader.getIdentifiersInProtectedRegion(protectedRegion,
+				ProtectedRegionIdentifier.DATA_TYPE_REGION);
 
 		// then
 		assertEquals(2, identifiers.size());
 		assertTrue(identifiers.contains("Address"));
 		assertTrue(identifiers.contains("Parameter1Type"));
 	}
-	
+
 	@Test
 	void canGetIdentifiersInEndpointProtectedRegion() throws IOException {
 		// given
-		File expectedResultFile = new File(Paths.get("").toAbsolutePath().toString(), "/integ-test-files/mdsl/protected-region-identifier-test.mdsl");
+		File expectedResultFile = new File(Paths.get("").toAbsolutePath().toString(),
+				"/integ-test-files/mdsl/protected-region-identifier-test.mdsl");
 		String mdslInputFile = FileUtils.readFileToString(expectedResultFile);
 
 		// when
 		ProtectedRegionReader reader = new ProtectedRegionReader();
-		String protectedRegion = reader.getProtectedRegionContent(mdslInputFile, ProtectedRegionIdentifier.ENDPOINT_REGION);
-		Set<String> identifiers = reader.getIdentifiersInProtectedRegion(protectedRegion, ProtectedRegionIdentifier.ENDPOINT_REGION);
+		String protectedRegion = reader.getProtectedRegionContent(mdslInputFile,
+				ProtectedRegionIdentifier.ENDPOINT_REGION);
+		Set<String> identifiers = reader.getIdentifiersInProtectedRegion(protectedRegion,
+				ProtectedRegionIdentifier.ENDPOINT_REGION);
 
 		// then
 		assertEquals(1, identifiers.size());
 		assertTrue(identifiers.contains("Customers"));
 	}
-	
+
 	@Test
 	void canGetIdentifiersInProviderProtectedRegion() throws IOException {
 		// given
-		File expectedResultFile = new File(Paths.get("").toAbsolutePath().toString(), "/integ-test-files/mdsl/protected-region-identifier-test.mdsl");
+		File expectedResultFile = new File(Paths.get("").toAbsolutePath().toString(),
+				"/integ-test-files/mdsl/protected-region-identifier-test.mdsl");
 		String mdslInputFile = FileUtils.readFileToString(expectedResultFile);
 
 		// when
 		ProtectedRegionReader reader = new ProtectedRegionReader();
-		String protectedRegion = reader.getProtectedRegionContent(mdslInputFile, ProtectedRegionIdentifier.PROVIDER_REGION);
-		Set<String> identifiers = reader.getIdentifiersInProtectedRegion(protectedRegion, ProtectedRegionIdentifier.PROVIDER_REGION);
+		String protectedRegion = reader.getProtectedRegionContent(mdslInputFile,
+				ProtectedRegionIdentifier.PROVIDER_REGION);
+		Set<String> identifiers = reader.getIdentifiersInProtectedRegion(protectedRegion,
+				ProtectedRegionIdentifier.PROVIDER_REGION);
 
 		// then
 		assertEquals(1, identifiers.size());
 		assertTrue(identifiers.contains("CustomerManagementContextProvider"));
 	}
-	
+
 	@Test
 	void canGetIdentifiersInClientProtectedRegion() throws IOException {
 		// given
-		File expectedResultFile = new File(Paths.get("").toAbsolutePath().toString(), "/integ-test-files/mdsl/protected-region-identifier-test.mdsl");
+		File expectedResultFile = new File(Paths.get("").toAbsolutePath().toString(),
+				"/integ-test-files/mdsl/protected-region-identifier-test.mdsl");
 		String mdslInputFile = FileUtils.readFileToString(expectedResultFile);
 
 		// when
 		ProtectedRegionReader reader = new ProtectedRegionReader();
-		String protectedRegion = reader.getProtectedRegionContent(mdslInputFile, ProtectedRegionIdentifier.CLIENT_REGION);
-		Set<String> identifiers = reader.getIdentifiersInProtectedRegion(protectedRegion, ProtectedRegionIdentifier.CLIENT_REGION);
+		String protectedRegion = reader.getProtectedRegionContent(mdslInputFile,
+				ProtectedRegionIdentifier.CLIENT_REGION);
+		Set<String> identifiers = reader.getIdentifiersInProtectedRegion(protectedRegion,
+				ProtectedRegionIdentifier.CLIENT_REGION);
 
 		// then
 		assertEquals(1, identifiers.size());

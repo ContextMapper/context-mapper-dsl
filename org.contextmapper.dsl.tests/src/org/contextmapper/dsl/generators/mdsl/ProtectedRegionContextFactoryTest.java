@@ -59,14 +59,16 @@ public class ProtectedRegionContextFactoryTest {
 		ProtectedRegionContext context = factory.createProtectedRegionContextForExistingMDSLFile(mdslInputFile);
 
 		// then
-		assertEquals("data type Address P\ndata type Parameter1Type P", context.getProtectedDataTypeRegion());
+		assertEquals("data type Address P" + System.lineSeparator() + "data type Parameter1Type P", context.getProtectedDataTypeRegion());
+		assertEquals("endpoint type Customers" + System.lineSeparator() + "	exposes" + System.lineSeparator() + "		operation updateAddress" + System.lineSeparator()
+				+ "			expecting" + System.lineSeparator() + "				payload Address" + System.lineSeparator() + "			delivering" + System.lineSeparator() + ""
+				+ "				payload ReturnType" + System.lineSeparator() + "		operation anotherMethod" + System.lineSeparator() + "			expecting"
+				+ System.lineSeparator() + "				payload anotherMethodParameter", context.getProtectedEndpointRegion());
 		assertEquals(
-				"endpoint type Customers\n	exposes\n		operation updateAddress\n			expecting\n				payload Address\n			delivering\n"
-						+ "				payload ReturnType\n		operation anotherMethod\n			expecting\n				payload anotherMethodParameter",
-				context.getProtectedEndpointRegion());
-		assertEquals("API provider CustomerManagementContextProvider\n	offers Customers\n	at endpoint location \"http://localhost:8000\"\n		via protocol \"RESTful HTTP\"",
+				"API provider CustomerManagementContextProvider" + System.lineSeparator() + "	offers Customers" + System.lineSeparator()
+						+ "	at endpoint location \"http://localhost:8000\"" + System.lineSeparator() + "		via protocol \"RESTful HTTP\"",
 				context.getProtectedProviderRegion());
-		assertEquals("API client ContractManagementContextClient\n	consumes Customers", context.getProtectedClientRegion());
+		assertEquals("API client ContractManagementContextClient" + System.lineSeparator() + "	consumes Customers", context.getProtectedClientRegion());
 		assertEquals(2, context.getDataTypeIdentifiers().size());
 		assertEquals(1, context.getEndpointIdentifiers().size());
 		assertEquals(1, context.getProviderIdentifiers().size());

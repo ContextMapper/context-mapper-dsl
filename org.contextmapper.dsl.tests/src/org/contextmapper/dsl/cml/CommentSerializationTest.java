@@ -52,7 +52,8 @@ public class CommentSerializationTest extends AbstractCMLInputFileTest {
 		testResource.save(null);
 
 		// then
-		String expectedCML = "// test SL comment\nContextMap TestMap {\n}\n\n";
+		String expectedCML = "// test SL comment" + System.lineSeparator() + "ContextMap TestMap {"
+				+ System.lineSeparator() + "}" + System.lineSeparator() + System.lineSeparator();
 		assertEquals(expectedCML, FileUtils.readFileToString(testFile, Charset.defaultCharset()));
 	}
 
@@ -65,7 +66,7 @@ public class CommentSerializationTest extends AbstractCMLInputFileTest {
 		model.setMap(map);
 
 		// when
-		model.setTopComment("/* test SL comment\n * with another line */");
+		model.setTopComment("/* test SL comment" + System.lineSeparator() + " * with another line */");
 		File testFile = new File(testDir, "SL-comment-test.cml");
 		new ContextMappingDSLStandaloneSetup().createInjectorAndDoEMFRegistration();
 		Resource testResource = new ResourceSetImpl().createResource(URI.createURI(testFile.toURI().toString()));
@@ -73,7 +74,9 @@ public class CommentSerializationTest extends AbstractCMLInputFileTest {
 		testResource.save(null);
 
 		// then
-		String expectedCML = "/* test SL comment\n * with another line */\nContextMap TestMap {\n}\n\n";
+		String expectedCML = "/* test SL comment" + System.lineSeparator() + " * with another line */"
+				+ System.lineSeparator() + "ContextMap TestMap {" + System.lineSeparator() + "}"
+				+ System.lineSeparator() + System.lineSeparator();
 		assertEquals(expectedCML, FileUtils.readFileToString(testFile, Charset.defaultCharset()));
 	}
 
@@ -95,10 +98,11 @@ public class CommentSerializationTest extends AbstractCMLInputFileTest {
 		testResource.save(null);
 
 		// then
-		String expectedCML = "// test SL comment\n\n// test BC comment\nBoundedContext TestContext";
+		String expectedCML = "// test SL comment" + System.lineSeparator() + System.lineSeparator()
+				+ "// test BC comment" + System.lineSeparator() + "BoundedContext TestContext";
 		assertEquals(expectedCML, FileUtils.readFileToString(testFile, Charset.defaultCharset()));
 	}
-	
+
 	@Test
 	public void canSerializeBCComment_ML() throws IOException {
 		// given
@@ -109,7 +113,7 @@ public class CommentSerializationTest extends AbstractCMLInputFileTest {
 
 		// when
 		model.setTopComment("// test SL comment");
-		testContext.setComment("/* test BC comment ML\n * with second line */");
+		testContext.setComment("/* test BC comment ML" + System.lineSeparator() + " * with second line */");
 		File testFile = new File(testDir, "SL-BC-comment-test.cml");
 		new ContextMappingDSLStandaloneSetup().createInjectorAndDoEMFRegistration();
 		Resource testResource = new ResourceSetImpl().createResource(URI.createURI(testFile.toURI().toString()));
@@ -117,7 +121,9 @@ public class CommentSerializationTest extends AbstractCMLInputFileTest {
 		testResource.save(null);
 
 		// then
-		String expectedCML = "// test SL comment\n\n/* test BC comment ML\n * with second line */\nBoundedContext TestContext";
+		String expectedCML = "// test SL comment" + System.lineSeparator() + System.lineSeparator()
+				+ "/* test BC comment ML" + System.lineSeparator() + " * with second line */" + System.lineSeparator()
+				+ "BoundedContext TestContext";
 		assertEquals(expectedCML, FileUtils.readFileToString(testFile, Charset.defaultCharset()));
 	}
 
