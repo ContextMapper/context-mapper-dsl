@@ -42,7 +42,7 @@ public class SketchMinerGenerator extends AbstractContextMappingModelGenerator {
 			int flowNr = 1;
 			for (Flow flow : getFlowsWithSteps(boundedContext)) {
 				fsa.generateFile(fileName + "_BC_" + boundedContext.getName() + "_Flow" + flowNr + "." + SKETCH_MINER_FILE_EXT,
-						new SketchMinerModelCreator().createSketchMinerText(flow));
+						new SketchMinerModelCreator().createText(flow));
 				flowNr++;
 			}
 		}

@@ -20,8 +20,8 @@ import org.contextmapper.dsl.generator.mdsl.ProtectedRegionContext;
 
 public class TestMDSLAPIDescriptionCreator extends MDSLAPIDescriptionCreator {
 
-	public TestMDSLAPIDescriptionCreator(ProtectedRegionContext protectedRegionContext) {
-		super(protectedRegionContext);
+	public TestMDSLAPIDescriptionCreator(ProtectedRegionContext protectedRegionContext, String inputFileName) {
+		super(protectedRegionContext, inputFileName);
 	}
 
 	@Override

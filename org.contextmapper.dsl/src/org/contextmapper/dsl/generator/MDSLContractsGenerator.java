@@ -34,8 +34,8 @@ public class MDSLContractsGenerator extends AbstractContextMappingModelGenerator
 		for (ServiceSpecification serviceSpecification : mdslModelCreator.createServiceSpecifications()) {
 			String mdslFileName = inputFileURI.trimFileExtension().lastSegment() + "_" + serviceSpecification.getName() + "." + MDSL_FILE_EXT;
 			ProtectedRegionContext protectedRegionContext = createProtectedRegionContext(mdslFileName, fsa);
-			MDSLAPIDescriptionCreator dslCreator = new MDSLAPIDescriptionCreator(protectedRegionContext);
-			fsa.generateFile(mdslFileName, dslCreator.createAPIDescriptionText(serviceSpecification, inputFileURI.lastSegment()));
+			MDSLAPIDescriptionCreator dslCreator = new MDSLAPIDescriptionCreator(protectedRegionContext, inputFileURI.lastSegment());
+			fsa.generateFile(mdslFileName, dslCreator.createText(serviceSpecification));
 		}
 	}
 

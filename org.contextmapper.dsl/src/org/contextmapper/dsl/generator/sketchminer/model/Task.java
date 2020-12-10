@@ -49,8 +49,7 @@ public class Task {
 	}
 
 	public boolean equalsOrContainsTask(Task otherTask) {
-		return otherTask.name.equals(this.name)
-				|| (parallelTasks != null && parallelTasks.stream().map(t -> t.getName()).collect(Collectors.toList()).contains(otherTask.getName()));
+		return otherTask.name.equals(this.name) || (parallelTasks != null && parallelTasks.stream().map(t -> t.getName()).collect(Collectors.toList()).contains(otherTask.getName()));
 	}
 
 	private Set<String> getAllTaskNames() {

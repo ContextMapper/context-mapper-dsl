@@ -15,65 +15,35 @@
  */
 package org.contextmapper.dsl.generator.sketchminer;
 
-import java.io.File;
-import java.io.StringWriter;
-import java.net.URL;
-import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
 import org.contextmapper.dsl.contextMappingDSL.Flow;
+import org.contextmapper.dsl.generator.AbstractFreemarkerTextCreator;
 import org.contextmapper.dsl.generator.sketchminer.converter.Flow2SketchMinerConverter;
 
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.TemplateExceptionHandler;
-
-public class SketchMinerModelCreator {
+public class SketchMinerModelCreator extends AbstractFreemarkerTextCreator<Flow> {
 
 	private static final String TEMPLATE_NAME = "sketchminer.ftl";
 
-	private Configuration freemarkerConfig;
-	private Template freemarkerTemplate;
-
-	public SketchMinerModelCreator() {
-		loadFreemarkerTemplate();
+	@Override
+	protected void preprocessing(Flow modelObject) {
+		// nothing to do here
 	}
 
-	public String createSketchMinerText(Flow flow) {
+	@Override
+	protected void registerModelObjects(Map<String, Object> root, Flow flow) {
 		Flow2SketchMinerConverter converter = new Flow2SketchMinerConverter(flow);
-		Map<String, Object> root = new HashMap<>();
 		root.put("model", converter.convert());
-		StringWriter writer = new StringWriter();
-		try {
-			freemarkerTemplate.process(root, writer);
-		} catch (Exception e) {
-			throw new RuntimeException("Error in processing freemarker template.", e);
-		}
-		return writer.toString();
 	}
 
-	private void loadFreemarkerTemplate() {
-		URL url = SketchMinerModelCreator.class.getResource(TEMPLATE_NAME);
-		File templateDir = new File(System.getProperty("java.io.tmpdir"), "context-mapper-freemarker-templates-" + getPID());
-		if (!templateDir.exists())
-			templateDir.mkdir();
-		try {
-			FileUtils.copyURLToFile(url, new File(templateDir, TEMPLATE_NAME));
-
-			freemarkerConfig = new Configuration(Configuration.VERSION_2_3_22);
-			freemarkerConfig.setDirectoryForTemplateLoading(templateDir);
-			freemarkerConfig.setDefaultEncoding("UTF-8");
-			freemarkerConfig.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
-			freemarkerTemplate = freemarkerConfig.getTemplate(TEMPLATE_NAME);
-		} catch (Exception e) {
-			throw new RuntimeException("Cannot load freemarker template!", e);
-		}
+	@Override
+	protected String getTemplateName() {
+		return TEMPLATE_NAME;
 	}
 
-	private long getPID() {
-		String processName = java.lang.management.ManagementFactory.getRuntimeMXBean().getName();
-		return Long.parseLong(processName.split("@")[0]);
+	@Override
+	protected Class<?> getTemplateClass() {
+		return SketchMinerModelCreator.class;
 	}
 
 }

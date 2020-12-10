@@ -38,7 +38,7 @@ public class SketchMinerModelCreatorTest extends AbstractCMLInputFileTest {
 		Flow flow = EcoreUtil2.eAllOfType(model, Flow.class).get(0);
 
 		// when
-		String output = new SketchMinerModelCreator().createSketchMinerText(flow);
+		String output = new SketchMinerModelCreator().createText(flow);
 
 		// then
 		assertEquals("StartCommand" + System.lineSeparator() + "FirstEvent" + System.lineSeparator() + "EndCommand" + System.lineSeparator() + System.lineSeparator(), output);
@@ -51,7 +51,7 @@ public class SketchMinerModelCreatorTest extends AbstractCMLInputFileTest {
 		Flow flow = EcoreUtil2.eAllOfType(model, Flow.class).get(0);
 
 		// when
-		String output = new SketchMinerModelCreator().createSketchMinerText(flow);
+		String output = new SketchMinerModelCreator().createText(flow);
 
 		// then
 		assertEquals("StartCommand" + System.lineSeparator() + "FirstEvent|SecondEvent" + System.lineSeparator() + "EndCommand" + System.lineSeparator() + System.lineSeparator(),
@@ -66,7 +66,7 @@ public class SketchMinerModelCreatorTest extends AbstractCMLInputFileTest {
 		Flow flow = EcoreUtil2.eAllOfType(model, Flow.class).get(0);
 
 		// when
-		String output = new SketchMinerModelCreator().createSketchMinerText(flow);
+		String output = new SketchMinerModelCreator().createText(flow);
 
 		// then
 		assertEquals("StartEvent" + System.lineSeparator() + "FirstCommand|SecondCommand" + System.lineSeparator() + "EndEvent" + System.lineSeparator() + System.lineSeparator(),
@@ -81,7 +81,7 @@ public class SketchMinerModelCreatorTest extends AbstractCMLInputFileTest {
 		Flow flow = EcoreUtil2.eAllOfType(model, Flow.class).get(0);
 
 		// when
-		String output = new SketchMinerModelCreator().createSketchMinerText(flow);
+		String output = new SketchMinerModelCreator().createText(flow);
 
 		// then
 		assertEquals("StartCommand" + System.lineSeparator() + "FirstEvent" + System.lineSeparator() + "EndCommand" + System.lineSeparator() + System.lineSeparator()
@@ -96,7 +96,7 @@ public class SketchMinerModelCreatorTest extends AbstractCMLInputFileTest {
 		Flow flow = EcoreUtil2.eAllOfType(model, Flow.class).get(0);
 
 		// when
-		String output = new SketchMinerModelCreator().createSketchMinerText(flow);
+		String output = new SketchMinerModelCreator().createText(flow);
 
 		// then
 		assertEquals("StartCommand" + System.lineSeparator() + "FirstEvent" + System.lineSeparator() + "MiddleCommand1" + System.lineSeparator() + "EndEvent"
