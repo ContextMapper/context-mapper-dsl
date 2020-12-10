@@ -772,6 +772,9 @@
 		<handler class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.contextmapper.dsl.ui.handler.PlantUMLGenerationHandler"
 			commandId="org.contextmapper.dsl.ui.handler.PlantUMLGenerationCommand">
 		</handler>
+		<handler class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.contextmapper.dsl.ui.handler.SketchMinerGenerationHandler"
+			commandId="org.contextmapper.dsl.ui.handler.SketchMinerGenerationCommand">
+		</handler>
 		<handler class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.contextmapper.dsl.ui.handler.XMIGenerationHandler"
 			commandId="org.contextmapper.dsl.ui.handler.XMIGenerationCommand">
 		</handler>
@@ -801,6 +804,7 @@
 		<command name="Generate Service Cutter Input (ERD as JSON)" id="org.contextmapper.dsl.ui.handler.ServiceCutterGenerationCommand"></command>
 		<command name="Generate Graphical Context Map" id="org.contextmapper.dsl.ui.handler.ContextMapGenerationCommand"></command>
 		<command name="Generate PlantUML Diagrams" id="org.contextmapper.dsl.ui.handler.PlantUMLGenerationCommand"></command>
+		<command name="Generate Sketch Miner Diagrams" id="org.contextmapper.dsl.ui.handler.SketchMinerGenerationCommand"></command>
 		<command name="Save Model as XMI" id="org.contextmapper.dsl.ui.handler.XMIGenerationCommand"></command>
 		<command name="Generate Service Cutter User Representation JSON File" id="org.contextmapper.servicecutter.dsl.ui.handler.ServiceCutterUserRepresentationsJSONGenerationCommand"></command>
 		<command name="Generate ContextMap by ServiceCutter Output" id="org.contextmapper.dsl.ui.handler.CMLByServiceCutterOutputGenerationCommand"></command>
@@ -823,6 +827,15 @@
 					</visibleWhen>
 				</command>
 				<command defaultHandler="org.contextmapper.dsl.ui.handler.PlantUMLGenerationHandler" commandId="org.contextmapper.dsl.ui.handler.PlantUMLGenerationCommand" style="push">
+					<visibleWhen checkEnabled="false">
+						<iterate>
+							<adapt type="org.eclipse.core.resources.IResource">
+								<test property="org.eclipse.core.resources.name" value="*.cml"/>
+							</adapt>
+						</iterate>
+					</visibleWhen>
+				</command>
+				<command defaultHandler="org.contextmapper.dsl.ui.handler.SketchMinerGenerationHandler" commandId="org.contextmapper.dsl.ui.handler.SketchMinerGenerationCommand" style="push">
 					<visibleWhen checkEnabled="false">
 						<iterate>
 							<adapt type="org.eclipse.core.resources.IResource">

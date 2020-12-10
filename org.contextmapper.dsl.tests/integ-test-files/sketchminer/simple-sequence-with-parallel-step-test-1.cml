@@ -1,0 +1,19 @@
+
+
+BoundedContext TestContext {
+	Application {
+		Command StartCommand
+		Command EndCommand
+		
+		Flow {
+			command StartCommand emits event FirstEvent + SecondEvent
+			event FirstEvent triggers command EndCommand
+			event SecondEvent triggers command EndCommand
+		}
+	}
+	Aggregate TestAggregate {
+		DomainEvent FirstEvent
+		DomainEvent SecondEvent
+	}
+}
+
