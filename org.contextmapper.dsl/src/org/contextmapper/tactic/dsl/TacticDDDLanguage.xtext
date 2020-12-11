@@ -259,7 +259,7 @@ ValueObject :
 DomainEvent :
   (comment=ML_COMMENT)?
   (doc=STRING)?
-  (abstract?="abstract")? "DomainEvent" name=ID ("extends" (("@"extends=[DomainEvent]) | (extendsName=JavaIdentifier)))?
+  (abstract?="abstract")? ("DomainEvent" | "Event") name=ID ("extends" (("@"extends=[DomainEvent]) | (extendsName=JavaIdentifier)))?
   ("with" ("@")?traits+=[Trait])* ("{"
     ("package" "=" package=JavaIdentifier )?
     (

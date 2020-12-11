@@ -196,6 +196,7 @@ Aggregate :
 Application:
 	"Application" (OPEN
 		((commands+=CommandEvent)* &
+		(events+=DomainEvent)* &
 		(services+=Service)* &
 		(flows+=Flow)*)
 CLOSE)?;

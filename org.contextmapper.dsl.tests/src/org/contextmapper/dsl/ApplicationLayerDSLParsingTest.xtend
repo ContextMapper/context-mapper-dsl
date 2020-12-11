@@ -123,6 +123,25 @@ class ApplicationLayerDSLParsingTest {
 		assertThatNoValidationErrorsOccurred(result);
 		assertEquals(1, result.boundedContexts.get(0).application.commands.size);
 	}
+	
+	@Test
+	def void canDefineApplicationEvents() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext TestContext {
+				Application {
+					Event TestEvent
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		assertEquals(1, result.boundedContexts.get(0).application.events.size);
+		assertEquals("TestEvent", result.boundedContexts.get(0).application.events.get(0).name);
+	}
 
 	@Test
 	def void canDefineFlow() {
