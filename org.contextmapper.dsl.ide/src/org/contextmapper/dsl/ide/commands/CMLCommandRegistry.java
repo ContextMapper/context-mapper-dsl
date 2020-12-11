@@ -26,6 +26,7 @@ import org.contextmapper.dsl.ide.commands.impl.generation.PlantUMLGenerationComm
 import org.contextmapper.dsl.ide.commands.impl.generation.ServiceCutterInputGenerationCommand;
 import org.contextmapper.dsl.ide.commands.impl.generation.ServiceCutterUserRepresentationExampleFileGenerationCommand;
 import org.contextmapper.dsl.ide.commands.impl.generation.ServiceCutterUserRepresentationsGenerationCommand;
+import org.contextmapper.dsl.ide.commands.impl.generation.SketchMinerGenerationCommand;
 import org.contextmapper.dsl.ide.commands.impl.quickfix.SplitStoryByVerbCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.DeriveBoundedContextFromSubdomainsCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.DeriveFrontendAndBackendFromFeatureBCCommand;
@@ -70,6 +71,7 @@ public class CMLCommandRegistry {
 	private void registerCommands() {
 		commandMap.put("cml.generate.contextmap", new ContextMapGenerationCommand());
 		commandMap.put("cml.generate.puml", new PlantUMLGenerationCommand());
+		commandMap.put("cml.generate.sketchminer", new SketchMinerGenerationCommand());
 		commandMap.put("cml.generate.mdsl", new MDSLGenerationCommand());
 		commandMap.put("cml.generate.generic.text.file", new GenericTextFileGenerationCommand());
 		commandMap.put("cml.generate.new.service.cut", new NewServiceCutGenerationCommand());

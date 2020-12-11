@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 The Context Mapper Project Team
+ * Copyright 2018 The Context Mapper Project Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,20 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.contextmapper.dsl.generators.mdsl;
+package org.contextmapper.dsl.ui.handler;
 
-import org.contextmapper.dsl.generator.mdsl.MDSLAPIDescriptionCreator;
-import org.contextmapper.dsl.generator.mdsl.ProtectedRegionContext;
+import org.contextmapper.dsl.generator.SketchMinerGenerator;
+import org.eclipse.xtext.generator.IGenerator2;
 
-public class TestMDSLAPIDescriptionCreator extends MDSLAPIDescriptionCreator {
+import com.google.inject.Inject;
 
-	public TestMDSLAPIDescriptionCreator(ProtectedRegionContext protectedRegionContext, String inputFileName) {
-		super(protectedRegionContext, inputFileName);
-	}
+public class SketchMinerGenerationHandler extends AbstractGenerationHandler {
+
+	@Inject
+	private SketchMinerGenerator generator;
 
 	@Override
-	protected String getTimestampString(String inputFileName) {
-		return "Generated from DDD Context Map.";
+	protected IGenerator2 getGenerator() {
+		return generator;
 	}
 
 }

@@ -72,6 +72,7 @@ public class GeneratorsActionGroup extends ActionGroup {
 		int added = 0;
 		added += addAction(generatorSubmenu, createAction("org.contextmapper.dsl.ui.handler.ContextMapGenerationCommand"));
 		added += addAction(generatorSubmenu, createAction("org.contextmapper.dsl.ui.handler.PlantUMLGenerationCommand"));
+		added += addAction(generatorSubmenu, createAction("org.contextmapper.dsl.ui.handler.SketchMinerGenerationCommand"));
 		added += addAction(generatorSubmenu, createAction("org.contextmapper.dsl.ui.handler.GenericTextFileGenerationCommand"));
 		generatorSubmenu.add(new Separator());
 		added += addAction(generatorSubmenu, createAction("org.contextmapper.dsl.ui.handler.MDSLGenerationCommand"));

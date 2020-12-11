@@ -109,9 +109,10 @@ public class MDSLAPIDescriptionCreatorTest extends AbstractCMLInputFileTest {
 
 		// when
 		List<ServiceSpecification> serviceSpecifications = mdslCreator.createServiceSpecifications();
-		MDSLAPIDescriptionCreator dslTextCreator = new TestMDSLAPIDescriptionCreator(new ProtectedRegionContextFactory().createProtectedRegionContextForNewMDSLFile());
+		MDSLAPIDescriptionCreator dslTextCreator = new TestMDSLAPIDescriptionCreator(new ProtectedRegionContextFactory().createProtectedRegionContextForNewMDSLFile(),
+				input.getURI().toFileString());
 		ServiceSpecification spec = serviceSpecifications.stream().filter(s -> s.getName().equals("MyBoundedContextAPI")).findFirst().get();
-		String dslText = dslTextCreator.createAPIDescriptionText(spec, input.getURI().toFileString());
+		String dslText = dslTextCreator.createText(spec);
 
 		// then
 		File expectedResultFile = new File(Paths.get("").toAbsolutePath().toString(), "/integ-test-files/mdsl/" + baseFilename + ".mdsl");
@@ -211,11 +212,12 @@ public class MDSLAPIDescriptionCreatorTest extends AbstractCMLInputFileTest {
 		if (overwriteExistingFile) {
 			File existingFile = new File(Paths.get("").toAbsolutePath().toString(), "/integ-test-files/mdsl/" + baseFilename + "-existing.mdsl");
 			String existingFileContent = FileUtils.readFileToString(existingFile, Charset.forName("UTF-8"));
-			dslTextCreator = new TestMDSLAPIDescriptionCreator(new ProtectedRegionContextFactory().createProtectedRegionContextForExistingMDSLFile(existingFileContent));
+			dslTextCreator = new TestMDSLAPIDescriptionCreator(new ProtectedRegionContextFactory().createProtectedRegionContextForExistingMDSLFile(existingFileContent),
+					input.getURI().toFileString());
 		} else {
-			dslTextCreator = new TestMDSLAPIDescriptionCreator(new ProtectedRegionContextFactory().createProtectedRegionContextForNewMDSLFile());
+			dslTextCreator = new TestMDSLAPIDescriptionCreator(new ProtectedRegionContextFactory().createProtectedRegionContextForNewMDSLFile(), input.getURI().toFileString());
 		}
-		String dslText = dslTextCreator.createAPIDescriptionText(serviceSpecifications.get(0), input.getURI().toFileString());
+		String dslText = dslTextCreator.createText(serviceSpecifications.get(0));
 
 		// then
 		File expectedResultFile = new File(Paths.get("").toAbsolutePath().toString(), "/integ-test-files/mdsl/" + baseFilename + ".mdsl");
