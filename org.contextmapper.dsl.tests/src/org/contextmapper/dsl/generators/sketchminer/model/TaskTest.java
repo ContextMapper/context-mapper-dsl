@@ -198,4 +198,16 @@ public class TaskTest {
 		assertEquals("my test", task.getComment());
 	}
 
+	@Test
+	public void canSetActor() {
+		// given
+		Task task = new Task("TestTask", TaskType.COMMAND);
+
+		// when
+		task.setActor("tester");
+
+		// then
+		assertEquals("tester", task.getActor());
+	}
+
 }

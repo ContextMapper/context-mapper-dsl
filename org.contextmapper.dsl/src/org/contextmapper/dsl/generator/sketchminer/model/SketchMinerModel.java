@@ -16,8 +16,10 @@
 package org.contextmapper.dsl.generator.sketchminer.model;
 
 import java.util.List;
+import java.util.Set;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 public class SketchMinerModel {
 
@@ -49,6 +51,18 @@ public class SketchMinerModel {
 				newSequences.add(seq);
 		}
 		this.sequences = Lists.newLinkedList(newSequences);
+	}
+
+	public boolean hasMultipleActors() {
+		Set<String> actors = Sets.newHashSet();
+		actors.add(defaultActorName);
+		for (TaskSequence seq : sequences) {
+			for (Task task : seq.getTasks()) {
+				if (task.getActor() != null)
+					actors.add(task.getActor());
+			}
+		}
+		return actors.size() > 1;
 	}
 
 	private boolean containsSequence(List<TaskSequence> seqList, TaskSequence testSeq) {

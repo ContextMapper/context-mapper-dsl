@@ -30,6 +30,7 @@ import org.contextmapper.dsl.contextMappingDSL.ConcurrentCommandInvokation;
 import org.contextmapper.dsl.contextMappingDSL.ConcurrentOperationInvokation;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.DomainEventProductionStep;
+import org.contextmapper.dsl.contextMappingDSL.EitherCommandOrOperation;
 import org.contextmapper.dsl.contextMappingDSL.Flow;
 import org.contextmapper.dsl.contextMappingDSL.FlowStep;
 import org.contextmapper.dsl.contextMappingDSL.InclusiveAlternativeCommandInvokation;
@@ -160,15 +161,7 @@ public class Flow2SketchMinerConverter {
 			}
 		} else if (step instanceof DomainEventProductionStep) {
 			DomainEventProductionStep eventStep = (DomainEventProductionStep) step;
-			if (eventStep.getAction().getCommand() != null) {
-				Task task = getOrCreateTask(eventStep.getAction().getCommand().getName(), TaskType.COMMAND);
-				addStateTransitionIfAvailable(task, eventStep);
-				froms.add(task);
-			} else if (eventStep.getAction().getOperation() != null) {
-				Task task = getOrCreateTask(eventStep.getAction().getOperation().getName(), TaskType.COMMAND);
-				addStateTransitionIfAvailable(task, eventStep);
-				froms.add(task);
-			}
+			froms.add(createTask4EventProduction(eventStep));
 			tos.addAll(eventStep.getEventProduction().getEvents().stream().map(e -> getOrCreateTask(e.getName(), TaskType.EVENT)).collect(Collectors.toSet()));
 			if (eventStep.getEventProduction() instanceof MultipleEventProduction)
 				toType = ToType.AND;
@@ -186,10 +179,28 @@ public class Flow2SketchMinerConverter {
 		return task;
 	}
 
+	private Task createTask4EventProduction(DomainEventProductionStep eventStep) {
+		String name = "UndefinedTask";
+		if (eventStep.getAction().getCommand() != null) {
+			name = eventStep.getAction().getCommand().getName();
+		} else if (eventStep.getAction().getOperation() != null) {
+			name = eventStep.getAction().getOperation().getName();
+		}
+		Task task = getOrCreateTask(name, TaskType.COMMAND);
+		addStateTransitionIfAvailable(task, eventStep);
+		addActorIfAvailable(task, eventStep.getAction());
+		return task;
+	}
+
 	private void addStateTransitionIfAvailable(Task task, DomainEventProductionStep step) {
 		if (step.getAggregate() == null || step.getStateTransition() == null)
 			return;
 		task.setComment(step.getAggregate().getName() + " [" + getStateTransitionAsString(step.getStateTransition()) + "]");
+	}
+
+	private void addActorIfAvailable(Task task, EitherCommandOrOperation action) {
+		if (action.getActor() != null && !"".equals(action.getActor().trim()))
+			task.setActor(action.getActor().trim());
 	}
 
 	private String getStateTransitionAsString(StateTransition transition) {

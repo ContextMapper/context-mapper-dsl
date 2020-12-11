@@ -180,6 +180,20 @@ public class SketchMinerModelCreatorTest extends AbstractCMLInputFileTest {
 				+ System.lineSeparator() + "EndEvent" + System.lineSeparator() + System.lineSeparator(), output);
 	}
 
+	@Test
+	public void canUseActorIfAvailable() throws IOException {
+		// given
+		ContextMappingModel model = getOriginalResourceOfTestCML("actor-test-1.cml").getContextMappingModel();
+		Flow flow = EcoreUtil2.eAllOfType(model, Flow.class).get(0);
+
+		// when
+		String output = new SketchMinerModelCreator().createText(flow);
+
+		// then
+		assertEquals("TestContext Application: StartEvent" + System.lineSeparator() + "Test User: // TestAggregate [STATE1, STATE2 -> STATE3 X STATE4]" + System.lineSeparator()
+				+ "Test User: service Command1" + System.lineSeparator() + "TestContext Application: EndEvent" + System.lineSeparator() + System.lineSeparator(), output);
+	}
+
 	@Override
 	protected String getTestFileDirectory() {
 		return "/integ-test-files/sketchminer/";

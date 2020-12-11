@@ -28,6 +28,7 @@ public class Task {
 	private TaskType type;
 	private Set<Task> parallelTasks;
 	private String comment;
+	private String actor;
 
 	public Task(String name, TaskType type) {
 		if (name == null || "".equals(name))
@@ -66,6 +67,14 @@ public class Task {
 
 	public String getComment() {
 		return comment;
+	}
+
+	public void setActor(String actor) {
+		this.actor = actor;
+	}
+
+	public String getActor() {
+		return actor;
 	}
 
 	private Set<String> getAllTaskNames() {
