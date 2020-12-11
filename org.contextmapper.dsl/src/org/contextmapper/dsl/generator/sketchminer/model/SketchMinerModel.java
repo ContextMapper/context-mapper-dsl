@@ -22,13 +22,19 @@ import com.google.common.collect.Lists;
 public class SketchMinerModel {
 
 	private List<TaskSequence> sequences;
+	private String defaultActorName;
 
-	public SketchMinerModel() {
+	public SketchMinerModel(String defaultActorName) {
 		this.sequences = Lists.newLinkedList();
+		this.defaultActorName = defaultActorName;
 	}
 
 	public void addSequence(TaskSequence sequence) {
 		this.sequences.add(sequence);
+	}
+
+	public String getDefaultActorName() {
+		return defaultActorName;
 	}
 
 	public List<TaskSequence> getSequences() {

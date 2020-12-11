@@ -22,10 +22,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.contextmapper.dsl.cml.CMLModelObjectsResolvingHelper;
+import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.CommandInvokation;
 import org.contextmapper.dsl.contextMappingDSL.CommandInvokationStep;
 import org.contextmapper.dsl.contextMappingDSL.ConcurrentCommandInvokation;
 import org.contextmapper.dsl.contextMappingDSL.ConcurrentOperationInvokation;
+import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.DomainEventProductionStep;
 import org.contextmapper.dsl.contextMappingDSL.Flow;
 import org.contextmapper.dsl.contextMappingDSL.FlowStep;
@@ -40,6 +43,7 @@ import org.contextmapper.dsl.generator.sketchminer.model.Task;
 import org.contextmapper.dsl.generator.sketchminer.model.TaskSequence;
 import org.contextmapper.dsl.generator.sketchminer.model.TaskType;
 import org.contextmapper.tactic.dsl.tacticdsl.StateTransition;
+import org.eclipse.xtext.EcoreUtil2;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -54,7 +58,7 @@ public class Flow2SketchMinerConverter {
 
 	public Flow2SketchMinerConverter(Flow flow) {
 		this.flow = flow;
-		this.model = new SketchMinerModel();
+		this.model = new SketchMinerModel(getDefaultActorName(flow));
 		initIntermediateTypes();
 	}
 
@@ -212,6 +216,11 @@ public class Flow2SketchMinerConverter {
 				return false;
 		}
 		return true;
+	}
+
+	private String getDefaultActorName(Flow flow) {
+		BoundedContext context = new CMLModelObjectsResolvingHelper((ContextMappingModel) EcoreUtil2.getRootContainer(flow)).resolveBoundedContext(flow);
+		return context != null ? context.getName() + " Application" : "Application";
 	}
 
 }

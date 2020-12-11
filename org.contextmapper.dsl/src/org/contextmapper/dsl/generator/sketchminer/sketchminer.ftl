@@ -1,3 +1,5 @@
+${model.defaultActorName}:
+
 <#list model.sequences as sequence>
 <#list sequence.tasks as task>
 <#if task.comment?has_content>
