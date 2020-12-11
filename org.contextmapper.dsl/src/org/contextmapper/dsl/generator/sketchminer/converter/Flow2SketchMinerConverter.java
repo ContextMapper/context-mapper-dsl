@@ -73,8 +73,8 @@ public class Flow2SketchMinerConverter {
 		if (!nextSteps.isEmpty()) {
 			for (SimplifiedFlowStep nextStep : nextSteps) {
 				if (nextStep.getTos().size() == 1) {
-					seq.addTask(nextStep.getTos().iterator().next());
-					finishSequence(seq);
+					if (seq.addTask(nextStep.getTos().iterator().next()))
+						finishSequence(seq);
 				} else if (nextStep.getToType().equals(ToType.AND)) {
 					forkSequence(seq, createSetOfParallelTasks(nextStep.getTos()));
 				} else {
@@ -91,14 +91,14 @@ public class Flow2SketchMinerConverter {
 			Task nextTask = it.next();
 			createNewSequenceWithTask(seq, nextTask);
 		}
-		seq.addTask(firstTask);
-		finishSequence(seq);
+		if (seq.addTask(firstTask))
+			finishSequence(seq);
 	}
 
 	private void createNewSequenceWithTask(TaskSequence seq, Task nextTask) {
 		TaskSequence newSeq = seq.copy();
-		newSeq.addTask(nextTask);
-		finishSequence(newSeq);
+		if (newSeq.addTask(nextTask))
+			finishSequence(newSeq);
 		model.addSequence(newSeq);
 	}
 
@@ -182,6 +182,10 @@ public class Flow2SketchMinerConverter {
 		for (Task task : this.taskMap.values()) {
 			if (isInitialTask(task))
 				initialTasks.add(task);
+		}
+		if (initialTasks.isEmpty()) { // just take the first mentioned task if we cannot find clear entry point
+			SimplifiedFlowStep firstStep = this.simplifiedSteps.get(0);
+			initialTasks.add(firstStep.getFroms().iterator().next());
 		}
 		return initialTasks;
 	}

@@ -1,0 +1,21 @@
+
+
+BoundedContext TestContext {
+	Application {
+		Service AppService {
+			void StartCommand();
+			void MiddleCommand();
+		}
+		Flow {
+			operation StartCommand emits event FirstEvent
+			event FirstEvent triggers operation MiddleCommand
+			operation MiddleCommand emits event EndEvent
+			event EndEvent triggers operation StartCommand
+		}
+	}
+	Aggregate TestAggregate {
+		DomainEvent FirstEvent
+		DomainEvent EndEvent
+	}
+}
+

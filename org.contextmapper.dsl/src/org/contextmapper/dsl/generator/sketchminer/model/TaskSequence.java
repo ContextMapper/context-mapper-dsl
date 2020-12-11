@@ -15,6 +15,7 @@
  */
 package org.contextmapper.dsl.generator.sketchminer.model;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.contextmapper.dsl.exception.ContextMapperApplicationException;
@@ -36,9 +37,12 @@ public class TaskSequence {
 		this.tasks = Lists.newLinkedList(tasks);
 	}
 
-	public void addTask(Task task2Add) {
-		if (!tasks.contains(task2Add))
+	public boolean addTask(Task task2Add) {
+		if (Collections.frequency(tasks, task2Add) <= 1) {
 			tasks.add(task2Add);
+			return true;
+		}
+		return false;
 	}
 
 	public List<Task> getTasks() {

@@ -41,7 +41,9 @@ public class SketchMinerModelCreatorTest extends AbstractCMLInputFileTest {
 		String output = new SketchMinerModelCreator().createText(flow);
 
 		// then
-		assertEquals("service StartCommand" + System.lineSeparator() + "FirstEvent" + System.lineSeparator() + "service EndCommand" + System.lineSeparator() + System.lineSeparator(), output);
+		assertEquals(
+				"service StartCommand" + System.lineSeparator() + "FirstEvent" + System.lineSeparator() + "service EndCommand" + System.lineSeparator() + System.lineSeparator(),
+				output);
 	}
 
 	@Test
@@ -54,8 +56,8 @@ public class SketchMinerModelCreatorTest extends AbstractCMLInputFileTest {
 		String output = new SketchMinerModelCreator().createText(flow);
 
 		// then
-		assertEquals("service StartCommand" + System.lineSeparator() + "FirstEvent|SecondEvent" + System.lineSeparator() + "service EndCommand" + System.lineSeparator() + System.lineSeparator(),
-				output);
+		assertEquals("service StartCommand" + System.lineSeparator() + "FirstEvent|SecondEvent" + System.lineSeparator() + "service EndCommand" + System.lineSeparator()
+				+ System.lineSeparator(), output);
 	}
 
 	@ParameterizedTest
@@ -69,8 +71,8 @@ public class SketchMinerModelCreatorTest extends AbstractCMLInputFileTest {
 		String output = new SketchMinerModelCreator().createText(flow);
 
 		// then
-		assertEquals("StartEvent" + System.lineSeparator() + "service FirstCommand|service SecondCommand" + System.lineSeparator() + "EndEvent" + System.lineSeparator() + System.lineSeparator(),
-				output);
+		assertEquals("StartEvent" + System.lineSeparator() + "service FirstCommand|service SecondCommand" + System.lineSeparator() + "EndEvent" + System.lineSeparator()
+				+ System.lineSeparator(), output);
 	}
 
 	@ParameterizedTest
@@ -84,8 +86,9 @@ public class SketchMinerModelCreatorTest extends AbstractCMLInputFileTest {
 		String output = new SketchMinerModelCreator().createText(flow);
 
 		// then
-		assertEquals("service StartCommand" + System.lineSeparator() + "FirstEvent" + System.lineSeparator() + "service EndCommand" + System.lineSeparator() + System.lineSeparator()
-				+ "service StartCommand" + System.lineSeparator() + "SecondEvent" + System.lineSeparator() + "service EndCommand" + System.lineSeparator() + System.lineSeparator(), output);
+		assertEquals("service StartCommand" + System.lineSeparator() + "FirstEvent" + System.lineSeparator() + "service EndCommand" + System.lineSeparator()
+				+ System.lineSeparator() + "service StartCommand" + System.lineSeparator() + "SecondEvent" + System.lineSeparator() + "service EndCommand" + System.lineSeparator()
+				+ System.lineSeparator(), output);
 	}
 
 	@ParameterizedTest
@@ -100,7 +103,22 @@ public class SketchMinerModelCreatorTest extends AbstractCMLInputFileTest {
 
 		// then
 		assertEquals("service StartCommand" + System.lineSeparator() + "FirstEvent" + System.lineSeparator() + "service MiddleCommand1" + System.lineSeparator() + "EndEvent"
-				+ System.lineSeparator() + System.lineSeparator() + "service StartCommand" + System.lineSeparator() + "FirstEvent" + System.lineSeparator() + "service MiddleCommand2"
+				+ System.lineSeparator() + System.lineSeparator() + "service StartCommand" + System.lineSeparator() + "FirstEvent" + System.lineSeparator()
+				+ "service MiddleCommand2" + System.lineSeparator() + "EndEvent" + System.lineSeparator() + System.lineSeparator(), output);
+	}
+
+	@Test
+	public void canGenerateStepsForLoop() throws IOException {
+		// given
+		ContextMappingModel model = getOriginalResourceOfTestCML("loop-test-1.cml").getContextMappingModel();
+		Flow flow = EcoreUtil2.eAllOfType(model, Flow.class).get(0);
+
+		// when
+		String output = new SketchMinerModelCreator().createText(flow);
+
+		// then
+		assertEquals("service StartCommand" + System.lineSeparator() + "FirstEvent" + System.lineSeparator() + "service MiddleCommand" + System.lineSeparator() + "EndEvent"
+				+ System.lineSeparator() + "service StartCommand" + System.lineSeparator() + "FirstEvent" + System.lineSeparator() + "service MiddleCommand"
 				+ System.lineSeparator() + "EndEvent" + System.lineSeparator() + System.lineSeparator(), output);
 	}
 
