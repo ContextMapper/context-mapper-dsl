@@ -27,6 +27,7 @@ public class Task {
 	private String name;
 	private TaskType type;
 	private Set<Task> parallelTasks;
+	private String comment;
 
 	public Task(String name, TaskType type) {
 		if (name == null || "".equals(name))
@@ -57,6 +58,14 @@ public class Task {
 	public boolean equalsOrContainsTask(Task otherTask) {
 		return otherTask.name.equals(this.name)
 				|| (parallelTasks != null && parallelTasks.stream().map(t -> t.getName()).collect(Collectors.toList()).contains(otherTask.getName()));
+	}
+
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
+
+	public String getComment() {
+		return comment;
 	}
 
 	private Set<String> getAllTaskNames() {

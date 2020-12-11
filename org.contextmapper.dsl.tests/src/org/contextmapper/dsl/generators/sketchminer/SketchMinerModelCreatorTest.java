@@ -137,6 +137,47 @@ public class SketchMinerModelCreatorTest extends AbstractCMLInputFileTest {
 				output);
 	}
 
+	@Test
+	public void canAddStateTransitionComment() throws IOException {
+		// given
+		ContextMappingModel model = getOriginalResourceOfTestCML("state-transition-comment-test-1.cml").getContextMappingModel();
+		Flow flow = EcoreUtil2.eAllOfType(model, Flow.class).get(0);
+
+		// when
+		String output = new SketchMinerModelCreator().createText(flow);
+
+		// then
+		assertEquals("StartEvent" + System.lineSeparator() + "// TestAggregate [STATE1 -> STATE2]" + System.lineSeparator() + "service Command1" + System.lineSeparator()
+				+ "EndEvent" + System.lineSeparator() + System.lineSeparator(), output);
+	}
+
+	@Test
+	public void canAddStateTransitionCommentWithMultipleStates() throws IOException {
+		// given
+		ContextMappingModel model = getOriginalResourceOfTestCML("state-transition-comment-test-2.cml").getContextMappingModel();
+		Flow flow = EcoreUtil2.eAllOfType(model, Flow.class).get(0);
+
+		// when
+		String output = new SketchMinerModelCreator().createText(flow);
+
+		// then
+		assertEquals("StartEvent" + System.lineSeparator() + "// TestAggregate [STATE1, STATE2 -> STATE3 X STATE4]" + System.lineSeparator() + "service Command1"
+				+ System.lineSeparator() + "EndEvent" + System.lineSeparator() + System.lineSeparator(), output);
+	}
+
+	@Test
+	public void ignoreAggregateRefWithoutStateTransition() throws IOException {
+		// given
+		ContextMappingModel model = getOriginalResourceOfTestCML("aggregate-without-state-transition-test-1.cml").getContextMappingModel();
+		Flow flow = EcoreUtil2.eAllOfType(model, Flow.class).get(0);
+
+		// when
+		String output = new SketchMinerModelCreator().createText(flow);
+
+		// then
+		assertEquals("StartEvent" + System.lineSeparator() + "service Command1" + System.lineSeparator() + "EndEvent" + System.lineSeparator() + System.lineSeparator(), output);
+	}
+
 	@Override
 	protected String getTestFileDirectory() {
 		return "/integ-test-files/sketchminer/";

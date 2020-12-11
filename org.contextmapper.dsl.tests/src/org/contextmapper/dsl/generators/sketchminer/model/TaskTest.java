@@ -21,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -185,6 +184,18 @@ public class TaskTest {
 
 		// then
 		assertFalse(equals);
+	}
+
+	@Test
+	public void canSetComment() {
+		// given
+		Task task = new Task("TestTask", TaskType.COMMAND);
+
+		// when
+		task.setComment("my test");
+
+		// then
+		assertEquals("my test", task.getComment());
 	}
 
 }

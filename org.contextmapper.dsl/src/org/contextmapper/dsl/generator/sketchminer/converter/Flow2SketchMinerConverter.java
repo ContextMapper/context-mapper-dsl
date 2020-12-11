@@ -39,6 +39,7 @@ import org.contextmapper.dsl.generator.sketchminer.model.SketchMinerModel;
 import org.contextmapper.dsl.generator.sketchminer.model.Task;
 import org.contextmapper.dsl.generator.sketchminer.model.TaskSequence;
 import org.contextmapper.dsl.generator.sketchminer.model.TaskType;
+import org.contextmapper.tactic.dsl.tacticdsl.StateTransition;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -156,9 +157,13 @@ public class Flow2SketchMinerConverter {
 		} else if (step instanceof DomainEventProductionStep) {
 			DomainEventProductionStep eventStep = (DomainEventProductionStep) step;
 			if (eventStep.getAction().getCommand() != null) {
-				froms.add(getOrCreateTask(eventStep.getAction().getCommand().getName(), TaskType.COMMAND));
+				Task task = getOrCreateTask(eventStep.getAction().getCommand().getName(), TaskType.COMMAND);
+				addStateTransitionIfAvailable(task, eventStep);
+				froms.add(task);
 			} else if (eventStep.getAction().getOperation() != null) {
-				froms.add(getOrCreateTask(eventStep.getAction().getOperation().getName(), TaskType.COMMAND));
+				Task task = getOrCreateTask(eventStep.getAction().getOperation().getName(), TaskType.COMMAND);
+				addStateTransitionIfAvailable(task, eventStep);
+				froms.add(task);
 			}
 			tos.addAll(eventStep.getEventProduction().getEvents().stream().map(e -> getOrCreateTask(e.getName(), TaskType.EVENT)).collect(Collectors.toSet()));
 			if (eventStep.getEventProduction() instanceof MultipleEventProduction)
@@ -175,6 +180,17 @@ public class Flow2SketchMinerConverter {
 		Task task = new Task(name, type);
 		taskMap.put(name, task);
 		return task;
+	}
+
+	private void addStateTransitionIfAvailable(Task task, DomainEventProductionStep step) {
+		if (step.getAggregate() == null || step.getStateTransition() == null)
+			return;
+		task.setComment(step.getAggregate().getName() + " [" + getStateTransitionAsString(step.getStateTransition()) + "]");
+	}
+
+	private String getStateTransitionAsString(StateTransition transition) {
+		return String.join(", ", transition.getFrom().stream().map(v -> v.getName()).collect(Collectors.toList())) + " -> "
+				+ String.join(" X ", transition.getTarget().getTo().stream().map(t -> t.getValue().getName()).collect(Collectors.toList()));
 	}
 
 	private List<Task> getInitialTasks() {

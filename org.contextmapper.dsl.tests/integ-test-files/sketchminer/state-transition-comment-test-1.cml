@@ -1,0 +1,23 @@
+
+
+BoundedContext TestContext {
+	Application {
+		Service AppService {
+			void Command1();
+		}
+		Flow {
+			event StartEvent triggers operation Command1
+			operation Command1 delegates to TestAggregate[STATE1 -> STATE2] emits event EndEvent
+		}
+	}
+	Aggregate TestAggregate {
+		DomainEvent StartEvent
+		DomainEvent EndEvent
+		
+		enum States {
+			aggregateLifecycle
+			STATE1, STATE2
+		}
+	}
+}
+
