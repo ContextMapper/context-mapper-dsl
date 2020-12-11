@@ -122,6 +122,21 @@ public class SketchMinerModelCreatorTest extends AbstractCMLInputFileTest {
 				+ System.lineSeparator() + "EndEvent" + System.lineSeparator() + System.lineSeparator(), output);
 	}
 
+	@Test
+	public void canHandleMultipleInputEvents() throws IOException {
+		// given
+		ContextMappingModel model = getOriginalResourceOfTestCML("multiple-input-events-test-1.cml").getContextMappingModel();
+		Flow flow = EcoreUtil2.eAllOfType(model, Flow.class).get(0);
+
+		// when
+		String output = new SketchMinerModelCreator().createText(flow);
+
+		// then
+		assertEquals("service StartCommand1" + System.lineSeparator() + "Event1" + System.lineSeparator() + "service EndCommand" + System.lineSeparator() + System.lineSeparator()
+				+ "service StartCommand2" + System.lineSeparator() + "Event2" + System.lineSeparator() + "service EndCommand" + System.lineSeparator() + System.lineSeparator(),
+				output);
+	}
+
 	@Override
 	protected String getTestFileDirectory() {
 		return "/integ-test-files/sketchminer/";
