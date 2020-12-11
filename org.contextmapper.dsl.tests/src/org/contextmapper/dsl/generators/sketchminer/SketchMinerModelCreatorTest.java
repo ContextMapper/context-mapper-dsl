@@ -194,6 +194,20 @@ public class SketchMinerModelCreatorTest extends AbstractCMLInputFileTest {
 				+ "Test User: service Command1" + System.lineSeparator() + "TestContext Application: EndEvent" + System.lineSeparator() + System.lineSeparator(), output);
 	}
 
+	@Test
+	public void canRemoveUnderlinesFromNames() throws IOException {
+		// given
+		ContextMappingModel model = getOriginalResourceOfTestCML("underlines-test-1.cml").getContextMappingModel();
+		Flow flow = EcoreUtil2.eAllOfType(model, Flow.class).get(0);
+
+		// when
+		String output = new SketchMinerModelCreator().createText(flow);
+
+		// then
+		assertEquals("TestContext Application:" + System.lineSeparator() + System.lineSeparator() + "StartEvent" + System.lineSeparator() + "// TestAggregate [STATE1 -> STATE2]"
+				+ System.lineSeparator() + "service Command1" + System.lineSeparator() + "EndEvent" + System.lineSeparator() + System.lineSeparator(), output);
+	}
+
 	@Override
 	protected String getTestFileDirectory() {
 		return "/integ-test-files/sketchminer/";
