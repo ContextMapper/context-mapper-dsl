@@ -38,6 +38,8 @@ BoundedContext InsuranceQuotes {
 			event QuoteAccepted triggers operation accept
 			operation accept delegates to QuoteRequest[ACCEPTED -> POLICY_CREATED X EXPIRED] emits event PolicyCreated X QuoteExpired 
 		}
+		
+		Flow EmptyFlow // to be ignored
 	}
 	
 }

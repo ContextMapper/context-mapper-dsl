@@ -47,7 +47,7 @@ public class SketchMinerGenerator extends AbstractContextMappingModelGenerator {
 
 	private void checkPreconditions() {
 		for (BoundedContext boundedContext : this.contextMappingModel.getBoundedContexts()) {
-			if (boundedContext.getApplication() != null && boundedContext.getApplication().getFlows() != null && !boundedContext.getApplication().getFlows().isEmpty()) {
+			if (boundedContext.getApplication() != null && boundedContext.getApplication().getFlows() != null) {
 				Set<Flow> nonEmptyFlows = boundedContext.getApplication().getFlows().stream().filter(f -> !f.getSteps().isEmpty()).collect(Collectors.toSet());
 				if (!nonEmptyFlows.isEmpty())
 					return;
