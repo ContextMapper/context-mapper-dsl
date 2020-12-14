@@ -196,12 +196,13 @@ Aggregate :
 Application:
 	"Application" (OPEN
 		((commands+=CommandEvent)* &
+		(events+=DomainEvent)* &
 		(services+=Service)* &
 		(flows+=Flow)*)
 CLOSE)?;
 
 Flow:
-	"Flow" (OPEN 
+	"Flow" name=ID (OPEN 
 		(steps+=FlowStep)*
 	CLOSE)?;
 

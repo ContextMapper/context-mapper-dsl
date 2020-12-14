@@ -24,6 +24,7 @@ import static org.contextmapper.dsl.validation.ValidationMessages.SERVICE_NAME_N
 import static org.contextmapper.dsl.validation.ValidationMessages.SUBDOMAIN_OBJECT_NOT_UNIQUE;
 import static org.contextmapper.dsl.validation.ValidationMessages.USE_CASE_NAME_NOT_UNIQUE;
 import static org.contextmapper.dsl.validation.ValidationMessages.DOMAIN_NOT_UNIQUE;
+import static org.contextmapper.dsl.validation.ValidationMessages.FLOW_NAME_NOT_UNIQUE;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -36,6 +37,7 @@ import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLPackage;
 import org.contextmapper.dsl.contextMappingDSL.Domain;
+import org.contextmapper.dsl.contextMappingDSL.Flow;
 import org.contextmapper.dsl.contextMappingDSL.SculptorModule;
 import org.contextmapper.dsl.contextMappingDSL.Subdomain;
 import org.contextmapper.dsl.contextMappingDSL.UserRequirement;
@@ -61,9 +63,10 @@ public class UniquenessValidator extends AbstractCMLValidator {
 	public void validateThatBoundedContextNameIsUnique(final BoundedContext bc) {
 		if (bc != null) {
 			Iterator<BoundedContext> allBoundedContexts = new CMLModelObjectsResolvingHelper(getRootCMLModel(bc)).resolveAllObjectsOfType(BoundedContext.class).iterator();
-			Iterator<BoundedContext> duplicateBoundedContexts = IteratorExtensions.filter(allBoundedContexts, ((Function1<BoundedContext, Boolean>) (BoundedContext boundedcontext) -> {
-				return boundedcontext.getName().equals(bc.getName());
-			}));
+			Iterator<BoundedContext> duplicateBoundedContexts = IteratorExtensions.filter(allBoundedContexts,
+					((Function1<BoundedContext, Boolean>) (BoundedContext boundedcontext) -> {
+						return boundedcontext.getName().equals(bc.getName());
+					}));
 			if (IteratorExtensions.size(duplicateBoundedContexts) > 1)
 				error(String.format(BOUNDED_CONTEXT_NAME_NOT_UNIQUE, bc.getName()), bc, ContextMappingDSLPackage.Literals.BOUNDED_CONTEXT__NAME);
 		}
@@ -176,6 +179,18 @@ public class UniquenessValidator extends AbstractCMLValidator {
 		if (subdomain == null)
 			return;
 		checkDomainObjectUnique(subdomain.getEntities().stream().map(e -> (SimpleDomainObject) e).collect(Collectors.toList()));
+	}
+
+	@Check
+	public void validateThatFlowNameIsUnique(final Flow flow) {
+		if (flow != null) {
+			Iterator<Flow> allFlows = EcoreUtil2.eAllOfType(getRootCMLModel(flow), Flow.class).iterator();
+			Iterator<Flow> duplicateFlows = IteratorExtensions.filter(allFlows, ((Function1<Flow, Boolean>) (Flow f) -> {
+				return f.getName().equals(flow.getName());
+			}));
+			if (IteratorExtensions.size(duplicateFlows) > 1)
+				error(String.format(FLOW_NAME_NOT_UNIQUE, flow.getName()), flow, ContextMappingDSLPackage.Literals.FLOW__NAME);
+		}
 	}
 
 	private void checkDomainObjectUnique(List<SimpleDomainObject> domainObjects) {

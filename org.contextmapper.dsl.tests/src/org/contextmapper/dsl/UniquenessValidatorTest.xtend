@@ -272,4 +272,25 @@ class UniquenessValidatorTest {
 			String.format(SERVICE_NAME_NOT_UNIQUE_IN_SUBDOMAIN, "TestService"));
 	}
 
+	@Test
+	def void cannotDefineDuplicateFlow() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext TestContext {
+				Application {
+					Flow TestFlow {
+					}
+					Flow TestFlow {
+					}
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.FLOW, "",
+			String.format(FLOW_NAME_NOT_UNIQUE, "TestFlow"));
+	}
+
 }

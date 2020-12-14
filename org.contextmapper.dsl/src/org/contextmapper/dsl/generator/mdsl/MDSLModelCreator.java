@@ -21,6 +21,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
+import org.contextmapper.dsl.contextMappingDSL.Application;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
@@ -37,11 +38,13 @@ import org.contextmapper.dsl.generator.mdsl.model.EndpointOperation;
 import org.contextmapper.dsl.generator.mdsl.model.EndpointProvider;
 import org.contextmapper.dsl.generator.mdsl.model.ServiceSpecification;
 import org.contextmapper.tactic.dsl.tacticdsl.CollectionType;
+import org.contextmapper.tactic.dsl.tacticdsl.CommandEvent;
 import org.contextmapper.tactic.dsl.tacticdsl.ComplexType;
 import org.contextmapper.tactic.dsl.tacticdsl.DomainObject;
 import org.contextmapper.tactic.dsl.tacticdsl.DomainObjectOperation;
 import org.contextmapper.tactic.dsl.tacticdsl.Parameter;
 import org.contextmapper.tactic.dsl.tacticdsl.ServiceOperation;
+import org.contextmapper.tactic.dsl.tacticdsl.TacticdslFactory;
 import org.contextmapper.tactic.dsl.tacticdsl.Visibility;
 
 import com.google.common.collect.Lists;
@@ -91,6 +94,8 @@ public class MDSLModelCreator {
 			specification.setUsageContext(APIUsageContext.COMMUNITY_API);
 		}
 
+		if (context.getApplicationLayer() != null)
+			specification.addEndpoint(createEndpoint(context.getApplicationLayer(), specification));
 		for (Aggregate aggregate : context.getExposedAggregates()) {
 			specification.addEndpoint(createEndpoint(aggregate, specification));
 		}
@@ -125,6 +130,21 @@ public class MDSLModelCreator {
 		return endpoint;
 	}
 
+	private EndpointContract createEndpoint(Application application, ServiceSpecification specification) {
+		EndpointContract endpoint = new EndpointContract();
+		String endpointName = mdslEncoder.encodeName("Application");
+		endpoint.setName(endpointName);
+		List<ServiceOperation> serviceOperations = application.getServices().stream().flatMap(s -> s.getOperations().stream()).collect(Collectors.toList());
+		for (ServiceOperation serviceOperation : serviceOperations) {
+			if (serviceOperation.getVisibility().equals(Visibility.PUBLIC))
+				endpoint.addOperation(createOperation(serviceOperation, specification));
+		}
+		for (CommandEvent command : application.getCommands()) {
+			endpoint.addOperation(createOperation(command, specification));
+		}
+		return endpoint;
+	}
+
 	private void setEndpointServesAsString(EndpointContract endpoint, String docString) {
 		if (docString == null || "".equals(docString))
 			return;
@@ -144,6 +164,20 @@ public class MDSLModelCreator {
 
 	private EndpointOperation createOperation(ServiceOperation serviceOperation, ServiceSpecification specification) {
 		return createOperation(serviceOperation.getName(), serviceOperation.getParameters(), serviceOperation.getReturnType(), specification, serviceOperation.getDoc());
+	}
+
+	private EndpointOperation createOperation(CommandEvent command, ServiceSpecification specification) {
+		String name = command.getName();
+		Parameter parameter = TacticdslFactory.eINSTANCE.createParameter();
+		parameter.setName(name + "Parameter");
+		ComplexType type = TacticdslFactory.eINSTANCE.createComplexType();
+		if (!command.getName().endsWith("Command"))
+			command.setName(command.getName() + "Command");
+		type.setDomainObjectType(command);
+		parameter.setParameterType(type);
+		List<Parameter> parameters = Lists.newArrayList();
+		parameters.add(parameter);
+		return createOperation(name, parameters, null, specification, "");
 	}
 
 	private EndpointOperation createOperation(String operationName, List<Parameter> parameters, ComplexType returnType, ServiceSpecification specification, String docString) {
@@ -245,11 +279,12 @@ public class MDSLModelCreator {
 				upstreamContextMap.put(upstreamAPIName, context);
 			}
 			context.getUpstreamRoles().addAll(relationship.getUpstreamRoles());
-			// context.getDownstreamRoles().addAll(relationship.getDownstreamRoles());
 			for (Aggregate exposedAggregate : relationship.getUpstreamExposedAggregates()) {
 				if (!context.getExposedAggregates().stream().map(agg -> agg.getName()).collect(Collectors.toList()).contains(exposedAggregate.getName()))
 					context.getExposedAggregates().add(exposedAggregate);
 			}
+			if (relationship.getUpstream().getApplication() != null)
+				context.setApplicationLayer(relationship.getUpstream().getApplication());
 			context.addDownstreamContext4Relationship(relationship);
 			if (relationship.getImplementationTechnology() != null && !"".equals(relationship.getImplementationTechnology()))
 				context.getImplementationTechnologies().add(relationship.getImplementationTechnology());
@@ -257,13 +292,14 @@ public class MDSLModelCreator {
 		// add all contexts that are not upstream in an upstream-downstream relationship
 		for (BoundedContext bc : model.getBoundedContexts()) {
 			String apiName = bc.getName() + API_NAME_EXTENSION;
-			if (upstreamContextMap.containsKey(apiName) || bc.getAggregates().isEmpty())
+			if (upstreamContextMap.containsKey(apiName) || (bc.getAggregates().isEmpty() && bc.getApplication() == null))
 				continue;
 
 			UpstreamAPIContext context = new UpstreamAPIContext();
 			context.setApiName(apiName);
 			context.setUpstreamContext(bc);
 			context.getExposedAggregates().addAll(bc.getAggregates());
+			context.setApplicationLayer(bc.getApplication());
 			upstreamContextMap.put(apiName, context);
 		}
 		return upstreamContextMap;
@@ -273,13 +309,16 @@ public class MDSLModelCreator {
 		Map<String, UpstreamAPIContext> upstreamContexts = collectUpstreamContexts();
 
 		List<Aggregate> exposedAggregates = Lists.newArrayList();
+		List<Application> applications = Lists.newArrayList();
 		for (UpstreamAPIContext context : upstreamContexts.values()) {
 			exposedAggregates.addAll(context.getExposedAggregates());
+			if (context.getApplicationLayer() != null)
+				applications.add(context.getApplicationLayer());
 		}
 
-		if (exposedAggregates.isEmpty())
+		if (exposedAggregates.isEmpty() && applications.isEmpty())
 			throw new GeneratorInputException(
-					"None of your upstream-downstream relationships exposes any Aggregates. Therefore there is nothing to generate. Use the 'exposedAggregates' attribute on your upstream-downstream relationships to specify which Aggregates are exposed by the upstream.");
+					"None of your upstream-downstream relationships exposes any Aggregates or application layers. Therefore there is nothing to generate. Use the 'exposedAggregates' attribute on your upstream-downstream relationships to specify which Aggregates are exposed by the upstream or model an 'Application' in your upstream.");
 
 		boolean atLeastOneAggregateWithAnOperation = false;
 		for (Aggregate exposedAggregate : exposedAggregates) {
@@ -290,6 +329,17 @@ public class MDSLModelCreator {
 				break;
 			}
 			List<ServiceOperation> serviceOperations = exposedAggregate.getServices().stream().flatMap(s -> s.getOperations().stream()).collect(Collectors.toList());
+			if (!serviceOperations.isEmpty()) {
+				atLeastOneAggregateWithAnOperation = true;
+				break;
+			}
+		}
+		for (Application application : applications) {
+			if (!application.getCommands().isEmpty()) {
+				atLeastOneAggregateWithAnOperation = true;
+				break;
+			}
+			List<ServiceOperation> serviceOperations = application.getServices().stream().flatMap(s -> s.getOperations().stream()).collect(Collectors.toList());
 			if (!serviceOperations.isEmpty()) {
 				atLeastOneAggregateWithAnOperation = true;
 				break;

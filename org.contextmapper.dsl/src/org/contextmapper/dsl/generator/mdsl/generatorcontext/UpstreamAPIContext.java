@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
+import org.contextmapper.dsl.contextMappingDSL.Application;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamRole;
@@ -33,6 +34,7 @@ public class UpstreamAPIContext {
 	private BoundedContext upstreamContext;
 	private List<UpstreamRole> upstreamRoles = Lists.newArrayList();
 	private List<Aggregate> exposedAggregates = Lists.newArrayList();
+	private Application applicationLayer = null;
 	private List<String> implementationTechnologies = Lists.newArrayList();
 	private Map<String, DownstreamContext> downstreamContexts = Maps.newHashMap();
 
@@ -51,13 +53,21 @@ public class UpstreamAPIContext {
 	public BoundedContext getUpstreamContext() {
 		return upstreamContext;
 	}
-	
+
 	public List<UpstreamRole> getUpstreamRoles() {
 		return this.upstreamRoles;
 	}
 
 	public List<Aggregate> getExposedAggregates() {
 		return exposedAggregates;
+	}
+
+	public void setApplicationLayer(Application applicationLayer) {
+		this.applicationLayer = applicationLayer;
+	}
+
+	public Application getApplicationLayer() {
+		return applicationLayer;
 	}
 
 	public List<String> getImplementationTechnologies() {
@@ -70,13 +80,13 @@ public class UpstreamAPIContext {
 
 	public void addDownstreamContext4Relationship(UpstreamDownstreamRelationship relationship) {
 		String downStreamName = relationship.getDownstream().getName();
-		if(!downstreamContexts.containsKey(downStreamName)) {
+		if (!downstreamContexts.containsKey(downStreamName)) {
 			this.downstreamContexts.put(downStreamName, new DownstreamContext(relationship.getDownstream()));
 		}
 		this.downstreamContexts.get(downStreamName).addConsumedAggregates(relationship.getUpstreamExposedAggregates());
 		this.downstreamContexts.get(downStreamName).addDownstreamRoles(relationship.getDownstreamRoles());
 	}
-	
+
 	public Collection<DownstreamContext> getDownstreamContexts() {
 		return downstreamContexts.values();
 	}

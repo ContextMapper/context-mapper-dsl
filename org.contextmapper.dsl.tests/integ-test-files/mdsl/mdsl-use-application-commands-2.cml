@@ -1,0 +1,19 @@
+
+BoundedContext CustomerManagementContext {
+	Application {
+		Command CreateCustomerCommand {
+			String firstName
+			String lastName
+		}
+	}
+	
+	Aggregate Customers {
+		Entity Address {
+			String street
+			int houseNumber
+			String city
+			
+			def updateCity(String city);
+		}
+	}
+}

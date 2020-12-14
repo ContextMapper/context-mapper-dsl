@@ -7,7 +7,7 @@ BoundedContext TestContext {
 			void StartCommand2();
 			void EndCommand();
 		}
-		Flow {
+		Flow TestFlow {
 			operation StartCommand1 emits event Event1
 			operation StartCommand2 emits event Event2
 			event Event1 + Event2 triggers operation EndCommand

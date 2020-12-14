@@ -16,6 +16,7 @@
 package org.contextmapper.dsl.generators.mdsl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,6 +27,7 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.contextmapper.dsl.AbstractCMLInputFileTest;
 import org.contextmapper.dsl.cml.CMLResource;
+import org.contextmapper.dsl.generator.exception.GeneratorInputException;
 import org.contextmapper.dsl.generator.mdsl.MDSLAPIDescriptionCreator;
 import org.contextmapper.dsl.generator.mdsl.MDSLModelCreator;
 import org.contextmapper.dsl.generator.mdsl.ProtectedRegionContextFactory;
@@ -194,6 +196,45 @@ public class MDSLAPIDescriptionCreatorTest extends AbstractCMLInputFileTest {
 	@Test
 	void canHandleMultipleParameterReferencesToEmptyDomainObjects() throws IOException {
 		testCMLInputAndMDSLOutputFiles("mdsl-reference-to-empty-domain-object-3");
+	}
+
+	@Test
+	void respectApplicationLayerServices1() throws IOException {
+		testCMLInputAndMDSLOutputFiles("mdsl-use-application-service-operations-1");
+	}
+
+	@Test
+	void respectApplicationLayerServices2() throws IOException {
+		testCMLInputAndMDSLOutputFiles("mdsl-use-application-service-operations-2");
+	}
+
+	@Test
+	void respectApplicationLayerServices3() throws IOException {
+		testCMLInputAndMDSLOutputFiles("mdsl-use-application-service-operations-3");
+	}
+
+	@Test
+	void respectApplicationLayerCommands1() throws IOException {
+		testCMLInputAndMDSLOutputFiles("mdsl-use-application-commands-1");
+	}
+
+	@Test
+	void respectApplicationLayerCommands2() throws IOException {
+		testCMLInputAndMDSLOutputFiles("mdsl-use-application-commands-2");
+	}
+
+	@Test
+	void cannotGenerateAnyThingWithoutAggregateOrApplicationLayer1() {
+		assertThrows(GeneratorInputException.class, () -> {
+			testCMLInputAndMDSLOutputFiles("mdsl-nothing-to-generate-test-1");
+		});
+	}
+
+	@Test
+	void cannotGenerateAnyThingWithoutAggregateOrApplicationLayer2() {
+		assertThrows(GeneratorInputException.class, () -> {
+			testCMLInputAndMDSLOutputFiles("mdsl-nothing-to-generate-test-2");
+		});
 	}
 
 	private void testCMLInputAndMDSLOutputFiles(String baseFilename) throws IOException {

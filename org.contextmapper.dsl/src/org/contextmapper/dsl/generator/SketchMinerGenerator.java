@@ -39,18 +39,15 @@ public class SketchMinerGenerator extends AbstractContextMappingModelGenerator {
 
 		// generate sketch miner file for Bounded Contexts flows
 		for (BoundedContext boundedContext : model.getBoundedContexts()) {
-			int flowNr = 1;
 			for (Flow flow : getFlowsWithSteps(boundedContext)) {
-				fsa.generateFile(fileName + "_BC_" + boundedContext.getName() + "_Flow" + flowNr + "." + SKETCH_MINER_FILE_EXT,
-						new SketchMinerModelCreator().createText(flow));
-				flowNr++;
+				fsa.generateFile(fileName + "_BC_" + boundedContext.getName() + "_" + flow.getName() + "." + SKETCH_MINER_FILE_EXT, new SketchMinerModelCreator().createText(flow));
 			}
 		}
 	}
 
 	private void checkPreconditions() {
 		for (BoundedContext boundedContext : this.contextMappingModel.getBoundedContexts()) {
-			if (boundedContext.getApplication() != null && boundedContext.getApplication().getFlows() != null && !boundedContext.getApplication().getFlows().isEmpty()) {
+			if (boundedContext.getApplication() != null && boundedContext.getApplication().getFlows() != null) {
 				Set<Flow> nonEmptyFlows = boundedContext.getApplication().getFlows().stream().filter(f -> !f.getSteps().isEmpty()).collect(Collectors.toSet());
 				if (!nonEmptyFlows.isEmpty())
 					return;

@@ -45,6 +45,7 @@ public class ValidationMessages {
 	public static final String SUBDOMAIN_NAME_EQUALS_DOMAIN_NAME = "The subdomain '%s' has the same name as the domain. Please define a unique subdomain name.";
 	public static final String SERVICE_NAME_NOT_UNIQUE_IN_BC = "Multiple services with the name '%s' have been declared in this Bounded Context.";
 	public static final String SERVICE_NAME_NOT_UNIQUE_IN_SUBDOMAIN = "Multiple services with the name '%s' have been declared in this Subdomain.";
+	public static final String FLOW_NAME_NOT_UNIQUE = "Multiple flows with the name '%s' have been declared. Please provide unique names!";
 
 	/* Generator problems */
 	public static final String EMPTY_UML_COMPONENT_DIAGRAM_MESSAGE = "Sorry, we cannot generate a component diagram. Your Context Map seems to be empty.";

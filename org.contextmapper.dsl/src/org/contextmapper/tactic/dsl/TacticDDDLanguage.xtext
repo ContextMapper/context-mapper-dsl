@@ -32,11 +32,11 @@ generate tacticdsl "http://contextmapper.org/tactic/dsl/tacticdsl"
 
 
 TacticDDDModel :
-  app=Application;
+  app=TacticDDDApplication;
 
-Application :
+TacticDDDApplication :
   (doc=STRING)?
-  (("Application" name=ID "{"
+  (("TacticDDDApplication" name=ID "{"
     "basePackage" "=" basePackage=JavaIdentifier) |
   ("ApplicationPart"  name=ID "{"))
 	((services+=Service) |
@@ -259,7 +259,7 @@ ValueObject :
 DomainEvent :
   (comment=ML_COMMENT)?
   (doc=STRING)?
-  (abstract?="abstract")? "DomainEvent" name=ID ("extends" (("@"extends=[DomainEvent]) | (extendsName=JavaIdentifier)))?
+  (abstract?="abstract")? ("DomainEvent" | "Event") name=ID ("extends" (("@"extends=[DomainEvent]) | (extendsName=JavaIdentifier)))?
   ("with" ("@")?traits+=[Trait])* ("{"
     ("package" "=" package=JavaIdentifier )?
     (

@@ -29,7 +29,7 @@ BoundedContext InsuranceQuotes {
 	Application {
 		Command SubmitRequest // command triggered by user
 		
-		Flow {
+		Flow QuoteFlow {
 			command SubmitRequest delegates to QuoteRequest[-> SUBMITTED] emits event RequestSubmitted
 			event RequestSubmitted triggers operation checkRequest
 			operation checkRequest delegates to QuoteRequest[SUBMITTED -> RECEIVED X REJECTED] emits event QuoteReceived X RequestRejected
@@ -38,6 +38,8 @@ BoundedContext InsuranceQuotes {
 			event QuoteAccepted triggers operation accept
 			operation accept delegates to QuoteRequest[ACCEPTED -> POLICY_CREATED X EXPIRED] emits event PolicyCreated X QuoteExpired 
 		}
+		
+		Flow EmptyFlow // to be ignored
 	}
 	
 }

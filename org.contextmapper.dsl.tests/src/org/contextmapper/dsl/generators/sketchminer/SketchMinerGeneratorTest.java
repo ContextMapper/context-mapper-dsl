@@ -53,7 +53,7 @@ public class SketchMinerGeneratorTest extends AbstractCMLInputFileTest {
 		this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem, new IGeneratorContextMock());
 
 		// then
-		assertTrue(filesystem.getGeneratedFilesSet().contains("testmodel_BC_TestContext_Flow1.sketch_miner"));
+		assertTrue(filesystem.getGeneratedFilesSet().contains("testmodel_BC_TestContext_TestFlow.sketch_miner"));
 	}
 
 	@Test

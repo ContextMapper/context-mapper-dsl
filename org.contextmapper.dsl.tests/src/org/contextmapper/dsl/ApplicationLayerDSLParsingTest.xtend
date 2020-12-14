@@ -43,6 +43,8 @@ import org.junit.jupiter.api.^extension.ExtendWith
 
 import static org.contextmapper.dsl.util.ParsingErrorAssertions.*
 import static org.junit.jupiter.api.Assertions.*
+import static org.contextmapper.dsl.validation.ValidationMessages.*
+import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLPackage
 
 @ExtendWith(InjectionExtension)
 @InjectWith(ContextMappingDSLInjectorProvider)
@@ -125,6 +127,25 @@ class ApplicationLayerDSLParsingTest {
 	}
 
 	@Test
+	def void canDefineApplicationEvents() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext TestContext {
+				Application {
+					Event TestEvent
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		assertEquals(1, result.boundedContexts.get(0).application.events.size);
+		assertEquals("TestEvent", result.boundedContexts.get(0).application.events.get(0).name);
+	}
+
+	@Test
 	def void canDefineFlow() {
 		// given
 		val String dslSnippet = '''
@@ -132,7 +153,7 @@ class ApplicationLayerDSLParsingTest {
 				Application {
 					Command TestCommand
 					
-					Flow {
+					Flow TestFlow {
 						command TestCommand emits event TestEvent
 					}
 				}
@@ -148,7 +169,29 @@ class ApplicationLayerDSLParsingTest {
 		assertThatNoParsingErrorsOccurred(result);
 		assertThatNoValidationErrorsOccurred(result);
 		assertEquals(1, result.boundedContexts.get(0).application.flows.size);
+		assertEquals("TestFlow", result.boundedContexts.get(0).application.flows.get(0).name);
 		assertEquals(1, result.boundedContexts.get(0).application.flows.get(0).steps.size);
+	}
+
+	@Test
+	def void cannotDefineDuplicateFlow() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext TestContext {
+				Application {
+					Flow TestFlow {
+					}
+					Flow TestFlow {
+					}
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.FLOW, "",
+			String.format(FLOW_NAME_NOT_UNIQUE, "TestFlow"));
 	}
 
 	@Test
@@ -159,7 +202,7 @@ class ApplicationLayerDSLParsingTest {
 				Application {
 					Command TestCommand
 					
-					Flow {
+					Flow TestFlow {
 						command TestCommand emits event TestEvent
 					}
 				}
@@ -189,7 +232,7 @@ class ApplicationLayerDSLParsingTest {
 						void testOperation();
 					}
 					
-					Flow {
+					Flow TestFlow {
 						operation testOperation emits event TestEvent
 					}
 				}
@@ -222,7 +265,7 @@ class ApplicationLayerDSLParsingTest {
 						void testOperation();
 					}
 					
-					Flow {
+					Flow TestFlow {
 						operation testOperation emits event TestEvent1 + TestEvent2 + TestEvent3
 					}
 				}
@@ -256,7 +299,7 @@ class ApplicationLayerDSLParsingTest {
 						void testOperation();
 					}
 					
-					Flow {
+					Flow TestFlow {
 						operation testOperation emits event TestEvent1 X TestEvent2 x TestEvent3
 					}
 				}
@@ -290,7 +333,7 @@ class ApplicationLayerDSLParsingTest {
 						void testOperation();
 					}
 					
-					Flow {
+					Flow TestFlow {
 						operation testOperation emits event TestEvent1 O TestEvent2 o TestEvent3
 					}
 				}
@@ -324,7 +367,7 @@ class ApplicationLayerDSLParsingTest {
 						void testOperation();
 					}
 					
-					Flow {
+					Flow TestFlow {
 						operation testOperation delegates to TestAggregate emits event TestEvent1 X TestEvent2
 					}
 				}
@@ -355,7 +398,7 @@ class ApplicationLayerDSLParsingTest {
 						void testOperation();
 					}
 					
-					Flow {
+					Flow TestFlow {
 						operation testOperation delegates to TestAggregate [STATE1 -> STATE2] emits event TestEvent1 X TestEvent2
 					}
 				}
@@ -395,7 +438,7 @@ class ApplicationLayerDSLParsingTest {
 						void testOperation();
 					}
 					
-					Flow {
+					Flow TestFlow {
 						operation testOperation delegates to TestAggregate [STATE1, STATE2 -> STATE3] emits event TestEvent1 X TestEvent2
 					}
 				}
@@ -436,7 +479,7 @@ class ApplicationLayerDSLParsingTest {
 						void testOperation();
 					}
 					
-					Flow {
+					Flow TestFlow {
 						operation testOperation delegates to TestAggregate [STATE1 -> STATE2 X STATE3] emits event TestEvent1 X TestEvent2
 					}
 				}
@@ -477,7 +520,7 @@ class ApplicationLayerDSLParsingTest {
 						void testOperation();
 					}
 					
-					Flow {
+					Flow TestFlow {
 						event TestEvent triggers operation testOperation
 					}
 				}
@@ -513,7 +556,7 @@ class ApplicationLayerDSLParsingTest {
 						void testOperation2();
 					}
 					
-					Flow {
+					Flow TestFlow {
 						event TestEvent triggers operation testOperation1 + testOperation2
 					}
 				}
@@ -550,7 +593,7 @@ class ApplicationLayerDSLParsingTest {
 						void testOperation2();
 					}
 					
-					Flow {
+					Flow TestFlow {
 						event TestEvent triggers operation testOperation1 X testOperation2
 					}
 				}
@@ -587,7 +630,7 @@ class ApplicationLayerDSLParsingTest {
 						void testOperation2();
 					}
 					
-					Flow {
+					Flow TestFlow {
 						event TestEvent triggers operation testOperation1 O testOperation2
 					}
 				}
@@ -621,7 +664,7 @@ class ApplicationLayerDSLParsingTest {
 				Application {
 					Command TestCommand
 					
-					Flow {
+					Flow TestFlow {
 						event TestEvent triggers command TestCommand
 					}
 				}
@@ -655,7 +698,7 @@ class ApplicationLayerDSLParsingTest {
 					Command TestCommand1
 					Command TestCommand2
 					
-					Flow {
+					Flow TestFlow {
 						event TestEvent triggers command TestCommand1 + TestCommand2
 					}
 				}
@@ -690,7 +733,7 @@ class ApplicationLayerDSLParsingTest {
 					Command TestCommand1
 					Command TestCommand2
 					
-					Flow {
+					Flow TestFlow {
 						event TestEvent triggers command TestCommand1 X TestCommand2
 					}
 				}
@@ -725,7 +768,7 @@ class ApplicationLayerDSLParsingTest {
 					Command TestCommand1
 					Command TestCommand2
 					
-					Flow {
+					Flow TestFlow {
 						event TestEvent triggers command TestCommand1 O TestCommand2
 					}
 				}
@@ -759,7 +802,7 @@ class ApplicationLayerDSLParsingTest {
 				Application {
 					Command TestCommand1
 					
-					Flow {
+					Flow TestFlow {
 						event TestEvent1 + TestEvent2 triggers command TestCommand1
 					}
 				}
@@ -786,7 +829,7 @@ class ApplicationLayerDSLParsingTest {
 		assertEquals(1, action.commands.size);
 		assertEquals("TestCommand1", action.commands.get(0).name);
 	}
-	
+
 	@Test
 	def void canDefineEventProductionFlowStepWithActorThatTriggeredOperation() {
 		// given
@@ -797,7 +840,7 @@ class ApplicationLayerDSLParsingTest {
 						void testOperation();
 					}
 					
-					Flow {
+					Flow TestFlow {
 						operation testOperation [triggered by "TestUser"] delegates to TestAggregate [STATE1 -> STATE2 X STATE3] emits event TestEvent1 X TestEvent2
 					}
 				}
@@ -828,7 +871,7 @@ class ApplicationLayerDSLParsingTest {
 		assertEquals("STATE3", flowStep.stateTransition.target.to.get(1).value.name);
 		assertEquals("TestUser", flowStep.action.actor)
 	}
-	
+
 	@Test
 	def void canDefineEventProductionFlowStepWithActorThatTriggeredCommand() {
 		// given
@@ -837,7 +880,7 @@ class ApplicationLayerDSLParsingTest {
 				Application {
 					Command TestCommand
 					
-					Flow {
+					Flow TestFlow {
 						command TestCommand [triggered by "TestUser"] delegates to TestAggregate [STATE1 -> STATE2 X STATE3] emits event TestEvent1 X TestEvent2
 					}
 				}
@@ -868,7 +911,7 @@ class ApplicationLayerDSLParsingTest {
 		assertEquals("STATE3", flowStep.stateTransition.target.to.get(1).value.name);
 		assertEquals("TestUser", flowStep.action.actor)
 	}
-	
+
 	@Test
 	def void canDefineEndState() {
 		// given
@@ -877,7 +920,7 @@ class ApplicationLayerDSLParsingTest {
 				Application {
 					Command TestCommand
 					
-					Flow {
+					Flow TestFlow {
 						command TestCommand delegates to TestAggregate [STATE1 -> STATE2* x STATE3] emits event TestEvent1 X TestEvent2
 					}
 				}

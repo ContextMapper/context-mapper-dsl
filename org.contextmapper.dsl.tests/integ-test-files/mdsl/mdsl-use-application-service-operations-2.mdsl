@@ -1,0 +1,39 @@
+// Generated from DDD Context Map.
+API description CustomerManagementContextAPI
+
+
+data type Address { "street":D<string>, "houseNumber":D<int>, "city":D<string> }
+data type AnyReturnType P // the type AnyReturnType has not been specified or does not contain any attributes in CML
+data type yetAnotherMethodParameter { "param1":D<int>, "param2":D<bool> }
+
+
+endpoint type Application
+	exposes
+		operation anotherMethod
+			expecting
+				payload D<int>
+			delivering
+				payload D<string>
+		operation yetAnotherMethod
+			expecting
+				payload yetAnotherMethodParameter
+			delivering
+				payload AnyReturnType
+		operation methodWithParameterTree
+			expecting
+				payload Address
+endpoint type Customers
+// Your aggregate root does not specify any methods/operations. Therefore we can not generate any endpoint operations.
+
+
+API provider CustomerManagementContextProvider
+	offers Application
+	at endpoint location "http://localhost:8000"
+		via protocol "RESTful HTTP"
+	offers Customers
+	at endpoint location "http://localhost:8001"
+		via protocol "RESTful HTTP"
+
+
+API client ContractManagementContextClient
+	consumes Customers

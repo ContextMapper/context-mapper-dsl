@@ -1,0 +1,7 @@
+
+BoundedContext ContractManagementContext
+
+BoundedContext CustomerManagementContext {
+}
+
+BoundedContext JustAnotherContext

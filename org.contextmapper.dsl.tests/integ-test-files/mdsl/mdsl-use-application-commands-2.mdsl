@@ -1,0 +1,25 @@
+// Generated from DDD Context Map.
+API description CustomerManagementContextAPI
+
+
+data type CreateCustomerCommand { "firstName":D<string>, "lastName":D<string> }
+
+
+endpoint type Application
+	exposes
+		operation CreateCustomerCommand
+			expecting
+				payload CreateCustomerCommand
+endpoint type Customers
+// Your aggregate root does not specify any methods/operations. Therefore we can not generate any endpoint operations.
+
+
+API provider CustomerManagementContextProvider
+	offers Application
+	at endpoint location "http://localhost:8000"
+		via protocol "tbd" // The protocol is generated if you specify the implementation technology in CML
+	offers Customers
+	at endpoint location "http://localhost:8001"
+		via protocol "tbd" // The protocol is generated if you specify the implementation technology in CML
+
+

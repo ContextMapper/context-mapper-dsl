@@ -1,0 +1,12 @@
+
+BoundedContext ContractManagementContext
+
+BoundedContext CustomerManagementContext {
+	Application {
+		Flow EmptyFlow {
+		
+		}
+	}
+}
+
+BoundedContext JustAnotherContext

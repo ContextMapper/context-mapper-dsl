@@ -98,11 +98,14 @@ class PlantUMLGeneratorTest extends AbstractCMLInputFileTest {
 		// given
 		ContextMappingModel model = ContextMappingDSLFactory.eINSTANCE.createContextMappingModel();
 		Domain domain = ContextMappingDSLFactory.eINSTANCE.createDomain();
-		Subdomain subdomain = ContextMappingDSLFactory.eINSTANCE.createSubdomain();
+		Subdomain subdomain1 = ContextMappingDSLFactory.eINSTANCE.createSubdomain();
 		domain.setName("TestDomain");
-		subdomain.setName("TestSubdomain");
-		domain.getSubdomains().add(subdomain);
-		subdomain.getEntities().add(createTestEntity("TestEntity"));
+		subdomain1.setName("TestSubdomain1");
+		Subdomain subdomain2 = ContextMappingDSLFactory.eINSTANCE.createSubdomain();
+		subdomain2.setName("TestSubdomain2");
+		domain.getSubdomains().add(subdomain1);
+		domain.getSubdomains().add(subdomain2);
+		subdomain2.getEntities().add(createTestEntity("TestEntity"));
 		model.getDomains().add(domain);
 
 		// when
@@ -110,7 +113,8 @@ class PlantUMLGeneratorTest extends AbstractCMLInputFileTest {
 		this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem, new IGeneratorContextMock());
 
 		// then
-		assertTrue(filesystem.getGeneratedFilesSet().contains("testmodel_SD_TestSubdomain.puml"));
+		assertFalse(filesystem.getGeneratedFilesSet().contains("testmodel_SD_TestSubdomain1.puml"));
+		assertTrue(filesystem.getGeneratedFilesSet().contains("testmodel_SD_TestSubdomain2.puml"));
 	}
 
 	@Test
@@ -123,9 +127,9 @@ class PlantUMLGeneratorTest extends AbstractCMLInputFileTest {
 		this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem, new IGeneratorContextMock());
 
 		// then
-		assertTrue(filesystem.getGeneratedFilesSet().contains("testmodel_BC_InsuranceQuotes_Flow1_StateDiagram.puml"));
+		assertTrue(filesystem.getGeneratedFilesSet().contains("testmodel_BC_InsuranceQuotes_QuoteFlow_StateDiagram.puml"));
 	}
-	
+
 	@Test
 	void canCreateStateDiagram4AggregateIfAvailable() throws IOException {
 		// given
@@ -136,7 +140,7 @@ class PlantUMLGeneratorTest extends AbstractCMLInputFileTest {
 		this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem, new IGeneratorContextMock());
 
 		// then
-		assertTrue(filesystem.getGeneratedFilesSet().contains("testmodel_BC_InsuranceQuotes_QuoteRequest_StateDiagram.puml"));		
+		assertTrue(filesystem.getGeneratedFilesSet().contains("testmodel_BC_InsuranceQuotes_QuoteRequest_StateDiagram.puml"));
 	}
 
 	@Test
