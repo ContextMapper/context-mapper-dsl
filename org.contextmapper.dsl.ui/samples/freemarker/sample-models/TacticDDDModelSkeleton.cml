@@ -35,17 +35,22 @@ BoundedContext SampleContext1 implements SampleCoreSubdomain {
 	type=APPLICATION
 	implementationTechnology="Microservice container, for instance Spring Boot or Micronaut (in Java)" 
 	
-	Aggregate SampleAggregate1
-		{
+	Aggregate SampleAggregate1 {
 		responsibilities="Expose a single operation", "Process incoming data","Compute and return a response"
 		Entity SampleAggregateRoot1 {
+			aggregateRoot
 			hint = "This entity must have a globally unique ID because it is the aggregate root. Its domain semantics can also be explained in this hint."
 			
-			def String sampleOperation(String p1, int p2);
+			def String sampleOperation(String p1, int p2) : write [STATE1 -> STATE2];
 			ID globalID
 			
 			String sampleAttribute
 			-SampleValueObject sampleObjectReference
+		}
+		
+		enum States {
+			aggregateLifecycle
+			STATE1, STATE2
 		}
 		
 		ValueObject SampleValueObject
@@ -55,6 +60,19 @@ BoundedContext SampleContext1 implements SampleCoreSubdomain {
 			Date when
 			// could refer to entity or value object here 
 		}
+		Event ProcessEnded
+	}
+	
+	Application { // examplary application/process layer definition
+		Command StartProcess
+		Command FinishProcess
+		Event SomethingHasHappenedThatExternalApplicationsNeedToKnow
+		
+		Flow SampleFlow {
+			command StartProcess delegates to SampleAggregate1 [STATE1 -> STATE2] emits event SomethingHasHappenedNotification
+			event SomethingHasHappenedNotification triggers command FinishProcess
+			command FinishProcess delegates to SampleAggregate1 emits event ProcessEnded + SomethingHasHappenedThatExternalApplicationsNeedToKnow
+		}	
 	}
 } 
 
