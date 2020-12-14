@@ -1,4 +1,6 @@
 <#import "domain-objects/domain-object-attribute-and-operation-tables.ftl" as attrOpsMacro>
+<#import "flows/application_flow.ftl" as appFlowMacro>
+<#import "states/state_transition.ftl" as stateTransitionMacro>
 <#include "./common/header.md.ftl">
 
 Model Report for '${fileName}' 

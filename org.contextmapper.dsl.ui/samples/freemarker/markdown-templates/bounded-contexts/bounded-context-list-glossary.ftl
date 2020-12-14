@@ -49,4 +49,30 @@
             </#list>
         </#if>
     </#list>
+    
+    <#if bc.application?has_content>
+    #### Application Layer<#lt>
+    	<#if bc.application.services?has_content>
+            Services:<#lt>
+            
+            <#list bc.application.services as s>
+                * ${s.name}<#lt>. ${s.hint!"[hint missing]"}<#lt>
+            </#list>
+        </#if>
+        
+        <#if bc.application.events?has_content>
+            Events:<#lt>
+            <#list bc.application.events as event>
+            	* ${event.name}. ${event.hint!"[hint missing]"}<#lt>
+            </#list>
+        </#if>
+        
+        <#if bc.application.commands?has_content>
+            Commands:<#lt>
+            <#list bc.application.commands as command>
+            	* ${command.name}. ${command.hint!"[hint missing]"}<#lt>
+            </#list>
+        </#if>
+        
+    </#if>
 </#list>
