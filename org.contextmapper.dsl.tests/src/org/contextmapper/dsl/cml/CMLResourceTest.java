@@ -87,7 +87,7 @@ public class CMLResourceTest {
 		Resource resource = new ResourceImpl(URI.createURI("testresource"));
 
 		// when
-		resource.getContents().add(TacticdslFactory.eINSTANCE.createApplication());
+		resource.getContents().add(TacticdslFactory.eINSTANCE.createTacticDDDApplication());
 
 		// then
 		Assertions.assertThrows(ResourceIsNoCMLModelException.class, () -> {

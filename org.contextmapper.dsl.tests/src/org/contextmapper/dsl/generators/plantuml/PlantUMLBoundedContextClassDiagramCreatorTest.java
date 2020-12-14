@@ -22,6 +22,7 @@ import java.io.IOException;
 import org.contextmapper.dsl.AbstractCMLInputFileTest;
 import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
+import org.contextmapper.dsl.contextMappingDSL.Application;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
 import org.contextmapper.dsl.contextMappingDSL.Domain;
@@ -40,6 +41,7 @@ import org.contextmapper.tactic.dsl.tacticdsl.Enum;
 import org.contextmapper.tactic.dsl.tacticdsl.EnumValue;
 import org.contextmapper.tactic.dsl.tacticdsl.Parameter;
 import org.contextmapper.tactic.dsl.tacticdsl.Reference;
+import org.contextmapper.tactic.dsl.tacticdsl.Service;
 import org.contextmapper.tactic.dsl.tacticdsl.TacticdslFactory;
 import org.contextmapper.tactic.dsl.tacticdsl.ValueObject;
 import org.junit.jupiter.api.BeforeEach;
@@ -151,8 +153,8 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 		String plantUML = this.creator.createDiagram(boundedContext);
 
 		// then
-		assertTrue(plantUML.contains("	class Test <<(E,DarkSeaGreen) Entity>> {" + System.lineSeparator() + "		int amount" + System.lineSeparator() + "		List<String> myList"
-				+ System.lineSeparator() + "	}" + System.lineSeparator()));
+		assertTrue(plantUML.contains("	class Test <<(E,DarkSeaGreen) Entity>> {" + System.lineSeparator() + "		int amount" + System.lineSeparator()
+				+ "		List<String> myList" + System.lineSeparator() + "	}" + System.lineSeparator()));
 	}
 
 	@Test
@@ -175,7 +177,8 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 		String plantUML = this.creator.createDiagram(boundedContext);
 
 		// then
-		assertTrue(plantUML.contains("	class Test <<(E,DarkSeaGreen) Entity>> {" + System.lineSeparator() + "		int[0..1] amount" + System.lineSeparator() + "	}" + System.lineSeparator()));
+		assertTrue(plantUML.contains(
+				"	class Test <<(E,DarkSeaGreen) Entity>> {" + System.lineSeparator() + "		int[0..1] amount" + System.lineSeparator() + "	}" + System.lineSeparator()));
 	}
 
 	@Test
@@ -201,8 +204,8 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 		String plantUML = this.creator.createDiagram(boundedContext);
 
 		// then
-		assertTrue(plantUML.contains(
-				"	class Test <<(E,DarkSeaGreen) Entity>> {" + System.lineSeparator() + "		ReferencedEntity[0..1] otherEntity" + System.lineSeparator() + "	}" + System.lineSeparator()));
+		assertTrue(plantUML.contains("	class Test <<(E,DarkSeaGreen) Entity>> {" + System.lineSeparator() + "		ReferencedEntity[0..1] otherEntity" + System.lineSeparator()
+				+ "	}" + System.lineSeparator()));
 	}
 
 	@Test
@@ -339,7 +342,7 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 		assertTrue(plantUML.contains("Customer --> Address : entity2Ref" + System.lineSeparator()));
 		assertTrue(plantUML.contains("Customer o-- AnotherObject : myListReference" + System.lineSeparator()));
 	}
-	
+
 	@Test
 	public void createsNoteIfBoundedContextIsEmpty() {
 		// given
@@ -485,8 +488,8 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 		String plantUML = this.creator.createDiagram(boundedContext);
 
 		// then
-		assertTrue(plantUML.contains("	class Test <<(E,DarkSeaGreen) Entity>> {" + System.lineSeparator() + "		ReturnType doSomething(String someParameter)" + System.lineSeparator() + "	}"
-				+ System.lineSeparator()));
+		assertTrue(plantUML.contains("	class Test <<(E,DarkSeaGreen) Entity>> {" + System.lineSeparator() + "		ReturnType doSomething(String someParameter)"
+				+ System.lineSeparator() + "	}" + System.lineSeparator()));
 	}
 
 	@Test
@@ -500,8 +503,8 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 		String plantUML = this.creator.createDiagram(bc);
 
 		// then
-		assertTrue(plantUML.contains("	class Customer <<(A,#fffab8) Aggregate Root>> {" + System.lineSeparator() + "		ReturnType updateAddress(Address address)" + System.lineSeparator()
-				+ "	}" + System.lineSeparator()));
+		assertTrue(plantUML.contains("	class Customer <<(A,#fffab8) Aggregate Root>> {" + System.lineSeparator() + "		ReturnType updateAddress(Address address)"
+				+ System.lineSeparator() + "	}" + System.lineSeparator()));
 	}
 
 	@Test
@@ -530,8 +533,8 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 		String plantUML = this.creator.createDiagram(bc);
 
 		// then
-		assertTrue(plantUML.contains("	class Customer <<(A,#fffab8) Aggregate Root>> {" + System.lineSeparator() + "		void anotherMethod(String param)" + System.lineSeparator()
-				+ "		void yetAnotherMethod(String param)" + System.lineSeparator() + "	}" + System.lineSeparator()));
+		assertTrue(plantUML.contains("	class Customer <<(A,#fffab8) Aggregate Root>> {" + System.lineSeparator() + "		void anotherMethod(String param)"
+				+ System.lineSeparator() + "		void yetAnotherMethod(String param)" + System.lineSeparator() + "	}" + System.lineSeparator()));
 	}
 
 	@Test
@@ -545,10 +548,10 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 		String plantUML = this.creator.createDiagram(bc);
 
 		// then
-		assertTrue(plantUML.contains("	class MyService <<(S,DarkSeaGreen) Service>> {" + System.lineSeparator() + "		ReturnType serviceMethod(Address address)" + System.lineSeparator() + "	}"
-				+ System.lineSeparator()));
-		assertTrue(plantUML.contains("	class MyModuleService <<(S,DarkSeaGreen) Service>> {" + System.lineSeparator() + "		void myModuleServiceMethod()" + System.lineSeparator() + "	}"
-				+ System.lineSeparator()));
+		assertTrue(plantUML.contains("	class MyService <<(S,DarkSeaGreen) Service>> {" + System.lineSeparator() + "		ReturnType serviceMethod(Address address)"
+				+ System.lineSeparator() + "	}" + System.lineSeparator()));
+		assertTrue(plantUML.contains("	class MyModuleService <<(S,DarkSeaGreen) Service>> {" + System.lineSeparator() + "		void myModuleServiceMethod()"
+				+ System.lineSeparator() + "	}" + System.lineSeparator()));
 	}
 
 	@Test
@@ -574,7 +577,7 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 		assertTrue(plantUML.contains("	class AbstractEntity <<(E,DarkSeaGreen) Entity>> {" + System.lineSeparator() + "	}" + System.lineSeparator()));
 		assertTrue(plantUML.contains("Customer --|> AbstractEntity" + System.lineSeparator()));
 	}
-	
+
 	@Test
 	public void canCreateInheritance4VO() {
 		// given
@@ -598,7 +601,7 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 		assertTrue(plantUML.contains("	class AbstractVO <<(V,DarkSeaGreen) Value Object>> {" + System.lineSeparator() + "	}" + System.lineSeparator()));
 		assertTrue(plantUML.contains("Customer --|> AbstractVO" + System.lineSeparator()));
 	}
-	
+
 	@Test
 	public void canCreateInheritance4CommandEvent() {
 		// given
@@ -622,7 +625,7 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 		assertTrue(plantUML.contains("	class AbstractEvent <<(C,#3bc5e9) Command>> {" + System.lineSeparator() + "	}" + System.lineSeparator()));
 		assertTrue(plantUML.contains("Customer --|> AbstractEvent" + System.lineSeparator()));
 	}
-	
+
 	@Test
 	public void canCreateInheritance4DomainEvent() {
 		// given
@@ -646,7 +649,7 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 		assertTrue(plantUML.contains("	class AbstractEvent <<(E,#ff9f4b) Domain Event>> {" + System.lineSeparator() + "	}" + System.lineSeparator()));
 		assertTrue(plantUML.contains("Customer --|> AbstractEvent" + System.lineSeparator()));
 	}
-	
+
 	@Test
 	public void canCreateInheritance4UndefinedBaseType() {
 		// given
@@ -665,6 +668,32 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 		// then
 		assertTrue(plantUML.contains("	class Customer <<(E,DarkSeaGreen) Entity>> {" + System.lineSeparator() + "	}" + System.lineSeparator()));
 		assertTrue(plantUML.contains("Customer --|> AbstractEntity" + System.lineSeparator()));
+	}
+
+	@Test
+	public void respectEventsAndCommandsAndServicesFromApplicationLayer() {
+		// given
+		BoundedContext boundedContext = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
+		Application app = ContextMappingDSLFactory.eINSTANCE.createApplication();
+		boundedContext.setApplication(app);
+		DomainEvent testEvent = TacticdslFactory.eINSTANCE.createDomainEvent();
+		testEvent.setName("TestEvent");
+		app.getEvents().add(testEvent);
+		CommandEvent testCommand = TacticdslFactory.eINSTANCE.createCommandEvent();
+		testCommand.setName("TestCommand");
+		app.getCommands().add(testCommand);
+		Service testService = TacticdslFactory.eINSTANCE.createService();
+		testService.setName("TestService");
+		app.getServices().add(testService);
+
+		// when
+		String plantUML = this.creator.createDiagram(boundedContext);
+
+		// then
+		assertTrue(plantUML.contains("package \"'Application'\" <<Rectangle>> {" + System.lineSeparator()));
+		assertTrue(plantUML.contains("	class TestEvent <<(E,#ff9f4b) Domain Event>> {" + System.lineSeparator() + "	}" + System.lineSeparator()));
+		assertTrue(plantUML.contains("	class TestCommand <<(C,#3bc5e9) Command>> {" + System.lineSeparator() + "	}" + System.lineSeparator()));
+		assertTrue(plantUML.contains("	class TestService <<(S,DarkSeaGreen) Service>> {" + System.lineSeparator() + "	}" + System.lineSeparator()));
 	}
 
 	@Override

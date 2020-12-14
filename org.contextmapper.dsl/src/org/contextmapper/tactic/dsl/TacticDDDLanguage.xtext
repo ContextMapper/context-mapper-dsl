@@ -32,11 +32,11 @@ generate tacticdsl "http://contextmapper.org/tactic/dsl/tacticdsl"
 
 
 TacticDDDModel :
-  app=Application;
+  app=TacticDDDApplication;
 
-Application :
+TacticDDDApplication :
   (doc=STRING)?
-  (("Application" name=ID "{"
+  (("TacticDDDApplication" name=ID "{"
     "basePackage" "=" basePackage=JavaIdentifier) |
   ("ApplicationPart"  name=ID "{"))
 	((services+=Service) |

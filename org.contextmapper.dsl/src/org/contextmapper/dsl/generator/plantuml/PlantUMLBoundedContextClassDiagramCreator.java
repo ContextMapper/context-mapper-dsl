@@ -18,12 +18,15 @@ package org.contextmapper.dsl.generator.plantuml;
 import java.util.List;
 
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
+import org.contextmapper.dsl.contextMappingDSL.Application;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.Domain;
 import org.contextmapper.dsl.contextMappingDSL.DomainPart;
 import org.contextmapper.dsl.contextMappingDSL.SculptorModule;
 import org.contextmapper.dsl.contextMappingDSL.Subdomain;
 import org.contextmapper.dsl.validation.ValidationMessages;
+import org.contextmapper.tactic.dsl.tacticdsl.CommandEvent;
+import org.contextmapper.tactic.dsl.tacticdsl.DomainEvent;
 import org.contextmapper.tactic.dsl.tacticdsl.Entity;
 import org.contextmapper.tactic.dsl.tacticdsl.Service;
 import org.contextmapper.tactic.dsl.tacticdsl.ServiceOperation;
@@ -49,6 +52,8 @@ public class PlantUMLBoundedContextClassDiagramCreator extends AbstractPlantUMLC
 		for (Aggregate aggregate : boundedContext.getAggregates()) {
 			printAggregate(aggregate, 0);
 		}
+		if (boundedContext.getApplication() != null)
+			printApplication(boundedContext.getApplication(), 0);
 		printReferences(0);
 		printLegend(boundedContext);
 	}
@@ -114,6 +119,24 @@ public class PlantUMLBoundedContextClassDiagramCreator extends AbstractPlantUMLC
 			printDomainObject(domainObject, indentation + 1);
 		}
 		for (Service service : aggregate.getServices()) {
+			printService(service, indentation + 1);
+		}
+		printIndentation(indentation);
+		sb.append("}");
+		linebreak();
+	}
+
+	private void printApplication(Application application, int indentation) {
+		printIndentation(indentation);
+		sb.append("package ").append("\"'").append("Application").append("'").append("\"").append(" <<Rectangle>> ").append("{");
+		linebreak();
+		for (DomainEvent event : application.getEvents()) {
+			printDomainObject(event, indentation + 1);
+		}
+		for (CommandEvent command : application.getCommands()) {
+			printDomainObject(command, indentation + 1);
+		}
+		for (Service service : application.getServices()) {
 			printService(service, indentation + 1);
 		}
 		printIndentation(indentation);

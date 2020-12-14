@@ -86,7 +86,7 @@ public class SCLResourceContainerTest {
 		Resource resource = new ResourceImpl(URI.createURI("testresource"));
 
 		// when
-		resource.getContents().add(TacticdslFactory.eINSTANCE.createApplication());
+		resource.getContents().add(TacticdslFactory.eINSTANCE.createTacticDDDApplication());
 
 		// then
 		Assertions.assertThrows(ResourceIsNoSCLModelException.class, () -> {
