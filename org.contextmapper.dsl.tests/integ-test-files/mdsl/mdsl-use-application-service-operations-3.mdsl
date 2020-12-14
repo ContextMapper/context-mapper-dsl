@@ -1,0 +1,32 @@
+// Generated from DDD Context Map.
+API description CustomerManagementContextAPI
+
+
+data type Address P // the type Address has not been specified or does not contain any attributes in CML
+data type AnyReturnType P // the type AnyReturnType has not been specified or does not contain any attributes in CML
+data type yetAnotherMethodParameter { "param1":D<int>, "param2":D<bool> }
+
+
+endpoint type Application
+	exposes
+		operation anotherMethod
+			expecting
+				payload D<int>
+			delivering
+				payload D<string>
+		operation yetAnotherMethod
+			expecting
+				payload yetAnotherMethodParameter
+			delivering
+				payload AnyReturnType
+		operation methodWithParameterTree
+			expecting
+				payload Address
+
+
+API provider CustomerManagementContextProvider
+	offers Application
+	at endpoint location "http://localhost:8000"
+		via protocol "tbd" // The protocol is generated if you specify the implementation technology in CML
+
+
