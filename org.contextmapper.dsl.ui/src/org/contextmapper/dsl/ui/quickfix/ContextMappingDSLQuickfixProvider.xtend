@@ -16,16 +16,19 @@
 package org.contextmapper.dsl.ui.quickfix
 
 import java.util.regex.Pattern
+import org.contextmapper.dsl.generator.sketchminer.SketchMinerLinkCreator
 import org.contextmapper.dsl.quickfixes.CMLQuickFix
 import org.contextmapper.dsl.quickfixes.CreateMissingBoundedContextQuickFix
 import org.contextmapper.dsl.quickfixes.SplitStoryByVerb
 import org.contextmapper.dsl.quickfixes.tactic.ExtractIDValueObjectQuickFix
 import org.contextmapper.dsl.ui.quickfix.context.SelectStoryVerbsContextCreator
+import org.contextmapper.dsl.validation.ApplicationFlowSemanticsValidator
 import org.contextmapper.dsl.validation.DomainObjectValidator
 import org.contextmapper.dsl.validation.UserRequirementsValidator
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.jface.text.source.ISourceViewer
 import org.eclipse.jface.text.source.SourceViewer
+import org.eclipse.swt.program.Program
 import org.eclipse.xtext.diagnostics.Diagnostic
 import org.eclipse.xtext.ui.editor.model.edit.IModificationContext
 import org.eclipse.xtext.ui.editor.quickfix.DefaultQuickfixProvider
@@ -65,6 +68,15 @@ class ContextMappingDSLQuickfixProvider extends DefaultQuickfixProvider {
 			applyCMLQuickfix(issue, acceptor,
 				new CreateMissingBoundedContextQuickFix(getLinkingErrorObjectId("BoundedContext", issue.message)));
 		}
+	}
+
+	@Fix(ApplicationFlowSemanticsValidator.SKETCH_MINER_INFO_ID)
+	def openSketchMiner(Issue issue, IssueResolutionAcceptor acceptor) {
+		acceptor.accept(issue, "Open flow in BPMN Sketch Miner", "Open this flow in BPMN Sketch Miner",
+			null, [ EObject element, IModificationContext context |
+				Program.launch(new SketchMinerLinkCreator().createSketchMinerLink(element));
+			]);
+		format();
 	}
 
 	def applyCMLQuickfix(Issue issue, IssueResolutionAcceptor acceptor, CMLQuickFix<? extends EObject> quickfix) {

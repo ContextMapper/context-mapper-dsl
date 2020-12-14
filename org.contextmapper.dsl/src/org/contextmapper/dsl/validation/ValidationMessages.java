@@ -65,4 +65,5 @@ public class ValidationMessages {
 
 	/* Quickfix suggestions */
 	public static final String SPLIT_STORY_BY_VERB_SUGGESTION = "You could split your story by its operation/verb.";
+	public static final String VISUALIZE_FLOW_WITH_SKETCH_MINER = "You want to vizualize this flow graphically? You can open it in BPMN Sketch Miner ...";
 }

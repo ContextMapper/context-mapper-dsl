@@ -17,22 +17,21 @@ package org.contextmapper.dsl.validation;
 
 import static org.contextmapper.dsl.validation.ValidationMessages.COMMAND_OR_OPERATION_IS_NOT_PART_OF_BOUNDED_CONTEXT;
 import static org.contextmapper.dsl.validation.ValidationMessages.STATE_VALUE_DOES_NOT_BELONG_TO_AGGREGATE;
+import static org.contextmapper.dsl.validation.ValidationMessages.VISUALIZE_FLOW_WITH_SKETCH_MINER;
 
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.cml.CMLModelObjectsResolvingHelper;
-import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.CommandInvokation;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLPackage;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.DomainEventProductionStep;
 import org.contextmapper.dsl.contextMappingDSL.EitherCommandOrOperation;
+import org.contextmapper.dsl.contextMappingDSL.Flow;
 import org.contextmapper.dsl.contextMappingDSL.OperationInvokation;
 import org.contextmapper.tactic.dsl.tacticdsl.CommandEvent;
-import org.contextmapper.tactic.dsl.tacticdsl.Enum;
 import org.contextmapper.tactic.dsl.tacticdsl.EnumValue;
 import org.contextmapper.tactic.dsl.tacticdsl.ServiceOperation;
 import org.contextmapper.tactic.dsl.tacticdsl.TacticdslPackage;
@@ -42,9 +41,9 @@ import org.eclipse.xtext.validation.AbstractDeclarativeValidator;
 import org.eclipse.xtext.validation.Check;
 import org.eclipse.xtext.validation.EValidatorRegistrar;
 
-import com.google.common.collect.Sets;
-
 public class ApplicationFlowSemanticsValidator extends AbstractDeclarativeValidator {
+
+	public static final String SKETCH_MINER_INFO_ID = "open-flow-in-sketch-miner";
 
 	@Override
 	public void register(EValidatorRegistrar registrar) {
@@ -126,6 +125,12 @@ public class ApplicationFlowSemanticsValidator extends AbstractDeclarativeValida
 				error(String.format(STATE_VALUE_DOES_NOT_BELONG_TO_AGGREGATE, value.getName(), step.getAggregate().getName()), step.getStateTransition().getTarget(),
 						TacticdslPackage.Literals.STATE_TRANSITION_TARGET__TO, step.getStateTransition().getTarget().getTo().indexOf(value));
 		}
+	}
+
+	@Check
+	public void sketchMinerLink(final Flow flow) {
+		if (!flow.getSteps().isEmpty())
+			info(VISUALIZE_FLOW_WITH_SKETCH_MINER, flow, ContextMappingDSLPackage.Literals.FLOW__NAME, SKETCH_MINER_INFO_ID);
 	}
 
 }
