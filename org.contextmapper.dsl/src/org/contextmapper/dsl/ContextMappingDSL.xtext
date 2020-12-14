@@ -202,7 +202,7 @@ Application:
 CLOSE)?;
 
 Flow:
-	"Flow" (OPEN 
+	"Flow" name=ID (OPEN 
 		(steps+=FlowStep)*
 	CLOSE)?;
 

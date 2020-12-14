@@ -61,11 +61,9 @@ public class PlantUMLGenerator extends AbstractContextMappingModelGenerator {
 						new PlantUMLStateDiagramCreator4Aggregate().createDiagram(aggregate));
 			}
 
-			int flowNr = 1;
 			for (Flow flow : getFlowsWithStates(boundedContext)) {
-				fsa.generateFile(fileName + "_BC_" + boundedContext.getName() + "_Flow" + flowNr + "_StateDiagram." + PLANT_UML_FILE_EXT,
+				fsa.generateFile(fileName + "_BC_" + boundedContext.getName() + "_" + flow.getName() + "_StateDiagram." + PLANT_UML_FILE_EXT,
 						new PlantUMLStateDiagramCreator4Flow().createDiagram(flow));
-				flowNr++;
 			}
 		}
 

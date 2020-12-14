@@ -42,7 +42,7 @@ class SketchMinerGeneratorCommandTest extends AbstractCMLCommandTest {
 					Service AppService {
 						void Command1();
 					}
-					Flow {
+					Flow TestFlow {
 						event StartEvent triggers operation Command1
 						operation Command1 [ triggered by "Test User" ] delegates to TestAggregate[STATE1, STATE2 -> STATE3 X STATE4] emits event EndEvent
 					}
@@ -68,7 +68,7 @@ class SketchMinerGeneratorCommandTest extends AbstractCMLCommandTest {
 		// then
 		CMLCommandService.COMMAND_EXECUTED_RETURN_VALUE.assertEquals(resultVal)
 		srcGenFolder.exists.assertTrue
-		new File(srcGenFolder, "test_BC_TestContext_Flow1.sketch_miner").exists.assertTrue
+		new File(srcGenFolder, "test_BC_TestContext_TestFlow.sketch_miner").exists.assertTrue
 	}
 
 }

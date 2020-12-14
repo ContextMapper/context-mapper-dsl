@@ -39,11 +39,8 @@ public class SketchMinerGenerator extends AbstractContextMappingModelGenerator {
 
 		// generate sketch miner file for Bounded Contexts flows
 		for (BoundedContext boundedContext : model.getBoundedContexts()) {
-			int flowNr = 1;
 			for (Flow flow : getFlowsWithSteps(boundedContext)) {
-				fsa.generateFile(fileName + "_BC_" + boundedContext.getName() + "_Flow" + flowNr + "." + SKETCH_MINER_FILE_EXT,
-						new SketchMinerModelCreator().createText(flow));
-				flowNr++;
+				fsa.generateFile(fileName + "_BC_" + boundedContext.getName() + "_" + flow.getName() + "." + SKETCH_MINER_FILE_EXT, new SketchMinerModelCreator().createText(flow));
 			}
 		}
 	}

@@ -5,7 +5,7 @@ BoundedContext TestContext {
 		Service AppService {
 			void Command1();
 		}
-		Flow {
+		Flow TestFlow {
 			event StartEvent triggers operation Command1
 			operation Command1 delegates to TestAggregate[STATE1 -> STATE2] emits event EndEvent
 		}

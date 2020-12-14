@@ -123,7 +123,7 @@ class PlantUMLGeneratorTest extends AbstractCMLInputFileTest {
 		this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem, new IGeneratorContextMock());
 
 		// then
-		assertTrue(filesystem.getGeneratedFilesSet().contains("testmodel_BC_InsuranceQuotes_Flow1_StateDiagram.puml"));
+		assertTrue(filesystem.getGeneratedFilesSet().contains("testmodel_BC_InsuranceQuotes_QuoteFlow_StateDiagram.puml"));
 	}
 	
 	@Test

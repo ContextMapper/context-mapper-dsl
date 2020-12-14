@@ -6,7 +6,7 @@ BoundedContext TestContext {
 		Command StartCommand
 		Command EndCommand
 		
-		Flow {
+		Flow TestFlow {
 			event FirstEvent triggers command EndCommand
 			command StartCommand emits event FirstEvent
 		}

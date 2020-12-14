@@ -44,7 +44,7 @@ class ApplicationLayerValidationTest {
 		val String dslSnippet = '''
 			BoundedContext ContextA {
 				Application {
-					Flow {
+					Flow TestFlow {
 						command CommandB emits event EventA
 					}
 				}
@@ -73,7 +73,7 @@ class ApplicationLayerValidationTest {
 		val String dslSnippet = '''
 			BoundedContext ContextA {
 				Application {
-					Flow {
+					Flow TestFlow {
 						operation operationB emits event EventA
 					}
 				}
@@ -104,7 +104,7 @@ class ApplicationLayerValidationTest {
 		val String dslSnippet = '''
 			BoundedContext ContextA {
 				Application {
-					Flow {
+					Flow TestFlow {
 						event EventA triggers command CommandB
 					}
 				}
@@ -133,7 +133,7 @@ class ApplicationLayerValidationTest {
 		val String dslSnippet = '''
 			BoundedContext ContextA {
 				Application {
-					Flow {
+					Flow TestFlow {
 						event EventA triggers operation operationB
 					}
 				}
@@ -166,7 +166,7 @@ class ApplicationLayerValidationTest {
 				Application {
 					Command CommandA
 					
-					Flow {
+					Flow TestFlow {
 						command CommandA delegates to AggA [STATE3 -> STATE1] emits event EventA
 					}
 				}
@@ -200,7 +200,7 @@ class ApplicationLayerValidationTest {
 				Application {
 					Command CommandA
 					
-					Flow {
+					Flow TestFlow {
 						command CommandA delegates to AggA [STATE1 -> STATE3] emits event EventA
 					}
 				}
