@@ -42,11 +42,13 @@ import org.contextmapper.dsl.ide.actions.impl.SwitchFromPartnershipToSharedKerne
 import org.contextmapper.dsl.ide.actions.impl.SwitchFromSharedKernelToPartnershipAction;
 import org.contextmapper.dsl.ide.edit.WorkspaceEditRecorder;
 import org.contextmapper.dsl.ide.quickfix.QuickfixCommandMapper;
+import org.contextmapper.dsl.ide.quickfix.impl.OpenFlowInSketchMinerCommandMapper;
 import org.contextmapper.dsl.ide.quickfix.impl.SplitStoryByVerbCommandMapper;
 import org.contextmapper.dsl.quickfixes.CMLQuickFix;
 import org.contextmapper.dsl.quickfixes.CreateMissingBoundedContextQuickFix;
 import org.contextmapper.dsl.quickfixes.SplitStoryByVerb;
 import org.contextmapper.dsl.quickfixes.tactic.ExtractIDValueObjectQuickFix;
+import org.contextmapper.dsl.validation.ApplicationFlowSemanticsValidator;
 import org.contextmapper.dsl.validation.DomainObjectValidator;
 import org.contextmapper.dsl.validation.UserRequirementsValidator;
 import org.eclipse.emf.ecore.EObject;
@@ -115,7 +117,8 @@ public class CMLActionRegistry {
 	private void registerAllQuickFixes() {
 		// register quick fixes here:
 		registerActionQuickFix(DomainObjectValidator.ID_IS_PRIMITIVE_CODE, new ExtractIDValueObjectQuickFix());
-		registerCommandQuickFix(UserRequirementsValidator.ID_SPLIT_FEATURE_BY_VERB_SUGGESTION, new SplitStoryByVerb(), "cml.quickfix.command.splitStoryByVerb");
+		registerCommandQuickFix(UserRequirementsValidator.ID_SPLIT_FEATURE_BY_VERB_SUGGESTION, new SplitStoryByVerbCommandMapper(new SplitStoryByVerb()));
+		registerCommandQuickFix(ApplicationFlowSemanticsValidator.SKETCH_MINER_INFO_ID, new OpenFlowInSketchMinerCommandMapper());
 	}
 
 	public List<? extends Command> getApplicableActionCommands(CMLResource resource, List<EObject> selectedObjects) {
@@ -210,10 +213,10 @@ public class CMLActionRegistry {
 		quickFixActionRegistry.get(validationId).add(quickFix);
 	}
 
-	private void registerCommandQuickFix(String validationId, CMLQuickFix<? extends EObject> quickFix, String commandId) {
+	private void registerCommandQuickFix(String validationId, QuickfixCommandMapper actionMapper) {
 		if (!quickFixCommandRegistry.containsKey(validationId))
 			quickFixCommandRegistry.put(validationId, Lists.newLinkedList());
-		quickFixCommandRegistry.get(validationId).add(new SplitStoryByVerbCommandMapper(quickFix));
+		quickFixCommandRegistry.get(validationId).add(actionMapper);
 	}
 
 }
