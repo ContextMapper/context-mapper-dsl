@@ -715,6 +715,22 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 		assertTrue(plantUML.contains("	class TestEvent <<(E,#ff9f4b) Domain Event>> {" + System.lineSeparator() + "	}" + System.lineSeparator()));
 	}
 
+	@Test
+	public void canAddCommentThatAppLayerContainsFlow() throws IOException {
+		// given
+		CMLResource input = getResourceCopyOfTestCML("application-layer-test-1.cml");
+		BoundedContext bc = input.getContextMappingModel().getBoundedContexts().get(0);
+
+		// when
+		String plantUML = this.creator.createDiagram(bc);
+
+		// then
+		assertTrue(plantUML.contains("package \"'Application'\" <<Rectangle>> {" + System.lineSeparator()));
+		assertTrue(plantUML.contains("	legend left" + System.lineSeparator()));
+		assertTrue(plantUML.contains("		This application layer contains flow definitions (visualization available via BPMN Sketch Miner)." + System.lineSeparator()));
+		assertTrue(plantUML.contains("	end legend" + System.lineSeparator()));
+	}
+
 	@Override
 	protected String getTestFileDirectory() {
 		return "/integ-test-files/plantuml/";

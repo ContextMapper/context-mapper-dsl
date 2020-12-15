@@ -132,6 +132,17 @@ public class PlantUMLBoundedContextClassDiagramCreator extends AbstractPlantUMLC
 		String name = StringUtils.isNotEmpty(application.getName()) ? application.getName() : "Application";
 		sb.append("package ").append("\"'").append(name).append("'").append("\"").append(" <<Rectangle>> ").append("{");
 		linebreak();
+		if (!application.getFlows().isEmpty()) {
+			printIndentation(indentation + 1);
+			sb.append("legend left");
+			linebreak();
+			printIndentation(indentation + 2);
+			sb.append("This application layer contains flow definitions (visualization available via BPMN Sketch Miner).");
+			linebreak();
+			printIndentation(indentation + 1);
+			sb.append("end legend");
+			linebreak();
+		}
 		for (DomainEvent event : application.getEvents()) {
 			printDomainObject(event, indentation + 1);
 		}
