@@ -1,0 +1,18 @@
+
+BoundedContext EmptyContext // ignored
+
+BoundedContext TestContext {
+	Application MyAppLayer {
+		Command StartCommand
+		Command EndCommand
+		
+		Flow TestFlow {
+			command StartCommand emits event FirstEvent
+			event FirstEvent triggers command EndCommand
+		}
+	}
+	Aggregate TestAggregate {
+		DomainEvent FirstEvent
+	}
+}
+

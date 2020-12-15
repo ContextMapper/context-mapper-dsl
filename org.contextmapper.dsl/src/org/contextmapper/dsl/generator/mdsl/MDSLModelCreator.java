@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.Application;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
@@ -132,7 +133,7 @@ public class MDSLModelCreator {
 
 	private EndpointContract createEndpoint(Application application, ServiceSpecification specification) {
 		EndpointContract endpoint = new EndpointContract();
-		String endpointName = mdslEncoder.encodeName("Application");
+		String endpointName = StringUtils.isNoneEmpty(application.getName()) ? mdslEncoder.encodeName(application.getName()) : mdslEncoder.encodeName("Application");
 		endpoint.setName(endpointName);
 		List<ServiceOperation> serviceOperations = application.getServices().stream().flatMap(s -> s.getOperations().stream()).collect(Collectors.toList());
 		for (ServiceOperation serviceOperation : serviceOperations) {

@@ -222,6 +222,11 @@ public class MDSLAPIDescriptionCreatorTest extends AbstractCMLInputFileTest {
 	void respectApplicationLayerCommands2() throws IOException {
 		testCMLInputAndMDSLOutputFiles("mdsl-use-application-commands-2");
 	}
+	
+	@Test
+	void respectApplicationLayerName() throws IOException {
+		testCMLInputAndMDSLOutputFiles("mdsl-use-application-name");
+	}
 
 	@Test
 	void cannotGenerateAnyThingWithoutAggregateOrApplicationLayer1() {

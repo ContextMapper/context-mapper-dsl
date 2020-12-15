@@ -1,0 +1,23 @@
+
+BoundedContext CustomerManagementContext {
+	Application MyAppLayer {
+		Service MyService {
+			String anotherMethod(int param);
+			AnyReturnType yetAnotherMethod(int param1, boolean param2);
+		}
+		
+		Service AnotherService {
+			methodWithParameterTree(@Address address);
+		}
+	}
+	
+	Aggregate Customers {
+		Entity Address {
+			String street
+			int houseNumber
+			String city
+			
+			def updateCity(String city);
+		}
+	}
+}

@@ -194,7 +194,7 @@ Aggregate :
   CLOSE)?;
 
 Application:
-	"Application" (OPEN
+	"Application" (name=ID)? (OPEN
 		((commands+=CommandEvent)* &
 		(events+=DomainEvent)* &
 		(services+=Service)* &

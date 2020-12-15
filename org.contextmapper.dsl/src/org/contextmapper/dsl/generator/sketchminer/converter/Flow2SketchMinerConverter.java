@@ -22,7 +22,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.contextmapper.dsl.cml.CMLModelObjectsResolvingHelper;
+import org.contextmapper.dsl.contextMappingDSL.Application;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.CommandInvokation;
 import org.contextmapper.dsl.contextMappingDSL.CommandInvokationStep;
@@ -199,7 +201,7 @@ public class Flow2SketchMinerConverter {
 	}
 
 	private void addActorIfAvailable(Task task, EitherCommandOrOperation action) {
-		if (action.getActor() != null && !"".equals(action.getActor().trim()))
+		if (StringUtils.isNoneEmpty(action.getActor()))
 			task.setActor(action.getActor().trim());
 	}
 
@@ -230,8 +232,11 @@ public class Flow2SketchMinerConverter {
 	}
 
 	private String getDefaultActorName(Flow flow) {
-		BoundedContext context = new CMLModelObjectsResolvingHelper((ContextMappingModel) EcoreUtil2.getRootContainer(flow)).resolveBoundedContext(flow);
-		return context != null ? context.getName() + " Application" : "Application";
+		if (flow.eContainer() instanceof Application && StringUtils.isNoneEmpty(((Application) flow.eContainer()).getName()))
+			return ((Application) flow.eContainer()).getName();
+		if (EcoreUtil2.getRootContainer(flow) instanceof ContextMappingModel)
+			return new CMLModelObjectsResolvingHelper((ContextMappingModel) EcoreUtil2.getRootContainer(flow)).resolveBoundedContext(flow).getName() + " Application";
+		return "Application";
 	}
 
 }

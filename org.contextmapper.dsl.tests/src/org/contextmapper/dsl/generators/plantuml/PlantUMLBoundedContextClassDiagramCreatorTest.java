@@ -696,6 +696,25 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 		assertTrue(plantUML.contains("	class TestService <<(S,DarkSeaGreen) Service>> {" + System.lineSeparator() + "	}" + System.lineSeparator()));
 	}
 
+	@Test
+	public void respectApplicationLayerName() {
+		// given
+		BoundedContext boundedContext = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
+		Application app = ContextMappingDSLFactory.eINSTANCE.createApplication();
+		app.setName("MyAppLayer");
+		boundedContext.setApplication(app);
+		DomainEvent testEvent = TacticdslFactory.eINSTANCE.createDomainEvent();
+		testEvent.setName("TestEvent");
+		app.getEvents().add(testEvent);
+
+		// when
+		String plantUML = this.creator.createDiagram(boundedContext);
+
+		// then
+		assertTrue(plantUML.contains("package \"'MyAppLayer'\" <<Rectangle>> {" + System.lineSeparator()));
+		assertTrue(plantUML.contains("	class TestEvent <<(E,#ff9f4b) Domain Event>> {" + System.lineSeparator() + "	}" + System.lineSeparator()));
+	}
+
 	@Override
 	protected String getTestFileDirectory() {
 		return "/integ-test-files/plantuml/";

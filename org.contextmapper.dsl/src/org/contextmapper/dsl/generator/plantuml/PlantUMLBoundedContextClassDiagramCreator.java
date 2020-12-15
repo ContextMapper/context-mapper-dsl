@@ -17,6 +17,7 @@ package org.contextmapper.dsl.generator.plantuml;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.Application;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
@@ -128,7 +129,8 @@ public class PlantUMLBoundedContextClassDiagramCreator extends AbstractPlantUMLC
 
 	private void printApplication(Application application, int indentation) {
 		printIndentation(indentation);
-		sb.append("package ").append("\"'").append("Application").append("'").append("\"").append(" <<Rectangle>> ").append("{");
+		String name = StringUtils.isNotEmpty(application.getName()) ? application.getName() : "Application";
+		sb.append("package ").append("\"'").append(name).append("'").append("\"").append(" <<Rectangle>> ").append("{");
 		linebreak();
 		for (DomainEvent event : application.getEvents()) {
 			printDomainObject(event, indentation + 1);
