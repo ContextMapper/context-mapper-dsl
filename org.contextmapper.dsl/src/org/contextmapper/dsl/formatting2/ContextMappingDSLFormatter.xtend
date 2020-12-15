@@ -122,6 +122,9 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 		for (command : application.commands) {
 			command.format
 		}
+		for (event : application.events) {
+			event.format
+		}
 		for (service : application.services) {
 			service.format
 		}
@@ -135,6 +138,8 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 			flow.regionFor.ruleCallTo(OPENRule).append[newLine],
 			flow.regionFor.ruleCallTo(CLOSERule).prepend[newLine].append[newLines = 2]
 		)[indent]
+		
+		flow.regionFor.keyword('Flow').prepend[newLine]
 
 		for (step : flow.steps) {
 			step.format
