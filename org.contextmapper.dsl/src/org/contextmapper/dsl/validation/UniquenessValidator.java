@@ -192,7 +192,7 @@ public class UniquenessValidator extends AbstractCMLValidator {
 				error(String.format(FLOW_NAME_NOT_UNIQUE, flow.getName()), flow, ContextMappingDSLPackage.Literals.FLOW__NAME);
 		}
 	}
-
+	
 	private void checkDomainObjectUnique(List<SimpleDomainObject> domainObjects) {
 		Set<String> usedNames = new HashSet<>();
 		for (SimpleDomainObject o : domainObjects) {

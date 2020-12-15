@@ -23,6 +23,7 @@ import org.contextmapper.dsl.AbstractCMLInputFileTest;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.Flow;
 import org.contextmapper.dsl.generator.sketchminer.SketchMinerModelCreator;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.xtext.EcoreUtil2;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -206,6 +207,34 @@ public class SketchMinerModelCreatorTest extends AbstractCMLInputFileTest {
 		// then
 		assertEquals("TestContext Application:" + System.lineSeparator() + System.lineSeparator() + "StartEvent" + System.lineSeparator() + "// TestAggregate [STATE1 -> STATE2]"
 				+ System.lineSeparator() + "service Command1" + System.lineSeparator() + "EndEvent" + System.lineSeparator() + System.lineSeparator(), output);
+	}
+
+	@Test
+	public void canRespectAppLayerName() throws IOException {
+		// given
+		ContextMappingModel model = getOriginalResourceOfTestCML("app-layer-name-test-1.cml").getContextMappingModel();
+		Flow flow = EcoreUtil2.eAllOfType(model, Flow.class).get(0);
+
+		// when
+		String output = new SketchMinerModelCreator().createText(flow);
+
+		// then
+		assertEquals("MyAppLayer:" + System.lineSeparator() + System.lineSeparator() + "service StartCommand" + System.lineSeparator() + "FirstEvent" + System.lineSeparator()
+				+ "service EndCommand" + System.lineSeparator() + System.lineSeparator(), output);
+	}
+
+	@Test
+	public void canUseFallbackAppName() throws IOException {
+		// given
+		ContextMappingModel model = getOriginalResourceOfTestCML("app-layer-name-test-1.cml").getContextMappingModel();
+		Flow flow = EcoreUtil.copy(EcoreUtil2.eAllOfType(model, Flow.class).get(0));
+
+		// when
+		String output = new SketchMinerModelCreator().createText(flow);
+
+		// then
+		assertEquals("Application:" + System.lineSeparator() + System.lineSeparator() + "service StartCommand" + System.lineSeparator() + "FirstEvent" + System.lineSeparator()
+				+ "service EndCommand" + System.lineSeparator() + System.lineSeparator(), output);
 	}
 
 	@Override

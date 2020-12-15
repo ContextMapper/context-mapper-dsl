@@ -88,6 +88,25 @@ class ApplicationLayerDSLParsingTest {
 	}
 
 	@Test
+	def void canDefineApplicationLayerWithOptionalName() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext TestContext {
+				Application MyAppLayer {
+					Command TestCommand // needs at least some content
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		assertNotNull(result.boundedContexts.get(0).application);
+		assertEquals("MyAppLayer", result.boundedContexts.get(0).application.name);
+	}
+
+	@Test
 	def void canDefineApplicationServices() {
 		// given
 		val String dslSnippet = '''
