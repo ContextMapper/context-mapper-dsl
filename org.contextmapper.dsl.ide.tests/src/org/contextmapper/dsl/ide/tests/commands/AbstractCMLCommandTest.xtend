@@ -16,7 +16,6 @@
 package org.contextmapper.dsl.ide.tests.commands
 
 import java.io.File
-import org.apache.commons.io.FileUtils
 import org.contextmapper.dsl.ide.tests.AbstractCMLLanguageServerTest
 import org.eclipse.lsp4j.ClientCapabilities
 import org.eclipse.lsp4j.ExecuteCommandCapabilities
@@ -36,20 +35,8 @@ abstract class AbstractCMLCommandTest extends AbstractCMLLanguageServerTest {
 		]
 	}
 
-	def void deleteGeneratedFiles(String ext) {
-		var srcGenFolder = srcGenFolder()
-		val iterator = FileUtils.iterateFiles(srcGenFolder, #[ext], false)
-		while (iterator.hasNext) {
-			val file = iterator.next
-			System.out.println("delete " + file.name)
-			file.delete
-		}
-		if (srcGenFolder.exists)
-			srcGenFolder.delete
-	}
-
 	def File srcGenFolder() {
-		val srcGenFolder =  new File("src-gen")
+		val srcGenFolder =  new File(this.root, "src-gen")
 		if(!srcGenFolder.exists)
 			srcGenFolder.mkdir
 		return srcGenFolder
