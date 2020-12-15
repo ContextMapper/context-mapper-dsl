@@ -15,9 +15,12 @@
  */
 package org.contextmapper.dsl.ide.commands.impl.generation;
 
+import java.io.File;
+
 import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.ide.commands.CMLResourceCommand;
 import org.contextmapper.dsl.standalone.FileSystemHelper;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.lsp4j.ExecuteCommandParams;
 import org.eclipse.xtext.generator.GeneratorContext;
 import org.eclipse.xtext.generator.IGenerator2;
@@ -40,10 +43,12 @@ public abstract class AbstractGenerationCommand implements CMLResourceCommand {
 
 	@Override
 	public void executeCommand(CMLResource cmlResource, Document document, ILanguageServerAccess access, ExecuteCommandParams params) {
-		getGenerator().doGenerate(cmlResource, getFileSystemAccess(), new GeneratorContext());
+		getGenerator().doGenerate(cmlResource, getFileSystemAccess(cmlResource, access), new GeneratorContext());
 	}
 
-	protected JavaIoFileSystemAccess getFileSystemAccess() {
-		return FileSystemHelper.getFileSystemAccess();
+	protected JavaIoFileSystemAccess getFileSystemAccess(CMLResource cmlResource, ILanguageServerAccess access) {
+		String basePath = (access.getInitializeParams().getRootUri() != null ? URI.createURI(access.getInitializeParams().getRootUri()).toFileString()
+				: cmlResource.getURI().trimSegments(1).toFileString()) + File.separator + FileSystemHelper.DEFAULT_GEN_DIR;
+		return FileSystemHelper.getFileSystemAccess(basePath);
 	}
 }

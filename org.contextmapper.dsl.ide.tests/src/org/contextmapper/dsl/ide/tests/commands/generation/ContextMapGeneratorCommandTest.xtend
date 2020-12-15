@@ -23,19 +23,12 @@ import javax.imageio.ImageIO
 import org.contextmapper.dsl.ide.commands.CMLCommandService
 import org.contextmapper.dsl.ide.tests.commands.AbstractCMLCommandTest
 import org.eclipse.lsp4j.ExecuteCommandParams
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-import static extension org.junit.jupiter.api.Assertions.assertTrue
 import static extension org.junit.jupiter.api.Assertions.assertEquals
+import static extension org.junit.jupiter.api.Assertions.assertTrue
 
 class ContextMapGeneratorCommandTest extends AbstractCMLCommandTest {
-
-	@BeforeEach
-	def void prepare() {
-		deleteGeneratedFiles("png")
-		deleteGeneratedFiles("svg")
-	}
 
 	@Test
 	def void canGenerateContextMap() {

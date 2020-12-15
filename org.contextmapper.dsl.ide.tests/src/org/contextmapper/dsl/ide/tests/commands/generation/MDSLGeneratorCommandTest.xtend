@@ -27,11 +27,6 @@ import static extension org.junit.jupiter.api.Assertions.assertTrue
 
 class MDSLGeneratorCommandTest extends AbstractCMLCommandTest {
 
-	@BeforeEach
-	def void prepare() {
-		deleteGeneratedFiles("mdsl")
-	}
-
 	@Test
 	def void testMDSLGeneratorCommandExecution() {
 		// given

@@ -28,6 +28,8 @@ import com.google.inject.Guice;
  */
 public class FileSystemHelper {
 
+	public static final String DEFAULT_GEN_DIR = "src-gen";
+
 	/**
 	 * Get file system access with specific output path.
 	 * 
@@ -51,6 +53,6 @@ public class FileSystemHelper {
 	 * @return the file system access object
 	 */
 	public static JavaIoFileSystemAccess getFileSystemAccess() {
-		return getFileSystemAccess("./src-gen");
+		return getFileSystemAccess("./" + DEFAULT_GEN_DIR);
 	}
 }

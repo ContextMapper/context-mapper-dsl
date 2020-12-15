@@ -20,17 +20,11 @@ import java.io.File
 import org.contextmapper.dsl.ide.commands.CMLCommandService
 import org.contextmapper.dsl.ide.tests.commands.AbstractCMLCommandTest
 import org.eclipse.lsp4j.ExecuteCommandParams
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 import static extension org.junit.jupiter.api.Assertions.assertTrue
 
 class ServiceCutterUserRepresentationsGeneratorCommandTest extends AbstractCMLCommandTest {
-
-	@BeforeEach
-	def void prepare() {
-		deleteGeneratedFiles("scl")
-	}
 
 	@Test
 	def void testServiceCutterUserRepresentationGeneratorCommandExecution() {
