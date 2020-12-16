@@ -1,0 +1,66 @@
+/**
+ * Spring RESTBucks sample case.
+ * 
+ * Slides: https://speakerdeck.com/olivergierke/spring-restbucks-a-hypermedia-rest-web-service
+ */
+
+BoundedContext CoffeeOrderingService {
+	Aggregate Order {
+		Entity Order {
+			aggregateRoot
+			- Payment payment
+			- List<Product> products
+		}
+		Entity Payment {
+			- PaymentType paymentType
+			double value
+			- PaymentStatus status
+		}
+		enum PaymentType {
+			CASH, CREDIT_CARD, TWINT
+		}
+		Entity Product {
+			long id
+			String name
+			double price
+		}
+		DomainEvent OrderPlaced
+		DomainEvent PaymentStatus
+		DomainEvent PaymentExpected extends PaymentStatus
+		DomainEvent PaymentSuccessful extends PaymentStatus
+		DomainEvent PaymentCancelled extends PaymentStatus
+		DomainEvent OrderPreparing
+		DomainEvent OrderReady
+		DomainEvent OrderComplete
+		Service OrderService {
+			void createNewOrder(@Order order) : write [ -> PAYMENT_EXPECTED];
+			void updateOrder(@Order order) : write [PAYMENT_EXPECTED -> PAYMENT_EXPECTED];
+			void cancelOrder(@Order order) : write [PAYMENT_EXPECTED -> CANCELED];
+			@PaymentStatus pay(@Order order) : write [PAYMENT_EXPECTED -> PREPARING X CANCELED];
+			void finishOrder(@Order order) : write [PREPARING -> READY];
+			void acceptReceipt(@Order order) : write [READY -> COMPLETED];
+		}
+		enum States {
+			aggregateLifecycle
+
+            PAYMENT_EXPECTED, PREPARING, CANCELED, READY, COMPLETED
+		}
+	}
+	Application {
+		Command PlaceOrder
+		Command Pay
+		Command FinishOrder // triggered by Barista when finished
+		Command AcceptReceipt // customer has to accept the order that is ready
+		Flow OrderFlow {
+			command PlaceOrder delegates to Order [ -> PAYMENT_EXPECTED] emits event OrderPlaced + PaymentExpected
+			event PaymentExpected triggers command Pay
+			event OrderPlaced triggers command Pay
+			command Pay delegates to Order [PAYMENT_EXPECTED -> PREPARING X CANCELED] emits event PaymentSuccessful X PaymentCancelled
+			event PaymentSuccessful triggers command FinishOrder
+			command FinishOrder delegates to Order [PREPARING -> READY] emits event OrderReady
+			event OrderReady triggers command AcceptReceipt
+			command AcceptReceipt delegates to Order [READY -> COMPLETED] emits event OrderComplete
+		}
+	}
+}
+

@@ -57,7 +57,9 @@ public class SketchMinerModelCreatorTest extends AbstractCMLInputFileTest {
 
 		// then
 		assertEquals("TestContext Application:" + System.lineSeparator() + System.lineSeparator() + "service StartCommand" + System.lineSeparator() + "FirstEvent|SecondEvent"
-				+ System.lineSeparator() + "service EndCommand" + System.lineSeparator() + System.lineSeparator(), output);
+				+ System.lineSeparator() + "..." + System.lineSeparator() + System.lineSeparator() + "..." + System.lineSeparator() + "FirstEvent" + System.lineSeparator()
+				+ "service EndCommand" + System.lineSeparator() + System.lineSeparator() + "..." + System.lineSeparator() + "SecondEvent" + System.lineSeparator()
+				+ "service EndCommand" + System.lineSeparator() + System.lineSeparator(), output);
 	}
 
 	@ParameterizedTest
@@ -72,7 +74,11 @@ public class SketchMinerModelCreatorTest extends AbstractCMLInputFileTest {
 
 		// then
 		assertEquals("TestContext Application:" + System.lineSeparator() + System.lineSeparator() + "StartEvent" + System.lineSeparator()
-				+ "service FirstCommand|service SecondCommand" + System.lineSeparator() + "EndEvent" + System.lineSeparator() + System.lineSeparator(), output);
+				+ "service FirstCommand|service SecondCommand" + System.lineSeparator() + "..." + System.lineSeparator() + System.lineSeparator() + "..." + System.lineSeparator()
+				+ "service FirstCommand" + System.lineSeparator() + "EndEvent" + System.lineSeparator() + System.lineSeparator() + "..." + System.lineSeparator()
+				+ "service SecondCommand" + System.lineSeparator() + "EndEvent"
+
+				+ System.lineSeparator() + System.lineSeparator(), output);
 	}
 
 	@ParameterizedTest
@@ -118,9 +124,26 @@ public class SketchMinerModelCreatorTest extends AbstractCMLInputFileTest {
 		String output = new SketchMinerModelCreator().createText(flow);
 
 		// then
-		assertEquals("TestContext Application:" + System.lineSeparator() + System.lineSeparator() + "service StartCommand" + System.lineSeparator() + "FirstEvent"
-				+ System.lineSeparator() + "service MiddleCommand" + System.lineSeparator() + "EndEvent" + System.lineSeparator() + "service StartCommand" + System.lineSeparator()
-				+ "FirstEvent" + System.lineSeparator() + "service MiddleCommand" + System.lineSeparator() + "EndEvent" + System.lineSeparator() + System.lineSeparator(), output);
+		assertEquals("TestContext Application:" + System.lineSeparator() + System.lineSeparator() + "Start" + System.lineSeparator() + "service StartCommand"
+				+ System.lineSeparator() + "FirstEvent" + System.lineSeparator() + "service MiddleCommand" + System.lineSeparator() + "EndEvent" + System.lineSeparator()
+				+ "service StartCommand" + System.lineSeparator() + "FirstEvent" + System.lineSeparator() + "service MiddleCommand" + System.lineSeparator() + "EndEvent"
+				+ System.lineSeparator() + System.lineSeparator(), output);
+	}
+
+	@Test
+	public void canGenerateStepsForLoopIfStartNameAlreadyGiven() throws IOException {
+		// given
+		ContextMappingModel model = getOriginalResourceOfTestCML("loop-test-2.cml").getContextMappingModel();
+		Flow flow = EcoreUtil2.eAllOfType(model, Flow.class).get(0);
+
+		// when
+		String output = new SketchMinerModelCreator().createText(flow);
+
+		// then
+		assertEquals("TestContext Application:" + System.lineSeparator() + System.lineSeparator() + "Start0" + System.lineSeparator() + "service Start" + System.lineSeparator()
+				+ "FirstEvent" + System.lineSeparator() + "service MiddleCommand" + System.lineSeparator() + "EndEvent" + System.lineSeparator() + "service Start"
+				+ System.lineSeparator() + "FirstEvent" + System.lineSeparator() + "service MiddleCommand" + System.lineSeparator() + "EndEvent" + System.lineSeparator()
+				+ System.lineSeparator(), output);
 	}
 
 	@Test
@@ -134,8 +157,9 @@ public class SketchMinerModelCreatorTest extends AbstractCMLInputFileTest {
 
 		// then
 		assertEquals("TestContext Application:" + System.lineSeparator() + System.lineSeparator() + "service StartCommand1" + System.lineSeparator() + "Event1"
-				+ System.lineSeparator() + "service EndCommand" + System.lineSeparator() + System.lineSeparator() + "service StartCommand2" + System.lineSeparator() + "Event2"
-				+ System.lineSeparator() + "service EndCommand" + System.lineSeparator() + System.lineSeparator(), output);
+				+ System.lineSeparator() + "..." + System.lineSeparator() + System.lineSeparator() + "..." + System.lineSeparator() + "Event1|Event2" + System.lineSeparator()
+				+ "service EndCommand" + System.lineSeparator() + System.lineSeparator() + "service StartCommand2" + System.lineSeparator() + "Event2" + System.lineSeparator()
+				+ "..." + System.lineSeparator() + System.lineSeparator(), output);
 	}
 
 	@Test
@@ -249,6 +273,48 @@ public class SketchMinerModelCreatorTest extends AbstractCMLInputFileTest {
 		// then
 		assertEquals("Application:" + System.lineSeparator() + System.lineSeparator() + "service appop1" + System.lineSeparator() + "DE1" + System.lineSeparator()
 				+ System.lineSeparator() + "service appop2" + System.lineSeparator() + "DE2" + System.lineSeparator() + System.lineSeparator(), output);
+	}
+
+	@Test
+	public void canGenerateFragments4ParallelGateways() throws IOException {
+		// given
+		ContextMappingModel model = getOriginalResourceOfTestCML("parallel-fragments-test-1.cml").getContextMappingModel();
+		Flow flow = EcoreUtil.copy(EcoreUtil2.eAllOfType(model, Flow.class).get(0));
+
+		// when
+		String output = new SketchMinerModelCreator().createText(flow);
+
+		// then
+		assertEquals("Application:" + System.lineSeparator() + System.lineSeparator() + "service Before" + System.lineSeparator() + "Parallel1|Parallel2" + System.lineSeparator()
+				+ "..." + System.lineSeparator() + System.lineSeparator() + "..." + System.lineSeparator() + "Parallel1" + System.lineSeparator() + "..." + System.lineSeparator()
+				+ System.lineSeparator() + "..." + System.lineSeparator() + "Parallel1|Parallel2" + System.lineSeparator() + "service After" + System.lineSeparator()
+				+ System.lineSeparator() + "..." + System.lineSeparator() + "Parallel2" + System.lineSeparator() + "..." + System.lineSeparator() + System.lineSeparator(), output);
+	}
+
+	@Test
+	public void canKeepMergingFragmentInfoWhenForking() throws IOException {
+		// given
+		ContextMappingModel model = getOriginalResourceOfTestCML("restbucks-integ-test.cml").getContextMappingModel();
+		Flow flow = EcoreUtil.copy(EcoreUtil2.eAllOfType(model, Flow.class).get(0));
+
+		// when
+		String output = new SketchMinerModelCreator().createText(flow);
+
+		// then
+		assertEquals("Application:" + System.lineSeparator() + System.lineSeparator() + "// Order [ -> PAYMENT_EXPECTED]" + System.lineSeparator() + "service PlaceOrder"
+				+ System.lineSeparator() + "OrderPlaced|PaymentExpected" + System.lineSeparator() + "..." + System.lineSeparator() + System.lineSeparator() + "..."
+				+ System.lineSeparator() + "OrderPlaced" + System.lineSeparator() + "// Order [PAYMENT_EXPECTED -> PREPARING X CANCELED]" + System.lineSeparator() + "service Pay"
+				+ System.lineSeparator() + "PaymentSuccessful" + System.lineSeparator() + "// Order [PREPARING -> READY]" + System.lineSeparator() + "service FinishOrder"
+				+ System.lineSeparator() + "OrderReady" + System.lineSeparator() + "// Order [READY -> COMPLETED]" + System.lineSeparator() + "service AcceptReceipt"
+				+ System.lineSeparator() + "OrderComplete" + System.lineSeparator() + System.lineSeparator() + "..." + System.lineSeparator() + "OrderPlaced"
+				+ System.lineSeparator() + "// Order [PAYMENT_EXPECTED -> PREPARING X CANCELED]" + System.lineSeparator() + "service Pay" + System.lineSeparator()
+				+ "PaymentCancelled" + System.lineSeparator() + System.lineSeparator() + "..." + System.lineSeparator() + "PaymentExpected" + System.lineSeparator()
+				+ "// Order [PAYMENT_EXPECTED -> PREPARING X CANCELED]" + System.lineSeparator() + "service Pay" + System.lineSeparator() + "PaymentSuccessful"
+				+ System.lineSeparator() + "// Order [PREPARING -> READY]" + System.lineSeparator() + "service FinishOrder" + System.lineSeparator() + "OrderReady"
+				+ System.lineSeparator() + "// Order [READY -> COMPLETED]" + System.lineSeparator() + "service AcceptReceipt" + System.lineSeparator() + "OrderComplete"
+				+ System.lineSeparator() + System.lineSeparator() + "..." + System.lineSeparator() + "PaymentExpected" + System.lineSeparator()
+				+ "// Order [PAYMENT_EXPECTED -> PREPARING X CANCELED]" + System.lineSeparator() + "service Pay" + System.lineSeparator() + "PaymentCancelled"
+				+ System.lineSeparator() + System.lineSeparator(), output);
 	}
 
 	@Override

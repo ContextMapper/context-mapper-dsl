@@ -1,17 +1,15 @@
 /*
- * Copyright 2020 The Context Mapper Project Team
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright (c) 2016 rufushuang
+ * 
+ * Notice: This is a copy from https://github.com/rufushuang/lz-string4java and the class
+ * has been reduced to the methods we need.
+ * 
+ * LZString4Java By Rufus Huang 
+ * https://github.com/rufushuang/lz-string4java
+ * MIT License
+ * 
+ * Port from original JavaScript version by pieroxy 
+ * https://github.com/pieroxy/lz-string
  */
 package org.contextmapper.dsl.generator.sketchminer;
 
@@ -20,6 +18,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * This class is copied from https://github.com/rufushuang/lz-string4java.
+ *
+ * Copyright (c) 2016 rufushuang
+ */
 public class LZString {
 
 	private static char[] keyStrUriSafe = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-$".toCharArray();

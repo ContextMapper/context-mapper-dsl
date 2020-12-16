@@ -1,0 +1,24 @@
+
+
+BoundedContext TestContext {
+	Application {
+		Service AppService {
+			void Before();
+			void After();
+		}
+		Flow TestFlow {
+			operation Before emits event Parallel1 + Parallel2
+            event Parallel1 + Parallel2 triggers operation After
+		}
+	}
+	Aggregate TestAggregate {
+		DomainEvent Parallel1
+		DomainEvent Parallel2
+		
+		enum States {
+			aggregateLifecycle
+			STATE1, STATE2, STATE3, STATE4
+		}
+	}
+}
+
