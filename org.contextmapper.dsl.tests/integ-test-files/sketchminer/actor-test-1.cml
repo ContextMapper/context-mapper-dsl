@@ -7,7 +7,7 @@ BoundedContext TestContext {
 		}
 		Flow TestFlow {
 			event StartEvent triggers operation Command1
-			operation Command1 [ triggered by "Test User" ] delegates to TestAggregate[STATE1, STATE2 -> STATE3 X STATE4] emits event EndEvent
+			operation Command1 [ initiated by "Test User" ] delegates to TestAggregate[STATE1, STATE2 -> STATE3 X STATE4] emits event EndEvent
 		}
 	}
 	Aggregate TestAggregate {

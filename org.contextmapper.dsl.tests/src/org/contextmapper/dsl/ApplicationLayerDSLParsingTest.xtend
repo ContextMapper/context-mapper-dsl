@@ -860,7 +860,7 @@ class ApplicationLayerDSLParsingTest {
 					}
 					
 					Flow TestFlow {
-						operation testOperation [triggered by "TestUser"] delegates to TestAggregate [STATE1 -> STATE2 X STATE3] emits event TestEvent1 X TestEvent2
+						operation testOperation [initiated by "TestUser"] delegates to TestAggregate [STATE1 -> STATE2 X STATE3] emits event TestEvent1 X TestEvent2
 					}
 				}
 				
@@ -900,7 +900,7 @@ class ApplicationLayerDSLParsingTest {
 					Command TestCommand
 					
 					Flow TestFlow {
-						command TestCommand [triggered by "TestUser"] delegates to TestAggregate [STATE1 -> STATE2 X STATE3] emits event TestEvent1 X TestEvent2
+						command TestCommand [initiated by "TestUser"] delegates to TestAggregate [STATE1 -> STATE2 X STATE3] emits event TestEvent1 X TestEvent2
 					}
 				}
 				

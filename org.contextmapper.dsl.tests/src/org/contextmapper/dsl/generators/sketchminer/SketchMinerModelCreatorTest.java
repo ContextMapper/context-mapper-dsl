@@ -237,6 +237,20 @@ public class SketchMinerModelCreatorTest extends AbstractCMLInputFileTest {
 				+ "service EndCommand" + System.lineSeparator() + System.lineSeparator(), output);
 	}
 
+	@Test
+	public void canRespectOrderOfSeparateSequences() throws IOException {
+		// given
+		ContextMappingModel model = getOriginalResourceOfTestCML("order-of-separate-sequences-test-1.cml").getContextMappingModel();
+		Flow flow = EcoreUtil.copy(EcoreUtil2.eAllOfType(model, Flow.class).get(0));
+
+		// when
+		String output = new SketchMinerModelCreator().createText(flow);
+
+		// then
+		assertEquals("Application:" + System.lineSeparator() + System.lineSeparator() + "service appop1" + System.lineSeparator() + "DE1" + System.lineSeparator()
+				+ System.lineSeparator() + "service appop2" + System.lineSeparator() + "DE2" + System.lineSeparator() + System.lineSeparator(), output);
+	}
+
 	@Override
 	protected String getTestFileDirectory() {
 		return "/integ-test-files/sketchminer/";

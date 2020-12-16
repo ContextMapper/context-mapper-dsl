@@ -219,7 +219,7 @@ CommandInvokationStep:
 ;
 
 EitherCommandOrOperation:
-	('command' command=[tacticdsl::CommandEvent] | 'operation' operation=[tacticdsl::ServiceOperation]) ('[' 'triggered by' actor=STRING ']')?
+	('command' command=[tacticdsl::CommandEvent] | 'operation' operation=[tacticdsl::ServiceOperation]) ('[' 'initiated by' actor=STRING ']')?
 ;
 
 EitherCommandOrOperationInvokation:
