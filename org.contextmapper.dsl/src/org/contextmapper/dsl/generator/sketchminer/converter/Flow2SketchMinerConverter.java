@@ -133,7 +133,7 @@ public class Flow2SketchMinerConverter {
 
 	private void initIntermediateTypes() {
 		this.simplifiedSteps = Lists.newLinkedList();
-		this.taskMap = Maps.newHashMap();
+		this.taskMap = Maps.newLinkedHashMap();
 
 		for (FlowStep step : flow.getSteps()) {
 			this.simplifiedSteps.add(convert(step));

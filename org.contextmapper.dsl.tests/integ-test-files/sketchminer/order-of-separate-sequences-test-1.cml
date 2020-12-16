@@ -1,0 +1,24 @@
+
+
+BoundedContext TestContext {
+	Application {
+		Service AppService {
+			void appop1();
+			void appop2();
+		}
+		Flow TestFlow {
+			operation appop1 emits event DE1
+            operation appop2 emits event DE2
+		}
+	}
+	Aggregate TestAggregate {
+		DomainEvent DE1
+		DomainEvent DE2
+		
+		enum States {
+			aggregateLifecycle
+			STATE1, STATE2, STATE3, STATE4
+		}
+	}
+}
+
