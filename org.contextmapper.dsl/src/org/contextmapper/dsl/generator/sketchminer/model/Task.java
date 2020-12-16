@@ -15,18 +15,20 @@
  */
 package org.contextmapper.dsl.generator.sketchminer.model;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.exception.ContextMapperApplicationException;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 public class Task {
 
 	private String name;
 	private TaskType type;
-	private Set<Task> parallelTasks;
+	private List<Task> parallelTasks;
 	private String comment;
 	private String actor;
 
@@ -37,9 +39,9 @@ public class Task {
 		this.type = type;
 	}
 
-	public Task(String name, TaskType type, Set<Task> parallelTasks) {
+	public Task(String name, TaskType type, List<Task> parallelTasks) {
 		this(name, type);
-		this.parallelTasks = Sets.newHashSet(parallelTasks);
+		this.parallelTasks = Lists.newLinkedList(parallelTasks);
 	}
 
 	public String getName() {

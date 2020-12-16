@@ -28,17 +28,17 @@ public class SimplifiedFlowStep {
 	private ToType toType;
 
 	public SimplifiedFlowStep(Set<Task> froms, Set<Task> tos, ToType toType) {
-		this.froms = Sets.newHashSet(froms);
-		this.tos = Sets.newHashSet(tos);
+		this.froms = Sets.newLinkedHashSet(froms);
+		this.tos = Sets.newLinkedHashSet(tos);
 		this.toType = toType;
 	}
 
 	public Set<Task> getFroms() {
-		return Sets.newHashSet(froms);
+		return Sets.newLinkedHashSet(froms);
 	}
 
 	public Set<Task> getTos() {
-		return Sets.newHashSet(tos);
+		return Sets.newLinkedHashSet(tos);
 	}
 
 	public ToType getToType() {

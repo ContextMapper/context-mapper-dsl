@@ -25,6 +25,8 @@ import com.google.common.collect.Lists;
 public class TaskSequence {
 
 	private List<Task> tasks;
+	private boolean isSplittingFragment = false;
+	private boolean isMergingFragment = false;
 
 	public TaskSequence(Task initialTask) {
 		if (initialTask == null)
@@ -54,11 +56,29 @@ public class TaskSequence {
 	}
 
 	public TaskSequence copy() {
-		return new TaskSequence(tasks);
+		TaskSequence seq = new TaskSequence(tasks);
+		seq.isMergingFragment(this.isMergingFragment);
+		return seq;
 	}
 
 	public boolean isEqualToOtherSequence(TaskSequence otherSequence) {
 		return tasks.equals(otherSequence.getTasks());
+	}
+
+	public boolean isMergingFragment() {
+		return isMergingFragment;
+	}
+
+	public void isMergingFragment(boolean isMergingFragment) {
+		this.isMergingFragment = isMergingFragment;
+	}
+
+	public boolean isSplittingFragment() {
+		return isSplittingFragment;
+	}
+
+	public void isSplittingFragment(boolean isSplittingFragment) {
+		this.isSplittingFragment = isSplittingFragment;
 	}
 
 }

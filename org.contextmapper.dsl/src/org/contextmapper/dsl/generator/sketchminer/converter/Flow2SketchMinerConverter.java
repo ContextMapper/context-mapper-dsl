@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.contextmapper.dsl.cml.CMLModelObjectsResolvingHelper;
 import org.contextmapper.dsl.contextMappingDSL.Application;
-import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.CommandInvokation;
 import org.contextmapper.dsl.contextMappingDSL.CommandInvokationStep;
 import org.contextmapper.dsl.contextMappingDSL.ConcurrentCommandInvokation;
@@ -68,8 +67,8 @@ public class Flow2SketchMinerConverter {
 	public SketchMinerModel convert() {
 		for (Task initialTask : getInitialTasks()) {
 			TaskSequence seq = new TaskSequence(initialTask);
-			finishSequence(seq);
 			model.addSequence(seq);
+			finishSequence(seq);
 		}
 		model.cleanupDuplicateSequences();
 		return model;
@@ -80,11 +79,18 @@ public class Flow2SketchMinerConverter {
 		List<SimplifiedFlowStep> nextSteps = getNextSteps(lastTask);
 		if (!nextSteps.isEmpty()) {
 			for (SimplifiedFlowStep nextStep : nextSteps) {
-				if (nextStep.getTos().size() == 1) {
+				if (nextStep.getFroms().size() > 1 && !createParallelTask(nextStep.getFroms()).equals(lastTask)) {
+					seq.isSplittingFragment(true);
+					Task mergingTask = createParallelTask(nextStep.getFroms());
+					TaskSequence newSeq = new TaskSequence(mergingTask);
+					model.addSequence(newSeq);
+					newSeq.isMergingFragment(true);
+					finishSequence(newSeq);
+				} else if (nextStep.getTos().size() == 1) {
 					if (seq.addTask(nextStep.getTos().iterator().next()))
 						finishSequence(seq);
 				} else if (nextStep.getToType().equals(ToType.AND)) {
-					forkSequence(seq, createSetOfParallelTasks(nextStep.getTos()));
+					endSequenceAsFragment(seq, nextStep.getTos());
 				} else {
 					forkSequence(seq, nextStep.getTos());
 				}
@@ -103,6 +109,17 @@ public class Flow2SketchMinerConverter {
 			finishSequence(seq);
 	}
 
+	private void endSequenceAsFragment(TaskSequence seq, Collection<Task> nextTasks) {
+		seq.isSplittingFragment(true);
+		seq.addTask(createParallelTask(nextTasks));
+		for (Task task : nextTasks) {
+			TaskSequence newSeq = new TaskSequence(task);
+			newSeq.isMergingFragment(true);
+			model.addSequence(newSeq);
+			finishSequence(newSeq);
+		}
+	}
+
 	private void createNewSequenceWithTask(TaskSequence seq, Task nextTask) {
 		TaskSequence newSeq = seq.copy();
 		if (newSeq.addTask(nextTask))
@@ -110,14 +127,13 @@ public class Flow2SketchMinerConverter {
 		model.addSequence(newSeq);
 	}
 
-	private List<Task> createSetOfParallelTasks(Set<Task> allTasks) {
+	private Task createParallelTask(Collection<Task> allTasks) {
+		Iterator<Task> it = allTasks.iterator();
+		Task firstTask = it.next();
 		List<Task> parallelTasks = Lists.newLinkedList();
-		for (Task task : allTasks) {
-			Set<Task> otherTasks = Sets.newHashSet(allTasks);
-			otherTasks.remove(task);
-			parallelTasks.add(new Task(task.getName(), task.getType(), otherTasks));
-		}
-		return parallelTasks;
+		while (it.hasNext())
+			parallelTasks.add(it.next());
+		return new Task(firstTask.getName(), firstTask.getType(), parallelTasks);
 	}
 
 	private List<SimplifiedFlowStep> getNextSteps(Task lastTask) {
@@ -141,21 +157,21 @@ public class Flow2SketchMinerConverter {
 	}
 
 	private SimplifiedFlowStep convert(FlowStep step) {
-		Set<Task> froms = Sets.newHashSet();
-		Set<Task> tos = Sets.newHashSet();
+		Set<Task> froms = Sets.newLinkedHashSet();
+		Set<Task> tos = Sets.newLinkedHashSet();
 		ToType toType = ToType.XOR;
 		if (step instanceof CommandInvokationStep) {
-			froms.addAll(((CommandInvokationStep) step).getEvents().stream().map(e -> getOrCreateTask(e.getName(), TaskType.EVENT)).collect(Collectors.toSet()));
+			froms.addAll(((CommandInvokationStep) step).getEvents().stream().map(e -> getOrCreateTask(e.getName(), TaskType.EVENT)).collect(Collectors.toList()));
 			if (((CommandInvokationStep) step).getAction() instanceof CommandInvokation) {
 				CommandInvokation commandInvokation = (CommandInvokation) ((CommandInvokationStep) step).getAction();
-				tos.addAll(commandInvokation.getCommands().stream().map(c -> getOrCreateTask(c.getName(), TaskType.COMMAND)).collect(Collectors.toSet()));
+				tos.addAll(commandInvokation.getCommands().stream().map(c -> getOrCreateTask(c.getName(), TaskType.COMMAND)).collect(Collectors.toList()));
 				if (commandInvokation instanceof ConcurrentCommandInvokation)
 					toType = ToType.AND;
 				if (commandInvokation instanceof InclusiveAlternativeCommandInvokation)
 					toType = ToType.OR;
 			} else if (((CommandInvokationStep) step).getAction() instanceof OperationInvokation) {
 				OperationInvokation operationInvokation = (OperationInvokation) ((CommandInvokationStep) step).getAction();
-				tos.addAll(operationInvokation.getOperations().stream().map(o -> getOrCreateTask(o.getName(), TaskType.COMMAND)).collect(Collectors.toSet()));
+				tos.addAll(operationInvokation.getOperations().stream().map(o -> getOrCreateTask(o.getName(), TaskType.COMMAND)).collect(Collectors.toList()));
 				if (operationInvokation instanceof ConcurrentOperationInvokation)
 					toType = ToType.AND;
 				if (operationInvokation instanceof InclusiveAlternativeOperationInvokation)
@@ -164,7 +180,7 @@ public class Flow2SketchMinerConverter {
 		} else if (step instanceof DomainEventProductionStep) {
 			DomainEventProductionStep eventStep = (DomainEventProductionStep) step;
 			froms.add(createTask4EventProduction(eventStep));
-			tos.addAll(eventStep.getEventProduction().getEvents().stream().map(e -> getOrCreateTask(e.getName(), TaskType.EVENT)).collect(Collectors.toSet()));
+			tos.addAll(eventStep.getEventProduction().getEvents().stream().map(e -> getOrCreateTask(e.getName(), TaskType.EVENT)).collect(Collectors.toList()));
 			if (eventStep.getEventProduction() instanceof MultipleEventProduction)
 				toType = ToType.AND;
 			if (eventStep.getEventProduction() instanceof InclusiveAlternativeEventProduction)
@@ -218,9 +234,27 @@ public class Flow2SketchMinerConverter {
 		}
 		if (initialTasks.isEmpty()) { // just take the first mentioned task if we cannot find clear entry point
 			SimplifiedFlowStep firstStep = this.simplifiedSteps.get(0);
-			initialTasks.add(firstStep.getFroms().iterator().next());
+			Task generatedStartTask = new Task(getGeneratedStartName(), TaskType.EVENT);
+			Set<Task> generatedFroms = Sets.newLinkedHashSet();
+			Set<Task> generatedTos = Sets.newLinkedHashSet();
+			generatedFroms.add(generatedStartTask);
+			generatedTos.add(firstStep.getFroms().iterator().next());
+			SimplifiedFlowStep generatedStep = new SimplifiedFlowStep(generatedFroms, generatedTos, ToType.OR);
+			this.simplifiedSteps.add(generatedStep);
+			initialTasks.add(generatedStartTask);
 		}
 		return initialTasks;
+	}
+
+	private String getGeneratedStartName() {
+		String initName = "Start";
+		String name = initName;
+		int counter = 0;
+		while (this.taskMap.keySet().contains(name)) {
+			name = initName + counter;
+			counter++;
+		}
+		return name;
 	}
 
 	private boolean isInitialTask(Task potentialInitTask) {

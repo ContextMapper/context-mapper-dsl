@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
-import java.util.Set;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.exception.ContextMapperApplicationException;
@@ -65,7 +65,7 @@ public class TaskTest {
 		// given
 		String name = "MyTask";
 		String[] parallalTaskNames = new String[] { "Par1", "Par2" };
-		Set<Task> parallelTasks = Arrays.asList(parallalTaskNames).stream().map(s -> new Task(s, TaskType.COMMAND)).collect(Collectors.toSet());
+		List<Task> parallelTasks = Arrays.asList(parallalTaskNames).stream().map(s -> new Task(s, TaskType.COMMAND)).collect(Collectors.toList());
 
 		// when
 		Task parTask = new Task(name, TaskType.COMMAND, parallelTasks);
@@ -128,7 +128,7 @@ public class TaskTest {
 	public void parallelTaskWithSameSetAreEqual1() {
 		// given
 		String[] parallalTaskNames = new String[] { "Par1", "Par2" };
-		Set<Task> parallelTasks = Arrays.asList(parallalTaskNames).stream().map(s -> new Task(s, TaskType.COMMAND)).collect(Collectors.toSet());
+		List<Task> parallelTasks = Arrays.asList(parallalTaskNames).stream().map(s -> new Task(s, TaskType.COMMAND)).collect(Collectors.toList());
 		Task task1 = new Task("TestTask", TaskType.COMMAND, parallelTasks);
 		Task task2 = new Task("TestTask", TaskType.COMMAND, parallelTasks);
 
@@ -143,9 +143,9 @@ public class TaskTest {
 	public void parallelTaskWithSameSetAreEqual2() {
 		// given
 		String[] parallalTaskNames1 = new String[] { "Par1", "Par2" };
-		Set<Task> parallelTasks1 = Arrays.asList(parallalTaskNames1).stream().map(s -> new Task(s, TaskType.COMMAND)).collect(Collectors.toSet());
+		List<Task> parallelTasks1 = Arrays.asList(parallalTaskNames1).stream().map(s -> new Task(s, TaskType.COMMAND)).collect(Collectors.toList());
 		String[] parallalTaskNames2 = new String[] { "Par2", "Par3" };
-		Set<Task> parallelTasks2 = Arrays.asList(parallalTaskNames2).stream().map(s -> new Task(s, TaskType.COMMAND)).collect(Collectors.toSet());
+		List<Task> parallelTasks2 = Arrays.asList(parallalTaskNames2).stream().map(s -> new Task(s, TaskType.COMMAND)).collect(Collectors.toList());
 		Task task1 = new Task("Par3", TaskType.COMMAND, parallelTasks1);
 		Task task2 = new Task("Par1", TaskType.COMMAND, parallelTasks2);
 
@@ -160,7 +160,7 @@ public class TaskTest {
 	public void otherTaskWithParTasksIsNotEqual() {
 		// given
 		String[] parallalTaskNames = new String[] { "Par1", "Par2" };
-		Set<Task> parallelTasks = Arrays.asList(parallalTaskNames).stream().map(s -> new Task(s, TaskType.COMMAND)).collect(Collectors.toSet());
+		List<Task> parallelTasks = Arrays.asList(parallalTaskNames).stream().map(s -> new Task(s, TaskType.COMMAND)).collect(Collectors.toList());
 		Task task1 = new Task("TestTask", TaskType.COMMAND, parallelTasks);
 		Task task2 = new Task("TestTask", TaskType.COMMAND);
 
@@ -175,7 +175,7 @@ public class TaskTest {
 	public void otherTaskWithoutParTasksIsNotEqual() {
 		// given
 		String[] parallalTaskNames = new String[] { "Par1", "Par2" };
-		Set<Task> parallelTasks = Arrays.asList(parallalTaskNames).stream().map(s -> new Task(s, TaskType.COMMAND)).collect(Collectors.toSet());
+		List<Task> parallelTasks = Arrays.asList(parallalTaskNames).stream().map(s -> new Task(s, TaskType.COMMAND)).collect(Collectors.toList());
 		Task task1 = new Task("TestTask", TaskType.COMMAND);
 		Task task2 = new Task("TestTask", TaskType.COMMAND, parallelTasks);
 
