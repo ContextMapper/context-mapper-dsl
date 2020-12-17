@@ -55,23 +55,28 @@ class PlantUMLStateDiagramCreatorTest extends AbstractCMLInputFileTest {
 				+ "EXPIRED : " + System.lineSeparator()
 				+ "SUBMITTED : " + System.lineSeparator()
 				+ "REJECTED : " + System.lineSeparator()
-				+ "[*] --> SUBMITTED" + System.lineSeparator()
-				+ "SUBMITTED --> RECEIVED" + System.lineSeparator()
-				+ "SUBMITTED --> REJECTED" + System.lineSeparator()
-				+ "RECEIVED --> ACCEPTED" + System.lineSeparator()
-				+ "RECEIVED --> EXPIRED" + System.lineSeparator()
-				+ "RECEIVED --> REJECTED" + System.lineSeparator()
-				+ "ACCEPTED --> POLICY_CREATED" + System.lineSeparator()
-				+ "ACCEPTED --> EXPIRED" + System.lineSeparator()
+				+ "[*] --> SUBMITTED : SubmitRequest" + System.lineSeparator()
+				+ "SUBMITTED --> RECEIVED : checkRequest" + System.lineSeparator()
+				+ "SUBMITTED --> REJECTED : checkRequest" + System.lineSeparator()
+				+ "RECEIVED --> ACCEPTED : receiveAndCheckQuote" + System.lineSeparator()
+				+ "RECEIVED --> EXPIRED : receiveAndCheckQuote" + System.lineSeparator()
+				+ "RECEIVED --> REJECTED : receiveAndCheckQuote" + System.lineSeparator()
+				+ "ACCEPTED --> POLICY_CREATED : accept" + System.lineSeparator()
+				+ "ACCEPTED --> EXPIRED : accept" + System.lineSeparator()
+				+ System.lineSeparator()
+				+ System.lineSeparator()
+				+ "legend top center" + System.lineSeparator()
+				+ "  'QuoteFlow' State Transitions" + System.lineSeparator()
+				+ "endlegend"
 				+ System.lineSeparator()
 				+ System.lineSeparator()
 				+ "@enduml" + System.lineSeparator() + "", stateDiagram);
 	}
 
 	@Test
-	public void canCreateStateDiagram4Aggregate() throws IOException {
+	public void canCreateStateDiagram4AggregateViaService() throws IOException {
 		// given
-		ContextMappingModel model = getOriginalResourceOfTestCML("state-diagram-generation-aggregate-test.cml").getContextMappingModel();
+		ContextMappingModel model = getOriginalResourceOfTestCML("state-diagram-generation-aggregate-test-1.cml").getContextMappingModel();
 
 		// when
 		Aggregate aggregate = model.getBoundedContexts().get(0).getAggregates().get(0);
@@ -89,14 +94,59 @@ class PlantUMLStateDiagramCreatorTest extends AbstractCMLInputFileTest {
 				+ "QUOTE_RECEIVED : " + System.lineSeparator()
 				+ "QUOTE_REJECTED : " + System.lineSeparator()
 				+ "REQUEST_REJECTED : " + System.lineSeparator()
-				+ "[*] --> REQUEST_SUBMITTED" + System.lineSeparator()
-				+ "REQUEST_SUBMITTED --> REQUEST_REJECTED" + System.lineSeparator()
-				+ "REQUEST_SUBMITTED --> QUOTE_RECEIVED" + System.lineSeparator()
-				+ "QUOTE_RECEIVED --> QUOTE_EXPIRED" + System.lineSeparator()
-				+ "QUOTE_RECEIVED --> QUOTE_ACCEPTED" + System.lineSeparator()
-				+ "QUOTE_RECEIVED --> QUOTE_REJECTED" + System.lineSeparator()
-				+ "QUOTE_ACCEPTED --> QUOTE_EXPIRED" + System.lineSeparator()
-				+ "QUOTE_ACCEPTED --> POLICY_CREATED" + System.lineSeparator()
+				+ "[*] --> REQUEST_SUBMITTED : submitRequest" + System.lineSeparator()
+				+ "REQUEST_SUBMITTED --> REQUEST_REJECTED : rejectRequest" + System.lineSeparator()
+				+ "REQUEST_SUBMITTED --> QUOTE_RECEIVED : receiveQuote" + System.lineSeparator()
+				+ "QUOTE_RECEIVED --> QUOTE_EXPIRED : checkQuote" + System.lineSeparator()
+				+ "QUOTE_RECEIVED --> QUOTE_ACCEPTED : checkQuote" + System.lineSeparator()
+				+ "QUOTE_RECEIVED --> QUOTE_REJECTED : checkQuote" + System.lineSeparator()
+				+ "QUOTE_ACCEPTED --> QUOTE_EXPIRED : createPolicy" + System.lineSeparator()
+				+ "QUOTE_ACCEPTED --> POLICY_CREATED : createPolicy" + System.lineSeparator()
+				+ System.lineSeparator()
+				+ System.lineSeparator()
+				+ "legend top center" + System.lineSeparator()
+				+ "  'QuoteRequest' Aggregate Lifecycle" + System.lineSeparator()
+				+ "endlegend"
+				+ System.lineSeparator()
+				+ System.lineSeparator()
+				+ "@enduml" + System.lineSeparator()
+				+ "", stateDiagram);
+	}
+	
+	@Test
+	public void canCreateStateDiagram4AggregateViaEntity() throws IOException {
+		// given
+		ContextMappingModel model = getOriginalResourceOfTestCML("state-diagram-generation-aggregate-test-2.cml").getContextMappingModel();
+
+		// when
+		Aggregate aggregate = model.getBoundedContexts().get(0).getAggregates().get(0);
+		String stateDiagram = new PlantUMLStateDiagramCreator4Aggregate().createDiagram(aggregate);
+
+		// then
+		assertEquals("@startuml" + System.lineSeparator()
+				+ System.lineSeparator()
+				+ "skinparam componentStyle uml2" + System.lineSeparator()
+				+ System.lineSeparator()
+				+ "QUOTE_EXPIRED : " + System.lineSeparator()
+				+ "REQUEST_SUBMITTED : " + System.lineSeparator()
+				+ "QUOTE_ACCEPTED : " + System.lineSeparator()
+				+ "POLICY_CREATED : " + System.lineSeparator()
+				+ "QUOTE_RECEIVED : " + System.lineSeparator()
+				+ "QUOTE_REJECTED : " + System.lineSeparator()
+				+ "REQUEST_REJECTED : " + System.lineSeparator()
+				+ "[*] --> REQUEST_SUBMITTED : submitRequest" + System.lineSeparator()
+				+ "REQUEST_SUBMITTED --> REQUEST_REJECTED : rejectRequest" + System.lineSeparator()
+				+ "REQUEST_SUBMITTED --> QUOTE_RECEIVED : receiveQuote" + System.lineSeparator()
+				+ "QUOTE_RECEIVED --> QUOTE_EXPIRED : checkQuote" + System.lineSeparator()
+				+ "QUOTE_RECEIVED --> QUOTE_ACCEPTED : checkQuote" + System.lineSeparator()
+				+ "QUOTE_RECEIVED --> QUOTE_REJECTED : checkQuote" + System.lineSeparator()
+				+ "QUOTE_ACCEPTED --> QUOTE_EXPIRED : createPolicy" + System.lineSeparator()
+				+ "QUOTE_ACCEPTED --> POLICY_CREATED : createPolicy" + System.lineSeparator()
+				+ System.lineSeparator()
+				+ System.lineSeparator()
+				+ "legend top center" + System.lineSeparator()
+				+ "  'QuoteRequest' Aggregate Lifecycle" + System.lineSeparator()
+				+ "endlegend"
 				+ System.lineSeparator()
 				+ System.lineSeparator()
 				+ "@enduml" + System.lineSeparator()

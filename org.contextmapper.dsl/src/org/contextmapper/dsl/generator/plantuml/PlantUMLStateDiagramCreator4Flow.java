@@ -15,19 +15,32 @@
  */
 package org.contextmapper.dsl.generator.plantuml;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.contextmapper.dsl.contextMappingDSL.DomainEventProductionStep;
 import org.contextmapper.dsl.contextMappingDSL.Flow;
 import org.contextmapper.tactic.dsl.tacticdsl.StateTransition;
-import org.eclipse.xtext.EcoreUtil2;
 
 public class PlantUMLStateDiagramCreator4Flow extends AbstractPlantUMLStateDiagramCreator<Flow> implements PlantUMLDiagramCreator<Flow> {
 
 	@Override
 	protected void printDiagramContent(Flow flow) {
-		for (String state : collectStates(EcoreUtil2.eAllOfType(flow, StateTransition.class))) {
+		List<DomainEventProductionStep> eventProductionStepsWithStateTransitions = flow.getSteps().stream().filter(s -> s instanceof DomainEventProductionStep)
+				.map(s -> (DomainEventProductionStep) s).filter(s -> s.getStateTransition() != null).collect(Collectors.toList());
+		List<StateTransition> allStateTransitions = eventProductionStepsWithStateTransitions.stream().map(s -> s.getStateTransition()).collect(Collectors.toList());
+		for (String state : collectStates(allStateTransitions)) {
 			printState(state);
 		}
-		for (StateTransition transition : EcoreUtil2.eAllOfType(flow, StateTransition.class))
-			printTransition(transition);
+		for (DomainEventProductionStep step : eventProductionStepsWithStateTransitions)
+			printTransition(step.getStateTransition(), step.getAction().getCommand() != null ? step.getAction().getCommand().getName() : step.getAction().getOperation().getName());
+
+		linebreak(2);
+		sb.append("legend top center");
+		linebreak();
+		sb.append("  '" + flow.getName() + "' State Transitions");
+		linebreak();
+		sb.append("endlegend");
 	}
 
 }

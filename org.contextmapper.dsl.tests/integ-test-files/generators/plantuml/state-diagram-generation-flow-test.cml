@@ -12,6 +12,7 @@ BoundedContext InsuranceQuotes {
 		DomainEvent QuoteAccepted
 		DomainEvent QuoteExpired
 		DomainEvent PolicyCreated
+		DomainEvent YetAnotherEvent
 		
 		Service QuoteRequestService {
 			void checkRequest(@Request request);
@@ -33,6 +34,7 @@ BoundedContext InsuranceQuotes {
 			command SubmitRequest delegates to QuoteRequest[-> SUBMITTED] emits event RequestSubmitted
 			event RequestSubmitted triggers operation checkRequest
 			operation checkRequest delegates to QuoteRequest[SUBMITTED -> RECEIVED X REJECTED] emits event QuoteReceived X RequestRejected
+			operation checkRequest emits event YetAnotherEvent // event productions without state transitions should be ignored here
 			event QuoteReceived triggers operation receiveAndCheckQuote
 			operation receiveAndCheckQuote delegates to QuoteRequest[RECEIVED -> REJECTED X ACCEPTED X EXPIRED] emits event QuoteRejected X QuoteAccepted X QuoteExpired
 			event QuoteAccepted triggers operation accept
