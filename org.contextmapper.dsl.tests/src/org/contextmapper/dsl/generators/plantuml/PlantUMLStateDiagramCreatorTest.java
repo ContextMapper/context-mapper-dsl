@@ -66,7 +66,7 @@ class PlantUMLStateDiagramCreatorTest extends AbstractCMLInputFileTest {
 				+ System.lineSeparator()
 				+ System.lineSeparator()
 				+ "legend top center" + System.lineSeparator()
-				+ "  'QuoteFlow' State Transitions" + System.lineSeparator()
+				+ "  QuoteFlow State Transitions" + System.lineSeparator()
 				+ "endlegend"
 				+ System.lineSeparator()
 				+ System.lineSeparator()
@@ -105,7 +105,7 @@ class PlantUMLStateDiagramCreatorTest extends AbstractCMLInputFileTest {
 				+ System.lineSeparator()
 				+ System.lineSeparator()
 				+ "legend top center" + System.lineSeparator()
-				+ "  'QuoteRequest' Aggregate Lifecycle" + System.lineSeparator()
+				+ "  QuoteRequest Aggregate Lifecycle" + System.lineSeparator()
 				+ "endlegend"
 				+ System.lineSeparator()
 				+ System.lineSeparator()
@@ -145,7 +145,7 @@ class PlantUMLStateDiagramCreatorTest extends AbstractCMLInputFileTest {
 				+ System.lineSeparator()
 				+ System.lineSeparator()
 				+ "legend top center" + System.lineSeparator()
-				+ "  'QuoteRequest' Aggregate Lifecycle" + System.lineSeparator()
+				+ "  QuoteRequest Aggregate Lifecycle" + System.lineSeparator()
 				+ "endlegend"
 				+ System.lineSeparator()
 				+ System.lineSeparator()

@@ -38,7 +38,7 @@ public class PlantUMLStateDiagramCreator4Flow extends AbstractPlantUMLStateDiagr
 		linebreak(2);
 		sb.append("legend top center");
 		linebreak();
-		sb.append("  '" + flow.getName() + "' State Transitions");
+		sb.append("  " + flow.getName() + " State Transitions");
 		linebreak();
 		sb.append("endlegend");
 	}

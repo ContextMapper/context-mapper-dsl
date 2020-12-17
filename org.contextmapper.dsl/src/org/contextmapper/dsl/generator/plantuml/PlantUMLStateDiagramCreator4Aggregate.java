@@ -45,7 +45,7 @@ public class PlantUMLStateDiagramCreator4Aggregate extends AbstractPlantUMLState
 		linebreak(2);
 		sb.append("legend top center");
 		linebreak();
-		sb.append("  '" + aggregate.getName() + "' Aggregate Lifecycle");
+		sb.append("  " + aggregate.getName() + " Aggregate Lifecycle");
 		linebreak();
 		sb.append("endlegend");
 
