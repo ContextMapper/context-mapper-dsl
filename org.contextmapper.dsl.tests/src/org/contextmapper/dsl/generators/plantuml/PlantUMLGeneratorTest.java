@@ -133,7 +133,7 @@ class PlantUMLGeneratorTest extends AbstractCMLInputFileTest {
 	@Test
 	void canCreateStateDiagram4AggregateIfAvailable() throws IOException {
 		// given
-		ContextMappingModel model = getOriginalResourceOfTestCML("state-diagram-generation-aggregate-test.cml").getContextMappingModel();
+		ContextMappingModel model = getOriginalResourceOfTestCML("state-diagram-generation-aggregate-test-1.cml").getContextMappingModel();
 
 		// when
 		IFileSystemAccess2Mock filesystem = new IFileSystemAccess2Mock();

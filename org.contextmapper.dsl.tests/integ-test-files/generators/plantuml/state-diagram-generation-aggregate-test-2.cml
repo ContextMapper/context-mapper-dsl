@@ -1,0 +1,28 @@
+BoundedContext InsuranceQuotes {
+ 	
+ 	Aggregate QuoteRequest {
+ 		Entity QuoteRequest {
+ 			aggregateRoot
+ 			
+ 			def void testOp() : read-only;
+ 			
+ 			def void submitRequest(@QuoteRequest request) : write [-> REQUEST_SUBMITTED];
+ 			def void rejectRequest(@QuoteRequest request): write [REQUEST_SUBMITTED -> REQUEST_REJECTED];
+ 			def void receiveQuote(@QuoteRequest request) : write [REQUEST_SUBMITTED -> QUOTE_RECEIVED];
+ 			def void checkQuote(@QuoteRequest request) : write [QUOTE_RECEIVED -> QUOTE_REJECTED X QUOTE_ACCEPTED X QUOTE_EXPIRED];
+ 			def void createPolicy(@QuoteRequest request) : write [QUOTE_ACCEPTED -> POLICY_CREATED X QUOTE_EXPIRED];
+ 		}
+ 		
+ 		enum RequestState {
+ 			aggregateLifecycle
+ 			REQUEST_SUBMITTED, QUOTE_RECEIVED, REQUEST_REJECTED, QUOTE_ACCEPTED, QUOTE_REJECTED, QUOTE_EXPIRED, POLICY_CREATED
+ 		}
+ 	}
+ 	
+ 	Aggregate AnotherAggregateThatMustBeIgnored {
+ 		enum States {
+ 			REQUEST_SUBMITTED, QUOTE_RECEIVED, REQUEST_REJECTED, QUOTE_ACCEPTED, QUOTE_REJECTED, QUOTE_EXPIRED, POLICY_CREATED
+ 		}
+ 	}
+ 	
+ }

@@ -76,7 +76,6 @@ class ContextMappingDSLQuickfixProvider extends DefaultQuickfixProvider {
 			null, [ EObject element, IModificationContext context |
 				Program.launch(new SketchMinerLinkCreator().createSketchMinerLink(element));
 			]);
-		format();
 	}
 
 	def applyCMLQuickfix(Issue issue, IssueResolutionAcceptor acceptor, CMLQuickFix<? extends EObject> quickfix) {

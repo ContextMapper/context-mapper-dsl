@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.contextmapper.tactic.dsl.tacticdsl.EnumValue;
 import org.contextmapper.tactic.dsl.tacticdsl.StateTransition;
 import org.eclipse.emf.ecore.EObject;
@@ -32,16 +33,16 @@ abstract public class AbstractPlantUMLStateDiagramCreator<T extends EObject> ext
 		linebreak();
 	}
 
-	protected void printTransition(StateTransition transition) {
+	protected void printTransition(StateTransition transition, String label) {
 		if (transition.getFrom() == null || transition.getFrom().isEmpty()) {
 			for (String target : mapStatesToStrings(transition.getTarget().getTo().stream().map(s -> s.getValue()).collect(Collectors.toList()))) {
-				sb.append("[*] --> ").append(target);
+				sb.append("[*] --> ").append(target).append(" : ").append(label);
 				linebreak();
 			}
 		}
 		for (String from : transition.getFrom().stream().map(s -> s.getName()).collect(Collectors.toSet())) {
 			for (String target : mapStatesToStrings(transition.getTarget().getTo().stream().map(s -> s.getValue()).collect(Collectors.toList()))) {
-				sb.append(from).append(" --> ").append(target);
+				sb.append(from).append(" --> ").append(target).append(" : ").append(label);
 				linebreak();
 			}
 		}

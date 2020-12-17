@@ -15,7 +15,12 @@
  */
 package org.contextmapper.dsl.generator.plantuml;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
+import org.contextmapper.tactic.dsl.tacticdsl.DomainObjectOperation;
+import org.contextmapper.tactic.dsl.tacticdsl.ServiceOperation;
 import org.contextmapper.tactic.dsl.tacticdsl.StateTransition;
 import org.eclipse.xtext.EcoreUtil2;
 
@@ -23,11 +28,27 @@ public class PlantUMLStateDiagramCreator4Aggregate extends AbstractPlantUMLState
 
 	@Override
 	protected void printDiagramContent(Aggregate aggregate) {
-		for (String state : collectStates(EcoreUtil2.eAllOfType(aggregate, StateTransition.class))) {
+		List<ServiceOperation> serviceOperationsWithStateTransitions = EcoreUtil2.eAllOfType(aggregate, ServiceOperation.class).stream().filter(o -> o.getStateTransition() != null)
+				.collect(Collectors.toList());
+		List<DomainObjectOperation> domainObjectOperationsWithStateTransitions = EcoreUtil2.eAllOfType(aggregate, DomainObjectOperation.class).stream()
+				.filter(o -> o.getStateTransition() != null).collect(Collectors.toList());
+		List<StateTransition> allStateTransitions = serviceOperationsWithStateTransitions.stream().map(o -> o.getStateTransition()).collect(Collectors.toList());
+		allStateTransitions.addAll(domainObjectOperationsWithStateTransitions.stream().map(o -> o.getStateTransition()).collect(Collectors.toList()));
+		for (String state : collectStates(allStateTransitions)) {
 			printState(state);
 		}
-		for (StateTransition transition : EcoreUtil2.eAllOfType(aggregate, StateTransition.class))
-			printTransition(transition);
+		for (ServiceOperation operation : serviceOperationsWithStateTransitions)
+			printTransition(operation.getStateTransition(), operation.getName());
+		for (DomainObjectOperation operation : domainObjectOperationsWithStateTransitions)
+			printTransition(operation.getStateTransition(), operation.getName());
+
+		linebreak(2);
+		sb.append("legend top center");
+		linebreak();
+		sb.append("  " + aggregate.getName() + " Aggregate Lifecycle");
+		linebreak();
+		sb.append("endlegend");
+
 	}
 
 }
