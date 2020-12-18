@@ -140,9 +140,9 @@ public class SketchMinerModelCreatorTest extends AbstractCMLInputFileTest {
 		String output = new SketchMinerModelCreator().createText(flow);
 
 		// then
-		assertEquals("TestContext Application:" + System.lineSeparator() + System.lineSeparator() + "(InitialEvent)" + System.lineSeparator() + "service Start"
+		assertEquals("TestContext Application:" + System.lineSeparator() + System.lineSeparator() + "(InitialEvent0)" + System.lineSeparator() + "service InitialEvent"
 				+ System.lineSeparator() + "(FirstEvent)" + System.lineSeparator() + "service MiddleCommand" + System.lineSeparator() + "(EndEvent)" + System.lineSeparator()
-				+ "service Start" + System.lineSeparator() + "(FirstEvent)" + System.lineSeparator() + "service MiddleCommand" + System.lineSeparator() + "(EndEvent)"
+				+ "service InitialEvent" + System.lineSeparator() + "(FirstEvent)" + System.lineSeparator() + "service MiddleCommand" + System.lineSeparator() + "(EndEvent)"
 				+ System.lineSeparator() + System.lineSeparator(), output);
 	}
 

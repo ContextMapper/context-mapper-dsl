@@ -3,14 +3,14 @@
 BoundedContext TestContext {
 	Application {
 		Service AppService {
-			void Start();
+			void InitialEvent();
 			void MiddleCommand();
 		}
 		Flow TestFlow {
-			operation Start emits event FirstEvent
+			operation InitialEvent emits event FirstEvent
 			event FirstEvent triggers operation MiddleCommand
 			operation MiddleCommand emits event EndEvent
-			event EndEvent triggers operation Start
+			event EndEvent triggers operation InitialEvent
 		}
 	}
 	Aggregate TestAggregate {
