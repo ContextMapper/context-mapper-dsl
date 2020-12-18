@@ -79,7 +79,8 @@ public class Flow2SketchMinerConverter {
 		List<SimplifiedFlowStep> nextSteps = getNextSteps(lastTask);
 		if (!nextSteps.isEmpty()) {
 			for (SimplifiedFlowStep nextStep : nextSteps) {
-				if (nextStep.getFroms().size() > 1 && !createParallelTask(nextStep.getFroms()).equals(lastTask)) {
+				Task nextStepsParallelTask = createParallelTask(nextStep.getFroms());
+				if (nextStep.getFroms().size() > 1 && !nextStepsParallelTask.equals(lastTask) && !seq.getTasks().contains(nextStepsParallelTask)) {
 					seq.isSplittingFragment(true);
 					Task mergingTask = createParallelTask(nextStep.getFroms());
 					TaskSequence newSeq = new TaskSequence(mergingTask);
@@ -113,6 +114,9 @@ public class Flow2SketchMinerConverter {
 		seq.isSplittingFragment(true);
 		seq.addTask(createParallelTask(nextTasks));
 		for (Task task : nextTasks) {
+			if (seq.getTasks().contains(task))
+				continue;
+
 			TaskSequence newSeq = new TaskSequence(task);
 			newSeq.isMergingFragment(true);
 			model.addSequence(newSeq);

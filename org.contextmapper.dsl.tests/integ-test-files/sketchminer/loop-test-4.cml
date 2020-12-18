@@ -1,0 +1,14 @@
+BoundedContext InsuranceQuotes {
+ 	
+ 	Application A1 {
+ 		Event DE1
+ 		Event DE2
+ 		Command C1
+ 		
+ 		Flow F1 {
+			event DE1 + DE2 triggers command C1
+			command C1 emits event DE1
+		}
+ 	}
+ 	
+ }
