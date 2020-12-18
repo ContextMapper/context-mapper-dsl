@@ -247,7 +247,7 @@ public class Flow2SketchMinerConverter {
 	}
 
 	private String getGeneratedStartName() {
-		String initName = "Start";
+		String initName = "InitialEvent";
 		String name = initName;
 		int counter = 0;
 		while (this.taskMap.keySet().contains(name)) {

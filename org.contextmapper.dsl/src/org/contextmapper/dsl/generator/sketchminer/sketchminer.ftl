@@ -8,9 +8,9 @@ ${model.defaultActorName}:
 </#if>
 <#list sequence.tasks as task>
 <#if task.comment?has_content>
-<#if model.hasMultipleActors()><#if task.actor?has_content>${task.actor}<#else>${model.defaultActorName}</#if>: </#if>// ${task.comment}
+<#if task.type.name() == "COMMAND"><#if model.hasMultipleActors()><#if task.actor?has_content>${task.actor}<#else>${model.defaultActorName}</#if>: </#if></#if>// ${task.comment}
 </#if>
-<#if model.hasMultipleActors()><#if task.actor?has_content>${task.actor}<#else>${model.defaultActorName}</#if>: </#if><#if task.type.name() == "COMMAND">service </#if>${task.name?replace("_", "")}<#if task.parallelTasks?has_content><#list task.parallelTasks as parTask>|<#if parTask.type.name() == "COMMAND">service </#if>${parTask.name?replace("_", "")}</#list></#if>
+<#if task.type.name() == "COMMAND"><#if model.hasMultipleActors()><#if task.actor?has_content>${task.actor}<#else>${model.defaultActorName}</#if>: </#if></#if><#if task.type.name() == "COMMAND">service ${task.name?replace("_", "")}<#else>(${task.name?replace("_", "")})</#if><#if task.parallelTasks?has_content><#list task.parallelTasks as parTask>|<#if parTask.type.name() == "COMMAND">service ${parTask.name?replace("_", "")}<#else>(${parTask.name?replace("_", "")})</#if></#list></#if>
 </#list>
 <#if sequence.isSplittingFragment()>
 ...

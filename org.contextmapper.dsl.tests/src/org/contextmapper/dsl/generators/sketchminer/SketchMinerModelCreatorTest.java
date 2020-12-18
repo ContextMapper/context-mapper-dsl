@@ -42,7 +42,7 @@ public class SketchMinerModelCreatorTest extends AbstractCMLInputFileTest {
 		String output = new SketchMinerModelCreator().createText(flow);
 
 		// then
-		assertEquals("TestContext Application:" + System.lineSeparator() + System.lineSeparator() + "service StartCommand" + System.lineSeparator() + "FirstEvent"
+		assertEquals("TestContext Application:" + System.lineSeparator() + System.lineSeparator() + "service StartCommand" + System.lineSeparator() + "(FirstEvent)"
 				+ System.lineSeparator() + "service EndCommand" + System.lineSeparator() + System.lineSeparator(), output);
 	}
 
@@ -56,9 +56,9 @@ public class SketchMinerModelCreatorTest extends AbstractCMLInputFileTest {
 		String output = new SketchMinerModelCreator().createText(flow);
 
 		// then
-		assertEquals("TestContext Application:" + System.lineSeparator() + System.lineSeparator() + "service StartCommand" + System.lineSeparator() + "FirstEvent|SecondEvent"
-				+ System.lineSeparator() + "..." + System.lineSeparator() + System.lineSeparator() + "..." + System.lineSeparator() + "FirstEvent" + System.lineSeparator()
-				+ "service EndCommand" + System.lineSeparator() + System.lineSeparator() + "..." + System.lineSeparator() + "SecondEvent" + System.lineSeparator()
+		assertEquals("TestContext Application:" + System.lineSeparator() + System.lineSeparator() + "service StartCommand" + System.lineSeparator() + "(FirstEvent)|(SecondEvent)"
+				+ System.lineSeparator() + "..." + System.lineSeparator() + System.lineSeparator() + "..." + System.lineSeparator() + "(FirstEvent)" + System.lineSeparator()
+				+ "service EndCommand" + System.lineSeparator() + System.lineSeparator() + "..." + System.lineSeparator() + "(SecondEvent)" + System.lineSeparator()
 				+ "service EndCommand" + System.lineSeparator() + System.lineSeparator(), output);
 	}
 
@@ -73,10 +73,10 @@ public class SketchMinerModelCreatorTest extends AbstractCMLInputFileTest {
 		String output = new SketchMinerModelCreator().createText(flow);
 
 		// then
-		assertEquals("TestContext Application:" + System.lineSeparator() + System.lineSeparator() + "StartEvent" + System.lineSeparator()
+		assertEquals("TestContext Application:" + System.lineSeparator() + System.lineSeparator() + "(StartEvent)" + System.lineSeparator()
 				+ "service FirstCommand|service SecondCommand" + System.lineSeparator() + "..." + System.lineSeparator() + System.lineSeparator() + "..." + System.lineSeparator()
-				+ "service FirstCommand" + System.lineSeparator() + "EndEvent" + System.lineSeparator() + System.lineSeparator() + "..." + System.lineSeparator()
-				+ "service SecondCommand" + System.lineSeparator() + "EndEvent"
+				+ "service FirstCommand" + System.lineSeparator() + "(EndEvent)" + System.lineSeparator() + System.lineSeparator() + "..." + System.lineSeparator()
+				+ "service SecondCommand" + System.lineSeparator() + "(EndEvent)"
 
 				+ System.lineSeparator() + System.lineSeparator(), output);
 	}
@@ -92,8 +92,8 @@ public class SketchMinerModelCreatorTest extends AbstractCMLInputFileTest {
 		String output = new SketchMinerModelCreator().createText(flow);
 
 		// then
-		assertEquals("TestContext Application:" + System.lineSeparator() + System.lineSeparator() + "service StartCommand" + System.lineSeparator() + "FirstEvent"
-				+ System.lineSeparator() + "service EndCommand" + System.lineSeparator() + System.lineSeparator() + "service StartCommand" + System.lineSeparator() + "SecondEvent"
+		assertEquals("TestContext Application:" + System.lineSeparator() + System.lineSeparator() + "service StartCommand" + System.lineSeparator() + "(FirstEvent)"
+				+ System.lineSeparator() + "service EndCommand" + System.lineSeparator() + System.lineSeparator() + "service StartCommand" + System.lineSeparator() + "(SecondEvent)"
 				+ System.lineSeparator() + "service EndCommand" + System.lineSeparator() + System.lineSeparator(), output);
 	}
 
@@ -108,9 +108,9 @@ public class SketchMinerModelCreatorTest extends AbstractCMLInputFileTest {
 		String output = new SketchMinerModelCreator().createText(flow);
 
 		// then
-		assertEquals("TestContext Application:" + System.lineSeparator() + System.lineSeparator() + "service StartCommand" + System.lineSeparator() + "FirstEvent"
-				+ System.lineSeparator() + "service MiddleCommand1" + System.lineSeparator() + "EndEvent" + System.lineSeparator() + System.lineSeparator() + "service StartCommand"
-				+ System.lineSeparator() + "FirstEvent" + System.lineSeparator() + "service MiddleCommand2" + System.lineSeparator() + "EndEvent" + System.lineSeparator()
+		assertEquals("TestContext Application:" + System.lineSeparator() + System.lineSeparator() + "service StartCommand" + System.lineSeparator() + "(FirstEvent)"
+				+ System.lineSeparator() + "service MiddleCommand1" + System.lineSeparator() + "(EndEvent)" + System.lineSeparator() + System.lineSeparator() + "service StartCommand"
+				+ System.lineSeparator() + "(FirstEvent)" + System.lineSeparator() + "service MiddleCommand2" + System.lineSeparator() + "(EndEvent)" + System.lineSeparator()
 				+ System.lineSeparator(), output);
 	}
 
@@ -124,9 +124,9 @@ public class SketchMinerModelCreatorTest extends AbstractCMLInputFileTest {
 		String output = new SketchMinerModelCreator().createText(flow);
 
 		// then
-		assertEquals("TestContext Application:" + System.lineSeparator() + System.lineSeparator() + "Start" + System.lineSeparator() + "service StartCommand"
-				+ System.lineSeparator() + "FirstEvent" + System.lineSeparator() + "service MiddleCommand" + System.lineSeparator() + "EndEvent" + System.lineSeparator()
-				+ "service StartCommand" + System.lineSeparator() + "FirstEvent" + System.lineSeparator() + "service MiddleCommand" + System.lineSeparator() + "EndEvent"
+		assertEquals("TestContext Application:" + System.lineSeparator() + System.lineSeparator() + "(InitialEvent)" + System.lineSeparator() + "service StartCommand"
+				+ System.lineSeparator() + "(FirstEvent)" + System.lineSeparator() + "service MiddleCommand" + System.lineSeparator() + "(EndEvent)" + System.lineSeparator()
+				+ "service StartCommand" + System.lineSeparator() + "(FirstEvent)" + System.lineSeparator() + "service MiddleCommand" + System.lineSeparator() + "(EndEvent)"
 				+ System.lineSeparator() + System.lineSeparator(), output);
 	}
 
@@ -140,10 +140,10 @@ public class SketchMinerModelCreatorTest extends AbstractCMLInputFileTest {
 		String output = new SketchMinerModelCreator().createText(flow);
 
 		// then
-		assertEquals("TestContext Application:" + System.lineSeparator() + System.lineSeparator() + "Start0" + System.lineSeparator() + "service Start" + System.lineSeparator()
-				+ "FirstEvent" + System.lineSeparator() + "service MiddleCommand" + System.lineSeparator() + "EndEvent" + System.lineSeparator() + "service Start"
-				+ System.lineSeparator() + "FirstEvent" + System.lineSeparator() + "service MiddleCommand" + System.lineSeparator() + "EndEvent" + System.lineSeparator()
-				+ System.lineSeparator(), output);
+		assertEquals("TestContext Application:" + System.lineSeparator() + System.lineSeparator() + "(InitialEvent)" + System.lineSeparator() + "service Start"
+				+ System.lineSeparator() + "(FirstEvent)" + System.lineSeparator() + "service MiddleCommand" + System.lineSeparator() + "(EndEvent)" + System.lineSeparator()
+				+ "service Start" + System.lineSeparator() + "(FirstEvent)" + System.lineSeparator() + "service MiddleCommand" + System.lineSeparator() + "(EndEvent)"
+				+ System.lineSeparator() + System.lineSeparator(), output);
 	}
 
 	@Test
@@ -156,9 +156,9 @@ public class SketchMinerModelCreatorTest extends AbstractCMLInputFileTest {
 		String output = new SketchMinerModelCreator().createText(flow);
 
 		// then
-		assertEquals("TestContext Application:" + System.lineSeparator() + System.lineSeparator() + "service StartCommand1" + System.lineSeparator() + "Event1"
-				+ System.lineSeparator() + "..." + System.lineSeparator() + System.lineSeparator() + "..." + System.lineSeparator() + "Event1|Event2" + System.lineSeparator()
-				+ "service EndCommand" + System.lineSeparator() + System.lineSeparator() + "service StartCommand2" + System.lineSeparator() + "Event2" + System.lineSeparator()
+		assertEquals("TestContext Application:" + System.lineSeparator() + System.lineSeparator() + "service StartCommand1" + System.lineSeparator() + "(Event1)"
+				+ System.lineSeparator() + "..." + System.lineSeparator() + System.lineSeparator() + "..." + System.lineSeparator() + "(Event1)|(Event2)" + System.lineSeparator()
+				+ "service EndCommand" + System.lineSeparator() + System.lineSeparator() + "service StartCommand2" + System.lineSeparator() + "(Event2)" + System.lineSeparator()
 				+ "..." + System.lineSeparator() + System.lineSeparator(), output);
 	}
 
@@ -172,8 +172,8 @@ public class SketchMinerModelCreatorTest extends AbstractCMLInputFileTest {
 		String output = new SketchMinerModelCreator().createText(flow);
 
 		// then
-		assertEquals("TestContext Application:" + System.lineSeparator() + System.lineSeparator() + "StartEvent" + System.lineSeparator() + "// TestAggregate [STATE1 -> STATE2]"
-				+ System.lineSeparator() + "service Command1" + System.lineSeparator() + "EndEvent" + System.lineSeparator() + System.lineSeparator(), output);
+		assertEquals("TestContext Application:" + System.lineSeparator() + System.lineSeparator() + "(StartEvent)" + System.lineSeparator() + "// TestAggregate [STATE1 -> STATE2]"
+				+ System.lineSeparator() + "service Command1" + System.lineSeparator() + "(EndEvent)" + System.lineSeparator() + System.lineSeparator(), output);
 	}
 
 	@Test
@@ -186,8 +186,8 @@ public class SketchMinerModelCreatorTest extends AbstractCMLInputFileTest {
 		String output = new SketchMinerModelCreator().createText(flow);
 
 		// then
-		assertEquals("TestContext Application:" + System.lineSeparator() + System.lineSeparator() + "StartEvent" + System.lineSeparator()
-				+ "// TestAggregate [STATE1, STATE2 -> STATE3 X STATE4]" + System.lineSeparator() + "service Command1" + System.lineSeparator() + "EndEvent"
+		assertEquals("TestContext Application:" + System.lineSeparator() + System.lineSeparator() + "(StartEvent)" + System.lineSeparator()
+				+ "// TestAggregate [STATE1, STATE2 -> STATE3 X STATE4]" + System.lineSeparator() + "service Command1" + System.lineSeparator() + "(EndEvent)"
 				+ System.lineSeparator() + System.lineSeparator(), output);
 	}
 
@@ -201,8 +201,8 @@ public class SketchMinerModelCreatorTest extends AbstractCMLInputFileTest {
 		String output = new SketchMinerModelCreator().createText(flow);
 
 		// then
-		assertEquals("TestContext Application:" + System.lineSeparator() + System.lineSeparator() + "StartEvent" + System.lineSeparator() + "service Command1"
-				+ System.lineSeparator() + "EndEvent" + System.lineSeparator() + System.lineSeparator(), output);
+		assertEquals("TestContext Application:" + System.lineSeparator() + System.lineSeparator() + "(StartEvent)" + System.lineSeparator() + "service Command1"
+				+ System.lineSeparator() + "(EndEvent)" + System.lineSeparator() + System.lineSeparator(), output);
 	}
 
 	@Test
@@ -215,8 +215,8 @@ public class SketchMinerModelCreatorTest extends AbstractCMLInputFileTest {
 		String output = new SketchMinerModelCreator().createText(flow);
 
 		// then
-		assertEquals("TestContext Application: StartEvent" + System.lineSeparator() + "Test User: // TestAggregate [STATE1, STATE2 -> STATE3 X STATE4]" + System.lineSeparator()
-				+ "Test User: service Command1" + System.lineSeparator() + "TestContext Application: EndEvent" + System.lineSeparator() + System.lineSeparator(), output);
+		assertEquals("(StartEvent)" + System.lineSeparator() + "Test User: // TestAggregate [STATE1, STATE2 -> STATE3 X STATE4]" + System.lineSeparator()
+				+ "Test User: service Command1" + System.lineSeparator() + "(EndEvent)" + System.lineSeparator() + System.lineSeparator(), output);
 	}
 
 	@Test
@@ -229,8 +229,8 @@ public class SketchMinerModelCreatorTest extends AbstractCMLInputFileTest {
 		String output = new SketchMinerModelCreator().createText(flow);
 
 		// then
-		assertEquals("TestContext Application:" + System.lineSeparator() + System.lineSeparator() + "StartEvent" + System.lineSeparator() + "// TestAggregate [STATE1 -> STATE2]"
-				+ System.lineSeparator() + "service Command1" + System.lineSeparator() + "EndEvent" + System.lineSeparator() + System.lineSeparator(), output);
+		assertEquals("TestContext Application:" + System.lineSeparator() + System.lineSeparator() + "(StartEvent)" + System.lineSeparator() + "// TestAggregate [STATE1 -> STATE2]"
+				+ System.lineSeparator() + "service Command1" + System.lineSeparator() + "(EndEvent)" + System.lineSeparator() + System.lineSeparator(), output);
 	}
 
 	@Test
@@ -243,7 +243,7 @@ public class SketchMinerModelCreatorTest extends AbstractCMLInputFileTest {
 		String output = new SketchMinerModelCreator().createText(flow);
 
 		// then
-		assertEquals("MyAppLayer:" + System.lineSeparator() + System.lineSeparator() + "service StartCommand" + System.lineSeparator() + "FirstEvent" + System.lineSeparator()
+		assertEquals("MyAppLayer:" + System.lineSeparator() + System.lineSeparator() + "service StartCommand" + System.lineSeparator() + "(FirstEvent)" + System.lineSeparator()
 				+ "service EndCommand" + System.lineSeparator() + System.lineSeparator(), output);
 	}
 
@@ -257,7 +257,7 @@ public class SketchMinerModelCreatorTest extends AbstractCMLInputFileTest {
 		String output = new SketchMinerModelCreator().createText(flow);
 
 		// then
-		assertEquals("Application:" + System.lineSeparator() + System.lineSeparator() + "service StartCommand" + System.lineSeparator() + "FirstEvent" + System.lineSeparator()
+		assertEquals("Application:" + System.lineSeparator() + System.lineSeparator() + "service StartCommand" + System.lineSeparator() + "(FirstEvent)" + System.lineSeparator()
 				+ "service EndCommand" + System.lineSeparator() + System.lineSeparator(), output);
 	}
 
@@ -271,8 +271,8 @@ public class SketchMinerModelCreatorTest extends AbstractCMLInputFileTest {
 		String output = new SketchMinerModelCreator().createText(flow);
 
 		// then
-		assertEquals("Application:" + System.lineSeparator() + System.lineSeparator() + "service appop1" + System.lineSeparator() + "DE1" + System.lineSeparator()
-				+ System.lineSeparator() + "service appop2" + System.lineSeparator() + "DE2" + System.lineSeparator() + System.lineSeparator(), output);
+		assertEquals("Application:" + System.lineSeparator() + System.lineSeparator() + "service appop1" + System.lineSeparator() + "(DE1)" + System.lineSeparator()
+				+ System.lineSeparator() + "service appop2" + System.lineSeparator() + "(DE2)" + System.lineSeparator() + System.lineSeparator(), output);
 	}
 
 	@Test
@@ -285,10 +285,10 @@ public class SketchMinerModelCreatorTest extends AbstractCMLInputFileTest {
 		String output = new SketchMinerModelCreator().createText(flow);
 
 		// then
-		assertEquals("Application:" + System.lineSeparator() + System.lineSeparator() + "service Before" + System.lineSeparator() + "Parallel1|Parallel2" + System.lineSeparator()
-				+ "..." + System.lineSeparator() + System.lineSeparator() + "..." + System.lineSeparator() + "Parallel1" + System.lineSeparator() + "..." + System.lineSeparator()
-				+ System.lineSeparator() + "..." + System.lineSeparator() + "Parallel1|Parallel2" + System.lineSeparator() + "service After" + System.lineSeparator()
-				+ System.lineSeparator() + "..." + System.lineSeparator() + "Parallel2" + System.lineSeparator() + "..." + System.lineSeparator() + System.lineSeparator(), output);
+		assertEquals("Application:" + System.lineSeparator() + System.lineSeparator() + "service Before" + System.lineSeparator() + "(Parallel1)|(Parallel2)" + System.lineSeparator()
+				+ "..." + System.lineSeparator() + System.lineSeparator() + "..." + System.lineSeparator() + "(Parallel1)" + System.lineSeparator() + "..." + System.lineSeparator()
+				+ System.lineSeparator() + "..." + System.lineSeparator() + "(Parallel1)|(Parallel2)" + System.lineSeparator() + "service After" + System.lineSeparator()
+				+ System.lineSeparator() + "..." + System.lineSeparator() + "(Parallel2)" + System.lineSeparator() + "..." + System.lineSeparator() + System.lineSeparator(), output);
 	}
 
 	@Test
@@ -302,18 +302,18 @@ public class SketchMinerModelCreatorTest extends AbstractCMLInputFileTest {
 
 		// then
 		assertEquals("Application:" + System.lineSeparator() + System.lineSeparator() + "// Order [ -> PAYMENT_EXPECTED]" + System.lineSeparator() + "service PlaceOrder"
-				+ System.lineSeparator() + "OrderPlaced|PaymentExpected" + System.lineSeparator() + "..." + System.lineSeparator() + System.lineSeparator() + "..."
-				+ System.lineSeparator() + "OrderPlaced" + System.lineSeparator() + "// Order [PAYMENT_EXPECTED -> PREPARING X CANCELED]" + System.lineSeparator() + "service Pay"
-				+ System.lineSeparator() + "PaymentSuccessful" + System.lineSeparator() + "// Order [PREPARING -> READY]" + System.lineSeparator() + "service FinishOrder"
-				+ System.lineSeparator() + "OrderReady" + System.lineSeparator() + "// Order [READY -> COMPLETED]" + System.lineSeparator() + "service AcceptReceipt"
-				+ System.lineSeparator() + "OrderComplete" + System.lineSeparator() + System.lineSeparator() + "..." + System.lineSeparator() + "OrderPlaced"
+				+ System.lineSeparator() + "(OrderPlaced)|(PaymentExpected)" + System.lineSeparator() + "..." + System.lineSeparator() + System.lineSeparator() + "..."
+				+ System.lineSeparator() + "(OrderPlaced)" + System.lineSeparator() + "// Order [PAYMENT_EXPECTED -> PREPARING X CANCELED]" + System.lineSeparator() + "service Pay"
+				+ System.lineSeparator() + "(PaymentSuccessful)" + System.lineSeparator() + "// Order [PREPARING -> READY]" + System.lineSeparator() + "service FinishOrder"
+				+ System.lineSeparator() + "(OrderReady)" + System.lineSeparator() + "// Order [READY -> COMPLETED]" + System.lineSeparator() + "service AcceptReceipt"
+				+ System.lineSeparator() + "(OrderComplete)" + System.lineSeparator() + System.lineSeparator() + "..." + System.lineSeparator() + "(OrderPlaced)"
 				+ System.lineSeparator() + "// Order [PAYMENT_EXPECTED -> PREPARING X CANCELED]" + System.lineSeparator() + "service Pay" + System.lineSeparator()
-				+ "PaymentCancelled" + System.lineSeparator() + System.lineSeparator() + "..." + System.lineSeparator() + "PaymentExpected" + System.lineSeparator()
-				+ "// Order [PAYMENT_EXPECTED -> PREPARING X CANCELED]" + System.lineSeparator() + "service Pay" + System.lineSeparator() + "PaymentSuccessful"
-				+ System.lineSeparator() + "// Order [PREPARING -> READY]" + System.lineSeparator() + "service FinishOrder" + System.lineSeparator() + "OrderReady"
-				+ System.lineSeparator() + "// Order [READY -> COMPLETED]" + System.lineSeparator() + "service AcceptReceipt" + System.lineSeparator() + "OrderComplete"
-				+ System.lineSeparator() + System.lineSeparator() + "..." + System.lineSeparator() + "PaymentExpected" + System.lineSeparator()
-				+ "// Order [PAYMENT_EXPECTED -> PREPARING X CANCELED]" + System.lineSeparator() + "service Pay" + System.lineSeparator() + "PaymentCancelled"
+				+ "(PaymentCancelled)" + System.lineSeparator() + System.lineSeparator() + "..." + System.lineSeparator() + "(PaymentExpected)" + System.lineSeparator()
+				+ "// Order [PAYMENT_EXPECTED -> PREPARING X CANCELED]" + System.lineSeparator() + "service Pay" + System.lineSeparator() + "(PaymentSuccessful)"
+				+ System.lineSeparator() + "// Order [PREPARING -> READY]" + System.lineSeparator() + "service FinishOrder" + System.lineSeparator() + "(OrderReady)"
+				+ System.lineSeparator() + "// Order [READY -> COMPLETED]" + System.lineSeparator() + "service AcceptReceipt" + System.lineSeparator() + "(OrderComplete)"
+				+ System.lineSeparator() + System.lineSeparator() + "..." + System.lineSeparator() + "(PaymentExpected)" + System.lineSeparator()
+				+ "// Order [PAYMENT_EXPECTED -> PREPARING X CANCELED]" + System.lineSeparator() + "service Pay" + System.lineSeparator() + "(PaymentCancelled)"
 				+ System.lineSeparator() + System.lineSeparator(), output);
 	}
 
