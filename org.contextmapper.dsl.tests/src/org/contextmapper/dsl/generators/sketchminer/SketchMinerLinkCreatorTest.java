@@ -27,11 +27,14 @@ import org.contextmapper.dsl.generator.sketchminer.SketchMinerLinkCreator;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.EcoreUtil2;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 
 public class SketchMinerLinkCreatorTest extends AbstractCMLInputFileTest {
 
 	@Test
-	public void canCreateSketchMinerLinkForFlowModel() throws IOException {
+	@DisabledOnOs(OS.WINDOWS)
+	public void canCreateSketchMinerLinkForFlowModelUnix() throws IOException {
 		// given
 		ContextMappingModel model = getOriginalResourceOfTestCML("link-integ-test.cml").getContextMappingModel();
 		Flow flow = EcoreUtil2.eAllOfType(model, Flow.class).get(0);
@@ -46,7 +49,8 @@ public class SketchMinerLinkCreatorTest extends AbstractCMLInputFileTest {
 	}
 
 	@Test
-	public void canCreateSketchMinerLinkWithEObject() throws IOException {
+	@DisabledOnOs(OS.WINDOWS)
+	public void canCreateSketchMinerLinkWithEObjectUnix() throws IOException {
 		// given
 		ContextMappingModel model = getOriginalResourceOfTestCML("link-integ-test.cml").getContextMappingModel();
 		EObject flow = EcoreUtil2.eAllOfType(model, Flow.class).get(0);
@@ -57,6 +61,38 @@ public class SketchMinerLinkCreatorTest extends AbstractCMLInputFileTest {
 		// then
 		assertEquals(
 				"https://www.bpmn-sketch-miner.ai/index.html#EYBwNgdgXAbgjAKALRIQSQgZwK4CcCGEAxgKYCK2A9gC4mYAEAgiOAJZH7WuXQIID0-ehRokASiQCO2OtXoBtekgB89AMoBVAEIBZNABV9AUQAiAXQSYSuGOxLrswALatqE6bIQAKdzMzU1RxdqWgATAEoBIRFaX1kFTV0DYxMlVTEjAGEjNAA1U3oADXoMgCkslIsrGzt6IgALEiIAazj-bxjxJpJWGBIIqOEqWKk-OXkM7LyClRKjcsyUoqZM7IAFJeKjQrW0DPNLa1tSelxu3pJGCFDMxpbOjuGugCsmsMjBzrbxtPVtPUMpiqR1qgWcrm+3m+YOC70+T2+CX+yRm6SyOXyqWKZQqQMONRODSarVGnh8pP8EleRDh8NEiMUs0SAMq+OO9hhEIp1Ch3M5IX6kUEQ3p3KRSUBqVmkwxBWx81xB2q7LqdxJHnaXi+5z6A2F2o14xl0ylaIWmxW6wt212+2BBPsZ1IFyuNzVDy1T0YRFIIDh+oRYvkjFWRg2qPoawA8gAZNCZACaAH1MhlGNadns8cravgfSQ-Y9REYAB4gVhnAZ0kaGhS-ZkopUgk78yHkw38-3RQO1+QNyW-Y2Y5Y4xbZ5v2IktNva526oXd0W9ocR0cWkNWuX0G1ZpsO046y7XW7Ej2db2+rsimtjBQbsNLWbRuOJlNpjO28f7vOX7xrShgOwACemRnJwgp8AGS63oyqj9qyOYtkEXKGryHbIQKeqLje8R9siA7SuiJojgqY57iqU7qmMRYjHOEFQTh-gKCuppzOaW73uGWLbpmdpsrUTo9H0ronvcTw0SQpblpWHxAA",
+				link);
+	}
+
+	@Test
+	@DisabledOnOs({ OS.LINUX, OS.MAC })
+	public void canCreateSketchMinerLinkForFlowModelWin() throws IOException {
+		// given
+		ContextMappingModel model = getOriginalResourceOfTestCML("link-integ-test.cml").getContextMappingModel();
+		Flow flow = EcoreUtil2.eAllOfType(model, Flow.class).get(0);
+
+		// when
+		String link = new SketchMinerLinkCreator().createSketchMinerLink(flow);
+
+		// then
+		assertEquals(
+				"https://www.bpmn-sketch-miner.ai/index.html#EYBwNgdgXAbgjAWAFAFoXIJIQM4FcBOAhhAMYCmAirgPYAuZ2ABAIIjgCWJht710yyAPSDGVOmQBKZAI64GtRgG1GKAHyMAygFUAQgFkMAFUMBRACIBdZNjL4YnMptzAAtu1pTZ85AApPc7FoNZzdaegATAEohETF6f3klbX0jUzMVdQkTAGETDAA1c0YADUYsgCkctKskGzsHRhIACzISAGsEwN84yVaydhgyKJjRGniZAIVFLNyCorUyk0rstJKWbNyABVXSk2LNjCzLa1t7ckZ8PoGyZghw7Jb2nu6x3oArVojopBGezqmMppdAZjOYanUzo5gq53P9fP9oaEvr9Xv8ksDUvNMjk8oV0qUKlUwSd6udmq0OhNvEg-FTAlIPiRkT8kMJRuI0coFskQdUSZCnDCPHTaPCRYj3My2X8ReiUqD0gsZriigSlkTjrVTg1ye04TSZeRrsNWbFUbLpji5orscsdustva9gcjuDtedLkbBrd7o82s8Da9mCRyCApWaORbmBsTNssYxNgB5AAyGGyAE0APrZLLMJ37Q7ErWkxyEENkMMvcQmAAeIHYlxNKMjXkCSkBPMxmohDQlwtboppCJCkqG32l5oHct58eV1rWhJWRZ7ZL9+p8hv6gxNE5bkyUc7xgMX9ujjtVjGdhe77scnq3NzuDwpAY3QfLYbHzfGU8UZ9jqwLEmqYZtmub5i6y63owZahoOPibNQYCcAAntklzcF+LK7j++5cuonYKm6JaCqE67DkK4bsrhiSKIRgHYrMR5qnaUEkbqlIDlW4xelhOG9L+h6zuqS74g6AEXlerr8g097XD6z5PK83FkLW9aNt8yBAA",
+				link);
+	}
+
+	@Test
+	@DisabledOnOs({ OS.LINUX, OS.MAC })
+	public void canCreateSketchMinerLinkWithEObjectWin() throws IOException {
+		// given
+		ContextMappingModel model = getOriginalResourceOfTestCML("link-integ-test.cml").getContextMappingModel();
+		EObject flow = EcoreUtil2.eAllOfType(model, Flow.class).get(0);
+
+		// when
+		String link = new SketchMinerLinkCreator().createSketchMinerLink(flow);
+
+		// then
+		assertEquals(
+				"https://www.bpmn-sketch-miner.ai/index.html#EYBwNgdgXAbgjAWAFAFoXIJIQM4FcBOAhhAMYCmAirgPYAuZ2ABAIIjgCWJht710yyAPSDGVOmQBKZAI64GtRgG1GKAHyMAygFUAQgFkMAFUMBRACIBdZNjL4YnMptzAAtu1pTZ85AApPc7FoNZzdaegATAEohETF6f3klbX0jUzMVdQkTAGETDAA1c0YADUYsgCkctKskGzsHRhIACzISAGsEwN84yVaydhgyKJjRGniZAIVFLNyCorUyk0rstJKWbNyABVXSk2LNjCzLa1t7ckZ8PoGyZghw7Jb2nu6x3oArVojopBGezqmMppdAZjOYanUzo5gq53P9fP9oaEvr9Xv8ksDUvNMjk8oV0qUKlUwSd6udmq0OhNvEg-FTAlIPiRkT8kMJRuI0coFskQdUSZCnDCPHTaPCRYj3My2X8ReiUqD0gsZriigSlkTjrVTg1ye04TSZeRrsNWbFUbLpji5orscsdustva9gcjuDtedLkbBrd7o82s8Da9mCRyCApWaORbmBsTNssYxNgB5AAyGGyAE0APrZLLMJ37Q7ErWkxyEENkMMvcQmAAeIHYlxNKMjXkCSkBPMxmohDQlwtboppCJCkqG32l5oHct58eV1rWhJWRZ7ZL9+p8hv6gxNE5bkyUc7xgMX9ujjtVjGdhe77scnq3NzuDwpAY3QfLYbHzfGU8UZ9jqwLEmqYZtmub5i6y63owZahoOPibNQYCcAAntklzcF+LK7j++5cuonYKm6JaCqE67DkK4bsrhiSKIRgHYrMR5qnaUEkbqlIDlW4xelhOG9L+h6zuqS74g6AEXlerr8g097XD6z5PK83FkLW9aNt8yBAA",
 				link);
 	}
 
