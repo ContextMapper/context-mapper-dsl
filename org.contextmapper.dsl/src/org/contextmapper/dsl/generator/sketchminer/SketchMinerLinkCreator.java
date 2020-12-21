@@ -29,7 +29,8 @@ public class SketchMinerLinkCreator {
 
 	public String createSketchMinerLink(Flow flow) {
 		String sketchMinerInput = new SketchMinerModelCreator().createText(flow);
-		return SKETCH_MINER_URL + LZString.compressToEncodedURIComponent("bpln:v1" + System.lineSeparator() + "--" + System.lineSeparator() + sketchMinerInput);
+		return SKETCH_MINER_URL + LZString.compressToEncodedURIComponent(
+				"bpln:v1" + System.lineSeparator() + "--" + System.lineSeparator() + sketchMinerInput);
 	}
 
 	public String createSketchMinerLink(EObject flow) {
