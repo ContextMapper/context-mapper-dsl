@@ -17,7 +17,7 @@ jobs:
     - name: Install Graphviz
       run: sudo apt-get -y install graphviz
     - name: Gradle caches  
-    - uses: actions/cache@v2
+      uses: actions/cache@v2
       with:
         path: |
           ~/.gradle/caches
