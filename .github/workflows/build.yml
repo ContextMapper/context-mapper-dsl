@@ -5,7 +5,7 @@ on:
   pull_request:
 
 jobs:
-  build_eclipse:
+  build_standalone:
     runs-on: ubuntu-latest
     
     steps:
@@ -16,6 +16,15 @@ jobs:
         java-version: 11
     - name: Install Graphviz
       run: sudo apt-get -y install graphviz
+    - name: Gradle caches  
+    - uses: actions/cache@v2
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build with Gradle
@@ -23,7 +32,7 @@ jobs:
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1
 
-  build_standalone:
+  build_eclipse:
     runs-on: ubuntu-latest
         
     steps:
@@ -34,6 +43,13 @@ jobs:
         java-version: 11
     - name: Install Graphviz
       run: sudo apt-get -y install graphviz
+    - name: Cache local Maven repository
+      uses: actions/cache@v2
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
     - name: Grant execute permission for mvnw
       run: chmod +x mvnw
     - name: Build with Maven
