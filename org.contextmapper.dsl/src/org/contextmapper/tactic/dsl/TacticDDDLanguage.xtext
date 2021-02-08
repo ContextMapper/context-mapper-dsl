@@ -112,7 +112,7 @@ ServiceOperation :
 ;
 
 StateTransition:
-	(from+=[EnumValue] (',' from+=[EnumValue])?)? '->' target=StateTransitionTarget
+	(from+=[EnumValue] (',' from+=[EnumValue])*)? '->' target=StateTransitionTarget
 ;
 
 StateTransitionTarget:
