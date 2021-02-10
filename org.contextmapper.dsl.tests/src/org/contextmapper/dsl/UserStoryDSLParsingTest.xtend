@@ -135,6 +135,7 @@ class UserStoryDSLParsingTest {
 					I want to create a "Customer"
 					I want to update a "Customer"
 					I want to create an "Address"
+					I want to create the "Test"
 				so that "I can manage the customers data and ..."
 			}
 		''';
@@ -145,7 +146,7 @@ class UserStoryDSLParsingTest {
 		assertThatNoValidationErrorsOccurred(result);
 		
 		assertEquals(1, result.userRequirements.size)
-		assertEquals(3, result.userRequirements.get(0).features.size)
+		assertEquals(4, result.userRequirements.get(0).features.size)
 	}
 	
 	@Test
@@ -182,6 +183,7 @@ class UserStoryDSLParsingTest {
 					I want to "add" an "Address" with its "firstname", "lastname" to a "Customer"
 					I want to "add" an "Address" with its "firstname", "lastname" to an "Customer"
 					I want to "add" an "Address" with its "firstname", "lastname" to "Customer"
+					I want to "assign" an "Address" with its "firstname", "lastname" to a "Customer"
 				so that "I can manage the customers data and addresses"
 			}
 		''';
