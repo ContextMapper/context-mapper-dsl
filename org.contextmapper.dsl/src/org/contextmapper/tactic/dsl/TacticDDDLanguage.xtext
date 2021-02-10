@@ -368,6 +368,7 @@ Attribute :
     ((key?="key")? &
      ((notChangeable?=NOT "changeable") | ("changeable"))? &
      ((required?="required") | (NOT "required"))? &
+     ((unique?="unique") | (NOT "unique"))? &
      (((nullable?="nullable") | (NOT "nullable")) ("=" nullableMessage=STRING)?)? &
      (index?="index")? &
      ((assertFalse?="assertFalse") ("=" assertFalseMessage=STRING)?)? &
