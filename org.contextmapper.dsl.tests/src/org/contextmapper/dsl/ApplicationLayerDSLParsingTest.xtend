@@ -458,7 +458,7 @@ class ApplicationLayerDSLParsingTest {
 					}
 					
 					Flow TestFlow {
-						operation testOperation delegates to TestAggregate [STATE1, STATE2 -> STATE3] emits event TestEvent1 X TestEvent2
+						operation testOperation delegates to TestAggregate [STATE1, STATE2, STATE3 -> STATE4] emits event TestEvent1 X TestEvent2
 					}
 				}
 				
@@ -469,7 +469,7 @@ class ApplicationLayerDSLParsingTest {
 					enum States {
 						aggregateLifecycle
 						
-						STATE1, STATE2, STATE3
+						STATE1, STATE2, STATE3, STATE4
 					}
 				}
 			}
@@ -485,7 +485,8 @@ class ApplicationLayerDSLParsingTest {
 		assertNotNull(flowStep.stateTransition);
 		assertEquals("STATE1", flowStep.stateTransition.from.get(0).name);
 		assertEquals("STATE2", flowStep.stateTransition.from.get(1).name);
-		assertEquals("STATE3", flowStep.stateTransition.target.to.get(0).value.name);
+		assertEquals("STATE3", flowStep.stateTransition.from.get(2).name);
+		assertEquals("STATE4", flowStep.stateTransition.target.to.get(0).value.name);
 	}
 
 	@Test
