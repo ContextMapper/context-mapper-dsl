@@ -355,7 +355,9 @@ class UseCaseDSLParsingTest {
 		val String dslSnippet = '''
 			UseCase testUsecase {
 				actor = "Insurance Employee"
-				interactions = "add" an "Address" with its "firstname", "lastname" to "Customer"
+				interactions = 
+					"add" an "Address" with its "firstname", "lastname" to "Customer",
+					"add" an "Address" with its "firstname", "lastname" to a "Customer"
 				benefit = "I can manage the customers data and ..."
 			}
 		''';
@@ -365,8 +367,10 @@ class UseCaseDSLParsingTest {
 		assertThatNoParsingErrorsOccurred(result);
 		assertThatNoValidationErrorsOccurred(result);
 
-		val feature = result.userRequirements.get(0).features.get(0);
-		assertEquals("Customer", feature.containerEntity);
+		val feature1 = result.userRequirements.get(0).features.get(0);
+		val feature2 = result.userRequirements.get(0).features.get(1);
+		assertEquals("Customer", feature1.containerEntity);
+		assertEquals("Customer", feature2.containerEntity);
 	}
 
 	@Test
@@ -412,4 +416,27 @@ class UseCaseDSLParsingTest {
 		assertEquals("Sea Level", ur.level);
 	}
 
+	@Test
+	def void canDefineUseCaseWithMultipleFeatures() {
+		// given
+		val String dslSnippet = '''
+			UseCase testUsecase {
+				actor = "Insurance Employee"
+				interactions = 
+					create a "Customer",
+					create an "Address",
+					create the "Test"
+				benefit = "I can manage the customers addresses."
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		
+		assertEquals(1, result.userRequirements.size)
+		assertEquals(3, result.userRequirements.get(0).features.size)
+	}
+	
 }

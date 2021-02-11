@@ -313,11 +313,11 @@ Feature:
 ;
 
 NormalFeature:
-	verb=(UserActivityDefaultVerb | STRING) (entityArticle='a' | entityArticle='an')? entity=STRING ((entityAttributesPreposition='with its' | entityAttributesPreposition='with their') entityAttributes+=STRING ("," entityAttributes+=STRING)*)? ((containerEntityPreposition='in' | containerEntityPreposition='for' | containerEntityPreposition='to')(containerEntityArticle='a' | containerEntityArticle='an')? containerEntity=STRING)?
+	verb=(UserActivityDefaultVerb | STRING) (entityArticle='a' | entityArticle='an' | entityArticle='the')? entity=STRING ((entityAttributesPreposition='with its' | entityAttributesPreposition='with their') entityAttributes+=STRING ("," entityAttributes+=STRING)*)? ((containerEntityPreposition='in' | containerEntityPreposition='for' | containerEntityPreposition='to')(containerEntityArticle='a' | containerEntityArticle='an')? containerEntity=STRING)?
 ;
 
 StoryFeature:
-	'I want to' verb=(UserActivityDefaultVerb | STRING) (entityArticle='a' | entityArticle='an')? entity=STRING ((entityAttributesPreposition='with its' | entityAttributesPreposition='with their') entityAttributes+=STRING ("," entityAttributes+=STRING)*)? ((containerEntityPreposition='in' | containerEntityPreposition='for' | containerEntityPreposition='to')(containerEntityArticle='a' | containerEntityArticle='an')? containerEntity=STRING)?
+	'I want to' verb=(UserActivityDefaultVerb | STRING) (entityArticle='a' | entityArticle='an' | entityArticle='the')? entity=STRING ((entityAttributesPreposition='with its' | entityAttributesPreposition='with their') entityAttributes+=STRING ("," entityAttributes+=STRING)*)? ((containerEntityPreposition='in' | containerEntityPreposition='for' | containerEntityPreposition='to')(containerEntityArticle='a' | containerEntityArticle='an')? containerEntity=STRING)?
 ;
 
 UserActivityDefaultVerb:
