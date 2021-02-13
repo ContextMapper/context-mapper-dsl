@@ -17,6 +17,8 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 11
+    - name: Print Java version
+      run: java --version
     - name: Install Graphviz
       run: sudo apt-get -y install graphviz
     - name: Grant execute permission for gradlew
