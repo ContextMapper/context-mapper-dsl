@@ -9,7 +9,7 @@
 	<packaging>eclipse-repository</packaging>
 
 	<properties>
-		<bintray.repo>context-mapping-dsl</bintray.repo>
+		<bintray.repo>${BINTRAY_REPO}</bintray.repo>
 		<bintray.package>releases</bintray.package>
 		<site.label>ContextMapper DSL Composite Site</site.label>
 		<bintray.owner>contextmapper</bintray.owner>

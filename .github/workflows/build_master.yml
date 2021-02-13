@@ -98,3 +98,34 @@ jobs:
         GPG_KEY_PASSPHRASE: ${{ secrets.GPG_KEY_PASSPHRASE }}
         OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
         OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+
+  publish_eclipse_snapshot:
+    runs-on: ubuntu-latest
+
+    needs:
+     - build_eclipse
+     - build_standalone
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up JDK 11
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+    - name: Install Graphviz
+      run: sudo apt-get -y install graphviz
+    - name: Cache local Maven repository
+      uses: actions/cache@v2
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
+    - name: Grant execute permission for mvnw
+      run: chmod +x mvnw
+    - name: Publish Eclipse plugin to Snapshot Repo
+      run: ./mvnw --settings ./.github/workflows/settings.xml verify -Prelease-composite -DBINTRAY_REPO=context-mapping-dsl-snapshot
+      env:
+        BINTRAY_USERNAME: ${{ secrets.BINTRAY_USERNAME }}
+        BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
+

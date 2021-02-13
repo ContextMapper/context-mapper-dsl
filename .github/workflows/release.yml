@@ -1,4 +1,4 @@
-name: Build (master)
+name: Release Context Mapper
 
 on:
   push:
@@ -122,7 +122,7 @@ jobs:
     - name: Grant execute permission for mvnw
       run: chmod +x mvnw
     - name: Publish Eclipse plugin with Maven
-      run: ./mvnw --settings ./github/workflows/settings.xml clean verify -Prelease-composite
+      run: ./mvnw --settings ./.github/workflows/settings.xml clean verify -Prelease-composite -DBINTRAY_REPO=context-mapping-dsl
       env:
         BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
         BINTRAY_USERNAME: ${{ secrets.BINTRAY_USERNAME }}
