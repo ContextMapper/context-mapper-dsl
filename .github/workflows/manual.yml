@@ -28,4 +28,4 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build with Gradle
-      run: ./gradlew clean build
+      run: ./gradlew clean build --no-parallel --no-daemon
