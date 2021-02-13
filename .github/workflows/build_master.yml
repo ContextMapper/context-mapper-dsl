@@ -72,7 +72,7 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Publish standalone library
-      run: ./gradlew clean publish -Psigning.keyId=${GPG_KEY_ID} -Psigning.password=${GPG_KEY_PASSPHRASE} -Psigning.secretKeyRingFile=/home/runner/.gnupg/private.key
+      run: ./gradlew clean build publish -Psigning.keyId=${GPG_KEY_ID} -Psigning.password=${GPG_KEY_PASSPHRASE} -Psigning.secretKeyRingFile=/home/runner/.gnupg/private.key
       env:
         GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
         GPG_KEY_PASSPHRASE: ${{ secrets.GPG_KEY_PASSPHRASE }}
@@ -106,4 +106,3 @@ jobs:
       env:
         BINTRAY_USERNAME: ${{ secrets.BINTRAY_USERNAME }}
         BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
-
