@@ -42,7 +42,6 @@ import org.contextmapper.tactic.dsl.tacticdsl.Service;
 import org.contextmapper.tactic.dsl.tacticdsl.ServiceOperation;
 import org.contextmapper.tactic.dsl.tacticdsl.SimpleDomainObject;
 import org.contextmapper.tactic.dsl.tacticdsl.TacticdslFactory;
-import org.contextmapper.tactic.dsl.tacticdsl.ValueObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.xtext.EcoreUtil2;
 import org.eclipse.xtext.xbase.lib.IteratorExtensions;
@@ -66,11 +65,12 @@ public class DeriveBoundedContextFromSubdomains extends AbstractRefactoring impl
 	protected void doRefactor() {
 		Set<Subdomain> selectedSubdomains = collectSubdomains();
 		if (selectedSubdomains.isEmpty())
-			throw new RefactoringInputException("Please provide at least one subdomain name that can be found in the given CML model.");
+			throw new RefactoringInputException(
+					"Please provide at least one subdomain name that can be found in the given CML model.");
 
 		BoundedContext bc = createOrGetBoundedContext(boundedContextName);
-		bc.setDomainVisionStatement(
-				"This Bounded Context realizes the following subdomains: " + String.join(", ", selectedSubdomains.stream().map(sd -> sd.getName()).collect(Collectors.toList())));
+		bc.setDomainVisionStatement("This Bounded Context realizes the following subdomains: "
+				+ String.join(", ", selectedSubdomains.stream().map(sd -> sd.getName()).collect(Collectors.toList())));
 		bc.setType(BoundedContextType.FEATURE);
 		for (Subdomain subdomain : selectedSubdomains) {
 			addElementToEList(bc.getImplementedDomainParts(), (DomainPart) subdomain);
@@ -80,9 +80,11 @@ public class DeriveBoundedContextFromSubdomains extends AbstractRefactoring impl
 
 	private void createAggregate4Subdomain(Subdomain subdomain, BoundedContext bc) {
 		Aggregate aggregate = createOrGetAggregate(bc, getAggregateName(subdomain.getName() + "Aggregate", bc));
-		aggregate.setComment("/* This Aggregate contains the entities and services of the '" + subdomain.getName() + "' subdomain." + System.lineSeparator()
-				+ "	 * TODO: You can now refactor the Aggregate, for example by using the 'Split Aggregate by Entities' architectural refactoring." + System.lineSeparator()
-				+ "	 * TODO: Add attributes and operations to the entities." + System.lineSeparator() + "	 * TODO: Add operations to the services." + System.lineSeparator()
+		aggregate.setComment("/* This Aggregate contains the entities and services of the '" + subdomain.getName()
+				+ "' subdomain." + System.lineSeparator()
+				+ "	 * TODO: You can now refactor the Aggregate, for example by using the 'Split Aggregate by Entities' architectural refactoring."
+				+ System.lineSeparator() + "	 * TODO: Add attributes and operations to the entities."
+				+ System.lineSeparator() + "	 * TODO: Add operations to the services." + System.lineSeparator()
 				+ "	 * Find examples and further instructions on our website: https://contextmapper.org/docs/rapid-ooad/ */");
 
 		createEntities(subdomain, aggregate);
@@ -90,7 +92,8 @@ public class DeriveBoundedContextFromSubdomains extends AbstractRefactoring impl
 	}
 
 	private String getAggregateName(String initialName, BoundedContext bc) {
-		Set<String> currentBCAggregates = bc.getAggregates().stream().map(agg -> agg.getName()).collect(Collectors.toSet());
+		Set<String> currentBCAggregates = bc.getAggregates().stream().map(agg -> agg.getName())
+				.collect(Collectors.toSet());
 		if (currentBCAggregates.contains(initialName))
 			return initialName;
 
@@ -117,7 +120,8 @@ public class DeriveBoundedContextFromSubdomains extends AbstractRefactoring impl
 		for (Entity sdEntity : subdomain.getEntities()) {
 			if (entityAlreadyExistsInOtherContext(sdEntity.getName()))
 				throw new ContextMapperApplicationException(
-						"Cannot derive Bounded Context. Another context with an Entity of the name \"" + sdEntity.getName() + "\" already exists.");
+						"Cannot derive Bounded Context. Another context with an Entity of the name \""
+								+ sdEntity.getName() + "\" already exists.");
 
 			Entity bcEntity = createOrGetEntity(aggregate, sdEntity.getName());
 			bcEntity.setAggregateRoot(false);
@@ -125,11 +129,13 @@ public class DeriveBoundedContextFromSubdomains extends AbstractRefactoring impl
 			copyAttributes(sdEntity, bcEntity);
 
 			String idAttributeName = sdEntity.getName().toLowerCase() + "Id";
-			if (!bcEntity.getAttributes().stream().filter(a -> idAttributeName.equals(a.getName())).findFirst().isPresent()) {
-				Reference idReference = TacticdslFactory.eINSTANCE.createReference();
-				idReference.setDomainObjectType(createOrGetValueObject4ID(aggregate, sdEntity.getName() + "Id", idAttributeName));
-				idReference.setName(idAttributeName);
-				addElementToEList(bcEntity.getReferences(), idReference);
+			if (!bcEntity.getAttributes().stream().filter(a -> idAttributeName.equals(a.getName())).findFirst()
+					.isPresent()) {
+				Attribute idAttribute = TacticdslFactory.eINSTANCE.createAttribute();
+				idAttribute.setName(idAttributeName);
+				idAttribute.setType("String");
+				idAttribute.setKey(true);
+				addElementToEList(bcEntity.getAttributes(), idAttribute);
 			}
 		}
 		for (Entity sdEntity : subdomain.getEntities()) {
@@ -140,9 +146,11 @@ public class DeriveBoundedContextFromSubdomains extends AbstractRefactoring impl
 
 	private boolean entityAlreadyExistsInOtherContext(String entityName) {
 		Set<String> existingEntities = Sets.newHashSet();
-		Set<BoundedContext> boundedContexts = getAllBoundedContexts().stream().filter(bc -> !bc.getName().equals(boundedContextName)).collect(Collectors.toSet());
+		Set<BoundedContext> boundedContexts = getAllBoundedContexts().stream()
+				.filter(bc -> !bc.getName().equals(boundedContextName)).collect(Collectors.toSet());
 		for (BoundedContext bc : boundedContexts) {
-			existingEntities.addAll(Sets.newHashSet(IteratorExtensions.filter(EcoreUtil2.eAll(bc), Entity.class)).stream().map(e -> e.getName()).collect(Collectors.toSet()));
+			existingEntities.addAll(Sets.newHashSet(IteratorExtensions.filter(EcoreUtil2.eAll(bc), Entity.class))
+					.stream().map(e -> e.getName()).collect(Collectors.toSet()));
 		}
 		if (existingEntities.contains(entityName))
 			return true;
@@ -150,7 +158,8 @@ public class DeriveBoundedContextFromSubdomains extends AbstractRefactoring impl
 	}
 
 	private void copyAttributes(Entity source, Entity target) {
-		Set<String> existingAttrs = target.getAttributes().stream().map(attr -> attr.getName()).collect(Collectors.toSet());
+		Set<String> existingAttrs = target.getAttributes().stream().map(attr -> attr.getName())
+				.collect(Collectors.toSet());
 		for (Attribute sourceAttr : source.getAttributes()) {
 			if (existingAttrs.contains(sourceAttr.getName()))
 				continue;
@@ -159,14 +168,16 @@ public class DeriveBoundedContextFromSubdomains extends AbstractRefactoring impl
 	}
 
 	private void copyReferences(Entity source, Entity target, List<SimpleDomainObject> referenceableObjects) {
-		Set<String> existingRefs = target.getReferences().stream().map(ref -> ref.getName()).collect(Collectors.toSet());
+		Set<String> existingRefs = target.getReferences().stream().map(ref -> ref.getName())
+				.collect(Collectors.toSet());
 		for (Reference sourceRef : source.getReferences()) {
 			if (existingRefs.contains(sourceRef.getName()))
 				continue;
 			Reference newReference = TacticdslFactory.eINSTANCE.createReference();
 			newReference.setName(sourceRef.getName());
 			newReference.setCollectionType(sourceRef.getCollectionType());
-			newReference.setDomainObjectType(referenceableObjects.stream().filter(o -> o.getName().equals(sourceRef.getDomainObjectType().getName())).findFirst().get());
+			newReference.setDomainObjectType(referenceableObjects.stream()
+					.filter(o -> o.getName().equals(sourceRef.getDomainObjectType().getName())).findFirst().get());
 			addElementToEList(target.getReferences(), newReference);
 		}
 	}
@@ -182,7 +193,8 @@ public class DeriveBoundedContextFromSubdomains extends AbstractRefactoring impl
 	}
 
 	private void copyAndEnhanceOperations(Aggregate aggregate, Service source, Service target) {
-		Set<String> existingOperations = target.getOperations().stream().map(o -> o.getName()).collect(Collectors.toSet());
+		Set<String> existingOperations = target.getOperations().stream().map(o -> o.getName())
+				.collect(Collectors.toSet());
 		for (ServiceOperation sourceOperation : source.getOperations()) {
 			if (existingOperations.contains(sourceOperation.getName()))
 				continue;
@@ -201,14 +213,16 @@ public class DeriveBoundedContextFromSubdomains extends AbstractRefactoring impl
 
 			if (sourceOperation.getParameters().isEmpty()) {
 				ComplexType parameterType = getParameterType4Operation(aggregate, sourceOperation.getName());
-				addElementToEList(targetOperation.getParameters(), createParameter(getParameterName4ComplexType(parameterType), parameterType));
+				addElementToEList(targetOperation.getParameters(),
+						createParameter(getParameterName4ComplexType(parameterType), parameterType));
 			}
 			addElementToEList(target.getOperations(), targetOperation);
 		}
 	}
 
 	private BoundedContext createOrGetBoundedContext(String boundedContextName) {
-		Optional<BoundedContext> optContext = getAllBoundedContexts().stream().filter(bc -> boundedContextName.equals(bc.getName())).findFirst();
+		Optional<BoundedContext> optContext = getAllBoundedContexts().stream()
+				.filter(bc -> boundedContextName.equals(bc.getName())).findFirst();
 		if (optContext.isPresent())
 			return optContext.get();
 		BoundedContext newBC = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
@@ -219,13 +233,15 @@ public class DeriveBoundedContextFromSubdomains extends AbstractRefactoring impl
 
 	private Aggregate createOrGetAggregate(BoundedContext bc, String aggregateName) {
 		// try to find existing Aggregate
-		Optional<Aggregate> optAggregate = bc.getAggregates().stream().filter(agg -> aggregateName.equals(agg.getName())).findFirst();
+		Optional<Aggregate> optAggregate = bc.getAggregates().stream()
+				.filter(agg -> aggregateName.equals(agg.getName())).findFirst();
 		if (optAggregate.isPresent())
 			return optAggregate.get();
 
 		// try to find existing Aggregate in modules
 		for (SculptorModule module : bc.getModules()) {
-			optAggregate = module.getAggregates().stream().filter(agg -> aggregateName.equals(agg.getName())).findFirst();
+			optAggregate = module.getAggregates().stream().filter(agg -> aggregateName.equals(agg.getName()))
+					.findFirst();
 			if (optAggregate.isPresent())
 				return optAggregate.get();
 		}
@@ -237,7 +253,8 @@ public class DeriveBoundedContextFromSubdomains extends AbstractRefactoring impl
 	}
 
 	private Entity createOrGetEntity(Aggregate aggregate, String entityName) {
-		Optional<Entity> optEntity = aggregate.getDomainObjects().stream().filter(o -> o instanceof Entity && entityName.equals(o.getName())).map(o -> (Entity) o).findFirst();
+		Optional<Entity> optEntity = aggregate.getDomainObjects().stream()
+				.filter(o -> o instanceof Entity && entityName.equals(o.getName())).map(o -> (Entity) o).findFirst();
 		if (optEntity.isPresent())
 			return optEntity.get();
 
@@ -247,24 +264,9 @@ public class DeriveBoundedContextFromSubdomains extends AbstractRefactoring impl
 		return newEntity;
 	}
 
-	private ValueObject createOrGetValueObject4ID(Aggregate aggregate, String voName, String idName) {
-		Optional<ValueObject> optValueObject = aggregate.getDomainObjects().stream().filter(o -> o instanceof ValueObject && voName.equals(o.getName())).map(o -> (ValueObject) o)
-				.findFirst();
-		if (optValueObject.isPresent())
-			return optValueObject.get();
-
-		ValueObject vo = TacticdslFactory.eINSTANCE.createValueObject();
-		vo.setName(voName);
-		Attribute idAttr = TacticdslFactory.eINSTANCE.createAttribute();
-		idAttr.setName(idName);
-		idAttr.setType("Long");
-		addElementToEList(vo.getAttributes(), idAttr);
-		addElementToEList(aggregate.getDomainObjects(), vo);
-		return vo;
-	}
-
 	private Service createOrGetService(Aggregate aggregate, String serviceName) {
-		Optional<Service> optService = aggregate.getServices().stream().filter(s -> serviceName.equals(s.getName())).findFirst();
+		Optional<Service> optService = aggregate.getServices().stream().filter(s -> serviceName.equals(s.getName()))
+				.findFirst();
 		if (optService.isPresent())
 			return optService.get();
 
@@ -277,11 +279,12 @@ public class DeriveBoundedContextFromSubdomains extends AbstractRefactoring impl
 	private ComplexType getReturnType4Operation(Aggregate aggregate, String operationName) {
 		Entity correspondingEntity = resolveEntity4OperationByFeatures(aggregate, operationName);
 		if (correspondingEntity != null && operationName.startsWith("create")) {
-			return createComplexType(createOrGetValueObject4ID(aggregate, correspondingEntity.getName() + "Id", "id"));
-		} else if (correspondingEntity != null && (operationName.startsWith("read") || operationName.startsWith("get"))) {
+			return createComplexType("String");
+		} else if (correspondingEntity != null
+				&& (operationName.startsWith("read") || operationName.startsWith("get"))) {
 			return createComplexType(correspondingEntity, CollectionType.SET);
 		} else if (correspondingEntity != null && operationName.startsWith("update")) {
-			return createComplexType(createOrGetValueObject4ID(aggregate, correspondingEntity.getName() + "Id", "id"));
+			return createComplexType("String");
 		}
 		return createComplexType("boolean");
 	}
@@ -289,7 +292,9 @@ public class DeriveBoundedContextFromSubdomains extends AbstractRefactoring impl
 	private ComplexType getParameterType4Operation(Aggregate aggregate, String operationName) {
 		Entity correspondingEntity = resolveEntity4OperationByFeatures(aggregate, operationName);
 		if (correspondingEntity != null && (operationName.startsWith("read") || operationName.startsWith("get"))) {
-			return createComplexType(createOrGetValueObject4ID(aggregate, correspondingEntity.getName() + "Id", "id"), CollectionType.SET);
+			return createComplexType("String", CollectionType.SET);
+		} else if (correspondingEntity != null && (operationName.startsWith("delete"))) {
+				return createComplexType("String");
 		} else if (correspondingEntity != null) {
 			return createComplexType(correspondingEntity);
 		}
@@ -299,6 +304,13 @@ public class DeriveBoundedContextFromSubdomains extends AbstractRefactoring impl
 	private ComplexType createComplexType(String type) {
 		ComplexType complexType = TacticdslFactory.eINSTANCE.createComplexType();
 		complexType.setType(type);
+		return complexType;
+	}
+	
+	private ComplexType createComplexType(String type, CollectionType collectionType) {
+		ComplexType complexType = TacticdslFactory.eINSTANCE.createComplexType();
+		complexType.setType(type);
+		complexType.setCollectionType(collectionType);
 		return complexType;
 	}
 
@@ -318,7 +330,9 @@ public class DeriveBoundedContextFromSubdomains extends AbstractRefactoring impl
 		String parameterName = "input";
 		if (complexType.getDomainObjectType() != null)
 			parameterName = complexType.getDomainObjectType().getName();
-		if (complexType.getType() != null && !"".equals(complexType.getType()))
+		else if (complexType.getType() != null && "String".equals(complexType.getType()))
+			parameterName = "id";
+		else if (complexType.getType() != null && !"".equals(complexType.getType()))
 			parameterName = complexType.getType();
 		return parameterName.substring(0, 1).toLowerCase() + parameterName.substring(1);
 	}
@@ -337,7 +351,8 @@ public class DeriveBoundedContextFromSubdomains extends AbstractRefactoring impl
 		}
 		Set<Subdomain> subdomains = Sets.newHashSet();
 		for (String subdomainId : subdomainIds) {
-			Optional<Subdomain> optSubdomain = allSubdomains.stream().filter(sd -> subdomainId.equals(sd.getName())).findFirst();
+			Optional<Subdomain> optSubdomain = allSubdomains.stream().filter(sd -> subdomainId.equals(sd.getName()))
+					.findFirst();
 			if (optSubdomain.isPresent())
 				subdomains.add(optSubdomain.get());
 		}
@@ -348,9 +363,10 @@ public class DeriveBoundedContextFromSubdomains extends AbstractRefactoring impl
 		BoundedContext bc = objectResolver.resolveBoundedContext(aggregate2Search);
 		Set<Feature> features = objectResolver.resolveFeatures(bc);
 		for (Feature feature : features) {
-			if (operationName.equals(feature.getVerb() + feature.getEntity()) || operationName.endsWith(feature.getEntity())) {
-				return aggregate2Search.getDomainObjects().stream().filter(o -> o instanceof Entity).map(o -> (Entity) o).filter(o -> o.getName().equals(feature.getEntity()))
-						.findFirst().get();
+			if (operationName.equals(feature.getVerb() + feature.getEntity())
+					|| operationName.endsWith(feature.getEntity())) {
+				return aggregate2Search.getDomainObjects().stream().filter(o -> o instanceof Entity)
+						.map(o -> (Entity) o).filter(o -> o.getName().equals(feature.getEntity())).findFirst().get();
 			}
 		}
 		return null;

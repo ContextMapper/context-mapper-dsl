@@ -36,6 +36,7 @@ import org.contextmapper.dsl.contextMappingDSL.BoundedContextType;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.exception.ContextMapperApplicationException;
 import org.contextmapper.dsl.refactoring.exception.RefactoringInputException;
+import org.contextmapper.tactic.dsl.tacticdsl.Attribute;
 import org.contextmapper.tactic.dsl.tacticdsl.Entity;
 import org.contextmapper.tactic.dsl.tacticdsl.Parameter;
 import org.contextmapper.tactic.dsl.tacticdsl.Reference;
@@ -75,19 +76,20 @@ public class DeriveBoundedContextFromSubdomainsTest extends AbstractRefactoringT
 
 		Aggregate aggregate = bc.getAggregates().get(0);
 		assertEquals("CustomerDomainAggregate", aggregate.getName());
-		assertEquals(2, aggregate.getDomainObjects().size());
+		assertEquals(1, aggregate.getDomainObjects().size());
 		assertNotNull(aggregate.getDomainObjects().get(0));
 		assertTrue(aggregate.getDomainObjects().get(0) instanceof Entity);
 
 		Entity entity = (Entity) aggregate.getDomainObjects().get(0);
 		assertEquals("Customer", entity.getName());
 		assertFalse(entity.isAggregateRoot());
-		assertEquals(1, entity.getReferences().size());
+		assertEquals(1, entity.getAttributes().size());
 
-		Reference ref = entity.getReferences().get(0);
-		assertNotNull(ref);
-		assertEquals("customerId", ref.getName());
-		assertEquals("CustomerId", ref.getDomainObjectType().getName());
+		Attribute idAttr = entity.getAttributes().get(0);
+		assertNotNull(idAttr);
+		assertEquals("customerId", idAttr.getName());
+		assertEquals("String", idAttr.getType());
+		assertTrue(idAttr.isKey());
 	}
 
 	@ParameterizedTest
@@ -174,11 +176,11 @@ public class DeriveBoundedContextFromSubdomainsTest extends AbstractRefactoringT
 		assertNotNull(bc.getAggregates().get(0));
 
 		Aggregate aggregate = bc.getAggregates().get(0);
-		assertEquals(4, aggregate.getDomainObjects().size());
+		assertEquals(2, aggregate.getDomainObjects().size());
 
 		Entity entity = (Entity) aggregate.getDomainObjects().stream().filter(e -> e.getName().equals("Customer")).findAny().get();
-		assertEquals(2, entity.getAttributes().size());
-		assertEquals(3, entity.getReferences().size());
+		assertEquals(3, entity.getAttributes().size());
+		assertEquals(2, entity.getReferences().size());
 	}
 
 	@ParameterizedTest
@@ -213,7 +215,7 @@ public class DeriveBoundedContextFromSubdomainsTest extends AbstractRefactoringT
 
 		ServiceOperation createOperation = service.getOperations().stream().filter(o -> o.getName().equals("createCustomer")).findFirst().get();
 		assertEquals("createCustomer", createOperation.getName());
-		assertEquals("CustomerId", createOperation.getReturnType().getDomainObjectType().getName());
+		assertEquals("String", createOperation.getReturnType().getType());
 		assertEquals(1, createOperation.getParameters().size());
 
 		Parameter parameter = createOperation.getParameters().get(0);
@@ -226,8 +228,8 @@ public class DeriveBoundedContextFromSubdomainsTest extends AbstractRefactoringT
 		assertEquals(1, readOperation.getParameters().size());
 
 		parameter = readOperation.getParameters().get(0);
-		assertEquals("customerId", parameter.getName());
-		assertEquals("CustomerId", parameter.getParameterType().getDomainObjectType().getName());
+		assertEquals("id", parameter.getName());
+		assertEquals("String", parameter.getParameterType().getType());
 	}
 
 	@ParameterizedTest
@@ -262,7 +264,7 @@ public class DeriveBoundedContextFromSubdomainsTest extends AbstractRefactoringT
 
 		ServiceOperation createOperation = service.getOperations().stream().filter(o -> o.getName().equals("createCustomer")).findFirst().get();
 		assertEquals("createCustomer", createOperation.getName());
-		assertEquals("CustomerId", createOperation.getReturnType().getDomainObjectType().getName());
+		assertEquals("String", createOperation.getReturnType().getType());
 		assertEquals(1, createOperation.getParameters().size());
 
 		Parameter parameter = createOperation.getParameters().get(0);
@@ -275,8 +277,8 @@ public class DeriveBoundedContextFromSubdomainsTest extends AbstractRefactoringT
 		assertEquals(1, readOperation.getParameters().size());
 
 		parameter = readOperation.getParameters().get(0);
-		assertEquals("customerId", parameter.getName());
-		assertEquals("CustomerId", parameter.getParameterType().getDomainObjectType().getName());
+		assertEquals("id", parameter.getName());
+		assertEquals("String", parameter.getParameterType().getType());
 	}
 
 	@Test
