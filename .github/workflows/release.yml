@@ -17,13 +17,6 @@ jobs:
         java-version: 11
     - name: Install Graphviz
       run: sudo apt-get -y install graphviz
-    - name: Gradle caches  
-      uses: actions/cache@v2
-      with:
-        path: |
-          ~/.gradle/caches
-          ~/.gradle/wrapper
-        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build with Gradle
@@ -67,13 +60,6 @@ jobs:
         java-version: 11
     - name: Install Graphviz
       run: sudo apt-get -y install graphviz
-    - name: Gradle caches  
-      uses: actions/cache@v2
-      with:
-        path: |
-          ~/.gradle/caches
-          ~/.gradle/wrapper
-        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
     - name: Configure GPG Key
       run: |
         mkdir -p ~/.gnupg/
