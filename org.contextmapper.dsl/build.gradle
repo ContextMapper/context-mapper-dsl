@@ -45,6 +45,12 @@ eclipse.classpath.plusConfigurations += [configurations.mwe2]
 eclipseClasspath.enabled=false
 cleanEclipseClasspath.enabled=false
 
+clean {
+    delete 'src-gen'
+    delete 'xtend-gen'
+    delete 'model'
+}
+
 task sourcesJar(type: Jar) {
     from sourceSets.main.allJava
     archiveClassifier = 'sources'
