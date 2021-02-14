@@ -7,7 +7,7 @@ on:
 
 jobs:
   build_standalone:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-16.04
     
     steps:
     - uses: actions/checkout@v2
@@ -17,15 +17,24 @@ jobs:
         java-version: 11
     - name: Install Graphviz
       run: sudo apt-get -y install graphviz
+    - name: Gradle caches  
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build with Gradle
-      run: ./gradlew build
+      run: ./gradlew clean build
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1
 
   build_eclipse:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-16.04
         
     steps:
     - uses: actions/checkout@v2
@@ -40,13 +49,15 @@ jobs:
       with:
         path: ~/.m2/repository
         key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
     - name: Grant execute permission for mvnw
       run: chmod +x mvnw
     - name: Build with Maven
       run: ./mvnw clean verify
 
   publish_standalone_lib:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-16.04
 
     needs:
      - build_eclipse
@@ -60,6 +71,15 @@ jobs:
         java-version: 11
     - name: Install Graphviz
       run: sudo apt-get -y install graphviz
+    - name: Gradle caches  
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
     - name: Configure GPG Key
       run: |
         mkdir -p ~/.gnupg/
@@ -78,7 +98,7 @@ jobs:
         OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
 
   publish_eclipse:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-16.04
 
     needs:
      - build_eclipse
@@ -97,6 +117,8 @@ jobs:
       with:
         path: ~/.m2/repository
         key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
     - name: Grant execute permission for mvnw
       run: chmod +x mvnw
     - name: Publish Eclipse plugin with Maven
@@ -104,4 +126,5 @@ jobs:
       env:
         BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
         BINTRAY_USERNAME: ${{ secrets.BINTRAY_USERNAME }}
+
 

@@ -9,18 +9,25 @@ on:
 
 jobs:
   build_standalone:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-16.04
     
     steps:
     - uses: actions/checkout@v2
-    - name: Setup JDK 11
-      uses: joschi/setup-jdk@v2
+    - name: Set up JDK 11
+      uses: actions/setup-java@v1
       with:
-        java-version: '11'
-    - name: Print Java version
-      run: java --version
+        java-version: 11
     - name: Install Graphviz
       run: sudo apt-get -y install graphviz
+    - name: Gradle caches  
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build with Gradle
@@ -29,14 +36,14 @@ jobs:
       uses: codecov/codecov-action@v1
 
   build_eclipse:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-16.04
         
     steps:
     - uses: actions/checkout@v2
     - name: Set up JDK 11
-      uses: joschi/setup-jdk@v2
+      uses: actions/setup-java@v1
       with:
-        java-version: '11'
+        java-version: 11
     - name: Install Graphviz
       run: sudo apt-get -y install graphviz
     - name: Cache local Maven repository
@@ -44,13 +51,15 @@ jobs:
       with:
         path: ~/.m2/repository
         key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
     - name: Grant execute permission for mvnw
       run: chmod +x mvnw
     - name: Build with Maven
       run: ./mvnw clean verify
 
   publish_standalone_lib:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-16.04
 
     needs:
      - build_eclipse
@@ -59,11 +68,20 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Set up JDK 11
-      uses: joschi/setup-jdk@v2
+      uses: actions/setup-java@v1
       with:
-        java-version: '11'
+        java-version: 11
     - name: Install Graphviz
       run: sudo apt-get -y install graphviz
+    - name: Gradle caches  
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
     - name: Configure GPG Key
       run: |
         mkdir -p ~/.gnupg/
@@ -74,7 +92,7 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Publish standalone library
-      run: ./gradlew clean build publish -Psigning.keyId=${GPG_KEY_ID} -Psigning.password=${GPG_KEY_PASSPHRASE} -Psigning.secretKeyRingFile=/home/runner/.gnupg/private.key
+      run: ./gradlew clean publish -Psigning.keyId=${GPG_KEY_ID} -Psigning.password=${GPG_KEY_PASSPHRASE} -Psigning.secretKeyRingFile=/home/runner/.gnupg/private.key
       env:
         GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
         GPG_KEY_PASSPHRASE: ${{ secrets.GPG_KEY_PASSPHRASE }}
@@ -82,7 +100,7 @@ jobs:
         OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
 
   publish_eclipse_snapshot:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-16.04
 
     needs:
      - build_eclipse
@@ -91,9 +109,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Set up JDK 11
-      uses: joschi/setup-jdk@v2
+      uses: actions/setup-java@v1
       with:
-        java-version: '11'
+        java-version: 11
     - name: Install Graphviz
       run: sudo apt-get -y install graphviz
     - name: Cache local Maven repository
@@ -101,6 +119,8 @@ jobs:
       with:
         path: ~/.m2/repository
         key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
     - name: Grant execute permission for mvnw
       run: chmod +x mvnw
     - name: Publish Eclipse plugin to Snapshot Repo
@@ -108,3 +128,5 @@ jobs:
       env:
         BINTRAY_USERNAME: ${{ secrets.BINTRAY_USERNAME }}
         BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
+
+
