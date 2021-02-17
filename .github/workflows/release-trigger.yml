@@ -19,8 +19,8 @@ jobs:
         server-id: github
     - name: Configure Git user
       run: |
-        git config user.email "actions@github.com"
-        git config user.name "GitHub Actions"
+        git config user.email "contextmapper-ci@kapferer.ch"
+        git config user.name "Context Mapper CI"
     - name: Install Graphviz
       run: sudo apt-get -y install graphviz
     - name: Cache local Maven repository
