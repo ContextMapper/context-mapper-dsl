@@ -9,6 +9,7 @@ on:
 
 jobs:
   build_standalone:
+    if: startsWith(github.event.head_commit.message, '[Tycho]') == false && startsWith(github.event.head_commit.message, '[maven-release-plugin] prepare release v') == false
     runs-on: ubuntu-16.04
     
     steps:
@@ -36,6 +37,7 @@ jobs:
       uses: codecov/codecov-action@v1
 
   build_eclipse:
+    if: startsWith(github.event.head_commit.message, '[Tycho]') == false && startsWith(github.event.head_commit.message, '[maven-release-plugin] prepare release v') == false
     runs-on: ubuntu-16.04
         
     steps:
@@ -59,6 +61,7 @@ jobs:
       run: ./mvnw clean verify
 
   publish_standalone_lib:
+    if: startsWith(github.event.head_commit.message, '[Tycho]') == false && startsWith(github.event.head_commit.message, '[maven-release-plugin] prepare release v') == false
     runs-on: ubuntu-16.04
 
     needs:
@@ -100,6 +103,7 @@ jobs:
         OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
 
   publish_eclipse_snapshot:
+    if: startsWith(github.event.head_commit.message, '[Tycho]') == false && startsWith(github.event.head_commit.message, '[maven-release-plugin] prepare release v') == false
     runs-on: ubuntu-16.04
 
     needs:
