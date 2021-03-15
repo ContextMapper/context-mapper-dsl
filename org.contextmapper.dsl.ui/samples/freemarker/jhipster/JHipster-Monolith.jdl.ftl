@@ -50,8 +50,8 @@ application {
 		applicationType monolith
 		serverPort 8080
 		enableSwaggerCodegen true
-		clientFramework react <#-- default not displaying correctly on some hosts -->
-		prodDatabaseType postgresql <#--  to use free Heroku tier (accounts that are not validated) -->
+		clientFramework react
+		prodDatabaseType postgresql
 	}
 	<#if allEntityNames?has_content>
 	entities ${allEntityNames?join(", ")}

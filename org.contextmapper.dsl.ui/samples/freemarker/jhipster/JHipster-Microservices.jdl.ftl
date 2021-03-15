@@ -11,7 +11,7 @@
 <#-- 
  counter to give microservices different ports 
 -->
-<#assign portCounter = 8083 /> <#-- start later to avoid Windows issues --> 
+<#assign portCounter = 8083 />
 <#-- 
  loop to collect entity data per Bounded Context (BC) and create application plus microservice for each BC
 -->
@@ -51,12 +51,12 @@ microservice ${entityNames?join(", ")} with ${bc.name}<#lt>
 application {
 	config {
 		baseName ${bc.name}
-		packageName ${bc.name?lower_case} <#-- taken out: org.contextmapper.generated. -->
+		packageName ${bc.name?lower_case}
 		applicationType microservice
 		serverPort ${portCounter?int?c}
 		enableSwaggerCodegen true
-		clientFramework react <#-- default not displaying correctly on some hosts -->
-		prodDatabaseType postgresql <#--  to use free Heroku tier (accounts that are not validated) -->
+		clientFramework react
+		prodDatabaseType postgresql
 	}
 	<#if entityNames?has_content>
 	entities ${entityNames?join(", ")}
@@ -90,7 +90,7 @@ application {
 application {
 	config {
 		baseName gateway
-		packageName org.contextmapper.generated.gateway
+		packageName gateway
 		applicationType gateway
 		serverPort 8080
 	}
