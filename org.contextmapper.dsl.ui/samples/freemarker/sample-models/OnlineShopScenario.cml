@@ -1,0 +1,132 @@
+// note: no context map in this example (by intent)
+
+BoundedContext OnlineShopFeatures implements BusinessToConsumer {
+	domainVisionStatement "This Bounded Context realizes the following subdomains: BusinessToConsumer"
+	type FEATURE
+
+	Aggregate OrderAggregate {
+		Service UC2BrowseAndBuyService {
+			Set<@Product> readProduct (Set<@ProductId> productId);
+			@OrderId createOrder (@Order order);
+			@OrderItemId createOrderItem (@OrderItem orderItem);
+		}
+		ValueObject OrderId {
+			Long orderId
+		}
+		ValueObject OrderItemId {
+			Long orderitemId
+		}
+		Entity Order {
+			String orderNumber
+			- List<OrderItem> orderitemList
+			- OrderId orderId
+		}
+	}
+	Aggregate OrderItemAggregate {
+		Entity OrderItem {
+			aggregateRoot
+			String productName
+			String price
+			- OrderItemId orderitemId
+		}
+	}
+}
+
+BoundedContext ProductContext {
+	// type FEATURE could be derived/defined during refactoring
+	Aggregate ProductCatalogAggregate {
+		Entity ProductCatalog {
+			aggregateRoot
+			- ProductCatalogId productcatalogId
+			- List<Product> productList
+		}
+		ValueObject ProductCatalogId {
+			Long productcatalogId
+		}
+		Entity Product {
+			String productName
+			String image
+			String productCategory
+			- ProductId productId
+		}
+		ValueObject ProductId {
+			Long productId
+		}
+	}
+}
+
+BoundedContext CustomerContext {
+	Aggregate CustomerAggregate {
+		Service UC1RegisterService {
+			@CustomerAccountId createCustomerAccount (@CustomerAccount customerAccount);
+		}
+		Entity CustomerAccount {
+			aggregateRoot
+			String name
+			String address
+			- CustomerAccountId customeraccountId
+		}
+		ValueObject CustomerAccountId {
+			Long customeraccountId
+		}
+	}
+}
+
+Domain ECommerce {
+	Subdomain BusinessToConsumer supports UC1Register , UC2BrowseAndBuy {
+		domainVisionStatement "Aims at promoting the following benefit for a OnlineShopper: shop online and do not have to leave home; Aims at promoting the following benefit for a OnlineShopper: get best price"
+		Entity CustomerAccount {
+			String name
+			String address
+		}
+		Entity Product {
+			String productName
+			String image
+			String productCategory
+		}
+		Entity ProductCatalog {
+			- List<Product> productList
+		}
+		Entity Order {
+			String orderNumber
+			- List<OrderItem> orderitemList
+		}
+		Entity OrderItem {
+			String productName
+			String price
+		}
+		Service UC1RegisterService {
+			createCustomerAccount;
+		}
+		Service UC2BrowseAndBuyService {
+			readProduct;
+			createOrder;
+			createOrderItem;
+		}
+	}
+
+}
+
+UseCase UC1Register {
+	actor = "OnlineShopper"
+	interactions =
+	create a "CustomerAccount" with its "Name", "Address"
+	benefit "shop online and do not have to leave home"
+}
+
+UseCase UC1Ads {
+	actor = "OnlineShopper2"
+	interactions =
+	"add" a "CustomerAccount" to a "CustomerCollection"
+	benefit "shop online and do not have to leave home"
+}
+
+UseCase UC2BrowseAndBuy {
+	actor = "OnlineShopper"
+	interactions =
+	read a "Product" with its "productName", "image", "productCategory" in a "ProductCatalog",
+	create an "Order" with its "OrderNumber",
+	create an "OrderItem" with its "productName", "price" in an "Order"
+	benefit "get best price"
+}
+
