@@ -131,6 +131,32 @@ class PlantUMLGeneratorTest extends AbstractCMLInputFileTest {
 	}
 
 	@Test
+	void canCreateClass4AggregateIfAvailable() throws IOException {
+		// given
+		ContextMappingModel model = getOriginalResourceOfTestCML("class-diagram-generation-aggregate-test-1.cml").getContextMappingModel();
+
+		// when
+		IFileSystemAccess2Mock filesystem = new IFileSystemAccess2Mock();
+		this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem, new IGeneratorContextMock());
+
+		// then
+		assertTrue(filesystem.getGeneratedFilesSet().contains("testmodel_BC_InsuranceQuotes_QuoteRequest.puml"));
+	}
+	
+	@Test
+	void canCreateClass4ModuleIfAvailable() throws IOException {
+		// given
+		ContextMappingModel model = getOriginalResourceOfTestCML("class-diagram-generation-module-test-1.cml").getContextMappingModel();
+
+		// when
+		IFileSystemAccess2Mock filesystem = new IFileSystemAccess2Mock();
+		this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem, new IGeneratorContextMock());
+
+		// then
+		assertTrue(filesystem.getGeneratedFilesSet().contains("testmodel_BC_InsuranceQuotes_QuoteRequest.puml"));
+	}
+	
+	@Test
 	void canCreateStateDiagram4AggregateIfAvailable() throws IOException {
 		// given
 		ContextMappingModel model = getOriginalResourceOfTestCML("state-diagram-generation-aggregate-test-1.cml").getContextMappingModel();

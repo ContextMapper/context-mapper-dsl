@@ -30,7 +30,6 @@ import org.contextmapper.tactic.dsl.tacticdsl.CommandEvent;
 import org.contextmapper.tactic.dsl.tacticdsl.DomainEvent;
 import org.contextmapper.tactic.dsl.tacticdsl.Entity;
 import org.contextmapper.tactic.dsl.tacticdsl.Service;
-import org.contextmapper.tactic.dsl.tacticdsl.ServiceOperation;
 import org.contextmapper.tactic.dsl.tacticdsl.SimpleDomainObject;
 import org.eclipse.xtext.EcoreUtil2;
 
@@ -91,42 +90,6 @@ public class PlantUMLBoundedContextClassDiagramCreator extends AbstractPlantUMLC
 		linebreak();
 	}
 
-	private void printModule(SculptorModule module) {
-		sb.append("package ");
-		if (module.getBasePackage() != null && !"".equals(module.getBasePackage()))
-			sb.append(module.getBasePackage()).append(".").append(module.getName());
-		else
-			sb.append(module.getName());
-		sb.append(" {");
-		linebreak();
-		for (Aggregate aggregate : module.getAggregates()) {
-			printAggregate(aggregate, 1);
-		}
-		for (SimpleDomainObject simpleDomainObject : module.getDomainObjects()) {
-			printDomainObject(simpleDomainObject, 1);
-		}
-		for (Service service : module.getServices()) {
-			printService(service, 1);
-		}
-		sb.append("}");
-		linebreak();
-	}
-
-	private void printAggregate(Aggregate aggregate, int indentation) {
-		printIndentation(indentation);
-		sb.append("package ").append("\"'").append(aggregate.getName()).append("' ").append("Aggregate\"").append(" <<Rectangle>> ").append("{");
-		linebreak();
-		for (SimpleDomainObject domainObject : aggregate.getDomainObjects()) {
-			printDomainObject(domainObject, indentation + 1);
-		}
-		for (Service service : aggregate.getServices()) {
-			printService(service, indentation + 1);
-		}
-		printIndentation(indentation);
-		sb.append("}");
-		linebreak();
-	}
-
 	private void printApplication(Application application, int indentation) {
 		printIndentation(indentation);
 		String name = StringUtils.isNotEmpty(application.getName()) ? application.getName() : "Application";
@@ -155,24 +118,6 @@ public class PlantUMLBoundedContextClassDiagramCreator extends AbstractPlantUMLC
 		printIndentation(indentation);
 		sb.append("}");
 		linebreak();
-	}
-
-	private void printService(Service service, int indentation) {
-		printIndentation(indentation);
-		sb.append("class").append(" ").append(service.getName());
-		sb.append(" <<(S,DarkSeaGreen) Service>> ");
-		sb.append("{");
-		linebreak();
-		printServiceOperations(service.getName(), service.getOperations(), indentation + 1);
-		printIndentation(indentation);
-		sb.append("}");
-		linebreak();
-	}
-
-	private void printServiceOperations(String objectName, List<ServiceOperation> operations, int indentation) {
-		for (ServiceOperation operation : operations) {
-			printOperation(objectName, operation.getName(), operation.getReturnType(), operation.getParameters(), indentation);
-		}
 	}
 
 	private List<Subdomain> getSubdomains(List<DomainPart> domainParts) {

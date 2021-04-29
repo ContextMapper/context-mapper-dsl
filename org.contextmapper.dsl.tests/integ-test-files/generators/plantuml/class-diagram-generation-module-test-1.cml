@@ -1,0 +1,21 @@
+BoundedContext InsuranceQuotes {
+ 	
+ 	Module QuoteRequest {
+ 		Entity QuoteRequest {
+ 			aggregateRoot
+ 		}
+ 		
+ 		
+ 		enum RequestState {
+ 			aggregateLifecycle
+ 			REQUEST_SUBMITTED, QUOTE_RECEIVED, REQUEST_REJECTED, QUOTE_ACCEPTED, QUOTE_REJECTED, QUOTE_EXPIRED, POLICY_CREATED
+ 		}
+ 	}
+ 	
+ 	Aggregate AnotherAggregateThatMustBeIgnored {
+ 		enum States {
+ 			REQUEST_SUBMITTED, QUOTE_RECEIVED, REQUEST_REJECTED, QUOTE_ACCEPTED, QUOTE_REJECTED, QUOTE_EXPIRED, POLICY_CREATED
+ 		}
+ 	}
+ 	
+ }
