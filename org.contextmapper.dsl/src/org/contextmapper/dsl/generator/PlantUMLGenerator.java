@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2020 The Context Mapper Project Team
+ * Copyright 2018-2021 The Context Mapper Project Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,10 +23,13 @@ import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.Domain;
 import org.contextmapper.dsl.contextMappingDSL.Flow;
+import org.contextmapper.dsl.contextMappingDSL.SculptorModule;
 import org.contextmapper.dsl.contextMappingDSL.Subdomain;
 import org.contextmapper.dsl.generator.exception.GeneratorInputException;
+import org.contextmapper.dsl.generator.plantuml.PlantUMLAggregateClassDiagramCreator;
 import org.contextmapper.dsl.generator.plantuml.PlantUMLBoundedContextClassDiagramCreator;
 import org.contextmapper.dsl.generator.plantuml.PlantUMLComponentDiagramCreator;
+import org.contextmapper.dsl.generator.plantuml.PlantUMLModuleClassDiagramCreator;
 import org.contextmapper.dsl.generator.plantuml.PlantUMLStateDiagramCreator4Aggregate;
 import org.contextmapper.dsl.generator.plantuml.PlantUMLStateDiagramCreator4Flow;
 import org.contextmapper.dsl.generator.plantuml.PlantUMLSubdomainClassDiagramCreator;
@@ -52,15 +55,31 @@ public class PlantUMLGenerator extends AbstractContextMappingModelGenerator {
 
 		// generate class and state diagrams for Bounded Contexts
 		for (BoundedContext boundedContext : model.getBoundedContexts()) {
+			
+			// class diagram for complete BC
 			fsa.generateFile(fileName + "_BC_" + boundedContext.getName() + "." + PLANT_UML_FILE_EXT,
 					new PlantUMLBoundedContextClassDiagramCreator().createDiagram(boundedContext));
 
+			// class diagram for aggregates
+			for(Aggregate aggregate : boundedContext.getAggregates()) {
+				fsa.generateFile(fileName + "_BC_" + boundedContext.getName() + "_" + aggregate.getName() + "." + PLANT_UML_FILE_EXT,
+						new PlantUMLAggregateClassDiagramCreator().createDiagram(aggregate));
+			}
+			
+			// class diagram for modules
+			for(SculptorModule module : boundedContext.getModules()) {
+				fsa.generateFile(fileName + "_BC_" + boundedContext.getName() + "_" + module.getName() + "." + PLANT_UML_FILE_EXT,
+						new PlantUMLModuleClassDiagramCreator().createDiagram(module));
+			}
+			
+			// state diagram for aggregates
 			List<Aggregate> aggregatesWithStates = getAggregatesWithStatesAndTransitions(boundedContext);
 			for (Aggregate aggregate : aggregatesWithStates) {
 				fsa.generateFile(fileName + "_BC_" + boundedContext.getName() + "_" + aggregate.getName() + "_StateDiagram" + "." + PLANT_UML_FILE_EXT,
 						new PlantUMLStateDiagramCreator4Aggregate().createDiagram(aggregate));
 			}
 
+			// state diagram for flows
 			for (Flow flow : getFlowsWithStates(boundedContext)) {
 				fsa.generateFile(fileName + "_BC_" + boundedContext.getName() + "_" + flow.getName() + "_StateDiagram." + PLANT_UML_FILE_EXT,
 						new PlantUMLStateDiagramCreator4Flow().createDiagram(flow));

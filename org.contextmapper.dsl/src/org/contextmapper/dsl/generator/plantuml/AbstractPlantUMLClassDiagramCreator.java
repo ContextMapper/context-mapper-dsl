@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 The Context Mapper Project Team
+ * Copyright 2019-2021 The Context Mapper Project Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@ package org.contextmapper.dsl.generator.plantuml;
 
 import java.util.List;
 
+import org.contextmapper.dsl.contextMappingDSL.Aggregate;
+import org.contextmapper.dsl.contextMappingDSL.SculptorModule;
 import org.contextmapper.tactic.dsl.tacticdsl.Attribute;
 import org.contextmapper.tactic.dsl.tacticdsl.CollectionType;
 import org.contextmapper.tactic.dsl.tacticdsl.CommandEvent;
@@ -30,6 +32,8 @@ import org.contextmapper.tactic.dsl.tacticdsl.EnumValue;
 import org.contextmapper.tactic.dsl.tacticdsl.Event;
 import org.contextmapper.tactic.dsl.tacticdsl.Parameter;
 import org.contextmapper.tactic.dsl.tacticdsl.Reference;
+import org.contextmapper.tactic.dsl.tacticdsl.Service;
+import org.contextmapper.tactic.dsl.tacticdsl.ServiceOperation;
 import org.contextmapper.tactic.dsl.tacticdsl.SimpleDomainObject;
 import org.contextmapper.tactic.dsl.tacticdsl.ValueObject;
 import org.eclipse.emf.ecore.EObject;
@@ -53,6 +57,60 @@ abstract public class AbstractPlantUMLClassDiagramCreator<T extends EObject> ext
 			printValueObject((ValueObject) domainObject, indentation);
 	}
 
+	protected void printModule(SculptorModule module) {
+		sb.append("package ");
+		if (module.getBasePackage() != null && !"".equals(module.getBasePackage()))
+			sb.append(module.getBasePackage()).append(".").append(module.getName());
+		else
+			sb.append(module.getName());
+		sb.append(" {");
+		linebreak();
+		for (Aggregate aggregate : module.getAggregates()) {
+			printAggregate(aggregate, 1);
+		}
+		for (SimpleDomainObject simpleDomainObject : module.getDomainObjects()) {
+			printDomainObject(simpleDomainObject, 1);
+		}
+		for (Service service : module.getServices()) {
+			printService(service, 1);
+		}
+		sb.append("}");
+		linebreak();
+	}
+
+	protected void printAggregate(Aggregate aggregate, int indentation) {
+		printIndentation(indentation);
+		sb.append("package ").append("\"'").append(aggregate.getName()).append("' ").append("Aggregate\"").append(" <<Rectangle>> ").append("{");
+		linebreak();
+		for (SimpleDomainObject domainObject : aggregate.getDomainObjects()) {
+			printDomainObject(domainObject, indentation + 1);
+		}
+		for (Service service : aggregate.getServices()) {
+			printService(service, indentation + 1);
+		}
+		printIndentation(indentation);
+		sb.append("}");
+		linebreak();
+	}
+	
+	protected void printService(Service service, int indentation) {
+		printIndentation(indentation);
+		sb.append("class").append(" ").append(service.getName());
+		sb.append(" <<(S,DarkSeaGreen) Service>> ");
+		sb.append("{");
+		linebreak();
+		printServiceOperations(service.getName(), service.getOperations(), indentation + 1);
+		printIndentation(indentation);
+		sb.append("}");
+		linebreak();
+	}
+
+	private void printServiceOperations(String objectName, List<ServiceOperation> operations, int indentation) {
+		for (ServiceOperation operation : operations) {
+			printOperation(objectName, operation.getName(), operation.getReturnType(), operation.getParameters(), indentation);
+		}
+	}
+	
 	private void printEnum(Enum theEnum, int indentation) {
 		printIndentation(indentation);
 		sb.append("enum").append(" ").append(theEnum.getName()).append(" {");
@@ -66,6 +124,7 @@ abstract public class AbstractPlantUMLClassDiagramCreator<T extends EObject> ext
 		sb.append("}");
 		linebreak();
 	}
+	
 
 	private void printEntity(Entity entity, int indentation) {
 		printStereotypedClass("(E,DarkSeaGreen) Entity", entity, indentation);
