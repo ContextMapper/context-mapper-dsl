@@ -9,13 +9,13 @@
 	<packaging>eclipse-repository</packaging>
 
 	<properties>
-		<bintray.repo>${BINTRAY_REPO}</bintray.repo>
-		<bintray.package>releases</bintray.package>
+		<artifactory.repo>${ARTIFACTORY_REPO}</artifactory.repo>
+		<artifactory.package>releases</artifactory.package>
 		<site.label>ContextMapper DSL Composite Site</site.label>
-		<bintray.owner>contextmapper</bintray.owner>
-		<bintray.releases.path>releases</bintray.releases.path>
-		<bintray.composite.path>updates</bintray.composite.path>
-		<bintray.zip.path>zipped</bintray.zip.path>
+		<artifactory.owner>contextmapper</artifactory.owner>
+		<artifactory.releases.path>releases</artifactory.releases.path>
+		<artifactory.composite.path>updates</artifactory.composite.path>
+		<artifactory.zip.path>zipped</artifactory.zip.path>
 		<child.repository.path.prefix>../../releases/</child.repository.path.prefix>
 	</properties>
 
@@ -94,7 +94,7 @@
 								<phase>prepare-package</phase>
 								<configuration>
 									<target>
-										<ant antfile="${basedir}/bintray.ant" target="get-composite-metadata">
+										<ant antfile="${basedir}/artifactory.ant" target="get-composite-metadata">
 											<reference torefid="maven.runtime.classpath" refid="maven.runtime.classpath" />
 										</ant>
 									</target>
@@ -109,7 +109,7 @@
 								<phase>verify</phase>
 								<configuration>
 									<target>
-										<ant antfile="${basedir}/bintray.ant" target="push-to-bintray">
+										<ant antfile="${basedir}/artifactory.ant" target="push-to-artifactory">
 											<reference torefid="maven.runtime.classpath" refid="maven.runtime.classpath" />
 										</ant>
 									</target>

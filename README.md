@@ -16,7 +16,7 @@ The Context Mapper project has originally been developed as part of research pro
      * **Note:** We have only recently published the VS Code extension and it does not support all features yet. Find a feature support table [here](https://contextmapper.org/docs/ide/). We continuously work on the extension and it should support all features soon!
    * Eclipse:
      * [Eclipse Marketplace](https://marketplace.eclipse.org/content/context-mapper)
-     * Update Site: https://dl.bintray.com/contextmapper/context-mapping-dsl/updates/
+     * Update Site: https://contextmapper.jfrog.io/artifactory/context-mapper-eclipse/updates/
  * [Release notes for latest releases](https://contextmapper.org/allnews)
 
 ## Features

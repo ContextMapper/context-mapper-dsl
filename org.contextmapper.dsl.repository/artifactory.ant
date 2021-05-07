@@ -1,22 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="Handle p2 composite metadata from Bintray" basedir=".">
+<project name="Handle p2 composite metadata from Jfrog Artifactory" basedir=".">
 
-	<!--
-	These must be set from outside
-	<property name="bintray.user" value="" />
-	<property name="bintray.apikey" value="" />
-	<property name="bintray.repo" value="" />
-	<property name="bintray.package" value="" />
-	<property name="bintray.releases.path" value="" />
-	<property name="bintray.composite.path" value="" />
-	<property name="bintray.zip.path" value="" />
-	-->
+	<property name="artifactory.url" value="https://${jfrog.owner}.jfrog.io/artifactory/${artifactory.repo}" />
+	<property name="artifactory.package.version" value="${unqualifiedVersion}" />
+	<property name="artifactory.releases.target.path" value="${artifactory.releases.path}/${artifactory.package.version}" />
 
-	<property name="bintray.url" value="https://dl.bintray.com/${bintray.owner}/${bintray.repo}" />
-	<property name="bintray.package.version" value="${unqualifiedVersion}" />
-	<property name="bintray.releases.target.path" value="${bintray.releases.path}/${bintray.package.version}" />
-
-	<property name="main.composite.url" value="${bintray.url}/${bintray.composite.path}" />
+	<property name="main.composite.url" value="${artifactory.url}/${artifactory.composite.path}" />
 	<property name="target" value="target" />
 	<property name="composite.repository.directory" value="composite-child" />
 	<property name="main.composite.repository.directory" value="composite-main" />
@@ -94,15 +83,16 @@
 		</replaceregexp>
 	</target>
 
-	<target name="push-to-bintray" >
+	<target name="push-to-artifactory" >
 		<antcall target="postprocess-metadata" />
-		<antcall target="push-p2-repo-to-bintray" />
-		<antcall target="push-p2-repo-zipped-to-bintray" />
-		<antcall target="push-composite-to-bintray" inheritRefs="true" />
-		<antcall target="push-main-composite-to-bintray" />
+		<antcall target="push-p2-repo-to-artifactory" />
+		<antcall target="push-p2-repo-zipped-to-artifactory" />
+		<antcall target="push-composite-to-artifactory" inheritRefs="true" />
+		<antcall target="push-main-composite-to-artifactory" />
 	</target>
 
-	<target name="push-p2-repo-to-bintray">
+	<target name="push-p2-repo-to-artifactory">
+		<echo message="Pushing to https://${artifactory.owner}.jfrog.io/artifactory/${artifactory.repo}" />
 		<apply executable="curl" parallel="false" relative="true" addsourcefile="false">
 			<arg value="-XPUT" />
 			<targetfile />
@@ -112,13 +102,13 @@
 			<compositemapper>
 				<mergemapper to="-T" />
 				<globmapper from="*" to="${local.p2.repository}/*" />
-				<mergemapper to="-u${bintray.user}:${bintray.apikey}" />
-				<globmapper from="*" to="https://api.bintray.com/content/${bintray.owner}/${bintray.repo}/${bintray.releases.target.path}/*;bt_package=${bintray.package};bt_version=${bintray.package.version};publish=1" />
+				<mergemapper to="-u${artifactory.user}:${artifactory.apikey}" />
+				<globmapper from="*" to="https://${artifactory.owner}.jfrog.io/artifactory/${artifactory.repo}/${artifactory.releases.target.path}/*;bt_package=${artifactory.package};bt_version=${artifactory.package.version};publish=1" />
 			</compositemapper>
 		</apply>
 	</target>
 
-	<target name="push-p2-repo-zipped-to-bintray">
+	<target name="push-p2-repo-zipped-to-artifactory">
 		<apply executable="curl" parallel="false" relative="true" addsourcefile="false">
 			<arg value="-XPUT" />
 			<targetfile />
@@ -128,13 +118,13 @@
 			<compositemapper>
 				<mergemapper to="-T" />
 				<globmapper from="*" to="${target}/*" />
-				<mergemapper to="-u${bintray.user}:${bintray.apikey}" />
-				<globmapper from="*" to="https://api.bintray.com/content/${bintray.owner}/${bintray.repo}/${bintray.zip.path}/*;bt_package=${bintray.package};bt_version=${bintray.package.version};publish=1" />
+				<mergemapper to="-u${artifactory.user}:${artifactory.apikey}" />
+				<globmapper from="*" to="https://${artifactory.owner}.jfrog.io/artifactory/${artifactory.repo}/${artifactory.zip.path}/*;bt_package=${artifactory.package};bt_version=${artifactory.package.version};publish=1" />
 			</compositemapper>
 		</apply>
 	</target>
 
-	<target name="push-composite-to-bintray" depends="getMajorMinorVersion" >
+	<target name="push-composite-to-artifactory" depends="getMajorMinorVersion" >
 		<apply executable="curl" parallel="false" relative="true" addsourcefile="false">
 			<arg value="-XPUT" />
 			<targetfile />
@@ -144,13 +134,13 @@
 			<compositemapper>
 				<mergemapper to="-T" />
 				<globmapper from="*" to="${target}/${composite.repository.directory}/*" />
-				<mergemapper to="-u${bintray.user}:${bintray.apikey}" />
-				<globmapper from="*" to="https://api.bintray.com/content/${bintray.owner}/${bintray.repo}/${bintray.composite.path}/${majorMinorVersion}/*;publish=1" />
+				<mergemapper to="-u${artifactory.user}:${artifactory.apikey}" />
+				<globmapper from="*" to="https://${artifactory.owner}.jfrog.io/artifactory/${artifactory.repo}/${artifactory.composite.path}/${majorMinorVersion}/*;publish=1" />
 			</compositemapper>
 		</apply>
 	</target>
 
-	<target name="push-main-composite-to-bintray" >
+	<target name="push-main-composite-to-artifactory" >
 		<apply executable="curl" parallel="false" relative="true" addsourcefile="false">
 			<arg value="-XPUT" />
 			<targetfile />
@@ -160,8 +150,8 @@
 			<compositemapper>
 				<mergemapper to="-T" />
 				<globmapper from="*" to="${target}/${main.composite.repository.directory}/*" />
-				<mergemapper to="-u${bintray.user}:${bintray.apikey}" />
-				<globmapper from="*" to="https://api.bintray.com/content/${bintray.owner}/${bintray.repo}/${bintray.composite.path}/*;publish=1" />
+				<mergemapper to="-u${artifactory.user}:${artifactory.apikey}" />
+				<globmapper from="*" to="https://${artifactory.owner}.jfrog.io/artifactory/${artifactory.repo}/${artifactory.composite.path}/*;publish=1" />
 			</compositemapper>
 		</apply>
 	</target>

@@ -17,8 +17,8 @@
 				<activeByDefault>false</activeByDefault>
 			</activation>
 			<properties>
-				<bintray.user>${env.BINTRAY_USERNAME}</bintray.user>
-				<bintray.apikey>${env.BINTRAY_API_KEY}</bintray.apikey>
+				<artifactory.user>${env.ARTIFACTORY_USERNAME}</artifactory.user>
+				<artifactory.apikey>${env.ARTIFACTORY_API_KEY}</artifactory.apikey>
 			</properties>
 		</profile>
 	</profiles>

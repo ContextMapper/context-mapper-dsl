@@ -40,15 +40,15 @@
 			<repository location="https://download.eclipse.org/modeling/emft/henshin/updates/1.6.0/"/>
 		</location>
 		<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-			<repository location="https://dl.bintray.com/contextmapper/context-map-generator-releases/"/>
+			<repository location="https://contextmapper.jfrog.io/artifactory/context-map-generator-releases/"/>
 			<unit id="org.contextmapper.contextmap.generator.feature.feature.group" version="1.2.1"/>
 		</location>
 		<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-			<repository location="https://dl.bintray.com/contextmapper/service-cutter-library-releases/"/>
+			<repository location="https://contextmapper.jfrog.io/artifactory/service-cutter-library-releases/"/>
 			<unit id="org.contextmapper.servicecutter.feature.feature.group" version="1.2.1"/>
 		</location>
 		<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-			<repository location="https://dl.bintray.com/contextmapper/context-mapper-osgi-bundles/1.0.0/"/>
+			<repository location="https://contextmapper.jfrog.io/artifactory/context-mapper-osgi-bundles/1.0.0/"/>
 			<unit id="contextmapper.freemarker.feature.group" version="2.3.30"/>
 		</location>
 		<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
