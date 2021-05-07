@@ -128,9 +128,9 @@ jobs:
     - name: Grant execute permission for mvnw
       run: chmod +x mvnw
     - name: Publish Eclipse plugin to Snapshot Repo
-      run: ./mvnw --settings ./.github/workflows/settings.xml verify -Prelease-composite -DBINTRAY_REPO=context-mapping-dsl-snapshot
+      run: ./mvnw --settings ./.github/workflows/settings.xml verify -Prelease-composite -DARTIFACTORY_REPO=context-mapper-eclipse-snapshot
       env:
-        BINTRAY_USERNAME: ${{ secrets.BINTRAY_USERNAME }}
-        BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
+        ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
+        ARTIFACTORY_API_KEY: ${{ secrets.ARTIFACTORY_API_KEY }}
 
 
