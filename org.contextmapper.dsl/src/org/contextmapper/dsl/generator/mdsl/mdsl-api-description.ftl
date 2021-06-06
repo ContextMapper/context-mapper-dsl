@@ -1,3 +1,46 @@
+<#macro opbind opname oprespo>
+<#if opname?starts_with("create")>
+			operation ${opname} to POST
+<#elseif opname?starts_with("replace")>
+			operation ${opname} to PUT
+<#elseif opname?starts_with("update")>
+			operation ${opname} to PATCH
+<#elseif opname?starts_with("get")>
+			operation ${opname} to GET
+<#elseif opname?starts_with("lookup")>
+			operation ${opname} to GET
+<#elseif opname?starts_with("retrieve")>
+			operation ${opname} to GET
+<#elseif opname?starts_with("read")>
+			operation ${opname} to GET
+<#elseif opname?starts_with("delete")>
+			operation ${opname} to DELETE
+<#elseif oprespo=="RETRIEVAL_OPERATION">
+			operation ${opname} to GET
+<#elseif oprespo=="STATE_CREATION_OPERATION">
+			operation ${opname} to PUT
+<#elseif oprespo=="STATE_TRANSITION_OPERATION">
+			operation ${opname} to PATCH
+<#elseif oprespo=="COMPUTATION_FUNCTION">
+			operation ${opname} to POST
+<#elseif oprespo=="GET">
+			operation ${opname} to GET
+<#elseif oprespo=="POST">
+			operation ${opname} to POST
+<#elseif oprespo=="PUT">
+			operation ${opname} to PUT	
+<#elseif oprespo=="DELETE">
+			operation ${opname} to DELETE	
+<#elseif oprespo=="PATCH">
+			operation ${opname} to PATCH	
+<#elseif oprespo=="HEAD">
+			operation ${opname} to HEAD		
+<#elseif oprespo=="OPTIONS">
+			operation ${opname} to OPTIONS	
+<#else>		
+			operation ${opname} to POST // TODO map ${oprespo}
+</#if>
+</#macro>
 <#if timestampString?has_content>
 // ${timestampString}
 </#if>
@@ -78,7 +121,8 @@ API provider ${provider.name}
 	<#list provider.endpointOffers as offer>
 	offers ${offer.offeredEndpoint.name}
 	at endpoint location "${offer.location}"
-		via protocol <#if offer.protocol=="HTTP">${offer.protocol} binding resource Home<#else>"${offer.protocol}"</#if><#if offer.hasProtocolComment()> // ${offer.getProtocolComment()}</#if>
+		via protocol <#if offer.protocol=="HTTP">${offer.protocol} binding resource ${offer.offeredEndpoint.name}Home at "/${offer.offeredEndpoint.name}"
+<#list offer.offeredEndpoint.operations as operation><@opbind opname=operation.name oprespo=operation.endpointResponsibility!"POST"/></#list><#else>"${offer.protocol}"</#if><#if offer.hasProtocolComment()> // ${offer.getProtocolComment()}</#if>
 	</#list>
 </#list>
 
