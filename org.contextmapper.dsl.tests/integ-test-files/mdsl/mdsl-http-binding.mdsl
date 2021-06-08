@@ -1,0 +1,139 @@
+// Generated from DDD Context Map.
+API description ProviderContextAPI
+usage context PUBLIC_API for BACKEND_INTEGRATION and FRONTEND_INTEGRATION
+
+
+
+
+endpoint type SampleAggregate
+	exposes
+		operation testOp1
+			with responsibility "PUT"
+			expecting
+				payload D<string>
+			delivering
+				payload D<bool>
+		operation testOp2
+			with responsibility "POST"
+			expecting
+				payload D<string>
+			delivering
+				payload D<bool>
+		operation testOp3
+			with responsibility "PATCH"
+			expecting
+				payload D<string>
+			delivering
+				payload D<bool>
+		operation testOp4
+			with responsibility "GET"
+			expecting
+				payload D<string>
+			delivering
+				payload D<bool>
+		operation testOp5
+			with responsibility "DELETE"
+			expecting
+				payload D<string>
+			delivering
+				payload D<bool>
+		operation testOp6
+			with responsibility "OPTIONS"
+			expecting
+				payload D<string>
+			delivering
+				payload D<bool>
+		operation testOp7
+			with responsibility "HEAD"
+			expecting
+				payload D<string>
+			delivering
+				payload D<bool>
+		operation testOpA
+			with responsibility STATE_CREATION_OPERATION
+			expecting
+				payload D<string>
+			delivering
+				payload D<bool>
+		operation testOpB
+			with responsibility STATE_TRANSITION_OPERATION
+			expecting
+				payload D<string>
+			delivering
+				payload D<bool>
+		operation testOpC
+			with responsibility RETRIEVAL_OPERATION
+			expecting
+				payload D<string>
+			delivering
+				payload D<bool>
+		operation testOpD
+			with responsibility COMPUTATION_FUNCTION
+			expecting
+				payload D<string>
+			delivering
+				payload D<bool>
+		operation createSomething
+			expecting
+				payload D<void>
+			delivering
+				payload D<string>
+		operation updateSomething
+			expecting
+				payload D<int>
+			delivering
+				payload D<string>
+		operation readSomething
+			expecting
+				payload D<int>
+			delivering
+				payload D<string>
+		operation getSomething
+			expecting
+				payload D<int>
+			delivering
+				payload D<string>
+		operation deleteSomething
+			expecting
+				payload D<int>
+		operation testOp9
+			with responsibility "OTHER"
+			expecting
+				payload D<string>
+			delivering
+				payload D<bool>
+		operation testOp10
+			expecting
+				payload D<string>
+			delivering
+				payload D<bool>
+
+
+// Generated from DDD upstream Bounded Context 'ProviderContext' implementing OPEN_HOST_SERVICE (OHS) and PUBLISHED_LANGUAGE (PL).
+API provider ProviderContextProvider
+	offers SampleAggregate
+	at endpoint location "http://localhost:8000"
+		via protocol HTTP binding resource SampleAggregateHome at "/SampleAggregate"
+			operation testOp1 to PUT	
+			operation testOp2 to POST
+			operation testOp3 to PATCH	
+			operation testOp4 to GET
+			operation testOp5 to DELETE	
+			operation testOp6 to OPTIONS	
+			operation testOp7 to HEAD		
+			operation testOpA to PUT
+			operation testOpB to PATCH
+			operation testOpC to GET
+			operation testOpD to POST
+			operation createSomething to POST
+			operation updateSomething to PATCH
+			operation readSomething to GET
+			operation getSomething to GET
+			operation deleteSomething to DELETE
+			operation testOp9 to POST // TODO map OTHER
+			operation testOp10 to POST
+
+
+
+API client ClientContextClient
+	consumes SampleAggregate

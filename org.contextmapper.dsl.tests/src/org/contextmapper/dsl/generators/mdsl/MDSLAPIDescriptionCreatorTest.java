@@ -241,6 +241,11 @@ public class MDSLAPIDescriptionCreatorTest extends AbstractCMLInputFileTest {
 			testCMLInputAndMDSLOutputFiles("mdsl-nothing-to-generate-test-2");
 		});
 	}
+	
+	@Test
+	void canGenerateHTTPBindingMachtingImplementationTechnologyOfMapRelation() throws IOException {
+		testCMLInputAndMDSLOutputFiles("mdsl-http-binding");
+	}
 
 	private void testCMLInputAndMDSLOutputFiles(String baseFilename) throws IOException {
 		testCMLInputAndMDSLOutputFiles(baseFilename, false);

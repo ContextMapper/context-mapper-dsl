@@ -1,0 +1,44 @@
+ContextMap SampleMapWithHTTPRelationship {
+	contains ClientContext
+	contains ProviderContext
+
+	ClientContext [D]<-[U, OHS, PL] ProviderContext {
+		exposedAggregates=SampleAggregate
+		implementationTechnology="HTTP"
+	}
+}
+
+BoundedContext ClientContext
+
+BoundedContext ProviderContext {
+	Aggregate SampleAggregate {
+		Service MAPPatterns {
+			"STATE_CREATION_OPERATION" boolean testOpA(String str);
+			"STATE_TRANSITION_OPERATION" boolean testOpB(String str);
+			"RETRIEVAL_OPERATION" boolean testOpC(String str);
+			"COMPUTATION_FUNCTION" boolean testOpD(String str);
+		}
+		// note: entities and services must not contain operations with the same names
+		Service VerbHeuristics {
+			String createSomething();
+			String updateSomething(int i);
+			String readSomething(int i);
+			String getSomething(int i);
+			deleteSomething(int i);
+		}
+		Entity DirectVerbMappings {
+			aggregateRoot
+			"PUT" def boolean testOp1(String str);
+			"POST" def boolean testOp2(String str);
+			"PATCH" def boolean testOp3(String str);
+			"GET" def boolean testOp4(String str);
+			"DELETE" def boolean testOp5(String str);
+			"OPTIONS" def boolean testOp6(String str);
+			"HEAD" def boolean testOp7(String str);
+		}
+		Service OtherOptions {
+			"OTHER" boolean testOp9(String str);
+			boolean testOp10(String str); // no doc string
+		}
+	}
+}
