@@ -37,4 +37,18 @@ subprojects {
     if (!project.hasProperty('signing.secretKeyRingFile')) {
         project.ext.'signing.secretKeyRingFile' = "${rootDir}/secret-key.gpg"
     }
+
+    // workaround for XText+Gradle build problems: https://github.com/eclipse/xtext/issues/1976#issuecomment-862141814
+    configurations.all {
+	    resolutionStrategy {
+	        eachDependency { DependencyResolveDetails details ->
+	            if (details.requested.group == 'org.eclipse.platform' && details.requested.name == 'org.eclipse.core.runtime') {
+	                details.useVersion "3.19.0"
+	            }
+	            if (details.requested.group == 'org.eclipse.platform' && details.requested.name == 'org.eclipse.equinox.common') {
+	                details.useVersion("3.13.0")
+	            }
+	        }
+	    }
+	}
 }
