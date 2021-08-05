@@ -70,6 +70,14 @@ data type ${dataType.name} { <#list dataType.attributes as attribute>"${attribut
 	</#if>
 </#list>
 
+<#list serviceSpecification.eventTypes as event>
+event type ${event}
+</#list>
+
+<#list serviceSpecification.commandTypes as command>
+command type ${command}
+</#list>
+
 <#if serviceSpecification.endpointProtectedRegion?has_content>
 // ** BEGIN PROTECTED REGION for endpoint types
 ${serviceSpecification.endpointProtectedRegion}
@@ -145,4 +153,21 @@ API client ${client.name}
 	<#list client.consumedOfferNames as offername>
 	consumes ${offername}
 	</#list>
+</#list>
+
+<#list serviceSpecification.flows as flow>
+flow ${flow.name} type APPLICATION_FLOW
+<#list flow.steps as step>
+<#if step.isDepStep()>command ${step.command} emits event ${step.event}<#else>event ${step.event} triggers command ${step.command}</#if>
+</#list>
+</#list>
+
+<#list serviceSpecification.scenarios as scenario>
+scenario ${scenario.name} 
+<#list scenario.stories as story>
+story ${story.name}
+  a "${story.persona}"
+  wants to "${story.action}"
+  so that "${story.goal}"
+</#list>
 </#list>

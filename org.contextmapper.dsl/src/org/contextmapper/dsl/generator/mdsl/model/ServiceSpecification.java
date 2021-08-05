@@ -26,6 +26,12 @@ public class ServiceSpecification {
 	private List<EndpointContract> endpoints = Lists.newArrayList();
 	private List<EndpointProvider> providers = Lists.newArrayList();
 	private List<EndpointClient> clients = Lists.newArrayList();
+	
+	private List<OrchestrationFlow> flows = Lists.newArrayList();
+	private List<String> eventTypes = Lists.newArrayList();
+	private List<String> commandTypes = Lists.newArrayList();
+	private List<IntegrationScenario> storyScenarios = Lists.newArrayList();
+	
 	private APIUsageContext usageContext;
 	private String dataTypeProtectedRegion;
 	private String endpointProtectedRegion;
@@ -111,5 +117,36 @@ public class ServiceSpecification {
 	public String getClientProtectedRegion() {
 		return clientProtectedRegion;
 	}
+	
+	public List<OrchestrationFlow> getFlows() {
+		return this.flows;
+	}
 
+	public void addFlow(OrchestrationFlow flow) {
+		this.flows.add(flow);
+	}
+	
+	public List<String> getEventTypes() {
+		return this.eventTypes;
+	}
+
+	public void addEventType(String command) {
+		this.eventTypes.add(command);
+	}
+
+	public List<String> getCommandTypes() {
+		return this.commandTypes;
+	}
+
+	public void addCommandType(String command) {
+		this.commandTypes.add(command);
+	}
+	
+	public List<IntegrationScenario> getScenarios() {
+		return this.storyScenarios;
+	}
+
+	public void addScenario(IntegrationScenario scenario) {
+		this.storyScenarios.add(scenario);
+	}
 }
