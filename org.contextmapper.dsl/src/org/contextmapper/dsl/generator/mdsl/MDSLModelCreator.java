@@ -62,8 +62,10 @@ import org.contextmapper.tactic.dsl.tacticdsl.DomainObject;
 import org.contextmapper.tactic.dsl.tacticdsl.DomainObjectOperation;
 import org.contextmapper.tactic.dsl.tacticdsl.Parameter;
 import org.contextmapper.tactic.dsl.tacticdsl.ServiceOperation;
+import org.contextmapper.tactic.dsl.tacticdsl.SimpleDomainObject;
 import org.contextmapper.tactic.dsl.tacticdsl.TacticdslFactory;
 import org.contextmapper.tactic.dsl.tacticdsl.Visibility;
+import org.contextmapper.tactic.dsl.tacticdsl.impl.DomainEventImpl;
 import org.eclipse.emf.common.util.EList;
 
 import com.google.common.collect.Lists;
@@ -124,8 +126,23 @@ public class MDSLModelCreator {
 		if (context.getApplicationLayer() != null) {
 			specification.addEndpoint(createEndpoint(context.getApplicationLayer(), specification));			
 			for(DomainEvent de:context.getApplicationLayer().getEvents()) {
-				specification.addEventType(de.getName());
+				specification.addEventType(de.getName()); // TODO (M) map data structure, not just name (if present)
 			}
+			// add event types for all domain events in all exposed aggregates:
+			// context.getExposedAggregates().get(0).getDomainObjects().get(0).getName(); 
+			for(Aggregate exposedAggregate:context.getExposedAggregates()) {
+				for(SimpleDomainObject objectInAggregate:exposedAggregate.getDomainObjects()) {
+					// check type of domain object (entity? event?...?)
+					if(objectInAggregate.getClass() == DomainEventImpl.class) {
+						DomainEvent de = (DomainEvent) objectInAggregate;
+						// TODO make sure names are unique/do not add duplicates
+						specification.addEventType(de.getName());
+					}
+					else 
+						System.out.println("Class of do is: " + objectInAggregate.getClass());
+				} 
+			}
+			
 			for(CommandEvent ce:context.getApplicationLayer().getCommands()) {
 				specification.addCommandType(ce.getName());
 			}
@@ -186,7 +203,7 @@ public class MDSLModelCreator {
 			else if(ecooi.getClass()==org.contextmapper.dsl.contextMappingDSL.impl.ExclusiveAlternativeCommandInvokationImpl.class){
 				ExclusiveAlternativeCommandInvokation eaci = (ExclusiveAlternativeCommandInvokation) ecooi; 
 				EList<CommandEvent> commands =eaci.getCommands();
-				String xorEvents = combineEvents(events, " + "); // TODO 
+				String xorEvents = combineEvents(events, " + ");
 				String xorCommands = commands.get(0).getName();
 				for(int i=1; i<commands.size();i++) {
 					xorCommands += " x " + commands.get(i).getName();
@@ -196,7 +213,7 @@ public class MDSLModelCreator {
 			else if(ecooi.getClass()==org.contextmapper.dsl.contextMappingDSL.impl.InclusiveAlternativeCommandInvokationImpl.class){
 				InclusiveAlternativeCommandInvokation eaci = (InclusiveAlternativeCommandInvokation) ecooi; 
 				EList<CommandEvent> commands =eaci.getCommands();
-				String orEvents = combineEvents(events, " + "); // TODO 
+				String orEvents = combineEvents(events, " + "); 
 				String orCommands = commands.get(0).getName();
 				for(int i=1; i<commands.size();i++) {
 					orCommands += " o " + commands.get(i).getName();
