@@ -1,4 +1,4 @@
-package org.contextmapper.dsl.refactoring.henshin;
+package org.contextmapper.dsl.refactoring;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -15,8 +15,6 @@ import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.SculptorModule;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
-import org.contextmapper.dsl.refactoring.AbstractRefactoringTest;
-import org.contextmapper.dsl.refactoring.henshin.SplitAggregateByEntitiesRefactoring;
 import org.contextmapper.tactic.dsl.tacticdsl.DomainObject;
 import org.contextmapper.tactic.dsl.tacticdsl.SimpleDomainObject;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -45,7 +43,7 @@ public class SplitAggregateByEntitiesTest extends AbstractRefactoringTest {
 
 		List<String> aggregateNames = bc.getAggregates().stream().map(a -> a.getName()).collect(Collectors.toList());
 		assertTrue(aggregateNames.contains("Customers"));
-		assertTrue(aggregateNames.contains("NewAggregate1"));
+		assertTrue(aggregateNames.contains("Account"));
 
 		for (Aggregate aggregate : bc.getAggregates()) {
 			SimpleDomainObject obj = aggregate.getDomainObjects().get(0);
@@ -95,7 +93,7 @@ public class SplitAggregateByEntitiesTest extends AbstractRefactoringTest {
 
 		List<String> aggregateNames = testModule.getAggregates().stream().map(a -> a.getName()).collect(Collectors.toList());
 		assertTrue(aggregateNames.contains("Customers"));
-		assertTrue(aggregateNames.contains("NewAggregate1"));
+		assertTrue(aggregateNames.contains("Account"));
 	}
 
 	@Test
@@ -119,12 +117,12 @@ public class SplitAggregateByEntitiesTest extends AbstractRefactoringTest {
 		assertEquals(2, customerBC.getAggregates().size());
 		List<String> aggregateNames = customerBC.getAggregates().stream().map(a -> a.getName()).collect(Collectors.toList());
 		assertTrue(aggregateNames.contains("Customers"));
-		assertTrue(aggregateNames.contains("NewAggregate1"));
+		assertTrue(aggregateNames.contains("Account"));
 
 		UpstreamDownstreamRelationship relationship = (UpstreamDownstreamRelationship) model.getMap().getRelationships().get(0);
 		List<String> upstreamExposedAggregates = relationship.getUpstreamExposedAggregates().stream().map(a -> a.getName()).collect(Collectors.toList());
 		assertTrue(upstreamExposedAggregates.contains("Customers"));
-		assertTrue(upstreamExposedAggregates.contains("NewAggregate1"));
+		assertTrue(upstreamExposedAggregates.contains("Account"));
 	}
 
 	@Test
