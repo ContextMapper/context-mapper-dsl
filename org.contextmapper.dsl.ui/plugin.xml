@@ -937,9 +937,6 @@
 			</menu>
 		</menuContribution>
 	</extension>
-	<extension point="org.eclipse.ui.startup">
-		<startup class="org.contextmapper.dsl.ui.startup.ContextMapperPluginStartup"/>
-	</extension>
 	<extension point="org.eclipse.ui.newWizards">
     	<wizard
         	icon="icons/cml-dialog-image.png"

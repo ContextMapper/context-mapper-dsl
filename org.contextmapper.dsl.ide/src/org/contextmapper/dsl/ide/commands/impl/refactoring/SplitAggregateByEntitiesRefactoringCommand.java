@@ -17,7 +17,7 @@ package org.contextmapper.dsl.ide.commands.impl.refactoring;
 
 import org.contextmapper.dsl.ide.edit.WorkspaceEditRecorder;
 import org.contextmapper.dsl.refactoring.SemanticCMLRefactoring;
-import org.contextmapper.dsl.refactoring.henshin.SplitAggregateByEntitiesRefactoring;
+import org.contextmapper.dsl.refactoring.SplitAggregateByEntitiesRefactoring;
 import org.eclipse.lsp4j.ExecuteCommandParams;
 
 import com.google.gson.JsonPrimitive;

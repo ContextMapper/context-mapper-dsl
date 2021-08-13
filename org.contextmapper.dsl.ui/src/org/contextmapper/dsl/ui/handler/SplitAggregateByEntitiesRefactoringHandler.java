@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.refactoring.SemanticCMLRefactoring;
-import org.contextmapper.dsl.refactoring.henshin.SplitAggregateByEntitiesRefactoring;
+import org.contextmapper.dsl.refactoring.SplitAggregateByEntitiesRefactoring;
 import org.contextmapper.tactic.dsl.tacticdsl.Entity;
 import org.contextmapper.tactic.dsl.tacticdsl.SimpleDomainObject;
 import org.eclipse.core.commands.ExecutionEvent;
