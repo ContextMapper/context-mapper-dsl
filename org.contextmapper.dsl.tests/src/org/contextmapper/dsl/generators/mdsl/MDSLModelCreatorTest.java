@@ -31,6 +31,7 @@ import org.contextmapper.dsl.generator.mdsl.model.EndpointContract;
 import org.contextmapper.dsl.generator.mdsl.model.EndpointOffer;
 import org.contextmapper.dsl.generator.mdsl.model.EndpointOperation;
 import org.contextmapper.dsl.generator.mdsl.model.EndpointProvider;
+import org.contextmapper.dsl.generator.mdsl.model.OrchestrationFlow;
 import org.contextmapper.dsl.generator.mdsl.model.ServiceSpecification;
 import org.junit.jupiter.api.Test;
 
@@ -92,6 +93,31 @@ public class MDSLModelCreatorTest extends AbstractCMLInputFileTest {
 		assertEquals("ContractManagementContextClient", client.getName());
 		assertEquals(1, client.getConsumedOfferNames().size());
 		assertEquals("Customers", client.getConsumedOfferNames().get(0));
+	}
+	
+	@Test
+	void canCreateMDSLModelWithFlow() throws IOException {
+		// given
+		CMLResource input = getResourceCopyOfTestCML("application-flow-example.cml");
+		MDSLModelCreator mdslCreator = new MDSLModelCreator(input.getContextMappingModel());
+
+		// when
+		List<ServiceSpecification> serviceSpecifications = mdslCreator.createServiceSpecifications();
+
+		// then
+		assertEquals(1, serviceSpecifications.size());
+
+		ServiceSpecification spec = serviceSpecifications.get(0);
+		assertEquals("SampleSystemAPI", spec.getName());
+		assertEquals(2, spec.getEndpoints().size()); // one endpoint for flow, one endpoint for aggregate
+		
+		EndpointContract endpoint = spec.getEndpoints().get(0);
+		assertEquals("SampleApplication", endpoint.getName());
+		assertEquals(6, endpoint.getOperations().size()); // one operation for each flow step
+		
+		OrchestrationFlow flow = spec.getFlows().get(0);
+		assertEquals("SampleFlow", flow.getName());
+		assertEquals(9, flow.getSteps().size()); // must match number of steps in CML input
 	}
 
 	@Test

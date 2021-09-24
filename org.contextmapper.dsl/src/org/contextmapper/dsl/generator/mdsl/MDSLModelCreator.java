@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 The Context Mapper Project Team
+ * Copyright 2019-2021 The Context Mapper Project Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -110,12 +110,9 @@ public class MDSLModelCreator {
 		ServiceSpecification specification = new ServiceSpecification();
 		specification.setName(mdslEncoder.encodeName(apiName));
 
-		// TODO get stories via traceability links from BC to SD to tbd 
-		IntegrationScenario defaultScenario = new IntegrationScenario();
-		defaultScenario.setName(apiName);
-		Story defaultStory = new Story(apiName+"DefaultStory", "ContextClient", "ContextResponsibility", "ContextDomainVisionStatement");
-		defaultScenario.addStory(defaultStory);
-		specification.addScenario(defaultScenario);
+		/*
+		// TODO see https://github.com/ContextMapper/context-mapper-dsl/issues/301
+		*/ 
 		
 		if (context.getUpstreamRoles().contains(UpstreamRole.OPEN_HOST_SERVICE) && context.getUpstreamRoles().contains(UpstreamRole.PUBLISHED_LANGUAGE)) {
 			specification.setUsageContext(APIUsageContext.PUBLIC_API);
@@ -128,8 +125,7 @@ public class MDSLModelCreator {
 			for(DomainEvent de:context.getApplicationLayer().getEvents()) {
 				specification.addEventType(de.getName()); // TODO (M) map data structure, not just name (if present)
 			}
-			// add event types for all domain events in all exposed aggregates:
-			// context.getExposedAggregates().get(0).getDomainObjects().get(0).getName(); 
+			// add event types for all domain events in all exposed aggregates
 			for(Aggregate exposedAggregate:context.getExposedAggregates()) {
 				for(SimpleDomainObject objectInAggregate:exposedAggregate.getDomainObjects()) {
 					// check type of domain object (entity? event?...?)
@@ -139,7 +135,7 @@ public class MDSLModelCreator {
 						specification.addEventType(de.getName());
 					}
 					else 
-						System.out.println("Class of do is: " + objectInAggregate.getClass());
+						; // System.out.println("Class of do is: " + objectInAggregate.getClass());
 				} 
 			}
 			
@@ -221,7 +217,7 @@ public class MDSLModelCreator {
 				mdslFlow.addCommandInvocationStep(orEvents, orCommands);
 			}
 			else {
-				System.err.println("Not yet implemented: support for " + ecooi.getClass());
+				throw new GeneratorInputException("Not yet implemented: support for " + ecooi.getClass());
 			}
 		}
 		else if(step.getClass() == org.contextmapper.dsl.contextMappingDSL.impl.DomainEventProductionStepImpl.class) {
@@ -234,17 +230,6 @@ public class MDSLModelCreator {
 				// ce can only have one entry, so just in case: 
 				if(events.size()!=1) 
 					throw new InvalidParameterException("Single event production must not list more than one event.");
-				/*
-				for(DomainEvent event : events) {
-					// TODO take out loop, get single event directly:
-					if(action.getCommand()!=null) {
-						mdslFlow.addEventProductionStep(action.getCommand().getName(), event.getName()); 
-					}
-					else
-						// TODO map to MDSL command too?
-						System.err.println("Operations are not supported in MDSL"); 
-				}
-				*/
 				mdslFlow.addEventProductionStep(action.getCommand().getName(), events.get(0).getName()); 
 			}
 			else if(ep.getClass() == org.contextmapper.dsl.contextMappingDSL.impl.MultipleEventProductionImpl.class) { 
@@ -260,7 +245,7 @@ public class MDSLModelCreator {
 				mdslFlow.addEventProductionStep(action.getCommand().getName(), xorEvents); 
 			}
 			else 
-				System.err.println("Not yet implemented: support for " + ep.getClass());			
+				throw new GeneratorInputException("Not yet implemented: support for " + ep.getClass());			
 		}
 	}
 	
@@ -274,8 +259,8 @@ public class MDSLModelCreator {
 				combinedEvents += operator + events.get(i).getName();
 			}
 			else
-				// TODO map to MDSL command too?
-				System.err.println("Operations are not supported in MDSL"); 
+				// TODO tbd: map to MDSL command too?
+				throw new GeneratorInputException("Operations are not supported in MDSL"); 
 		}
 		return combinedEvents;
 	}

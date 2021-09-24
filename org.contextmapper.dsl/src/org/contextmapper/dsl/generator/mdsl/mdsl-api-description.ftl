@@ -68,16 +68,9 @@ data type ${dataType.name} {${dataType.getEnumValuesString()}}
 data type ${dataType.name} { <#list dataType.attributes as attribute>"${attribute.getName()}":${attribute.getType()}<#if attribute.isCollection()>*<#elseif attribute.isNullable()>?</#if><#if attribute_index < dataType.attributes?size - 1>, </#if></#list> }
 		</#if>
 	</#if>
-</#list>
-
-<#list serviceSpecification.eventTypes as event>
-event type ${event}
-</#list>
-
-<#list serviceSpecification.commandTypes as command>
-command type ${command}
-</#list>
-
+</#list><#if serviceSpecification.eventTypes?has_content><#list serviceSpecification.eventTypes as event>
+event type ${event}</#list></#if><#if serviceSpecification.commandTypes?has_content><#list serviceSpecification.commandTypes as command>
+command type ${command}</#list></#if>
 <#if serviceSpecification.endpointProtectedRegion?has_content>
 // ** BEGIN PROTECTED REGION for endpoint types
 ${serviceSpecification.endpointProtectedRegion}
@@ -154,14 +147,12 @@ API client ${client.name}
 	consumes ${offername}
 	</#list>
 </#list>
-
 <#list serviceSpecification.flows as flow>
 flow ${flow.name} type APPLICATION_FLOW
 <#list flow.steps as step>
 <#if step.isDepStep()>command ${step.command} emits event ${step.event}<#else>event ${step.event} triggers command ${step.command}</#if>
 </#list>
 </#list>
-
 <#list serviceSpecification.scenarios as scenario>
 scenario ${scenario.name} 
 <#list scenario.stories as story>

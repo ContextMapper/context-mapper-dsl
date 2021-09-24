@@ -1,0 +1,32 @@
+BoundedContext SampleSystem {
+	Application SampleApplication {
+		DomainEvent FlowInitiated
+		DomainEvent Event1
+		DomainEvent Event2
+		
+		CommandEvent StartFlow
+		CommandEvent Command1
+		CommandEvent Command2
+		CommandEvent Join
+		CommandEvent Terminate
+		CommandEvent Cleanup
+		
+		Flow SampleFlow {
+			event FlowInitiated triggers command StartFlow
+			command StartFlow emits event Event1 + Event2
+			command Command1 emits event Event1 o Event2 // 'Command1 + Command2' not supported
+			command Command2 emits event Event1 x Event2
+			event Event1 triggers command Command1 + Command2
+			event Event2 triggers command Command1 o Command2
+			event Event2 triggers command Command1 x Command2
+			event Command1Done + Command2Done triggers command Join // 'o' and 'x' not possible here
+			event Event1 + Event2 + FlowTerminated triggers command Terminate + Cleanup
+		}
+	}
+	Aggregate SampleAggregate {
+		DomainEvent Command1Done
+		DomainEvent Command2Done
+		Event FlowTerminated
+	}
+}
+
