@@ -36,7 +36,7 @@ import org.contextmapper.dsl.generators.mocks.IGeneratorContextMock;
 import org.junit.jupiter.api.Test;
 
 class MDSLContractsGeneratorTest extends AbstractCMLInputFileTest {
-	
+
 	@Test
 	void canCreateMDSLFiles() throws IOException {
 		// given

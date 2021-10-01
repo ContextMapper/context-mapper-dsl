@@ -66,7 +66,6 @@ import org.contextmapper.tactic.dsl.tacticdsl.ServiceOperation;
 import org.contextmapper.tactic.dsl.tacticdsl.SimpleDomainObject;
 import org.contextmapper.tactic.dsl.tacticdsl.TacticdslFactory;
 import org.contextmapper.tactic.dsl.tacticdsl.Visibility;
-import org.contextmapper.tactic.dsl.tacticdsl.impl.DomainEventImpl;
 import org.eclipse.emf.common.util.EList;
 
 import com.google.common.collect.Lists;
@@ -130,13 +129,11 @@ public class MDSLModelCreator {
 			for(Aggregate exposedAggregate:context.getExposedAggregates()) {
 				for(SimpleDomainObject objectInAggregate:exposedAggregate.getDomainObjects()) {
 					// check type of domain object (entity? event?...?)
-					if(objectInAggregate.getClass() == DomainEventImpl.class) {
+					if(objectInAggregate instanceof DomainEvent) {
 						DomainEvent de = (DomainEvent) objectInAggregate;
 						// TODO make sure names are unique/do not add duplicates
 						specification.addEventType(de.getName());
 					}
-					else 
-						; // System.out.println("Class of do is: " + objectInAggregate.getClass());
 				} 
 			}
 			
@@ -178,7 +175,7 @@ public class MDSLModelCreator {
 				String commands = "";
 				first=true;
 				for(CommandEvent ce : ci.getCommands()) {
-					// TODO ce can only have one entry, so just in case (could also validate size and go to index 0 directly)
+					// TODO we can only have one entry, so just in case (could also validate size and go to index 0 directly)
 					if(!first) {
 						commands += "-";
 						first=false;
@@ -213,8 +210,7 @@ public class MDSLModelCreator {
 					orCommands += " o " + commands.get(i).getName();
 				}
 				mdslFlow.addCommandInvocationStep(orEvents, orCommands);
-			}
-			else {
+			} else {
 				throw new GeneratorInputException("Not yet implemented: support for " + ecooi.getClass());
 			}
 		}
@@ -225,7 +221,7 @@ public class MDSLModelCreator {
 			
 			if(ep instanceof SingleEventProduction) {
 				EList<DomainEvent> events = ep.getEvents();
-				// ce can only have one entry, so just in case: 
+				// we can only have one entry, so just in case: 
 				if(events.size()!=1) 
 					throw new InvalidParameterException("Single event production must not list more than one event.");
 				mdslFlow.addEventProductionStep(action.getCommand().getName(), events.get(0).getName()); 
@@ -238,9 +234,9 @@ public class MDSLModelCreator {
 			} else if(ep instanceof ExclusiveAlternativeEventProduction) {
 				String xorEvents = mapEvents(action, ep, " x ");
 				mdslFlow.addEventProductionStep(action.getCommand().getName(), xorEvents); 
+			} else {
+				throw new GeneratorInputException("Not yet implemented: support for " + ep.getClass());
 			}
-			else 
-				throw new GeneratorInputException("Not yet implemented: support for " + ep.getClass());			
 		}
 	}
 	
@@ -252,10 +248,10 @@ public class MDSLModelCreator {
 		for(int i=1; i<events.size();i++) {
 			if(action.getCommand()!=null) {
 				combinedEvents += operator + events.get(i).getName();
-			}
-			else
+			} else {
 				// TODO tbd: map to MDSL command too?
-				throw new GeneratorInputException("Operations are not supported in MDSL"); 
+				throw new GeneratorInputException("Operations are not supported in MDSL");
+			}
 		}
 		return combinedEvents;
 	}
@@ -264,10 +260,9 @@ public class MDSLModelCreator {
 		String combinedEvent = "";
 		boolean isFirstElementInList=true;
 		for(DomainEvent event : events) {
-			if(isFirstElementInList) {
+			if (isFirstElementInList) {
 				isFirstElementInList=false;
-			}
-			else { // must be false
+			} else { // must be false
 				combinedEvent += operator; // was " + ";
 			}
 			combinedEvent += event.getName();
