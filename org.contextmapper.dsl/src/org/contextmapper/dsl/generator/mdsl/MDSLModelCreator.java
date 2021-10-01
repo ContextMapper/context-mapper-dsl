@@ -111,7 +111,7 @@ public class MDSLModelCreator {
 		specification.setName(mdslEncoder.encodeName(apiName));
 
 		/*
-		// TODO see https://github.com/ContextMapper/context-mapper-dsl/issues/301
+		// TODO see https://github.com/ContextMapper/context-mapper-dsl/issues/301 and https://github.com/ContextMapper/context-mapper-dsl/issues/303
 		*/ 
 		
 		if (context.getUpstreamRoles().contains(UpstreamRole.OPEN_HOST_SERVICE) && context.getUpstreamRoles().contains(UpstreamRole.PUBLISHED_LANGUAGE)) {
@@ -123,12 +123,13 @@ public class MDSLModelCreator {
 		if (context.getApplicationLayer() != null) {
 			specification.addEndpoint(createEndpoint(context.getApplicationLayer(), specification));			
 			for(DomainEvent de:context.getApplicationLayer().getEvents()) {
-				specification.addEventType(de.getName()); // TODO (M) map data structure, not just name (if present)
+				specification.addEventType(de.getName()); 
+				// TODO map data structure, not just name (if present)
 			}
 			// add event types for all domain events in all exposed aggregates
 			for(Aggregate exposedAggregate:context.getExposedAggregates()) {
 				for(SimpleDomainObject objectInAggregate:exposedAggregate.getDomainObjects()) {
-					// check type of domain object (entity? event?...?)
+					// check type of domain object (entity? event?...?):
 					if(objectInAggregate instanceof DomainEvent) {
 						DomainEvent de = (DomainEvent) objectInAggregate;
 						// TODO make sure names are unique/do not add duplicates
@@ -175,7 +176,7 @@ public class MDSLModelCreator {
 				String commands = "";
 				first=true;
 				for(CommandEvent ce : ci.getCommands()) {
-					// TODO we can only have one entry, so just in case (could also validate size and go to index 0 directly)
+					// ce can only have one entry, but still checking (could also validate size and go to index 0 directly)
 					if(!first) {
 						commands += "-";
 						first=false;
@@ -244,12 +245,12 @@ public class MDSLModelCreator {
 
 	private String mapEvents(EitherCommandOrOperation action, EventProduction ep, String operator) {
 		EList<DomainEvent> events = ep.getEvents();
-		String combinedEvents = events.get(0).getName(); // can this fail? 
+		// all four event production options (line 260 in grammar) refer to at least one event
+		String combinedEvents = events.get(0).getName();  
 		for(int i=1; i<events.size();i++) {
 			if(action.getCommand()!=null) {
 				combinedEvents += operator + events.get(i).getName();
 			} else {
-				// TODO tbd: map to MDSL command too?
 				throw new GeneratorInputException("Operations are not supported in MDSL");
 			}
 		}
@@ -263,7 +264,7 @@ public class MDSLModelCreator {
 			if (isFirstElementInList) {
 				isFirstElementInList=false;
 			} else { // must be false
-				combinedEvent += operator; // was " + ";
+				combinedEvent += operator; 
 			}
 			combinedEvent += event.getName();
 		}
