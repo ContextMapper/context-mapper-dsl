@@ -32,6 +32,7 @@ import org.contextmapper.dsl.generator.mdsl.MDSLAPIDescriptionCreator;
 import org.contextmapper.dsl.generator.mdsl.MDSLModelCreator;
 import org.contextmapper.dsl.generator.mdsl.ProtectedRegionContextFactory;
 import org.contextmapper.dsl.generator.mdsl.model.ServiceSpecification;
+import org.eclipse.xtext.EcoreUtil2;
 import org.junit.jupiter.api.Test;
 
 public class MDSLAPIDescriptionCreatorTest extends AbstractCMLInputFileTest {
@@ -260,6 +261,7 @@ public class MDSLAPIDescriptionCreatorTest extends AbstractCMLInputFileTest {
 		// given
 		String inputModelName = baseFilename + ".cml";
 		CMLResource input = getResourceCopyOfTestCML(inputModelName);
+		EcoreUtil2.resolveAll(input);
 		MDSLModelCreator mdslCreator = new MDSLModelCreator(input.getContextMappingModel());
 
 		// when

@@ -25,7 +25,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.Application;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
-import org.contextmapper.dsl.contextMappingDSL.CommandInvokation;
 import org.contextmapper.dsl.contextMappingDSL.CommandInvokationStep;
 import org.contextmapper.dsl.contextMappingDSL.ConcurrentCommandInvokation;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
@@ -34,10 +33,14 @@ import org.contextmapper.dsl.contextMappingDSL.EitherCommandOrOperation;
 import org.contextmapper.dsl.contextMappingDSL.EitherCommandOrOperationInvokation;
 import org.contextmapper.dsl.contextMappingDSL.EventProduction;
 import org.contextmapper.dsl.contextMappingDSL.ExclusiveAlternativeCommandInvokation;
+import org.contextmapper.dsl.contextMappingDSL.ExclusiveAlternativeEventProduction;
 import org.contextmapper.dsl.contextMappingDSL.Flow;
 import org.contextmapper.dsl.contextMappingDSL.FlowStep;
 import org.contextmapper.dsl.contextMappingDSL.InclusiveAlternativeCommandInvokation;
+import org.contextmapper.dsl.contextMappingDSL.InclusiveAlternativeEventProduction;
+import org.contextmapper.dsl.contextMappingDSL.MultipleEventProduction;
 import org.contextmapper.dsl.contextMappingDSL.SingleCommandInvokation;
+import org.contextmapper.dsl.contextMappingDSL.SingleEventProduction;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamRole;
 import org.contextmapper.dsl.generator.exception.GeneratorInputException;
@@ -50,10 +53,8 @@ import org.contextmapper.dsl.generator.mdsl.model.EndpointContract;
 import org.contextmapper.dsl.generator.mdsl.model.EndpointOffer;
 import org.contextmapper.dsl.generator.mdsl.model.EndpointOperation;
 import org.contextmapper.dsl.generator.mdsl.model.EndpointProvider;
-import org.contextmapper.dsl.generator.mdsl.model.IntegrationScenario;
 import org.contextmapper.dsl.generator.mdsl.model.OrchestrationFlow;
 import org.contextmapper.dsl.generator.mdsl.model.ServiceSpecification;
-import org.contextmapper.dsl.generator.mdsl.model.Story;
 import org.contextmapper.tactic.dsl.tacticdsl.CollectionType;
 import org.contextmapper.tactic.dsl.tacticdsl.CommandEvent;
 import org.contextmapper.tactic.dsl.tacticdsl.ComplexType;
@@ -170,7 +171,7 @@ public class MDSLModelCreator {
 			CommandInvokationStep cis = (CommandInvokationStep) step;
 			EitherCommandOrOperationInvokation ecooi = cis.getAction();
 			EList<DomainEvent> events = cis.getEvents();
-			if(ecooi.getClass()==org.contextmapper.dsl.contextMappingDSL.impl.SingleCommandInvokationImpl.class) {
+			if(ecooi instanceof SingleCommandInvokation) {
 				SingleCommandInvokation ci = (SingleCommandInvokation) ecooi;
 				boolean first;
 				String andEvents = combineEvents(events, " + ");
@@ -185,8 +186,7 @@ public class MDSLModelCreator {
 					commands += ce.getName();
 				}
 				mdslFlow.addCommandInvocationStep(andEvents, commands); 
-			}
-			else if(ecooi.getClass()==org.contextmapper.dsl.contextMappingDSL.impl.ConcurrentCommandInvokationImpl.class) {
+			} else if(ecooi instanceof ConcurrentCommandInvokation) {
 				ConcurrentCommandInvokation cci = (ConcurrentCommandInvokation) ecooi; 
 				EList<CommandEvent> commands = cci.getCommands();
 				String andEvents = combineEvents(events, " + ");
@@ -195,8 +195,7 @@ public class MDSLModelCreator {
 					andCommands += " + " + commands.get(i).getName();
 				}
 				mdslFlow.addCommandInvocationStep(andEvents, andCommands); 
-			}
-			else if(ecooi.getClass()==org.contextmapper.dsl.contextMappingDSL.impl.ExclusiveAlternativeCommandInvokationImpl.class){
+			} else if(ecooi instanceof ExclusiveAlternativeCommandInvokation){
 				ExclusiveAlternativeCommandInvokation eaci = (ExclusiveAlternativeCommandInvokation) ecooi; 
 				EList<CommandEvent> commands =eaci.getCommands();
 				String xorEvents = combineEvents(events, " + ");
@@ -205,8 +204,7 @@ public class MDSLModelCreator {
 					xorCommands += " x " + commands.get(i).getName();
 				}
 				mdslFlow.addCommandInvocationStep(xorEvents, xorCommands);
-			}
-			else if(ecooi.getClass()==org.contextmapper.dsl.contextMappingDSL.impl.InclusiveAlternativeCommandInvokationImpl.class){
+			} else if(ecooi instanceof InclusiveAlternativeCommandInvokation){
 				InclusiveAlternativeCommandInvokation eaci = (InclusiveAlternativeCommandInvokation) ecooi; 
 				EList<CommandEvent> commands =eaci.getCommands();
 				String orEvents = combineEvents(events, " + "); 
@@ -225,22 +223,19 @@ public class MDSLModelCreator {
 			EitherCommandOrOperation action = depStep.getAction();
 			EventProduction ep = depStep.getEventProduction();
 			
-			if(ep.getClass() == org.contextmapper.dsl.contextMappingDSL.impl.SingleEventProductionImpl.class) {
+			if(ep instanceof SingleEventProduction) {
 				EList<DomainEvent> events = ep.getEvents();
 				// ce can only have one entry, so just in case: 
 				if(events.size()!=1) 
 					throw new InvalidParameterException("Single event production must not list more than one event.");
 				mdslFlow.addEventProductionStep(action.getCommand().getName(), events.get(0).getName()); 
-			}
-			else if(ep.getClass() == org.contextmapper.dsl.contextMappingDSL.impl.MultipleEventProductionImpl.class) { 
+			} else if(ep instanceof MultipleEventProduction) {
 				String andEvents = mapEvents(action, ep, " + ");
 				mdslFlow.addEventProductionStep(action.getCommand().getName(), andEvents); 
-			}
-			else if(ep.getClass() == org.contextmapper.dsl.contextMappingDSL.impl.InclusiveAlternativeEventProductionImpl.class) {
+			} else if(ep instanceof InclusiveAlternativeEventProduction) {
 				String orEvents = mapEvents(action, ep, " o ");
 				mdslFlow.addEventProductionStep(action.getCommand().getName(), orEvents); 
-			}
-			else if(ep.getClass() == org.contextmapper.dsl.contextMappingDSL.impl.ExclusiveAlternativeEventProductionImpl.class) {
+			} else if(ep instanceof ExclusiveAlternativeEventProduction) {
 				String xorEvents = mapEvents(action, ep, " x ");
 				mdslFlow.addEventProductionStep(action.getCommand().getName(), xorEvents); 
 			}

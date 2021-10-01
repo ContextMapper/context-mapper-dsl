@@ -68,9 +68,18 @@ data type ${dataType.name} {${dataType.getEnumValuesString()}}
 data type ${dataType.name} { <#list dataType.attributes as attribute>"${attribute.getName()}":${attribute.getType()}<#if attribute.isCollection()>*<#elseif attribute.isNullable()>?</#if><#if attribute_index < dataType.attributes?size - 1>, </#if></#list> }
 		</#if>
 	</#if>
-</#list><#if serviceSpecification.eventTypes?has_content><#list serviceSpecification.eventTypes as event>
-event type ${event}</#list></#if><#if serviceSpecification.commandTypes?has_content><#list serviceSpecification.commandTypes as command>
-command type ${command}</#list></#if>
+</#list>
+
+<#if serviceSpecification.eventTypes?has_content>
+<#list serviceSpecification.eventTypes as event>
+event type ${event}
+</#list>
+</#if>
+<#if serviceSpecification.commandTypes?has_content>
+<#list serviceSpecification.commandTypes as command>
+command type ${command}
+</#list>
+</#if>
 <#if serviceSpecification.endpointProtectedRegion?has_content>
 // ** BEGIN PROTECTED REGION for endpoint types
 ${serviceSpecification.endpointProtectedRegion}

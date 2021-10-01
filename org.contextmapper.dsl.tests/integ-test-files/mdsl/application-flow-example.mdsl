@@ -1,4 +1,4 @@
-// Generated from DDD Context Map 'null' at 23.09.2021 13:08:00 CEST.
+// Generated from DDD Context Map.
 API description SampleSystemAPI
 
 
@@ -15,14 +15,12 @@ event type Event2
 event type Command1Done
 event type Command2Done
 event type FlowTerminated
-
 command type StartFlowCommand
 command type Command1Command
 command type Command2Command
 command type JoinCommand
 command type TerminateCommand
 command type CleanupCommand
-
 
 endpoint type SampleApplication
 	exposes
@@ -57,7 +55,6 @@ API provider SampleSystemProvider
 		via protocol "tbd" // The protocol is generated if you specify the implementation technology in CML
 
 
-
 flow SampleFlow type APPLICATION_FLOW
 event FlowInitiated triggers command StartFlowCommand
 command StartFlowCommand emits event Event1 + Event2
@@ -68,4 +65,3 @@ event Event2 triggers command Command1Command o Command2Command
 event Event2 triggers command Command1Command x Command2Command
 event Command1Done + Command2Done triggers command JoinCommand
 event Event1 + Event2 + FlowTerminated triggers command TerminateCommand + CleanupCommand
-
