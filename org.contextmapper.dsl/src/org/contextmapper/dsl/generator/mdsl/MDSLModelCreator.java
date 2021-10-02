@@ -176,7 +176,7 @@ public class MDSLModelCreator {
 				String commands = "";
 				first=true;
 				for(CommandEvent ce : ci.getCommands()) {
-					// ce can only have one entry, but still checking (could also validate size and go to index 0 directly)
+					// we can only have one entry, but still checking (could also validate size and go to index 0 directly)
 					if(!first) {
 						commands += "-";
 						first=false;
