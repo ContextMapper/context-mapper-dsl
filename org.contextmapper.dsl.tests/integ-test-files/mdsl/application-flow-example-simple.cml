@@ -1,0 +1,20 @@
+BoundedContext SampleSystem {
+	Application SampleApplication {
+		DomainEvent FlowInitiated
+		DomainEvent Event1
+		
+		CommandEvent StartFlow
+		CommandEvent Command1
+		
+		Flow SampleFlow {
+			event FlowInitiated triggers command StartFlow
+			command StartFlow emits event Event1
+			event Event1 triggers command Command1
+			command Command1 emits event FlowTerminated 
+		}
+	}
+	Aggregate SampleAggregate {
+		Event FlowTerminated
+	}
+}
+

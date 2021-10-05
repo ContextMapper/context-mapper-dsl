@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 The Context Mapper Project Team
+ * Copyright 2019-2021 The Context Mapper Project Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package org.contextmapper.dsl.generator.mdsl;
 
+import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -24,7 +25,22 @@ import org.apache.commons.lang3.StringUtils;
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.Application;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
+import org.contextmapper.dsl.contextMappingDSL.CommandInvokationStep;
+import org.contextmapper.dsl.contextMappingDSL.ConcurrentCommandInvokation;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
+import org.contextmapper.dsl.contextMappingDSL.DomainEventProductionStep;
+import org.contextmapper.dsl.contextMappingDSL.EitherCommandOrOperation;
+import org.contextmapper.dsl.contextMappingDSL.EitherCommandOrOperationInvokation;
+import org.contextmapper.dsl.contextMappingDSL.EventProduction;
+import org.contextmapper.dsl.contextMappingDSL.ExclusiveAlternativeCommandInvokation;
+import org.contextmapper.dsl.contextMappingDSL.ExclusiveAlternativeEventProduction;
+import org.contextmapper.dsl.contextMappingDSL.Flow;
+import org.contextmapper.dsl.contextMappingDSL.FlowStep;
+import org.contextmapper.dsl.contextMappingDSL.InclusiveAlternativeCommandInvokation;
+import org.contextmapper.dsl.contextMappingDSL.InclusiveAlternativeEventProduction;
+import org.contextmapper.dsl.contextMappingDSL.MultipleEventProduction;
+import org.contextmapper.dsl.contextMappingDSL.SingleCommandInvokation;
+import org.contextmapper.dsl.contextMappingDSL.SingleEventProduction;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamRole;
 import org.contextmapper.dsl.generator.exception.GeneratorInputException;
@@ -37,16 +53,20 @@ import org.contextmapper.dsl.generator.mdsl.model.EndpointContract;
 import org.contextmapper.dsl.generator.mdsl.model.EndpointOffer;
 import org.contextmapper.dsl.generator.mdsl.model.EndpointOperation;
 import org.contextmapper.dsl.generator.mdsl.model.EndpointProvider;
+import org.contextmapper.dsl.generator.mdsl.model.OrchestrationFlow;
 import org.contextmapper.dsl.generator.mdsl.model.ServiceSpecification;
 import org.contextmapper.tactic.dsl.tacticdsl.CollectionType;
 import org.contextmapper.tactic.dsl.tacticdsl.CommandEvent;
 import org.contextmapper.tactic.dsl.tacticdsl.ComplexType;
+import org.contextmapper.tactic.dsl.tacticdsl.DomainEvent;
 import org.contextmapper.tactic.dsl.tacticdsl.DomainObject;
 import org.contextmapper.tactic.dsl.tacticdsl.DomainObjectOperation;
 import org.contextmapper.tactic.dsl.tacticdsl.Parameter;
 import org.contextmapper.tactic.dsl.tacticdsl.ServiceOperation;
+import org.contextmapper.tactic.dsl.tacticdsl.SimpleDomainObject;
 import org.contextmapper.tactic.dsl.tacticdsl.TacticdslFactory;
 import org.contextmapper.tactic.dsl.tacticdsl.Visibility;
+import org.eclipse.emf.common.util.EList;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -86,17 +106,51 @@ public class MDSLModelCreator {
 	}
 
 	private ServiceSpecification createServiceSpecification(String apiName, UpstreamAPIContext context) {
+				
 		ServiceSpecification specification = new ServiceSpecification();
 		specification.setName(mdslEncoder.encodeName(apiName));
 
+		/*
+		// TODO see https://github.com/ContextMapper/context-mapper-dsl/issues/301 and https://github.com/ContextMapper/context-mapper-dsl/issues/303
+		*/ 
+		
 		if (context.getUpstreamRoles().contains(UpstreamRole.OPEN_HOST_SERVICE) && context.getUpstreamRoles().contains(UpstreamRole.PUBLISHED_LANGUAGE)) {
 			specification.setUsageContext(APIUsageContext.PUBLIC_API);
 		} else if (context.getUpstreamRoles().contains(UpstreamRole.OPEN_HOST_SERVICE)) {
 			specification.setUsageContext(APIUsageContext.COMMUNITY_API);
 		}
 
-		if (context.getApplicationLayer() != null)
-			specification.addEndpoint(createEndpoint(context.getApplicationLayer(), specification));
+		if (context.getApplicationLayer() != null) {
+			specification.addEndpoint(createEndpoint(context.getApplicationLayer(), specification));			
+			for(DomainEvent de:context.getApplicationLayer().getEvents()) {
+				specification.addEventType(de.getName()); 
+				// TODO map data structure, not just name (if present)
+			}
+			// add event types for all domain events in all exposed aggregates
+			for(Aggregate exposedAggregate:context.getExposedAggregates()) {
+				for(SimpleDomainObject objectInAggregate:exposedAggregate.getDomainObjects()) {
+					// check type of domain object (entity? event?...?):
+					if(objectInAggregate instanceof DomainEvent) {
+						DomainEvent de = (DomainEvent) objectInAggregate;
+						// TODO make sure names are unique/do not add duplicates
+						specification.addEventType(de.getName());
+					}
+				} 
+			}
+			
+			for(CommandEvent ce:context.getApplicationLayer().getCommands()) {
+				specification.addCommandType(ce.getName());
+			}
+			EList<Flow> flows = context.getApplicationLayer().getFlows();
+			for(Flow cmlFlow : flows) {
+				OrchestrationFlow mdslFlow = new OrchestrationFlow();
+				mdslFlow.setName(cmlFlow.getName());
+				for(FlowStep step: cmlFlow.getSteps() ) {
+					mapFlowStep(mdslFlow, step);
+				}
+				specification.addFlow(mdslFlow);
+			}
+		}
 		for (Aggregate aggregate : context.getExposedAggregates()) {
 			specification.addEndpoint(createEndpoint(aggregate, specification));
 		}
@@ -108,6 +162,113 @@ public class MDSLModelCreator {
 			specification.addClient(createClient(downstreamContext));
 		}
 		return specification;
+	}
+
+	private void mapFlowStep(OrchestrationFlow mdslFlow, FlowStep step) {
+		if(step.getClass() == org.contextmapper.dsl.contextMappingDSL.impl.CommandInvokationStepImpl.class) {
+			CommandInvokationStep cis = (CommandInvokationStep) step;
+			EitherCommandOrOperationInvokation ecooi = cis.getAction();
+			EList<DomainEvent> events = cis.getEvents();
+			if(ecooi instanceof SingleCommandInvokation) {
+				SingleCommandInvokation ci = (SingleCommandInvokation) ecooi;
+				boolean first;
+				String andEvents = combineEvents(events, " + ");
+				String commands = "";
+				first=true;
+				for(CommandEvent ce : ci.getCommands()) {
+					// we can only have one entry, but still checking (could also validate size and go to index 0 directly)
+					if(!first) {
+						commands += "-";
+						first=false;
+					}
+					commands += ce.getName();
+				}
+				mdslFlow.addCommandInvocationStep(andEvents, commands); 
+			} else if(ecooi instanceof ConcurrentCommandInvokation) {
+				ConcurrentCommandInvokation cci = (ConcurrentCommandInvokation) ecooi; 
+				EList<CommandEvent> commands = cci.getCommands();
+				String andEvents = combineEvents(events, " + ");
+				String andCommands = commands.get(0).getName();
+				for(int i=1; i<commands.size();i++) {
+					andCommands += " + " + commands.get(i).getName();
+				}
+				mdslFlow.addCommandInvocationStep(andEvents, andCommands); 
+			} else if(ecooi instanceof ExclusiveAlternativeCommandInvokation){
+				ExclusiveAlternativeCommandInvokation eaci = (ExclusiveAlternativeCommandInvokation) ecooi; 
+				EList<CommandEvent> commands =eaci.getCommands();
+				String xorEvents = combineEvents(events, " + ");
+				String xorCommands = commands.get(0).getName();
+				for(int i=1; i<commands.size();i++) {
+					xorCommands += " x " + commands.get(i).getName();
+				}
+				mdslFlow.addCommandInvocationStep(xorEvents, xorCommands);
+			} else if(ecooi instanceof InclusiveAlternativeCommandInvokation){
+				InclusiveAlternativeCommandInvokation eaci = (InclusiveAlternativeCommandInvokation) ecooi; 
+				EList<CommandEvent> commands =eaci.getCommands();
+				String orEvents = combineEvents(events, " + "); 
+				String orCommands = commands.get(0).getName();
+				for(int i=1; i<commands.size();i++) {
+					orCommands += " o " + commands.get(i).getName();
+				}
+				mdslFlow.addCommandInvocationStep(orEvents, orCommands);
+			} else {
+				throw new GeneratorInputException("Not yet implemented: support for " + ecooi.getClass());
+			}
+		}
+		else if(step.getClass() == org.contextmapper.dsl.contextMappingDSL.impl.DomainEventProductionStepImpl.class) {
+			DomainEventProductionStep depStep = (DomainEventProductionStep) step;
+			EitherCommandOrOperation action = depStep.getAction();
+			EventProduction ep = depStep.getEventProduction();
+			
+			if(ep instanceof SingleEventProduction) {
+				EList<DomainEvent> events = ep.getEvents();
+				// we can only have one entry, so just in case: 
+				if(events.size()!=1) 
+					throw new InvalidParameterException("Single event production must not list more than one event.");
+				mdslFlow.addEventProductionStep(action.getCommand().getName(), events.get(0).getName()); 
+			} else if(ep instanceof MultipleEventProduction) {
+				String andEvents = mapEvents(action, ep, " + ");
+				mdslFlow.addEventProductionStep(action.getCommand().getName(), andEvents); 
+			} else if(ep instanceof InclusiveAlternativeEventProduction) {
+				String orEvents = mapEvents(action, ep, " o ");
+				mdslFlow.addEventProductionStep(action.getCommand().getName(), orEvents); 
+			} else if(ep instanceof ExclusiveAlternativeEventProduction) {
+				String xorEvents = mapEvents(action, ep, " x ");
+				mdslFlow.addEventProductionStep(action.getCommand().getName(), xorEvents); 
+			} else {
+				throw new GeneratorInputException("Not yet implemented: support for " + ep.getClass());
+			}
+		}
+	}
+	
+	// note: not mapping state transitions, actor delegations, operations (no direct support in MDSL 5.4)
+
+	private String mapEvents(EitherCommandOrOperation action, EventProduction ep, String operator) {
+		EList<DomainEvent> events = ep.getEvents();
+		// all four event production options (line 260 in grammar) refer to at least one event
+		String combinedEvents = events.get(0).getName();  
+		for(int i=1; i<events.size();i++) {
+			if(action.getCommand()!=null) {
+				combinedEvents += operator + events.get(i).getName();
+			} else {
+				throw new GeneratorInputException("Operations are not supported in MDSL");
+			}
+		}
+		return combinedEvents;
+	}
+
+	private String combineEvents(EList<DomainEvent> events, String operator) {
+		String combinedEvent = "";
+		boolean isFirstElementInList=true;
+		for(DomainEvent event : events) {
+			if (isFirstElementInList) {
+				isFirstElementInList=false;
+			} else { // must be false
+				combinedEvent += operator; 
+			}
+			combinedEvent += event.getName();
+		}
+		return combinedEvent;
 	}
 
 	private EndpointContract createEndpoint(Aggregate aggregate, ServiceSpecification specification) {

@@ -32,6 +32,7 @@ import org.contextmapper.dsl.generator.mdsl.MDSLAPIDescriptionCreator;
 import org.contextmapper.dsl.generator.mdsl.MDSLModelCreator;
 import org.contextmapper.dsl.generator.mdsl.ProtectedRegionContextFactory;
 import org.contextmapper.dsl.generator.mdsl.model.ServiceSpecification;
+import org.eclipse.xtext.EcoreUtil2;
 import org.junit.jupiter.api.Test;
 
 public class MDSLAPIDescriptionCreatorTest extends AbstractCMLInputFileTest {
@@ -227,6 +228,37 @@ public class MDSLAPIDescriptionCreatorTest extends AbstractCMLInputFileTest {
 	void respectApplicationLayerName() throws IOException {
 		testCMLInputAndMDSLOutputFiles("mdsl-use-application-name");
 	}
+	
+	@Test
+	void respectApplicationLayerFlowsSimple() throws IOException {
+		testCMLInputAndMDSLOutputFiles("application-flow-example-simple");
+	}
+	
+	@Test
+	void respectApplicationLayerFlowsAdvanced() throws IOException {
+		testCMLInputAndMDSLOutputFiles("application-flow-example");
+	}
+	
+	@Test
+	void unsupportedApplicationLayerFlow1() throws IOException {
+		assertThrows(GeneratorInputException.class, () -> {
+			testCMLInputAndMDSLOutputFiles("application-flow-example-2");
+		});
+	}
+	
+	@Test
+	void anotherUnsupportedApplicationLayerFlow() throws IOException {
+		assertThrows(GeneratorInputException.class, () -> {
+			testCMLInputAndMDSLOutputFiles("application-flow-example-3");
+		});
+	}
+	
+	@Test
+	void yetAnotherUnsupportedApplicationLayerFlow() throws IOException {
+		assertThrows(GeneratorInputException.class, () -> {
+			testCMLInputAndMDSLOutputFiles("application-flow-example-4");
+		});
+	}
 
 	@Test
 	void cannotGenerateAnyThingWithoutAggregateOrApplicationLayer1() {
@@ -255,6 +287,7 @@ public class MDSLAPIDescriptionCreatorTest extends AbstractCMLInputFileTest {
 		// given
 		String inputModelName = baseFilename + ".cml";
 		CMLResource input = getResourceCopyOfTestCML(inputModelName);
+		EcoreUtil2.resolveAll(input);
 		MDSLModelCreator mdslCreator = new MDSLModelCreator(input.getContextMappingModel());
 
 		// when

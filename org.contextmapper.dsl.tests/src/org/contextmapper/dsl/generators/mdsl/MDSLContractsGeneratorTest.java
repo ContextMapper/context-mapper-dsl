@@ -51,6 +51,21 @@ class MDSLContractsGeneratorTest extends AbstractCMLInputFileTest {
 		// then
 		assertTrue(filesystem.getGeneratedFilesSet().contains("testmodel_CustomerManagementContextAPI.mdsl"));
 	}
+	
+	@Test
+	void canCreateMDSLSpecificationWithFlow() throws IOException {
+		// given
+		String inputModelName = "application-flow-example.cml";
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
+		ContextMappingModel model = input.getContextMappingModel();
+
+		// when
+		IFileSystemAccess2Mock filesystem = new IFileSystemAccess2Mock();
+		new MDSLContractsGenerator().doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem, new IGeneratorContextMock());
+
+		// then
+		assertTrue(filesystem.getGeneratedFilesSet().contains("testmodel_SampleSystemAPI.mdsl"));
+	}
 
 	@Test
 	void canOverWriteFileAndPreserveProtectedRegion() throws IOException {

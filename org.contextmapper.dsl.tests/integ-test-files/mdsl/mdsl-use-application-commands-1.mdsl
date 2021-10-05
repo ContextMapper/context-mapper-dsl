@@ -4,6 +4,7 @@ API description CustomerManagementContextAPI
 
 data type CreateCustomerCommand { "firstName":D<string>, "lastName":D<string> }
 
+command type CreateCustomerCommand
 
 endpoint type Application
 	exposes
