@@ -1,0 +1,39 @@
+// Generated from DDD Context Map.
+API description SampleSystemAPI
+
+
+data type Command1Command P // the type Command1Command has not been specified or does not contain any attributes in CML
+data type StartFlowCommand P // the type StartFlowCommand has not been specified or does not contain any attributes in CML
+
+event type FlowInitiated
+event type Event1
+event type FlowTerminated
+command type StartFlowCommand
+command type Command1Command
+
+endpoint type SampleApplication
+	exposes
+		operation StartFlow
+			expecting
+				payload StartFlowCommand
+		operation Command1
+			expecting
+				payload Command1Command
+endpoint type SampleAggregate
+// Your aggregate root does not specify any methods/operations. Therefore we can not generate any endpoint operations.
+
+
+API provider SampleSystemProvider
+	offers SampleApplication
+	at endpoint location "http://localhost:8000"
+		via protocol "tbd" // The protocol is generated if you specify the implementation technology in CML
+	offers SampleAggregate
+	at endpoint location "http://localhost:8001"
+		via protocol "tbd" // The protocol is generated if you specify the implementation technology in CML
+
+
+flow SampleFlow type APPLICATION_FLOW
+event FlowInitiated triggers command StartFlowCommand
+command StartFlowCommand emits event Event1
+event Event1 triggers command Command1Command
+command Command1Command emits event FlowTerminated

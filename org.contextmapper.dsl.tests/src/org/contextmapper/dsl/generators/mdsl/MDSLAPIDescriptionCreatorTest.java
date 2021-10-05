@@ -230,7 +230,12 @@ public class MDSLAPIDescriptionCreatorTest extends AbstractCMLInputFileTest {
 	}
 	
 	@Test
-	void respectApplicationLayerFlows() throws IOException {
+	void respectApplicationLayerFlowsSimple() throws IOException {
+		testCMLInputAndMDSLOutputFiles("application-flow-example-simple");
+	}
+	
+	@Test
+	void respectApplicationLayerFlowsAdvanced() throws IOException {
 		testCMLInputAndMDSLOutputFiles("application-flow-example");
 	}
 	
