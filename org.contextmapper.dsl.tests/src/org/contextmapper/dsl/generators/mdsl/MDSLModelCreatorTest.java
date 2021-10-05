@@ -271,7 +271,12 @@ public class MDSLModelCreatorTest extends AbstractCMLInputFileTest {
 		assertEquals("SampleStoryName", scenarioModel.getStories().get(0).getName());
 		
 		// when
+		storyModel.setPersona("NewActor");
+		storyModel.setAction("NewAction");
 		storyModel.setGoal("NewGoal");
+
+		assertEquals("NewActor", scenarioModel.getStories().get(0).getPersona());
+		assertEquals("NewAction", scenarioModel.getStories().get(0).getAction());
 		assertEquals("NewGoal", scenarioModel.getStories().get(0).getGoal());
 	}
 
