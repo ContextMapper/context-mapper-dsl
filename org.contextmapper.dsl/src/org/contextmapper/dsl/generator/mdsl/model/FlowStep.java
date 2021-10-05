@@ -32,17 +32,9 @@ public class FlowStep {
 		return command;
 	}
 	
-	public void setCommand(String command) {
-		this.command = command;
-	}
-	
 	public String getEvent() {
 		return event;
 	
-	}
-	
-	public void setEvent(String event) {
-		this.event = event;
 	}
 	
 	public boolean isDepStep() {
