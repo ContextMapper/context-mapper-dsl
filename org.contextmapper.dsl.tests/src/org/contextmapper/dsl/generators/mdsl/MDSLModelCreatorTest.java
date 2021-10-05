@@ -31,8 +31,10 @@ import org.contextmapper.dsl.generator.mdsl.model.EndpointContract;
 import org.contextmapper.dsl.generator.mdsl.model.EndpointOffer;
 import org.contextmapper.dsl.generator.mdsl.model.EndpointOperation;
 import org.contextmapper.dsl.generator.mdsl.model.EndpointProvider;
+import org.contextmapper.dsl.generator.mdsl.model.IntegrationScenario;
 import org.contextmapper.dsl.generator.mdsl.model.OrchestrationFlow;
 import org.contextmapper.dsl.generator.mdsl.model.ServiceSpecification;
+import org.contextmapper.dsl.generator.mdsl.model.Story;
 import org.junit.jupiter.api.Test;
 
 public class MDSLModelCreatorTest extends AbstractCMLInputFileTest {
@@ -253,6 +255,24 @@ public class MDSLModelCreatorTest extends AbstractCMLInputFileTest {
 		assertThrows(GeneratorInputException.class, () -> {
 			mdslCreator.createServiceSpecifications();
 		});
+	}
+	
+	@Test
+	void canCreateUpdateAndReadModelWithScenarioAndStory() {
+		// given 
+		IntegrationScenario scenarioModel = new org.contextmapper.dsl.generator.mdsl.model.IntegrationScenario();
+		scenarioModel.setName("SampleScenarioName");
+		Story storyModel = new org.contextmapper.dsl.generator.mdsl.model.Story("SampleStoryName", "SampleActor", "SampleAction", "SampleGoal"); 
+
+		//when 
+		scenarioModel.addStory(storyModel);
+
+		assertEquals("SampleScenarioName", scenarioModel.getName());
+		assertEquals("SampleStoryName", scenarioModel.getStories().get(0).getName());
+		
+		// when
+		storyModel.setGoal("NewGoal");
+		assertEquals("NewGoal", scenarioModel.getStories().get(0).getGoal());
 	}
 
 	@Override
