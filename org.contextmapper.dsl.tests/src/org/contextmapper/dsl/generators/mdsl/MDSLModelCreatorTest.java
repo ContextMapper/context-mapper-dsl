@@ -260,21 +260,25 @@ public class MDSLModelCreatorTest extends AbstractCMLInputFileTest {
 	@Test
 	void canCreateUpdateAndReadModelWithScenarioAndStory() {
 		// given 
+		ServiceSpecification mdslModel = new ServiceSpecification();
 		IntegrationScenario scenarioModel = new org.contextmapper.dsl.generator.mdsl.model.IntegrationScenario();
 		scenarioModel.setName("SampleScenarioName");
 		Story storyModel = new org.contextmapper.dsl.generator.mdsl.model.Story("SampleStoryName", "SampleActor", "SampleAction", "SampleGoal"); 
 
 		//when 
 		scenarioModel.addStory(storyModel);
+		mdslModel.addScenario(scenarioModel);
 
-		assertEquals("SampleScenarioName", scenarioModel.getName());
+		assertEquals("SampleScenarioName", mdslModel.getScenarios().get(0).getName());
 		assertEquals("SampleStoryName", scenarioModel.getStories().get(0).getName());
 		
 		// when
+		storyModel.setName("NewName");
 		storyModel.setPersona("NewActor");
 		storyModel.setAction("NewAction");
 		storyModel.setGoal("NewGoal");
 
+		assertEquals("NewName", scenarioModel.getStories().get(0).getName());
 		assertEquals("NewActor", scenarioModel.getStories().get(0).getPersona());
 		assertEquals("NewAction", scenarioModel.getStories().get(0).getAction());
 		assertEquals("NewGoal", scenarioModel.getStories().get(0).getGoal());
