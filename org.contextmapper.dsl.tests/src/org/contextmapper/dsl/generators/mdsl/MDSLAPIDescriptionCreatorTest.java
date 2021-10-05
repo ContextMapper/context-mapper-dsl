@@ -233,6 +233,13 @@ public class MDSLAPIDescriptionCreatorTest extends AbstractCMLInputFileTest {
 	void respectApplicationLayerFlows() throws IOException {
 		testCMLInputAndMDSLOutputFiles("application-flow-example");
 	}
+	
+	@Test
+	void unsupportedApplicationLayerFlow() throws IOException {
+		assertThrows(GeneratorInputException.class, () -> {
+			testCMLInputAndMDSLOutputFiles("application-flow-example-2");
+		});
+	}
 
 	@Test
 	void cannotGenerateAnyThingWithoutAggregateOrApplicationLayer1() {
