@@ -316,7 +316,7 @@ public class ServiceCutterOutputToContextMappingModelConverter {
 
 		for (String referenceNanoEntity : references2Reconstruct.keySet()) {
 			Optional<Reference> originalReference = originalReferences.stream().filter(r -> (((DomainObject) r.eContainer()).getName() + "." + r.getName()).equals(referenceNanoEntity)).findFirst();
-			if (originalReference.isEmpty())
+			if (!originalReference.isPresent())
 				continue;
 
 			reconstructReference(references2Reconstruct.get(referenceNanoEntity), originalReference.get(), originalReference.get().getDomainObjectType().getName());

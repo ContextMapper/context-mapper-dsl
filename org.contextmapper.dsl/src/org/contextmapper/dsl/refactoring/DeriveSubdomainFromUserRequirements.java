@@ -15,6 +15,7 @@
  */
 package org.contextmapper.dsl.refactoring;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -64,7 +65,7 @@ public class DeriveSubdomainFromUserRequirements extends AbstractRefactoring imp
 		addElementsToEList(subdomain.getSupportedFeatures(), Lists.newLinkedList(selectedUserRequirements));
 		List<String> benefits = Lists.newLinkedList();
 		if (subdomain.getDomainVisionStatement() != null && !"".equals(subdomain.getDomainVisionStatement()))
-			benefits.addAll(List.of(subdomain.getDomainVisionStatement().split(BENEFIT_SEPARATOR_STRING)));
+			benefits.addAll(Arrays.asList(subdomain.getDomainVisionStatement().split(BENEFIT_SEPARATOR_STRING)));
 
 		for (UserRequirement ur : selectedUserRequirements) {
 			if (!doesContainAtLeastOneEntity(ur))
