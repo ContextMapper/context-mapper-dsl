@@ -117,7 +117,7 @@ public class PlantUMLGenerator extends AbstractContextMappingModelGenerator {
 		for (Aggregate aggregate : EcoreUtil2.eAllOfType(bc, Aggregate.class)) {
 			Optional<org.contextmapper.tactic.dsl.tacticdsl.Enum> statesEnum = EcoreUtil2.eAllOfType(aggregate, org.contextmapper.tactic.dsl.tacticdsl.Enum.class).stream()
 					.filter(e -> e.isDefinesAggregateLifecycle()).findFirst();
-			if (statesEnum.isEmpty())
+			if (!statesEnum.isPresent())
 				continue;
 			List<StateTransition> stateTransitions = EcoreUtil2.eAllOfType(aggregate, StateTransition.class);
 			if (!stateTransitions.isEmpty())
