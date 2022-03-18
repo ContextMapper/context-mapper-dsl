@@ -5,6 +5,7 @@ dependencies {
 	testCompile 'org.junit.jupiter:junit-jupiter-params:5.5.1'
 	testCompile "org.eclipse.xtext:org.eclipse.xtext.testing:${xtextVersion}"
 	testCompile "org.eclipse.xtext:org.eclipse.xtext.xbase.testing:${xtextVersion}"
+    testImplementation('org.junit.platform:junit-platform-launcher:1.5.2')
 }
 test {
 	useJUnitPlatform()
