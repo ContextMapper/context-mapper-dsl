@@ -107,7 +107,7 @@ abstract public class AbstractPlantUMLClassDiagramCreator<T extends EObject> ext
 
 	private void printServiceOperations(String objectName, List<ServiceOperation> operations, int indentation) {
 		for (ServiceOperation operation : operations) {
-			printOperation(objectName, operation.getName(), operation.getReturnType(), operation.getParameters(), indentation);
+			printOperation(objectName, operation.getDoc(), operation.getName(), operation.getReturnType(), operation.getParameters(), indentation);
 		}
 	}
 	
@@ -174,10 +174,17 @@ abstract public class AbstractPlantUMLClassDiagramCreator<T extends EObject> ext
 	private void addReferences2List(SimpleDomainObject sourceDomainObject, List<Reference> references) {
 		for (Reference reference : references) {
 			if (reference.getCollectionType() != null && reference.getCollectionType() != CollectionType.NONE)
-				addDomainObjectReference2List(sourceDomainObject.getName(), reference.getDomainObjectType(), reference.getName(), ClassRelationType.AGGREGATION);
+				addDomainObjectReference2List(sourceDomainObject.getName(), reference.getDomainObjectType(), getLabel(reference.getDoc(), reference.getName()), ClassRelationType.AGGREGATION);
 			else
-				addDomainObjectReference2List(sourceDomainObject.getName(), reference.getDomainObjectType(), reference.getName(), ClassRelationType.DEFAULT);
+				addDomainObjectReference2List(sourceDomainObject.getName(), reference.getDomainObjectType(), getLabel(reference.getDoc(), reference.getName()), ClassRelationType.DEFAULT);
 		}
+	}
+
+	private String getLabel(String doc, String name) {
+		if (doc != null && !"".equals(doc))
+			return doc;
+		else
+			return name;
 	}
 
 	private void addDomainObjectReference2List(String sourceDomainObject, SimpleDomainObject targetDomainObject, String label, ClassRelationType type) {
@@ -210,7 +217,7 @@ abstract public class AbstractPlantUMLClassDiagramCreator<T extends EObject> ext
 
 	private void printDomainObjectOperations(String objectName, List<DomainObjectOperation> operations, int indentation) {
 		for (DomainObjectOperation operation : operations) {
-			printOperation(objectName, operation.getName(), operation.getReturnType(), operation.getParameters(), indentation);
+			printOperation(objectName, operation.getDoc(), operation.getName(), operation.getReturnType(), operation.getParameters(), indentation);
 		}
 	}
 
@@ -234,17 +241,17 @@ abstract public class AbstractPlantUMLClassDiagramCreator<T extends EObject> ext
 		}
 	}
 
-	protected void printOperation(String objectName, String operationName, ComplexType returnType, List<Parameter> parameters, int indentation) {
+	protected void printOperation(String objectName, String operationDoc, String operationName, ComplexType returnType, List<Parameter> parameters, int indentation) {
 		printIndentation(indentation);
 		String returnTypeAsString;
 		if (returnType == null)
 			returnTypeAsString = "void";
 		else
-			returnTypeAsString = getComplexMethodTypeAsString(returnType, objectName, operationName);
+			returnTypeAsString = getComplexMethodTypeAsString(returnType, objectName, getLabel(operationDoc, operationName));
 		sb.append(returnTypeAsString).append(" ").append(operationName).append("(");
 		List<String> parameterStrings = Lists.newArrayList();
 		for (Parameter parameter : parameters) {
-			String parameterType = getComplexMethodTypeAsString(parameter.getParameterType(), objectName, operationName);
+			String parameterType = getComplexMethodTypeAsString(parameter.getParameterType(), objectName, getLabel(parameter.getDoc(), operationName));
 			parameterStrings.add(parameterType + " " + parameter.getName());
 		}
 		if (!parameterStrings.isEmpty())
@@ -253,11 +260,11 @@ abstract public class AbstractPlantUMLClassDiagramCreator<T extends EObject> ext
 		linebreak();
 	}
 
-	private String getComplexMethodTypeAsString(ComplexType type, String containingObjectName4References, String methodName) {
+	private String getComplexMethodTypeAsString(ComplexType type, String containingObjectName4References, String label) {
 		String genericType = "Object";
-		if (type.getDomainObjectType() != null) {
+		if (type.getDomainObjectType() != null) {			
 			genericType = type.getDomainObjectType().getName();
-			addDomainObjectReference2List(containingObjectName4References, type.getDomainObjectType(), methodName, ClassRelationType.DEFAULT);
+			addDomainObjectReference2List(containingObjectName4References, type.getDomainObjectType(), label, ClassRelationType.DEFAULT);
 		} else {
 			genericType = type.getType();
 		}

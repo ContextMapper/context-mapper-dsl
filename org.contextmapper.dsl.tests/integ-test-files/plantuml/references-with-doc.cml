@@ -1,0 +1,26 @@
+BoundedContext CustomerManagementContext {
+	
+	Aggregate Customers {
+		Entity Customer {
+			aggregateRoot
+			
+            "lives at" - @Address address
+
+			* void anotherMethod("uses" @Name name);
+			"needs something" * @ReturnTypeEntity yetAnotherMethod();
+		}
+		
+		Entity Address {
+			String name
+		}
+
+        ValueObject Name {
+            String first
+            String last
+        }
+
+		Entity ReturnTypeEntity {
+			int i
+		}
+	}
+}

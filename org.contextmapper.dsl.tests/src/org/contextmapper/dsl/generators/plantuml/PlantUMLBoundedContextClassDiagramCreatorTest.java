@@ -209,6 +209,32 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 	}
 
 	@Test
+	public void useDocForLabelOnReferences() {
+		// given
+		BoundedContext boundedContext = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
+		Aggregate aggregate = ContextMappingDSLFactory.eINSTANCE.createAggregate();
+		aggregate.setName("testAggregate");
+		boundedContext.getAggregates().add(aggregate);
+		Entity entity = TacticdslFactory.eINSTANCE.createEntity();
+		entity.setName("Test");
+		Entity referencedEntity = TacticdslFactory.eINSTANCE.createEntity();
+		referencedEntity.setName("ReferencedEntity");
+		Reference reference = TacticdslFactory.eINSTANCE.createReference();
+		reference.setDoc("references");
+		reference.setName("otherEntity");
+		reference.setDomainObjectType(referencedEntity);
+		entity.getReferences().add(reference);
+		aggregate.getDomainObjects().add(entity);
+		aggregate.getDomainObjects().add(referencedEntity);
+
+		// when
+		String plantUML = this.creator.createDiagram(boundedContext);
+
+		// then
+		assertTrue(plantUML.contains("Test --> ReferencedEntity : references"));
+	}
+
+	@Test
 	public void canCreateClassFromAggregateRoot() {
 		// given
 		BoundedContext boundedContext = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
@@ -490,6 +516,48 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 		// then
 		assertTrue(plantUML.contains("	class Test <<(E,DarkSeaGreen) Entity>> {" + System.lineSeparator() + "		ReturnType doSomething(String someParameter)"
 				+ System.lineSeparator() + "	}" + System.lineSeparator()));
+	}
+
+	@Test
+	public void useDocAsLabelForReferences() throws IOException {
+		// given
+		String inputModelName = "references-with-doc.cml";
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
+		BoundedContext bc = input.getContextMappingModel().getBoundedContexts().get(0);
+
+		// when
+		String plantUML = this.creator.createDiagram(bc);
+
+		// then
+		assertTrue(plantUML.contains("Customer --> Address : lives at"));
+	}
+
+	@Test
+	public void useDocAsLabelForParameterOfDomainObjectOperations() throws IOException {
+		// given
+		String inputModelName = "references-with-doc.cml";
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
+		BoundedContext bc = input.getContextMappingModel().getBoundedContexts().get(0);
+
+		// when
+		String plantUML = this.creator.createDiagram(bc);
+
+		// then
+		assertTrue(plantUML.contains("Customer --> Name : uses"));
+	}
+
+	@Test
+	public void useDocAsLabelForReturnTypeOfDomainObjectOperations() throws IOException {
+		// given
+		String inputModelName = "references-with-doc.cml";
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
+		BoundedContext bc = input.getContextMappingModel().getBoundedContexts().get(0);
+
+		// when
+		String plantUML = this.creator.createDiagram(bc);
+
+		// then
+		assertTrue(plantUML.contains("Customer --> ReturnTypeEntity : needs something"));
 	}
 
 	@Test
