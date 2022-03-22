@@ -8,7 +8,7 @@ buildscript {
 	}
 }
 
-def pomXml = new XmlSlurper().parse('pom.xml')
+def pomXml = new XmlSlurper().parse('${projectDir}/pom.xml')
 
 subprojects {
 	ext.xtextVersion = '2.23.0'
