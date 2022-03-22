@@ -1,0 +1,5 @@
+{
+    "GRADLE_USER_HOME": "${workspaceFolder}/.gradle",
+    "maven.view": "hierarchical",
+    "java.configuration.updateBuildConfiguration": "automatic"
+}

@@ -43,3 +43,4 @@ plugin.xml_gen
 .gradle/
 build/
 
+**/bin/**/*.*
