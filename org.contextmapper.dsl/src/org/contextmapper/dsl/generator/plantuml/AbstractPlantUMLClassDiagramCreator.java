@@ -16,9 +16,12 @@
 package org.contextmapper.dsl.generator.plantuml;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.SculptorModule;
+import org.contextmapper.tactic.dsl.tacticdsl.Association;
 import org.contextmapper.tactic.dsl.tacticdsl.Attribute;
 import org.contextmapper.tactic.dsl.tacticdsl.CollectionType;
 import org.contextmapper.tactic.dsl.tacticdsl.CommandEvent;
@@ -42,19 +45,23 @@ import com.google.common.collect.Lists;
 
 abstract public class AbstractPlantUMLClassDiagramCreator<T extends EObject> extends AbstractPlantUMLDiagramCreator<T> {
 
-	protected List<UMLRelationship> relationships;
+	protected Map<AssociationLink, AssociationInfo> associationInfos;
 	protected List<UMLRelationship> extensions;
 	protected List<SimpleDomainObject> domainObjects;
 
 	protected void printDomainObject(SimpleDomainObject domainObject, int indentation) {
+		printDomainObject(null, domainObject, indentation);
+	}
+
+	protected void printDomainObject(Aggregate aggregate, SimpleDomainObject domainObject, int indentation) {
 		if (domainObject instanceof Enum)
 			printEnum((Enum) domainObject, indentation);
 		else if (domainObject instanceof Entity)
-			printEntity((Entity) domainObject, indentation);
+			printEntity(aggregate, (Entity) domainObject, indentation);
 		else if (domainObject instanceof Event)
-			printEvent((Event) domainObject, indentation);
+			printEvent(aggregate, (Event) domainObject, indentation);
 		else if (domainObject instanceof ValueObject)
-			printValueObject((ValueObject) domainObject, indentation);
+			printValueObject(aggregate, (ValueObject) domainObject, indentation);
 	}
 
 	protected void printModule(SculptorModule module) {
@@ -83,10 +90,10 @@ abstract public class AbstractPlantUMLClassDiagramCreator<T extends EObject> ext
 		sb.append("package ").append("\"'").append(aggregate.getName()).append("' ").append("Aggregate\"").append(" <<Rectangle>> ").append("{");
 		linebreak();
 		for (SimpleDomainObject domainObject : aggregate.getDomainObjects()) {
-			printDomainObject(domainObject, indentation + 1);
+			printDomainObject(aggregate, domainObject, indentation + 1);
 		}
 		for (Service service : aggregate.getServices()) {
-			printService(service, indentation + 1);
+			printService(aggregate, service, indentation + 1);
 		}
 		printIndentation(indentation);
 		sb.append("}");
@@ -94,12 +101,17 @@ abstract public class AbstractPlantUMLClassDiagramCreator<T extends EObject> ext
 	}
 	
 	protected void printService(Service service, int indentation) {
+		printService(null, service, indentation);
+	}
+
+	protected void printService(Aggregate aggregate, Service service, int indentation) {
 		printIndentation(indentation);
 		sb.append("class").append(" ").append(service.getName());
 		sb.append(" <<(S,DarkSeaGreen) Service>> ");
 		sb.append("{");
 		linebreak();
 		printServiceOperations(service.getName(), service.getOperations(), indentation + 1);
+		processAssociations(aggregate, service.getName(), service.getAssociations());
 		printIndentation(indentation);
 		sb.append("}");
 		linebreak();
@@ -107,7 +119,7 @@ abstract public class AbstractPlantUMLClassDiagramCreator<T extends EObject> ext
 
 	private void printServiceOperations(String objectName, List<ServiceOperation> operations, int indentation) {
 		for (ServiceOperation operation : operations) {
-			printOperation(objectName, operation.getDoc(), operation.getName(), operation.getReturnType(), operation.getParameters(), indentation);
+			printOperation(objectName, operation.getName(), operation.getReturnType(), operation.getParameters(), indentation);
 		}
 	}
 	
@@ -123,25 +135,24 @@ abstract public class AbstractPlantUMLClassDiagramCreator<T extends EObject> ext
 		printIndentation(indentation);
 		sb.append("}");
 		linebreak();
-	}
-	
+	}	
 
-	private void printEntity(Entity entity, int indentation) {
-		printStereotypedClass("(E,DarkSeaGreen) Entity", entity, indentation);
-	}
-
-	private void printValueObject(ValueObject valueObject, int indentation) {
-		printStereotypedClass("(V,DarkSeaGreen) Value Object", valueObject, indentation);
+	private void printEntity(Aggregate aggregate, Entity entity, int indentation) {
+		printStereotypedClass(aggregate, "(E,DarkSeaGreen) Entity", entity, indentation);
 	}
 
-	private void printEvent(Event event, int indentation) {
+	private void printValueObject(Aggregate aggregate, ValueObject valueObject, int indentation) {
+		printStereotypedClass(aggregate, "(V,DarkSeaGreen) Value Object", valueObject, indentation);
+	}
+
+	private void printEvent(Aggregate aggregate, Event event, int indentation) {
 		if (event instanceof CommandEvent)
-			printStereotypedClass("(C,#3bc5e9) Command", event, indentation);
+			printStereotypedClass(aggregate, "(C,#3bc5e9) Command", event, indentation);
 		else if (event instanceof DomainEvent)
-			printStereotypedClass("(E,#ff9f4b) Domain Event", event, indentation);
+			printStereotypedClass(aggregate, "(E,#ff9f4b) Domain Event", event, indentation);
 	}
 
-	private void printStereotypedClass(String stereotype, DomainObject object, int indentation) {
+	private void printStereotypedClass(Aggregate aggregate, String stereotype, DomainObject object, int indentation) {
 		printIndentation(indentation);
 		sb.append("class").append(" ").append(object.getName());
 		if (object.isAggregateRoot())
@@ -153,12 +164,15 @@ abstract public class AbstractPlantUMLClassDiagramCreator<T extends EObject> ext
 		printAttributes(object.getAttributes(), indentation + 1);
 		printReferenceAttributes(object.getReferences(), indentation + 1);
 
-		addReferences2List(object, object.getReferences());
+		processReferencesAsAssociations(aggregate, object, object.getReferences());
 
 		printDomainObjectOperations(object.getName(), object.getOperations(), indentation + 1);
 		printIndentation(indentation);
 		sb.append("}");
 		linebreak();
+
+		processAssociations(aggregate, object.getName(), object.getAssociations());
+
 		if (object.getExtendsName() != null && !"".equals(object.getExtendsName()))
 			addExtensionToList(object.getName(), object.getExtendsName());
 		else if (object instanceof Entity && ((Entity) object).getExtends() != null)
@@ -171,28 +185,104 @@ abstract public class AbstractPlantUMLClassDiagramCreator<T extends EObject> ext
 			addExtensionToList(object.getName(), ((ValueObject) object).getExtends());
 	}
 
-	private void addReferences2List(SimpleDomainObject sourceDomainObject, List<Reference> references) {
-		for (Reference reference : references) {
-			if (reference.getCollectionType() != null && reference.getCollectionType() != CollectionType.NONE)
-				addDomainObjectReference2List(sourceDomainObject.getName(), reference.getDomainObjectType(), getLabel(reference.getDoc(), reference.getName()), ClassRelationType.AGGREGATION);
-			else
-				addDomainObjectReference2List(sourceDomainObject.getName(), reference.getDomainObjectType(), getLabel(reference.getDoc(), reference.getName()), ClassRelationType.DEFAULT);
+	private void processAssociations(Aggregate aggregate, String source, List<Association> associations) {
+		for (Association association : associations) {
+			addAssociationToList(aggregate, source, association.getDomainObjectType(), association.getDescription());
 		}
 	}
 
-	private String getLabel(String doc, String name) {
-		if (doc != null && !"".equals(doc))
-			return doc;
+	private void processReferencesAsAssociations(Aggregate aggregate, SimpleDomainObject sourceDomainObject, List<Reference> references) {
+		for (Reference reference : references) {
+			Multiplicity multiplicityTarget = getMultiplicityReference(reference);
+			addNavigableAssociationToList(aggregate, sourceDomainObject.getName(), reference.getDomainObjectType(), getLabel(reference.getAssociationLabel(), reference.getName()), multiplicityTarget);
+		}
+	}
+
+	private Multiplicity getMultiplicityReference(Reference reference) {
+		Multiplicity result = new Multiplicity(1, 1);
+
+		if (reference.getCollectionType() != null && reference.getCollectionType() != CollectionType.NONE)
+			result = new Multiplicity(0, Multiplicity.STAR);
+		
+		if (reference.getSize() != null && !reference.getSize().equals("")) {
+			String size = reference.getSize();
+			String[] parts = size.split(",");
+			for (String part : parts) {
+				if (part.startsWith("min=")) {
+					Integer min = parseIntLax(part.substring(4));
+					if (min != null)
+						result = result.withMin(min);
+				}
+				if (part.startsWith("max=")) {
+					Integer max = parseIntLax(part.substring(4));
+					if (max != null)
+						result = result.withMax(max);
+				}
+			}
+		}
+		if (reference.isNullable())
+			result = result.withMin(0);
+
+		return result;
+	}
+
+	private Integer parseIntLax(String str) {
+		try {
+			return Integer.parseInt(str);
+		} catch (NumberFormatException e) {
+			return null;
+		}
+	}
+
+	private String getLabel(String label, String name) {
+		if (label != null && !"".equals(label))
+			return label;
 		else
 			return name;
 	}
 
-	private void addDomainObjectReference2List(String sourceDomainObject, SimpleDomainObject targetDomainObject, String label, ClassRelationType type) {
+	private void addNavigableAssociationToList(Aggregate aggregate, String source, SimpleDomainObject targetDomainObject, String label, Multiplicity multiplicityTarget) {
 		if (this.domainObjects.contains(targetDomainObject)) {
-			UMLRelationship relationship = new UMLRelationship(sourceDomainObject, targetDomainObject.getName(), label, type);
-			if (!this.relationships.contains(relationship))
-				this.relationships.add(relationship);
+			String target = targetDomainObject.getName();
+			AssociationInfo info = createOrGetAssociationInList(aggregate, source, target, label);
+			info.setNavigability(source, target);
+			if (info.getMultiplicity(source) == null)
+				info.setMultiplicity(source, new Multiplicity(1, 1));
+			if (info.getMultiplicity(target) == null || info.getMultiplicity(target).getMin() == 1)
+				info.setMultiplicity(target, multiplicityTarget);
 		}
+	}
+
+	private void addAssociationToList(Aggregate aggregate, String source, SimpleDomainObject targetDomainObject, String label) {
+		if (this.domainObjects.contains(targetDomainObject)) {
+			String target = targetDomainObject.getName();
+			createOrGetAssociationInList(aggregate, source, target, label);
+		}
+	}
+
+	private AssociationInfo createOrGetAssociationInList(Aggregate aggregate, String source, String target, String label) {
+		AssociationLink link = new AssociationLink(source, target, label);
+		if (!associationInfos.containsKey(link)) {
+			AssociationInfo info = new AssociationInfo(link);
+			if (aggregateContainsDomainObject(aggregate, source))
+				info.setAggregateSource(aggregate.getName());
+			if (aggregateContainsDomainObject(aggregate, target))
+				info.setAggregateTarget(aggregate.getName());
+			associationInfos.put(link, info);				 
+		}
+		return associationInfos.get(link);
+	}
+
+	private boolean aggregateContainsDomainObject(Aggregate aggregate, String source) {
+		if (aggregate != null) {
+			return aggregate.getDomainObjects()
+				.stream()
+				.filter((obj) -> obj.getName().equals(source))
+				.findAny()
+				.isPresent();
+		}
+
+		return false;
 	}
 
 	private void addExtensionToList(String sourceDomainObject, SimpleDomainObject extendedDomainObject) {
@@ -217,7 +307,7 @@ abstract public class AbstractPlantUMLClassDiagramCreator<T extends EObject> ext
 
 	private void printDomainObjectOperations(String objectName, List<DomainObjectOperation> operations, int indentation) {
 		for (DomainObjectOperation operation : operations) {
-			printOperation(objectName, operation.getDoc(), operation.getName(), operation.getReturnType(), operation.getParameters(), indentation);
+			printOperation(objectName, operation.getName(), operation.getReturnType(), operation.getParameters(), indentation);
 		}
 	}
 
@@ -241,17 +331,17 @@ abstract public class AbstractPlantUMLClassDiagramCreator<T extends EObject> ext
 		}
 	}
 
-	protected void printOperation(String objectName, String operationDoc, String operationName, ComplexType returnType, List<Parameter> parameters, int indentation) {
+	protected void printOperation(String objectName, String operationName, ComplexType returnType, List<Parameter> parameters, int indentation) {
 		printIndentation(indentation);
 		String returnTypeAsString;
 		if (returnType == null)
 			returnTypeAsString = "void";
 		else
-			returnTypeAsString = getComplexMethodTypeAsString(returnType, objectName, getLabel(operationDoc, operationName));
+			returnTypeAsString = getComplexMethodTypeAsString(returnType);
 		sb.append(returnTypeAsString).append(" ").append(operationName).append("(");
 		List<String> parameterStrings = Lists.newArrayList();
 		for (Parameter parameter : parameters) {
-			String parameterType = getComplexMethodTypeAsString(parameter.getParameterType(), objectName, getLabel(parameter.getDoc(), operationName));
+			String parameterType = getComplexMethodTypeAsString(parameter.getParameterType());
 			parameterStrings.add(parameterType + " " + parameter.getName());
 		}
 		if (!parameterStrings.isEmpty())
@@ -260,11 +350,10 @@ abstract public class AbstractPlantUMLClassDiagramCreator<T extends EObject> ext
 		linebreak();
 	}
 
-	private String getComplexMethodTypeAsString(ComplexType type, String containingObjectName4References, String label) {
+	private String getComplexMethodTypeAsString(ComplexType type) {
 		String genericType = "Object";
 		if (type.getDomainObjectType() != null) {			
 			genericType = type.getDomainObjectType().getName();
-			addDomainObjectReference2List(containingObjectName4References, type.getDomainObjectType(), label, ClassRelationType.DEFAULT);
 		} else {
 			genericType = type.getType();
 		}
@@ -281,18 +370,74 @@ abstract public class AbstractPlantUMLClassDiagramCreator<T extends EObject> ext
 	}
 
 	protected void printReferences(int indentation) {
-		for (UMLRelationship reference : relationships) {
+		associationInfos.forEach((link, info) -> {
+			boolean suppressMultiplicity = 
+				info.getMultiplicityFirstParticipant() != null &&
+				info.getMultiplicityFirstParticipant().isConstant(1) && 
+				info.getMultiplicitySecondParticipant() != null &&
+				info.getMultiplicitySecondParticipant().isConstant(1);
+
 			printIndentation(indentation);
-			sb.append(reference.getSource()).append(" ").append(reference.getSymbol()).append(" ").append(reference.getTarget());
-			if (!"".equals(reference.getLabel()))
-				sb.append(" : ").append(reference.getLabel());
-			linebreak();
-		}
+
+			// e.g.: first
+			sb.append(link.getFirstParticipant()).append(" ");			
+
+			// e.g.: first "1"
+			if (info.getMultiplicityFirstParticipant() != null && !suppressMultiplicity)
+				sb.append("\"").append(printMultiplicity(info.getMultiplicityFirstParticipant())).append("\"").append(" ");	
+
+			// e.g.: first "1" *-->
+			printLink(info);
+
+			// e.g.: first "1" *--> "*"
+			if (info.getMultiplicitySecondParticipant() != null && !suppressMultiplicity)
+				sb.append("\"").append(printMultiplicity(info.getMultiplicitySecondParticipant())).append("\"").append(" ");
+
+			// e.g.: first "1" *--> "*" second
+			sb.append(link.getSecondParticipant());
+
+			// e.g.: first "1" *--> "*" second : something
+			if (!"".equals(link.getLabel()))
+		 		sb.append(" : ").append(link.getLabel());
+		 	linebreak();
+		});
+
 		for (UMLRelationship extension : extensions) {
 			printIndentation(indentation);
 			sb.append(extension.getSource()).append(" ").append(extension.getSymbol()).append(" ").append(extension.getTarget());
 			linebreak();
 		}
+	}
+
+	private void printLink(AssociationInfo info) {
+		boolean multFirstIsMany = info.getMultiplicityFirstParticipant() != null && info.getMultiplicityFirstParticipant().getMax() > 1,
+				multSecondIsMany = info.getMultiplicitySecondParticipant() != null && info.getMultiplicitySecondParticipant().getMax() > 1;
+		String aggregationSymbol = (info.getAggregateSource().equals(info.getAggregateTarget())) ? "*" : "o";
+
+		if (multSecondIsMany && !multFirstIsMany)
+			sb.append(aggregationSymbol);
+		else if (info.getIsFirstNavigableFromSecond())
+			sb.append("<");
+
+		sb.append("--");
+
+		if (multFirstIsMany && !multSecondIsMany) {
+			sb.append(aggregationSymbol); 
+		} else if (info.getIsSecondNavigableFromFirst())
+			sb.append(">");							
+		sb.append(" ");
+	}
+
+	private String printMultiplicity(Multiplicity multiplicity) {
+		int min = multiplicity.getMin(), max = multiplicity.getMax();
+
+		if (min == max)
+			return Integer.toString(min);
+		
+		if (min == 0 && max == Multiplicity.STAR)
+			return "*";
+
+		return Integer.toString(min) + ".." + Integer.toString(max);
 	}
 
 	protected void printIndentation(int amount) {

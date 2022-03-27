@@ -1,0 +1,57 @@
+BoundedContext CustomerManagementContext {
+	
+	Aggregate Customers {
+		Entity Customer {
+			aggregateRoot
+			
+            - @Address address nullable
+			- List<@City> cities
+			- List<@City> towns size="min=1,max=4"
+			- List<@Order> orders
+			- @Thing thing -- "things"
+
+			* void anotherMethod(@Name name);
+			* @ReturnTypeEntity createReturnTypeEntity();
+
+			-- "lives at" @Address
+			-- "uses >" @Name
+			-- "creates >" @ReturnTypeEntity
+		}
+		
+		Entity Address {
+			- @City city
+			String name
+		}
+
+		ValueObject City {
+			String name
+		}
+
+        ValueObject Name {
+            String first
+            String last
+        }
+
+		Entity ReturnTypeEntity {
+			int i
+		}
+
+		Entity ManyToManyFirst {
+			- List<@ManyToManySecond> seconds -- "interact"
+		}
+
+		Entity ManyToManySecond {
+			- List<@ManyToManyFirst> firsts	-- "interact"
+		}
+
+		Entity Thing {
+			int i
+		}
+	}
+
+	Aggregate Orders {
+		Entity Order {
+			String something
+		}
+	}
+}

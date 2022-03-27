@@ -20,6 +20,8 @@ import org.contextmapper.dsl.contextMappingDSL.Subdomain;
 import org.contextmapper.tactic.dsl.tacticdsl.SimpleDomainObject;
 import org.eclipse.xtext.EcoreUtil2;
 
+import java.util.HashMap;
+
 import com.google.common.collect.Lists;
 
 public class PlantUMLSubdomainClassDiagramCreator extends AbstractPlantUMLClassDiagramCreator<Subdomain> implements PlantUMLDiagramCreator<Subdomain> {
@@ -32,7 +34,7 @@ public class PlantUMLSubdomainClassDiagramCreator extends AbstractPlantUMLClassD
 
 	@Override
 	protected void printDiagramContent(Subdomain subdomain) {
-		this.relationships = Lists.newArrayList();
+		this.associationInfos = new HashMap<>();
 		this.extensions = Lists.newArrayList();
 		this.domainObjects = EcoreUtil2.<SimpleDomainObject>getAllContentsOfType(subdomain, SimpleDomainObject.class);
 

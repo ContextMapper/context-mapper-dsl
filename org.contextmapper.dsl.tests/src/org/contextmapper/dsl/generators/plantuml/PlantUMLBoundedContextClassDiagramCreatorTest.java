@@ -209,7 +209,7 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 	}
 
 	@Test
-	public void useDocForLabelOnReferences() {
+	public void associationLabelOnReferencesIsUsed() {
 		// given
 		BoundedContext boundedContext = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
 		Aggregate aggregate = ContextMappingDSLFactory.eINSTANCE.createAggregate();
@@ -220,7 +220,7 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 		Entity referencedEntity = TacticdslFactory.eINSTANCE.createEntity();
 		referencedEntity.setName("ReferencedEntity");
 		Reference reference = TacticdslFactory.eINSTANCE.createReference();
-		reference.setDoc("references");
+		reference.setAssociationLabel("uses");
 		reference.setName("otherEntity");
 		reference.setDomainObjectType(referencedEntity);
 		entity.getReferences().add(reference);
@@ -231,7 +231,7 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 		String plantUML = this.creator.createDiagram(boundedContext);
 
 		// then
-		assertTrue(plantUML.contains("Test --> ReferencedEntity : references"));
+		assertTrue(plantUML.contains("Test --> ReferencedEntity : uses"));
 	}
 
 	@Test
@@ -366,7 +366,7 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 		assertTrue(plantUML.contains("	class Customer <<(E,DarkSeaGreen) Entity>> {" + System.lineSeparator() + "		Address entity2Ref" + System.lineSeparator()
 				+ "		List<AnotherObject> myListReference" + System.lineSeparator() + "	}" + System.lineSeparator()));
 		assertTrue(plantUML.contains("Customer --> Address : entity2Ref" + System.lineSeparator()));
-		assertTrue(plantUML.contains("Customer o-- AnotherObject : myListReference" + System.lineSeparator()));
+		assertTrue(plantUML.contains("Customer \"1\" *--> \"*\" AnotherObject : myListReference" + System.lineSeparator()));
 	}
 
 	@Test
@@ -518,46 +518,68 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 				+ System.lineSeparator() + "	}" + System.lineSeparator()));
 	}
 
-	@Test
-	public void useDocAsLabelForReferences() throws IOException {
-		// given
-		String inputModelName = "references-with-doc.cml";
-		CMLResource input = getResourceCopyOfTestCML(inputModelName);
+	private String generatePlantUMLFromFile(String file) throws IOException {
+		CMLResource input = getResourceCopyOfTestCML(file);
 		BoundedContext bc = input.getContextMappingModel().getBoundedContexts().get(0);
 
-		// when
-		String plantUML = this.creator.createDiagram(bc);
-
-		// then
-		assertTrue(plantUML.contains("Customer --> Address : lives at"));
+		return this.creator.createDiagram(bc);
 	}
 
 	@Test
-	public void useDocAsLabelForParameterOfDomainObjectOperations() throws IOException {
-		// given
-		String inputModelName = "references-with-doc.cml";
-		CMLResource input = getResourceCopyOfTestCML(inputModelName);
-		BoundedContext bc = input.getContextMappingModel().getBoundedContexts().get(0);
+	public void usesAssociationLabelOfReference() throws IOException {
+		String plantUML = generatePlantUMLFromFile("associations.cml");
 
-		// when
-		String plantUML = this.creator.createDiagram(bc);
-
-		// then
-		assertTrue(plantUML.contains("Customer --> Name : uses"));
+		assertTrue(plantUML.contains("Customer --> Thing : things"));
 	}
 
 	@Test
-	public void useDocAsLabelForReturnTypeOfDomainObjectOperations() throws IOException {
-		// given
-		String inputModelName = "references-with-doc.cml";
-		CMLResource input = getResourceCopyOfTestCML(inputModelName);
-		BoundedContext bc = input.getContextMappingModel().getBoundedContexts().get(0);
+	public void manyToManyRelationsAreRecognized() throws IOException {
+		String plantUML = generatePlantUMLFromFile("associations.cml");
 
-		// when
-		String plantUML = this.creator.createDiagram(bc);
+		assertTrue(plantUML.contains("ManyToManyFirst \"*\" <--> \"*\" ManyToManySecond : interact"));
+	}
 
-		// then
-		assertTrue(plantUML.contains("Customer --> ReturnTypeEntity : needs something"));
+	@Test
+	public void suppressesMultiplicityForOneToOne() throws IOException {
+		String plantUML = generatePlantUMLFromFile("associations.cml");
+
+		assertTrue(plantUML.contains("Address --> City : city"));
+	}
+
+	@Test
+	public void showsStarAsMultiplicityForCollection() throws IOException {
+		String plantUML = generatePlantUMLFromFile("associations.cml");
+
+		assertTrue(plantUML.contains("Customer \"1\" *--> \"*\" City : cities"));
+	}
+
+	@Test
+	public void showsSizePropertyAsMultiplicityWhenPresent() throws IOException {
+		String plantUML = generatePlantUMLFromFile("associations.cml");
+
+		assertTrue(plantUML.contains("Customer \"1\" *--> \"1..4\" City : towns"));
+	}
+
+	@Test
+	public void showCompositionForCollectionReferenceWithinAggregate() throws IOException {
+		String plantUML = generatePlantUMLFromFile("associations.cml");
+
+		assertTrue(plantUML.contains("Customer \"1\" *--> \"*\" City : cities"));
+	}
+
+	@Test
+	public void showAggregationForCollectionReferenceOutsideAggregate() throws IOException {
+		String plantUML = generatePlantUMLFromFile("associations.cml");
+
+		assertTrue(plantUML.contains("Customer \"1\" o--> \"*\" Order : orders"));
+	}
+
+	@Test
+	public void showLabelWhenSpecifiedInAssociation() throws IOException {
+		String plantUML = generatePlantUMLFromFile("associations.cml");
+
+		assertTrue(plantUML.contains("Customer -- ReturnTypeEntity : creates >"));
+		assertTrue(plantUML.contains("Customer -- Name : uses >"));
 	}
 
 	@Test
