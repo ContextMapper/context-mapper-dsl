@@ -21,6 +21,7 @@ import java.util.function.Predicate;
 
 import org.contextmapper.dsl.contextMappingDSL.impl.BoundedContextImpl;
 import org.contextmapper.dsl.contextMappingDSL.impl.DomainImpl;
+import org.contextmapper.tactic.dsl.tacticdsl.Association;
 import org.contextmapper.tactic.dsl.tacticdsl.DomainObject;
 import org.contextmapper.tactic.dsl.tacticdsl.Reference;
 import org.eclipse.emf.ecore.EObject;
@@ -47,6 +48,17 @@ public class CMLScopingHelper {
 		if (isPartOfBoundedContext(reference)) {
 			return filterScope(existingScope, (ieoDesc) -> ieoDesc.getEObjectOrProxy() instanceof DomainObject && isPartOfDomain(ieoDesc.getEObjectOrProxy()));
 		} else if (isPartOfDomain(reference)) {
+			return filterScope(existingScope, (ieoDesc) -> ieoDesc.getEObjectOrProxy() instanceof DomainObject && isPartOfBoundedContext(ieoDesc.getEObjectOrProxy()));
+		}
+		return existingScope;
+	}
+
+	public IScope reduceReferenceScope(IScope existingScope, Association association, EReference eReference) {
+		// domain objects in Domains shall not refer to domain objects in Bounded
+		// Contexts and vice versa:
+		if (isPartOfBoundedContext(association)) {
+			return filterScope(existingScope, (ieoDesc) -> ieoDesc.getEObjectOrProxy() instanceof DomainObject && isPartOfDomain(ieoDesc.getEObjectOrProxy()));
+		} else if (isPartOfDomain(association)) {
 			return filterScope(existingScope, (ieoDesc) -> ieoDesc.getEObjectOrProxy() instanceof DomainObject && isPartOfBoundedContext(ieoDesc.getEObjectOrProxy()));
 		}
 		return existingScope;

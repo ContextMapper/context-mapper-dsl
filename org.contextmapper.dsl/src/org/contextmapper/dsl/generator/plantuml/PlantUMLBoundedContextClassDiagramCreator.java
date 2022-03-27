@@ -15,6 +15,7 @@
  */
 package org.contextmapper.dsl.generator.plantuml;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -39,7 +40,7 @@ public class PlantUMLBoundedContextClassDiagramCreator extends AbstractPlantUMLC
 
 	@Override
 	protected void printDiagramContent(BoundedContext boundedContext) {
-		this.relationships = Lists.newArrayList();
+		this.associationInfos = new HashMap<>();
 		this.extensions = Lists.newArrayList();
 		this.domainObjects = EcoreUtil2.<SimpleDomainObject>getAllContentsOfType(boundedContext, SimpleDomainObject.class);
 		if (this.domainObjects.size() <= 0) {
