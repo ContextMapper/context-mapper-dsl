@@ -16,6 +16,7 @@
 package org.contextmapper.dsl.scoping
 
 import org.contextmapper.tactic.dsl.tacticdsl.Reference
+import org.contextmapper.tactic.dsl.tacticdsl.Association
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EReference
 import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider
@@ -34,6 +35,10 @@ class ContextMappingDSLScopeProvider extends AbstractDeclarativeScopeProvider {
 	override getScope(EObject context, EReference reference) {
 		if (context instanceof Reference) {
 			return cmlScopingHelper.reduceReferenceScope(super.getScope(context, reference), context as Reference,
+				reference);
+		}
+		if (context instanceof Association) {
+			return cmlScopingHelper.reduceReferenceScope(super.getScope(context, reference), context as Association,
 				reference);
 		}
 		super.getScope(context, reference)

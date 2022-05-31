@@ -20,13 +20,15 @@ import org.contextmapper.dsl.validation.ValidationMessages;
 import org.contextmapper.tactic.dsl.tacticdsl.SimpleDomainObject;
 import org.eclipse.xtext.EcoreUtil2;
 
+import java.util.HashMap;
+
 import com.google.common.collect.Lists;
 
 public class PlantUMLModuleClassDiagramCreator extends AbstractPlantUMLClassDiagramCreator<SculptorModule> implements PlantUMLDiagramCreator<SculptorModule> {
 
 	@Override
 	protected void printDiagramContent(SculptorModule module) {
-		this.relationships = Lists.newArrayList();
+		this.associationInfos = new HashMap<>();
 		this.extensions = Lists.newArrayList();
 		this.domainObjects = EcoreUtil2.<SimpleDomainObject>getAllContentsOfType(module, SimpleDomainObject.class);
 		if (this.domainObjects.size() <= 0) {
