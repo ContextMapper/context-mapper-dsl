@@ -27,7 +27,7 @@ ContextMappingModel:
 		(map = ContextMap)? &
 		(boundedContexts += BoundedContext)* &
 		(domains += Domain)* &
-		(userRequirements += UserRequirement)* 
+		(userRequirements += UserRequirement)*
 	)
 ;
 
@@ -47,8 +47,8 @@ ContextMap:
 
 BoundedContext:
 	(comment=ML_COMMENT | comment=SL_COMMENT)?
-	'BoundedContext' name=ID (('implements' (implementedDomainParts+=[DomainPart]) ("," implementedDomainParts+=[DomainPart])*)? & 
-		                      ('realizes' (realizedBoundedContexts+=[BoundedContext]) ("," realizedBoundedContexts+=[BoundedContext])*)? & 
+	'BoundedContext' name=ID (('implements' (implementedDomainParts+=[DomainPart]) ("," implementedDomainParts+=[DomainPart])*)? &
+		                      ('realizes' (realizedBoundedContexts+=[BoundedContext]) ("," realizedBoundedContexts+=[BoundedContext])*)? &
 		                      ('refines' refinedBoundedContext=[BoundedContext])?
 	)
 	(
@@ -60,7 +60,9 @@ BoundedContext:
 			('knowledgeLevel' ('=')? knowledgeLevel=KnowledgeLevel)?)
 			((application = Application)? &
 			(modules += SculptorModule)* &
-			(aggregates += Aggregate)*)
+			(aggregates += Aggregate)* &
+            ('businessModel' ('=')? businessModel=BusinessModel)? &
+            ('evolution' ('=')? evolution=Evolution)?)
 		CLOSE
 	)?
 ;
@@ -101,13 +103,13 @@ SymmetricRelationship:
 
 Partnership:
 	(
-		(participant1 = [BoundedContext] '[''P'']' '<->' '[''P'']' participant2 = [BoundedContext]) | 
-		('[''P'']' participant1 = [BoundedContext] '<->' '[''P'']' participant2 = [BoundedContext]) | 
+		(participant1 = [BoundedContext] '[''P'']' '<->' '[''P'']' participant2 = [BoundedContext]) |
+		('[''P'']' participant1 = [BoundedContext] '<->' '[''P'']' participant2 = [BoundedContext]) |
 		(participant1 = [BoundedContext] '[''P'']' '<->' participant2 = [BoundedContext] '[''P'']') |
 		('[''P'']' participant1 = [BoundedContext] '<->' participant2 = [BoundedContext] '[''P'']') |
 		(participant1 = [BoundedContext] 'Partnership' participant2 = [BoundedContext])
 	)
-	(':' name=ID)? 
+	(':' name=ID)?
 	(OPEN
 		('implementationTechnology' ('=')? implementationTechnology=STRING)?
 	CLOSE)?
@@ -122,17 +124,17 @@ SharedKernel:
 		(participant1 = [BoundedContext] 'Shared-Kernel' participant2 = [BoundedContext]) |
 		(participant1 = [BoundedContext] '<->' participant2 = [BoundedContext])
 	)
-	(':' name=ID)? 
+	(':' name=ID)?
 	(OPEN
 		('implementationTechnology' ('=')? implementationTechnology=STRING)?
 	CLOSE)?
 ;
 
 UpstreamDownstreamRelationship:
-	CustomerSupplierRelationship | 
+	CustomerSupplierRelationship |
 	(
 		(
-			(upstream = [BoundedContext] (('[''U'']') | ('['('U'',')?(upstreamRoles+=UpstreamRole) ("," upstreamRoles+=UpstreamRole)*)']')? '->' (('[''D'']') | ('['('D'',')?(downstreamRoles+=DownstreamRole) ("," downstreamRoles+=DownstreamRole)*)']')? downstream = [BoundedContext]) | 
+			(upstream = [BoundedContext] (('[''U'']') | ('['('U'',')?(upstreamRoles+=UpstreamRole) ("," upstreamRoles+=UpstreamRole)*)']')? '->' (('[''D'']') | ('['('D'',')?(downstreamRoles+=DownstreamRole) ("," downstreamRoles+=DownstreamRole)*)']')? downstream = [BoundedContext]) |
 			(downstream = [BoundedContext] (('[''D'']') | ('['('D'',')?(downstreamRoles+=DownstreamRole) ("," downstreamRoles+=DownstreamRole)*)']')? '<-' (('[''U'']') | ('['('U'',')?(upstreamRoles+=UpstreamRole) ("," upstreamRoles+=UpstreamRole)*)']')? upstream = [BoundedContext]) |
 			(upstream = [BoundedContext] ('['((upstreamRoles+=UpstreamRole) ("," upstreamRoles+=UpstreamRole)*)?']')?'Upstream-Downstream'('['((downstreamRoles+=DownstreamRole) ("," downstreamRoles+=DownstreamRole)*)?']')? downstream = [BoundedContext]) |
 			(downstream = [BoundedContext] ('['((downstreamRoles+=DownstreamRole) ("," downstreamRoles+=DownstreamRole)*)?']')?'Downstream-Upstream'('['((upstreamRoles+=UpstreamRole) ("," upstreamRoles+=UpstreamRole)*)?']')? upstream = [BoundedContext])
@@ -176,9 +178,9 @@ Aggregate :
     		(('userStories' ('=')? userRequirements += [UserStory]) ("," userRequirements += [UserStory])*) |
     		((('features' | 'userRequirements') ('=')? userRequirements += [UserRequirement]) ("," userRequirements += [UserRequirement])*)
     	)? &
-    	('owner' ('=')? owner=[BoundedContext])? & 
+    	('owner' ('=')? owner=[BoundedContext])? &
     	('knowledgeLevel' ('=')? knowledgeLevel=KnowledgeLevel)? &
-    	(('likelihoodForChange' | 'structuralVolatility') ('=')? likelihoodForChange=Volatility)? & 
+    	(('likelihoodForChange' | 'structuralVolatility') ('=')? likelihoodForChange=Volatility)? &
     	('contentVolatility' ('=')? contentVolatility=Volatility)? &
     	('availabilityCriticality' ('=')? availabilityCriticality=Criticality)? &
     	('consistencyCriticality' ('=')? consistencyCriticality=Criticality)? &
@@ -191,7 +193,8 @@ Aggregate :
      (resources+=Resource) |
      (consumers+=Consumer) |
      (domainObjects+=SimpleDomainObject))*
-  CLOSE)?;
+  CLOSE)?
+;
 
 Application:
 	"Application" (name=ID)? (OPEN
@@ -199,12 +202,14 @@ Application:
 		(events+=DomainEvent)* &
 		(services+=Service)* &
 		(flows+=Flow)*)
-CLOSE)?;
+CLOSE)?
+;
 
 Flow:
-	"Flow" name=ID (OPEN 
+	"Flow" name=ID (OPEN
 		(steps+=FlowStep)*
-	CLOSE)?;
+	CLOSE)?
+;
 
 FlowStep:
 	DomainEventProductionStep | CommandInvokationStep
@@ -291,7 +296,7 @@ UserRequirement:
 ;
 
 UseCase:
-	'UseCase' name=ID 
+	'UseCase' name=ID
 	(OPEN
 		(('actor' ('=')? role=STRING)? &
 		('interactions' ('=')? features+=Feature ("," features+=Feature)*)? &
@@ -335,7 +340,8 @@ SculptorModule :
      (consumers+=Consumer) |
      (domainObjects+=SimpleDomainObject) |
      (aggregates+=Aggregate))*
-  CLOSE)?;
+  CLOSE)?
+;
 
 enum UpstreamRole:
 	PUBLISHED_LANGUAGE = 'PL' | OPEN_HOST_SERVICE = 'OHS'
@@ -369,16 +375,24 @@ enum KnowledgeLevel :
   META="META" | CONCRETE="CONCRETE"
 ;
 
-enum Volatility : 
+enum Volatility :
 	UNDEFINED | NORMAL | RARELY | OFTEN
 ;
 
-enum Criticality : 
+enum Criticality :
 	UNDEFINED | NORMAL | HIGH | LOW
 ;
 
-enum Similarity : 
+enum Similarity :
 	UNDEFINED | NORMAL | HUGE | TINY
+;
+
+enum BusinessModel :
+     UNDEFINED | REVENUE | ENGAGEMENT | COMPLIANCE | COST_REDUCTION
+;
+
+enum Evolution :
+     UNDEFINED | GENESIS | CUSTOM_BUILT | PRODUCT | COMMODITY
 ;
 
 // define terminals
