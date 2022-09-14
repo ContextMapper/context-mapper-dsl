@@ -58,11 +58,11 @@ BoundedContext:
 			(('responsibilities' ('=')? responsibilities+=STRING) ("," responsibilities+=STRING)*)? &
 			('implementationTechnology' ('=')? implementationTechnology=STRING)? &
 			('knowledgeLevel' ('=')? knowledgeLevel=KnowledgeLevel)?)
+            ('businessModel' ('=')? businessModel=BusinessModel)? &
+            ('evolution' ('=')? evolution=Evolution)? &
 			((application = Application)? &
 			(modules += SculptorModule)* &
-			(aggregates += Aggregate)* &
-            ('businessModel' ('=')? businessModel=BusinessModel)? &
-            ('evolution' ('=')? evolution=Evolution)?)
+			(aggregates += Aggregate)*)
 		CLOSE
 	)?
 ;
