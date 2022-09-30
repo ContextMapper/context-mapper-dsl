@@ -58,7 +58,7 @@ BoundedContext:
 			(('responsibilities' ('=')? responsibilities+=STRING) ("," responsibilities+=STRING)*)? &
 			('implementationTechnology' ('=')? implementationTechnology=STRING)? &
 			('knowledgeLevel' ('=')? knowledgeLevel=KnowledgeLevel)?)
-            ('businessModel' ('=')? businessModel=BusinessModel)? &
+			('businessModel' ('=')? businessModel=STRING)? &
             ('evolution' ('=')? evolution=Evolution)? &
 			((application = Application)? &
 			(modules += SculptorModule)* &
@@ -385,10 +385,6 @@ enum Criticality :
 
 enum Similarity :
 	UNDEFINED | NORMAL | HUGE | TINY
-;
-
-enum BusinessModel :
-     UNDEFINED | REVENUE | ENGAGEMENT | COMPLIANCE | COST_REDUCTION
 ;
 
 enum Evolution :

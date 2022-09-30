@@ -19,7 +19,6 @@ import com.google.inject.Inject
 import java.util.stream.Collectors
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext
 import org.contextmapper.dsl.contextMappingDSL.BoundedContextType
-import org.contextmapper.dsl.contextMappingDSL.BusinessModel
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLPackage
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel
 import org.contextmapper.dsl.contextMappingDSL.Evolution
@@ -165,7 +164,7 @@ class BoundedContextDSLParsingTest {
 		// given
 		val String dslSnippet = '''
 			BoundedContext testContext {
-				businessModel = ENGAGEMENT
+				businessModel = "ENGAGEMENT"
 			}
 		''';
 		// when
@@ -173,7 +172,7 @@ class BoundedContextDSLParsingTest {
 		// then
 		assertThatNoParsingErrorsOccurred(result);
 		assertThatNoValidationErrorsOccurred(result);
-		assertEquals(BusinessModel.ENGAGEMENT, result.boundedContexts.get(0).businessModel);
+		assertEquals("ENGAGEMENT", result.boundedContexts.get(0).businessModel);
 	}
 
 	@Test
