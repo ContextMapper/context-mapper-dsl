@@ -138,7 +138,7 @@
 							-->
 							<programs>
 								<program>
-									<id>mydsl-ls</id>
+									<id>cml-ls</id>
 									<mainClass>org.eclipse.xtext.ide.server.ServerLauncher</mainClass>
 									<!-- uncomment to enable options
 									<commandLineArguments>

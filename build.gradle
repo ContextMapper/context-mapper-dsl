@@ -11,7 +11,7 @@ buildscript {
 def pomXml = new XmlSlurper().parse('pom.xml')
 
 subprojects {
-	ext.xtextVersion = '2.23.0'
+	ext.xtextVersion = '2.28.0'
 	repositories {
 		jcenter()
 	}
@@ -27,8 +27,8 @@ subprojects {
 	group = 'org.contextmapper'
 	version = pomXml.version
 			
-	sourceCompatibility = '1.8'
-	targetCompatibility = '1.8'
+	sourceCompatibility = '11'
+	targetCompatibility = '11'
 	
 	configurations.all {
 		exclude group: 'asm'

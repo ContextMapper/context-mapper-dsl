@@ -30,7 +30,7 @@ Require-Bundle: org.eclipse.xtext,
  org.nlpub.watset;bundle-version="2.1.5",
  org.jgrapht.core;bundle-version="1.4.0",
  org.apache.commons.math3;bundle-version="3.6.1"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: org.contextmapper.dsl,
  org.contextmapper.dsl.cml,
  org.contextmapper.dsl.cml.exception,

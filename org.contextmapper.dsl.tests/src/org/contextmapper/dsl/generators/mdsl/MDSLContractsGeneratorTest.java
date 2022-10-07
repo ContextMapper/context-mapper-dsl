@@ -74,7 +74,7 @@ class MDSLContractsGeneratorTest extends AbstractCMLInputFileTest {
 		CMLResource input = getResourceCopyOfTestCML(inputModelName);
 		ContextMappingModel model = input.getContextMappingModel();
 		File existingMDSLFile = new File(Paths.get("").toAbsolutePath().toString(), "/integ-test-files/mdsl/overwrite-with-preserving-protected-region-test.mdsl");
-		String existingMDSLContent = FileUtils.readFileToString(existingMDSLFile, Charset.forName("UTF-8"));
+		String existingMDSLContent = FileUtils.readFileToString(existingMDSLFile);
 
 		// when
 		IFileSystemAccess2Mock filesystem = new IFileSystemAccess2Mock();

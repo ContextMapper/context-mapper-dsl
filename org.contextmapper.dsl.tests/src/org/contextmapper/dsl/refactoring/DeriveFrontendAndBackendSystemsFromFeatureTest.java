@@ -118,8 +118,7 @@ public class DeriveFrontendAndBackendSystemsFromFeatureTest extends AbstractRefa
 
 		// then
 		String dslText = FileUtils.readFileToString(new File(input.getURI().toFileString()), "UTF-8");
-		String expectedResult = FileUtils.readFileToString(new File(Paths.get("").toAbsolutePath().toString(), "/integ-test-files/refactorings/" + testBasefileName + "-output.cml"),
-				Charset.forName("UTF-8"));
+		String expectedResult = FileUtils.readFileToString(new File(Paths.get("").toAbsolutePath().toString(), "/integ-test-files/refactorings/" + testBasefileName + "-output.cml"));
 		assertEquals(expectedResult, dslText);
 	}
 

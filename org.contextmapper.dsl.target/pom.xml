@@ -8,7 +8,4 @@
 	<artifactId>org.contextmapper.dsl.target</artifactId>
 	<packaging>eclipse-target-definition</packaging>
 
-
-	<dependencies>
-	</dependencies>
 </project>

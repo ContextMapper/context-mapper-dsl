@@ -82,7 +82,7 @@ public class StandaloneAPITest {
 
 		// then
 		assertTrue(file.exists());
-		assertEquals(System.lineSeparator() + System.lineSeparator() + "BoundedContext TestContext", FileUtils.readFileToString(file, Charset.forName("UTF-8")));
+		assertEquals(System.lineSeparator() + System.lineSeparator() + "BoundedContext TestContext", FileUtils.readFileToString(file));
 	}
 
 	@Test
@@ -101,7 +101,7 @@ public class StandaloneAPITest {
 
 		// then
 		assertTrue(file.exists());
-		assertEquals(System.lineSeparator() + System.lineSeparator() + "BoundedContext TestContext", FileUtils.readFileToString(file, Charset.forName("UTF-8")));
+		assertEquals(System.lineSeparator() + System.lineSeparator() + "BoundedContext TestContext", FileUtils.readFileToString(file));
 	}
 
 	@Test
