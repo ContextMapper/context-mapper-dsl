@@ -1,9 +1,9 @@
 apply plugin: 'signing'
 
 dependencies {
-	compile project(':context-mapper-dsl')
-	compile "org.eclipse.xtext:org.eclipse.xtext.ide:${xtextVersion}"
-	compile "org.eclipse.xtext:org.eclipse.xtext.xbase.ide:${xtextVersion}"
+	implementation project(':context-mapper-dsl')
+	implementation "org.eclipse.xtext:org.eclipse.xtext.ide:${xtextVersion}"
+	implementation "org.eclipse.xtext:org.eclipse.xtext.xbase.ide:${xtextVersion}"
 }
 
 apply plugin: 'application'

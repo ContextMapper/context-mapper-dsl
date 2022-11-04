@@ -1,11 +1,12 @@
 //see https://docs.gradle.org/current/userguide/maven_plugin.html
-apply plugin: 'maven'
+apply plugin: 'maven-publish'
 
-uploadArchives {
+publishing {
 	repositories {
-		mavenDeployer {
-			repository(url: "file://${buildDir}/localRepo")
-			snapshotRepository(url: "file://${buildDir}/localRepo")
+		maven {
+			def releasesRepoUrl = "file://${buildDir}/localRepo"
+			def snapshotsRepoUrl = "file://${buildDir}/localRepo"
+			url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
 		}
 	}
 }
