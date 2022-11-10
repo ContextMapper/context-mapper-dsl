@@ -34,12 +34,10 @@ class ContextMappingDSLScopeProvider extends AbstractDeclarativeScopeProvider {
 
 	override getScope(EObject context, EReference reference) {
 		if (context instanceof Reference) {
-			return cmlScopingHelper.reduceReferenceScope(super.getScope(context, reference), context as Reference,
-				reference);
+			return cmlScopingHelper.reduceReferenceScope(super.getScope(context, reference), context, reference);
 		}
 		if (context instanceof Association) {
-			return cmlScopingHelper.reduceReferenceScope(super.getScope(context, reference), context as Association,
-				reference);
+			return cmlScopingHelper.reduceReferenceScope(super.getScope(context, reference), context, reference);
 		}
 		super.getScope(context, reference)
 	}

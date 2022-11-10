@@ -16,6 +16,7 @@ dependencies {
 	implementation group: 'org.contextmapper', name: 'context-map-generator', version: '1.2.1'
 	implementation group: 'org.contextmapper', name: 'service-cutter-library', version: '1.2.1'
 }
+
 configurations {
 	mwe2 {
 		extendsFrom implementation
@@ -23,14 +24,14 @@ configurations {
 }
 
 dependencies {
-	mwe2 "org.eclipse.emf:org.eclipse.emf.mwe2.launch:2.11.3"
+	mwe2 'org.eclipse.emf:org.eclipse.emf.mwe2.launch'
 	mwe2 "org.eclipse.xtext:org.eclipse.xtext.common.types:${xtextVersion}"
 	mwe2 "org.eclipse.xtext:org.eclipse.xtext.xtext.generator:${xtextVersion}"
 	mwe2 "org.eclipse.xtext:xtext-antlr-generator"
 }
 
 task generateXtextLanguage(type: JavaExec) {
-	main = 'org.eclipse.emf.mwe2.launch.runtime.Mwe2Launcher'
+	mainClass = 'org.eclipse.emf.mwe2.launch.runtime.Mwe2Launcher'
 	classpath = configurations.mwe2
 	inputs.file "src/org/contextmapper/dsl/GenerateContextMappingDSL.mwe2"
 	inputs.file "src/org/contextmapper/dsl/ContextMappingDSL.xtext"
@@ -40,6 +41,7 @@ task generateXtextLanguage(type: JavaExec) {
 	args += "rootPath=/${projectDir}/.."
 }
 
+processResources.dependsOn(generateXtextLanguage)
 generateXtext.dependsOn(generateXtextLanguage)
 clean.dependsOn(cleanGenerateXtextLanguage)
 eclipse.classpath.plusConfigurations += [configurations.mwe2]
@@ -48,7 +50,6 @@ eclipseClasspath.enabled=false
 cleanEclipseClasspath.enabled=false
 
 clean {
-    delete 'src-gen'
     delete 'xtend-gen'
     delete 'model'
 }

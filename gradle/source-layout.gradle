@@ -1,22 +1,36 @@
-sourceSets {
-	main {
-		java.srcDir 'src/main/xtext-gen'
-		resources.srcDir 'src/main/xtext-gen'
-		xtendOutputDir = 'src/main/xtend-gen'
+if (name.endsWith("-tests")) {
+	sourceSets {
+		main {
+			java.srcDirs = []
+			resources.srcDirs = []
+		}
+		test {
+			java.srcDirs = ['src', 'src-gen', 'xtend-gen']
+			resources.srcDirs = ['src', 'src-gen']
+			xtendOutputDir = 'xtend-gen'
+		}
 	}
-	test {
-		java.srcDir 'src/test/xtext-gen'
-		resources.srcDir 'src/test/xtext-gen'
-		xtendOutputDir = 'src/test/xtend-gen'
+} else {
+	sourceSets {
+		main {
+			java.srcDirs = ['src', 'src-gen', 'xtend-gen']
+			resources.srcDirs = ['src', 'src-gen']
+			xtendOutputDir = 'xtend-gen'
+		}
+		test {
+			java.srcDirs = []
+			resources.srcDirs = []
+		}
 	}
+}
+
+sourceSets.all {
+	resources.exclude '**/*.g', '**/*.mwe2', '**/*.xtend', '**/*._trace'
 }
 
 jar {
 	from('model') {
 		into('model')
-	}
-	from(sourceSets.main.allSource) {
-		include '**/*.xtext'
 	}
 	manifest {
 		attributes 'Bundle-SymbolicName': project.name
@@ -24,5 +38,5 @@ jar {
 }
 
 plugins.withId('war') {
-	webAppDirName = "src/main/webapp"
+	webAppDirName = "WebRoot"
 }

@@ -15,8 +15,6 @@
  */
 package org.contextmapper.tactic.dsl.formatting2
 
-import com.google.inject.Inject
-import org.contextmapper.tactic.dsl.services.TacticDDDLanguageGrammarAccess
 import org.contextmapper.tactic.dsl.tacticdsl.Attribute
 import org.contextmapper.tactic.dsl.tacticdsl.CommandEvent
 import org.contextmapper.tactic.dsl.tacticdsl.ComplexType
@@ -33,8 +31,6 @@ import org.eclipse.xtext.formatting2.IFormattableDocument
 import org.contextmapper.tactic.dsl.tacticdsl.ServiceOperation
 
 class TacticDDDLanguageFormatter extends AbstractFormatter2 {
-
-	@Inject extension TacticDDDLanguageGrammarAccess
 
 	def dispatch void format(Entity entity, extension IFormattableDocument document) {
 		interior(

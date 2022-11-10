@@ -3,7 +3,7 @@ Automatic-Module-Name: org.contextmapper.dsl.ide.tests
 Bundle-ManifestVersion: 2
 Bundle-Name: org.contextmapper.dsl.ide.tests
 Bundle-Vendor: Context Mapper
-Bundle-Version: 6.6.2.qualifier
+Bundle-Version: 6.7.0.qualifier
 Bundle-SymbolicName: org.contextmapper.dsl.ide.tests; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.contextmapper.dsl,
@@ -20,7 +20,7 @@ Require-Bundle: org.contextmapper.dsl,
  org.eclipse.lsp4j.jsonrpc;bundle-version="0.15.0",
  io.github.classgraph;bundle-version="4.8.35",
  com.google.gson;bundle-version="2.8.9",
- org.eclipse.osgi;bundle-version="3.15.200",
+ org.eclipse.osgi,
  junit-jupiter-api,
  junit-jupiter-params,
  org.aopalliance;bundle-version="1.0.0",

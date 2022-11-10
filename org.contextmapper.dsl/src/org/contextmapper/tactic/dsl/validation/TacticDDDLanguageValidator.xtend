@@ -47,7 +47,6 @@ import static org.contextmapper.tactic.dsl.tacticdsl.TacticdslPackage.Literals.*
 
 import static extension org.contextmapper.tactic.dsl.TacticDslExtensions.*
 import static extension org.eclipse.emf.ecore.util.EcoreUtil.*
-import static extension org.eclipse.xtext.EcoreUtil2.*
 
 /**
  * Custom validation rules. 
@@ -56,12 +55,12 @@ import static extension org.eclipse.xtext.EcoreUtil2.*
  */
 class TacticDDDLanguageValidator extends AbstractTacticDDDLanguageValidator implements IssueCodes {
 	
-private val DIGITS_PATTERN = Pattern.compile("[0-9]+[0-9]*")
-	private val SUPPORTED_PRIMITIVE_TYPES = new HashSet<String>(asList("int", "long", "float", "double", "boolean"))
-	private val SUPPORTED_TEMPORAL_TYPES = new HashSet<String>(asList("Date", "DateTime", "Timestamp"))
-	private val SUPPORTED_NUMERIC_TYPES = new HashSet<String>(
+val DIGITS_PATTERN = Pattern.compile("[0-9]+[0-9]*")
+	val SUPPORTED_PRIMITIVE_TYPES = new HashSet<String>(asList("int", "long", "float", "double", "boolean"))
+	val SUPPORTED_TEMPORAL_TYPES = new HashSet<String>(asList("Date", "DateTime", "Timestamp"))
+	val SUPPORTED_NUMERIC_TYPES = new HashSet<String>(
 		asList("int", "long", "float", "double", "Integer", "Long", "Float", "Double", "BigInteger", "BigDecimal"))
-	private val SUPPORTED_BOOLEAN_TYPES = new HashSet<String>(asList("Boolean", "boolean"))
+	val SUPPORTED_BOOLEAN_TYPES = new HashSet<String>(asList("Boolean", "boolean"))
 
 	@Check
 	def checkServiceNameStartsWithUpperCase(Service service) {
