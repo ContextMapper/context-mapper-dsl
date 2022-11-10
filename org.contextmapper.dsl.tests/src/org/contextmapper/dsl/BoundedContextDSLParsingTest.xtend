@@ -21,6 +21,7 @@ import org.contextmapper.dsl.contextMappingDSL.BoundedContext
 import org.contextmapper.dsl.contextMappingDSL.BoundedContextType
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLPackage
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel
+import org.contextmapper.dsl.contextMappingDSL.Evolution
 import org.contextmapper.dsl.contextMappingDSL.KnowledgeLevel
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.extensions.InjectionExtension
@@ -159,6 +160,38 @@ class BoundedContextDSLParsingTest {
 	}
 
 	@Test
+	def void canDefineBusinessModel() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext testContext {
+				businessModel = "ENGAGEMENT"
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		assertEquals("ENGAGEMENT", result.boundedContexts.get(0).businessModel);
+	}
+
+	@Test
+	def void canDefineEvolution() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext testContext {
+				evolution = CUSTOM_BUILT
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		assertEquals(Evolution.CUSTOM_BUILT, result.boundedContexts.get(0).evolution);
+	}
+
+	@Test
 	def void canDefineTeamRealizesContext() {
 		// given
 		val String dslSnippet = '''
@@ -174,7 +207,7 @@ class BoundedContextDSLParsingTest {
 		// then
 		assertThatNoParsingErrorsOccurred(result);
 		assertThatNoValidationErrorsOccurred(result);
-		
+
 		val BoundedContext team = result.boundedContexts.findFirst[it.type == BoundedContextType.TEAM];
 		assertEquals("ContextA", team.realizedBoundedContexts.get(0).name);
 	}
@@ -199,7 +232,7 @@ class BoundedContextDSLParsingTest {
 		// then
 		assertThatNoParsingErrorsOccurred(result);
 		assertThatNoValidationErrorsOccurred(result);
-		
+
 		val BoundedContext team = result.boundedContexts.findFirst[it.type == BoundedContextType.TEAM];
 		val realizedBCNames = team.realizedBoundedContexts.stream.map[name].collect(Collectors.toList);
 		assertTrue(realizedBCNames.contains("ContextA"));
@@ -223,8 +256,8 @@ class BoundedContextDSLParsingTest {
 		assertThatNoParsingErrorsOccurred(result);
 		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.BOUNDED_CONTEXT, "",
 			String.format(ONLY_TEAMS_CAN_REALIZE_OTHER_BOUNDED_CONTEXT, "NotATeam"));
-	} 
-	
+	}
+
 	@Test
 	def void canDefineAttributesWithoutEqualSign() {
 		// given
@@ -239,20 +272,20 @@ class BoundedContextDSLParsingTest {
 		''';
 		// when
 		val ContextMappingModel result = parseHelper.parse(dslSnippet);
-		
+
 		// then
 		assertThatNoParsingErrorsOccurred(result);
 		assertThatNoValidationErrorsOccurred(result);
 		assertEquals("Java / Spring Boot App", result.boundedContexts.get(0).implementationTechnology);
 		assertEquals(KnowledgeLevel.META, result.boundedContexts.get(0).knowledgeLevel);
 		assertEquals("this is my vision", result.boundedContexts.get(0).domainVisionStatement);
-		
+
 		val responsibilities = result.boundedContexts.get(0).responsibilities;
 		assertTrue(responsibilities.contains("a responsibility description..."));
 		assertTrue(responsibilities.contains("another responsibility"));
 		assertEquals(BoundedContextType.FEATURE, result.boundedContexts.get(0).type);
 	}
-	
+
 	@Test
 	def void canRefineOtherBoundedContext() {
 		// given
@@ -262,11 +295,11 @@ class BoundedContextDSLParsingTest {
 		''';
 		// when
 		val ContextMappingModel result = parseHelper.parse(dslSnippet);
-		
+
 		// then
 		assertThatNoParsingErrorsOccurred(result);
 		assertThatNoValidationErrorsOccurred(result);
-		
+
 		val contextMapperContext = result.boundedContexts.get(1);
 		assertEquals("ContextMapper", contextMapperContext.name);
 		assertEquals("StrategicDDD", contextMapperContext.refinedBoundedContext.name);
