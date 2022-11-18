@@ -108,11 +108,7 @@
 								<phase>prepare-package</phase>
 								<configuration>
 									<target>
-										<ant antfile="${basedir}/artifactory.ant" target="get-composite-metadata">
-											<reference torefid="maven.runtime.classpath" refid="maven.runtime.classpath" />
-											<reference torefid="parsedVersion.majorVersion" refid="parsedVersion.majorVersion" />
-											<reference torefid="parsedVersion.minorVersion" refid="parsedVersion.minorVersion" />
-										</ant>
+										<ant antfile="${basedir}/artifactory.ant" target="get-composite-metadata" />
 									</target>
 								</configuration>
 								<goals>
@@ -125,10 +121,7 @@
 								<phase>verify</phase>
 								<configuration>
 									<target>
-										<ant antfile="${basedir}/artifactory.ant" target="push-to-artifactory">
-											<reference torefid="parsedVersion.majorVersion" refid="parsedVersion.majorVersion" />
-											<reference torefid="parsedVersion.minorVersion" refid="parsedVersion.minorVersion" />
-										</ant>
+										<ant antfile="${basedir}/artifactory.ant" target="push-to-artifactory" />
 									</target>
 								</configuration>
 								<goals>
