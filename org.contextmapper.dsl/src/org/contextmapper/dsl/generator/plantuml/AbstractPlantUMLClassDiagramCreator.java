@@ -17,7 +17,6 @@ package org.contextmapper.dsl.generator.plantuml;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.SculptorModule;
@@ -412,7 +411,7 @@ abstract public class AbstractPlantUMLClassDiagramCreator<T extends EObject> ext
 	private void printLink(AssociationInfo info) {
 		boolean multFirstIsMany = info.getMultiplicityFirstParticipant() != null && info.getMultiplicityFirstParticipant().getMax() > 1,
 				multSecondIsMany = info.getMultiplicitySecondParticipant() != null && info.getMultiplicitySecondParticipant().getMax() > 1;
-		String aggregationSymbol = (info.getAggregateSource().equals(info.getAggregateTarget())) ? "*" : "o";
+		String aggregationSymbol = (info.getAggregateSource() != null && info.getAggregateSource().equals(info.getAggregateTarget())) ? "*" : "o";
 
 		if (multSecondIsMany && !multFirstIsMany)
 			sb.append(aggregationSymbol);
