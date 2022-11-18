@@ -71,7 +71,7 @@
 		<dependency>
 			<groupId>org.codehaus.groovy</groupId>
 			<artifactId>groovy-all</artifactId>
-			<version>2.5.9</version>
+			<version>3.0.13</version>
 			<type>pom</type>
 		</dependency>
 	</dependencies>
@@ -86,6 +86,20 @@
 			<build>
 				<plugins>
 					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>build-helper-maven-plugin</artifactId>
+						<version>3.3.0</version>
+						<executions>
+							<execution>
+								<phase>initialize</phase>
+								<id>parse-version</id>
+								<goals>
+									<goal>parse-version</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
 						<artifactId>maven-antrun-plugin</artifactId>
 						<version>${maven-antrun-plugin.version}</version>
 						<executions>
@@ -96,6 +110,8 @@
 									<target>
 										<ant antfile="${basedir}/artifactory.ant" target="get-composite-metadata">
 											<reference torefid="maven.runtime.classpath" refid="maven.runtime.classpath" />
+											<reference torefid="parsedVersion.majorVersion" refid="parsedVersion.majorVersion" />
+											<reference torefid="parsedVersion.minorVersion" refid="parsedVersion.minorVersion" />
 										</ant>
 									</target>
 								</configuration>
@@ -110,7 +126,8 @@
 								<configuration>
 									<target>
 										<ant antfile="${basedir}/artifactory.ant" target="push-to-artifactory">
-											<reference torefid="maven.runtime.classpath" refid="maven.runtime.classpath" />
+											<reference torefid="parsedVersion.majorVersion" refid="parsedVersion.majorVersion" />
+											<reference torefid="parsedVersion.minorVersion" refid="parsedVersion.minorVersion" />
 										</ant>
 									</target>
 								</configuration>
@@ -128,12 +145,15 @@
 						<configuration>
 							<!-- Update p2 composite metadata or create it -->
 							<!-- IMPORTANT: DO NOT split the arg line -->
-							<appArgLine>-application org.eclipse.ant.core.antRunner -buildfile packaging-p2composite.ant p2.composite.add -Dsite.label="${site.label}" -Dproject.build.directory=${project.build.directory} -DunqualifiedVersion=${unqualifiedVersion} -Dchild.repository.path.prefix="${child.repository.path.prefix}"</appArgLine>
+							<appArgLine>-application org.eclipse.ant.core.antRunner -buildfile packaging-p2composite.ant p2.composite.add -DparsedVersion.majorVersion="${parsedVersion.majorVersion}" -DparsedVersion.minorVersion="${parsedVersion.minorVersion}" -Dsite.label="${site.label}" -Dproject.build.directory=${project.build.directory} -DunqualifiedVersion=${unqualifiedVersion} -Dchild.repository.path.prefix="${child.repository.path.prefix}"</appArgLine>
+							<jvmArgs>
+								<arg>--add-opens=java.base/java.net=ALL-UNNAMED</arg>
+							</jvmArgs>
 							<repositories>
 								<repository>
-									<id>mars</id>
+									<id>2022-12</id>
 									<layout>p2</layout>
-									<url>http://download.eclipse.org/releases/mars</url>
+									<url>http://download.eclipse.org/releases/2022-12</url>
 								</repository>
 							</repositories>
 							<dependencies>

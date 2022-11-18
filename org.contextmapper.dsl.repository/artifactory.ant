@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="Handle p2 composite metadata from Jfrog Artifactory" basedir=".">
 
-	<property name="artifactory.url" value="https://${jfrog.owner}.jfrog.io/artifactory/${artifactory.repo}" />
+	<property name="artifactory.url" value="https://contextmapper.jfrog.io/artifactory/${artifactory.repo}" />
 	<property name="artifactory.package.version" value="${unqualifiedVersion}" />
 	<property name="artifactory.releases.target.path" value="${artifactory.releases.path}/${artifactory.package.version}" />
 
