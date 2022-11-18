@@ -26,26 +26,10 @@ import static extension org.eclipse.xtext.EcoreUtil2.*
 
 /**
  * Extensions for model elements of the domain model.
- * Usage in Xtend files:
- * <pre>
- *   @Inject extension TacticDslExtensions
- * 
- *   // ...
- * 
- *     element.rootContainer.eAllOfClass(typeof(DslService))
- * </pre>
  */
 class TacticDslExtensions {
 	/**
 	 * Extensions for model elements of the domain model.
-	 * Usage in Xtend files:
-	 * <pre>
-	 *   @Inject extension SculptordslExtensions
-	 * 
-	 *   // ...
-	 * 
-	 *     element.rootContainer.eAllOfClass(typeof(DslService))
-	 * </pre>
 	 */
 	def static <T extends EObject> Iterator<T> eAllOfClass(EObject obj, Class<T> clazz) {
 		obj?.eAll.filter(clazz)
