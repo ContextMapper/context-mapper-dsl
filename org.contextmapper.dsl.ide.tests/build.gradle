@@ -15,42 +15,14 @@ test {
 eclipseClasspath.enabled=false
 cleanEclipseClasspath.enabled=false
 
-def sourcesPath = configurations.create("sourcesPath") {
-	visible = false
-	canBeResolved = true
-	canBeConsumed = false
-	extendsFrom(configurations.implementation)
-	attributes {
-		attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage, Usage.JAVA_RUNTIME))
-		attribute(Category.CATEGORY_ATTRIBUTE, objects.named(Category, Category.DOCUMENTATION))
-		attribute(DocsType.DOCS_TYPE_ATTRIBUTE, objects.named(DocsType, 'source-folders'))
-	}
-}
-
-def coverageDataPath = configurations.create("coverageDataPath") {
-	visible = false
-	canBeResolved = true
-	canBeConsumed = false
-	extendsFrom(configurations.implementation)
-	attributes {
-		attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage, Usage.JAVA_RUNTIME))
-		attribute(Category.CATEGORY_ATTRIBUTE, objects.named(Category, Category.DOCUMENTATION))
-		attribute(DocsType.DOCS_TYPE_ATTRIBUTE, objects.named(DocsType, 'jacoco-coverage-data'))
-	}
-}
-
-def codeCoverageReport = tasks.register('codeCoverageReport', JacocoReport) {
-	additionalClassDirs(configurations.runtimeClasspath)
-	additionalSourceDirs(sourcesPath.incoming.artifactView { lenient(true) }.files)
-	executionData(coverageDataPath.incoming.artifactView { lenient(true) }.files.filter { it.exists() })
-
+jacocoTestReport {
+	sourceSets project(':context-mapper-lsp').sourceSets.main
+	
 	reports {
-		xml.required = true
-		html.required = true
+		html.enabled = true
+		xml.enabled = true
+		csv.enabled = false
 	}
 }
 
-tasks.named("check") {
-	dependsOn(codeCoverageReport)
-}
-
+check.dependsOn jacocoTestReport
