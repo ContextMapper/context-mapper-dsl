@@ -144,9 +144,9 @@
 							</jvmArgs>
 							<repositories>
 								<repository>
-									<id>2022-12</id>
+									<id>2022-09</id>
 									<layout>p2</layout>
-									<url>http://download.eclipse.org/releases/2022-12</url>
+									<url>http://download.eclipse.org/releases/2022-09</url>
 								</repository>
 							</repositories>
 							<dependencies>
