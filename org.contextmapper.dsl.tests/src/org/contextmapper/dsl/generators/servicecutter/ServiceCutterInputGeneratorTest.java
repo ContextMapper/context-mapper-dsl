@@ -78,7 +78,7 @@ class ServiceCutterInputGeneratorTest extends AbstractCMLInputFileTest {
 		// then
 		String generatedJSON = filesystem.readTextFile("DDD_Sample.json").toString();
 		File expectedResultFile = new File(Paths.get("").toAbsolutePath().toString(), "/integ-test-files/servicecutter/DDD_Sample_Expected_JSON_Input.json");
-		String expectedResult = FileUtils.readFileToString(expectedResultFile, Charset.forName("UTF-8"));
+		String expectedResult = FileUtils.readFileToString(expectedResultFile);
 		assertEquals(expectedResult, generatedJSON);
 	}
 

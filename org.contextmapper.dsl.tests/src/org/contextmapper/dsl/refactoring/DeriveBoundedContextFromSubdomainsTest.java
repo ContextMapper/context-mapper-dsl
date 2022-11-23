@@ -320,8 +320,7 @@ public class DeriveBoundedContextFromSubdomainsTest extends AbstractRefactoringT
 
 		// then
 		String dslText = FileUtils.readFileToString(new File(input.getURI().toFileString()), "UTF-8");
-		String expectedResult = FileUtils.readFileToString(new File(Paths.get("").toAbsolutePath().toString(), "/integ-test-files/refactorings/derive-bc-from-subdomain-test-11-output.cml"),
-				Charset.forName("UTF-8"));
+		String expectedResult = FileUtils.readFileToString(new File(Paths.get("").toAbsolutePath().toString(), "/integ-test-files/refactorings/derive-bc-from-subdomain-test-11-output.cml"));
 		assertEquals(expectedResult, dslText);
 	}
 

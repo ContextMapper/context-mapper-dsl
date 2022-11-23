@@ -1,22 +1,25 @@
 buildscript {
 	repositories {
 		mavenCentral()
-		jcenter()
+		gradlePluginPortal()
 	}
 	dependencies {
-		classpath 'org.xtext:xtext-gradle-plugin:2.0.8'
+		classpath 'org.xtext:xtext-gradle-plugin:3.0.2'
 	}
 }
 
 def pomXml = new XmlSlurper().parse('pom.xml')
 
 subprojects {
-	ext.xtextVersion = '2.23.0'
+	ext.xtextVersion = '2.28.0'
 	repositories {
-		jcenter()
+		mavenCentral()
 	}
 	
-	apply plugin: 'java'
+	apply plugin: 'java-library'
+	dependencies {
+		api platform("org.eclipse.xtext:xtext-dev-bom:${xtextVersion}")
+	}
 	apply plugin: 'maven-publish'
 	apply plugin: 'org.xtext.xtend'
 	apply from: "${rootDir}/gradle/source-layout.gradle"
@@ -27,28 +30,14 @@ subprojects {
 	group = 'org.contextmapper'
 	version = pomXml.version
 			
-	sourceCompatibility = '1.8'
-	targetCompatibility = '1.8'
+	sourceCompatibility = '11'
+	targetCompatibility = '11'
 	
 	configurations.all {
 		exclude group: 'asm'
 	}
-	
+
     if (!project.hasProperty('signing.secretKeyRingFile')) {
         project.ext.'signing.secretKeyRingFile' = "${rootDir}/secret-key.gpg"
     }
-
-    // workaround for XText+Gradle build problems: https://github.com/eclipse/xtext/issues/1976#issuecomment-862141814
-    configurations.all {
-	    resolutionStrategy {
-	        eachDependency { DependencyResolveDetails details ->
-	            if (details.requested.group == 'org.eclipse.platform' && details.requested.name == 'org.eclipse.core.runtime') {
-	                details.useVersion "3.19.0"
-	            }
-	            if (details.requested.group == 'org.eclipse.platform' && details.requested.name == 'org.eclipse.equinox.common') {
-	                details.useVersion("3.13.0")
-	            }
-	        }
-	    }
-	}
 }

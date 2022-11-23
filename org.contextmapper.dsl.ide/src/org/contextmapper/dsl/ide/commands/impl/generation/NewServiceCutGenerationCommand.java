@@ -38,7 +38,7 @@ public class NewServiceCutGenerationCommand extends AbstractGenerationCommand {
 	@Override
 	public void executeCommand(CMLResource cmlResource, Document document, ILanguageServerAccess access, ExecuteCommandParams params) {
 		NewServiceCutContextMapGenerator serviceCutGenerator = (NewServiceCutContextMapGenerator) getGenerator();
-		serviceCutGenerator.setProjectDirectory(Paths.get(access.getInitializeParams().getRootUri().replace("file:", "")).toFile());
+		serviceCutGenerator.setProjectDirectory(Paths.get(access.getInitializeParams().getWorkspaceFolders().get(0).getUri().replace("file:", "")).toFile());
 		serviceCutGenerator.doGenerate(cmlResource, FileSystemHelper.getFileSystemAccess(cmlResource.getURI().trimFileExtension().trimSegments(1).toFileString()), new GeneratorContext());
 	}
 

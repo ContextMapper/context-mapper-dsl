@@ -41,7 +41,7 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 	@Inject extension ContextMappingDSLGrammarAccess
 
 	def dispatch void format(ContextMappingModel contextMappingModel, extension IFormattableDocument document) {
-		var ignoredFirst = contextMappingModel.topComment != null && !"".equals(contextMappingModel.topComment)
+		var ignoredFirst = contextMappingModel.topComment !== null && !"".equals(contextMappingModel.topComment)
 		for (cmlImport : contextMappingModel.imports) {
 			if (ignoredFirst) {
 				cmlImport.prepend[newLine]
@@ -71,7 +71,7 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 		)[indent]
 
 		var model = contextMap.eContainer as ContextMappingModel
-		var hasTopComment = model.topComment != null && !"".equals(model.topComment)
+		var hasTopComment = model.topComment !== null && !"".equals(model.topComment)
 
 		if (hasTopComment)
 			contextMap.regionFor.keyword("ContextMap").prepend[newLine]

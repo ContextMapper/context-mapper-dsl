@@ -3,7 +3,7 @@ Automatic-Module-Name: org.contextmapper.dsl.ui
 Bundle-ManifestVersion: 2
 Bundle-Name: org.contextmapper.dsl.ui
 Bundle-Vendor: Context Mapper
-Bundle-Version: 6.6.2.qualifier
+Bundle-Version: 6.7.0.qualifier
 Bundle-SymbolicName: org.contextmapper.dsl.ui; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.contextmapper.dsl,
@@ -21,7 +21,7 @@ Require-Bundle: org.contextmapper.dsl,
  org.contextmapper.servicecutter.library
 Import-Package: org.apache.log4j,
  org.eclipse.xtext.xbase.ui.hover
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: org.contextmapper.dsl.ui.contentassist,
  org.contextmapper.dsl.ui.quickfix,
  org.contextmapper.dsl.ui.internal,

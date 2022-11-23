@@ -1,24 +1,6 @@
 <?xml version="1.0"?>
 <project name="project">
 
-	<target name="getMajorMinorVersion">
-		<script language="javascript">
-			<![CDATA[
-
-	                // getting the value
-	                buildnumber = project.getProperty("unqualifiedVersion");
-	                index = buildnumber.lastIndexOf(".");
-	                counter = buildnumber.substring(0, index);
-	    			project.setProperty("majorMinorVersion",counter);
-
-	            ]]>
-		</script>
-	</target>
-
-	<target name="test_getMajorMinor" depends="getMajorMinorVersion">
-		<echo message="majorMinorVersion: ${majorMinorVersion}" />
-	</target>
-
 	<!--
 		site.label						The name/title/label of the created composite site
 		unqualifiedVersion 				The version without any qualifier replacement
@@ -28,10 +10,10 @@
 										the p2 repo is in /releases/1.0.0.something then this property
 										should be "../../releases/"
 	-->
-	<target name="compute.child.repository.data" depends="getMajorMinorVersion">
+	<target name="compute.child.repository.data">
 		<property name="full.version" value="${unqualifiedVersion}" />
 
-		<property name="site.composite.name" value="${site.label} ${majorMinorVersion}" />
+		<property name="site.composite.name" value="${site.label} ${parsedVersion.majorVersion}.${parsedVersion.minorVersion}" />
 		<property name="main.site.composite.name" value="${site.label} All Versions" />
 
 		<!-- composite.base.dir	The base directory for the local composite metadata,
@@ -46,7 +28,7 @@
 	</target>
 
 	<target name="p2.composite.add" depends="compute.child.repository.data">
-		<add.composite.repository.internal composite.repository.location="${main.composite.repository.directory}" composite.repository.name="${main.site.composite.name}" composite.repository.child="${majorMinorVersion}" />
+		<add.composite.repository.internal composite.repository.location="${main.composite.repository.directory}" composite.repository.name="${main.site.composite.name}" composite.repository.child="${parsedVersion.majorVersion}.${parsedVersion.minorVersion}" />
 		<add.composite.repository.internal composite.repository.location="${composite.repository.directory}" composite.repository.name="${site.composite.name}" composite.repository.child="${child.repository}" />
 	</target>
 

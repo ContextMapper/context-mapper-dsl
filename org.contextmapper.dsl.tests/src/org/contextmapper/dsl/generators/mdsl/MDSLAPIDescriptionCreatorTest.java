@@ -119,7 +119,7 @@ public class MDSLAPIDescriptionCreatorTest extends AbstractCMLInputFileTest {
 
 		// then
 		File expectedResultFile = new File(Paths.get("").toAbsolutePath().toString(), "/integ-test-files/mdsl/" + baseFilename + ".mdsl");
-		String expectedResult = FileUtils.readFileToString(expectedResultFile, Charset.forName("UTF-8"));
+		String expectedResult = FileUtils.readFileToString(expectedResultFile);
 		assertEquals(expectedResult, dslText);
 	}
 
@@ -295,7 +295,7 @@ public class MDSLAPIDescriptionCreatorTest extends AbstractCMLInputFileTest {
 		MDSLAPIDescriptionCreator dslTextCreator;
 		if (overwriteExistingFile) {
 			File existingFile = new File(Paths.get("").toAbsolutePath().toString(), "/integ-test-files/mdsl/" + baseFilename + "-existing.mdsl");
-			String existingFileContent = FileUtils.readFileToString(existingFile, Charset.forName("UTF-8"));
+			String existingFileContent = FileUtils.readFileToString(existingFile);
 			dslTextCreator = new TestMDSLAPIDescriptionCreator(new ProtectedRegionContextFactory().createProtectedRegionContextForExistingMDSLFile(existingFileContent),
 					input.getURI().toFileString());
 		} else {
@@ -305,7 +305,7 @@ public class MDSLAPIDescriptionCreatorTest extends AbstractCMLInputFileTest {
 
 		// then
 		File expectedResultFile = new File(Paths.get("").toAbsolutePath().toString(), "/integ-test-files/mdsl/" + baseFilename + ".mdsl");
-		String expectedResult = FileUtils.readFileToString(expectedResultFile, Charset.forName("UTF-8"));
+		String expectedResult = FileUtils.readFileToString(expectedResultFile);
 		assertEquals(expectedResult, dslText);
 	}
 

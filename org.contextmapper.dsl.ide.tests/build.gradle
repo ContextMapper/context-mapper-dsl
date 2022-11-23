@@ -1,11 +1,12 @@
 dependencies {
-	compile project(':context-mapper-dsl')
-	compile project(':context-mapper-lsp')
-	testCompile "org.junit.jupiter:junit-jupiter-api:5.5.1"
-	testRuntime "org.junit.jupiter:junit-jupiter-engine:5.5.1"
-	testCompile 'org.junit.jupiter:junit-jupiter-params:5.5.1'
-	testCompile "org.eclipse.xtext:org.eclipse.xtext.testing:${xtextVersion}"
-	testCompile "org.eclipse.xtext:org.eclipse.xtext.xbase.testing:${xtextVersion}"
+	implementation project(':context-mapper-dsl')
+	implementation project(':context-mapper-lsp')
+	implementation group: 'commons-io', name: 'commons-io', version: '2.6'
+	testImplementation "org.junit.jupiter:junit-jupiter-api:5.5.1"
+	testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.5.1"
+	testImplementation 'org.junit.jupiter:junit-jupiter-params:5.5.1'
+	testImplementation "org.eclipse.xtext:org.eclipse.xtext.testing:${xtextVersion}"
+	testImplementation "org.eclipse.xtext:org.eclipse.xtext.xbase.testing:${xtextVersion}"
 }
 test {
 	useJUnitPlatform()
@@ -15,14 +16,7 @@ eclipseClasspath.enabled=false
 cleanEclipseClasspath.enabled=false
 
 jacocoTestReport {
-	FileTree sourceTree = files().asFileTree
-	FileTree classTree = files().asFileTree
-	
-	sourceTree += project(':context-mapper-lsp').sourceSets.main.allJava
-	classTree += project(':context-mapper-lsp').sourceSets.main.output.asFileTree
-	
-	additionalSourceDirs = sourceTree
-	additionalClassDirs = classTree
+	sourceSets project(':context-mapper-lsp').sourceSets.main
 	
 	reports {
 		html.enabled = true

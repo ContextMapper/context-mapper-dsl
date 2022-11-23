@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="Handle p2 composite metadata from Jfrog Artifactory" basedir=".">
 
-	<property name="artifactory.url" value="https://${jfrog.owner}.jfrog.io/artifactory/${artifactory.repo}" />
+	<property name="artifactory.url" value="https://contextmapper.jfrog.io/artifactory/${artifactory.repo}" />
 	<property name="artifactory.package.version" value="${unqualifiedVersion}" />
 	<property name="artifactory.releases.target.path" value="${artifactory.releases.path}/${artifactory.package.version}" />
 
@@ -15,21 +15,10 @@
 
 	<property name="local.p2.repository" value="target/repository" />
 	
-	<target name="getMajorMinorVersion">
-		<property name="runtime_classpath" refid="maven.runtime.classpath"/>
-		
-		<script language="groovy" classpath="${runtime_classpath}">
-			def fullVersion = project.getProperty("unqualifiedVersion");
-			def index = fullVersion.lastIndexOf(".")
-			def majorMinorVersion = fullVersion.substring(0, index)
-			project.setProperty("majorMinorVersion",majorMinorVersion);
-		</script>
-	</target>
-
 	<!-- Take from the remote URL the possible existing metadata -->
-	<target name="get-composite-metadata" depends="getMajorMinorVersion" >
+	<target name="get-composite-metadata" >
 		<get-metadata url="${main.composite.url}" dest="${target}/${main.composite.repository.directory}" />
-		<get-metadata url="${main.composite.url}/${majorMinorVersion}" dest="${target}/${composite.repository.directory}" />
+		<get-metadata url="${main.composite.url}/${parsedVersion.majorVersion}.${parsedVersion.minorVersion}" dest="${target}/${composite.repository.directory}" />
 		<antcall target="preprocess-metadata" />
 	</target>
 
@@ -124,7 +113,7 @@
 		</apply>
 	</target>
 
-	<target name="push-composite-to-artifactory" depends="getMajorMinorVersion" >
+	<target name="push-composite-to-artifactory">
 		<apply executable="curl" parallel="false" relative="true" addsourcefile="false">
 			<arg value="-XPUT" />
 			<targetfile />
@@ -135,7 +124,7 @@
 				<mergemapper to="-T" />
 				<globmapper from="*" to="${target}/${composite.repository.directory}/*" />
 				<mergemapper to="-u${artifactory.user}:${artifactory.apikey}" />
-				<globmapper from="*" to="https://${artifactory.owner}.jfrog.io/artifactory/${artifactory.repo}/${artifactory.composite.path}/${majorMinorVersion}/*;publish=1" />
+				<globmapper from="*" to="https://${artifactory.owner}.jfrog.io/artifactory/${artifactory.repo}/${artifactory.composite.path}/${parsedVersion.majorVersion}.${parsedVersion.minorVersion}/*;publish=1" />
 			</compositemapper>
 		</apply>
 	</target>

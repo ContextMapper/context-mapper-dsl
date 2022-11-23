@@ -2,6 +2,7 @@
 *.class
 **/target
 **/out
+**/bin
 
 # Log file
 *.log
@@ -25,8 +26,6 @@
 hs_err_pid*
 
 # Eclipse files
-*.project
-*.classpath
 **/.settings
 plugin.xml_gen
 

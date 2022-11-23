@@ -22,6 +22,7 @@ import org.contextmapper.dsl.cml.CMLResource
 import org.eclipse.lsp4j.CodeAction
 import org.eclipse.lsp4j.Command
 import org.eclipse.lsp4j.jsonrpc.messages.Either
+import org.eclipse.xtext.ide.server.ILanguageServerAccess
 import org.eclipse.xtext.ide.server.codeActions.ICodeActionService2
 
 class CMLActionService implements ICodeActionService2 {
@@ -30,11 +31,18 @@ class CMLActionService implements ICodeActionService2 {
 	@Inject CMLActionRegistry actionRegistry
 
 	override getCodeActions(Options options) {
+		return options.getLanguageServerAccess().doSyncRead(options.getURI(), [ ILanguageServerAccess.Context context |
+			options.setDocument(context.getDocument());
+			options.setResource(context.getResource());
+			return getActions(options);
+		]);
+	}
+
+	private def List<Either<Command, CodeAction>> getActions(Options options) {
 		val params = options.codeActionParams;
 		val currentSelectionRange = params.range;
 		val startPosition = currentSelectionRange.start;
 		val endPosition = currentSelectionRange.end;
-
 		val resource = new CMLResource(options.resource);
 		val selectedObjects = selectionResolver.resolveAllSelectedEObjects(resource,
 			options.document.getOffSet(startPosition), options.document.getOffSet(endPosition));

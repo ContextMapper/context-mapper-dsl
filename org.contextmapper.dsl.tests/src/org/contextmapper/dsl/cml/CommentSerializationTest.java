@@ -54,7 +54,7 @@ public class CommentSerializationTest extends AbstractCMLInputFileTest {
 		// then
 		String expectedCML = "// test SL comment" + System.lineSeparator() + "ContextMap TestMap {"
 				+ System.lineSeparator() + "}" + System.lineSeparator() + System.lineSeparator();
-		assertEquals(expectedCML, FileUtils.readFileToString(testFile, Charset.defaultCharset()));
+		assertEquals(expectedCML, FileUtils.readFileToString(testFile));
 	}
 
 	@Test
@@ -77,7 +77,7 @@ public class CommentSerializationTest extends AbstractCMLInputFileTest {
 		String expectedCML = "/* test SL comment" + System.lineSeparator() + " * with another line */"
 				+ System.lineSeparator() + "ContextMap TestMap {" + System.lineSeparator() + "}"
 				+ System.lineSeparator() + System.lineSeparator();
-		assertEquals(expectedCML, FileUtils.readFileToString(testFile, Charset.defaultCharset()));
+		assertEquals(expectedCML, FileUtils.readFileToString(testFile));
 	}
 
 	@Test
@@ -100,7 +100,7 @@ public class CommentSerializationTest extends AbstractCMLInputFileTest {
 		// then
 		String expectedCML = "// test SL comment" + System.lineSeparator() + System.lineSeparator()
 				+ "// test BC comment" + System.lineSeparator() + "BoundedContext TestContext";
-		assertEquals(expectedCML, FileUtils.readFileToString(testFile, Charset.defaultCharset()));
+		assertEquals(expectedCML, FileUtils.readFileToString(testFile));
 	}
 
 	@Test
@@ -124,7 +124,7 @@ public class CommentSerializationTest extends AbstractCMLInputFileTest {
 		String expectedCML = "// test SL comment" + System.lineSeparator() + System.lineSeparator()
 				+ "/* test BC comment ML" + System.lineSeparator() + " * with second line */" + System.lineSeparator()
 				+ "BoundedContext TestContext";
-		assertEquals(expectedCML, FileUtils.readFileToString(testFile, Charset.defaultCharset()));
+		assertEquals(expectedCML, FileUtils.readFileToString(testFile));
 	}
 
 	@Override
