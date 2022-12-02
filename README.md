@@ -37,7 +37,7 @@ The Context Mapper project has originally been developed as part of research pro
 ## System Requirements
 To use the ContextMapper DSL (CML) you need the following tools:
 
-* [Java JDK](https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) (JDK 8 or newer)
+* [Java JDK](https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) (JDK 11 or newer)
 * [Eclipse](https://www.eclipse.org/downloads/packages/) or [Visual Studio Code](https://code.visualstudio.com/)
 * If you want to use our [Context Map generator](https://contextmapper.org/docs/context-map-generator/) you need to have [Graphviz](https://www.graphviz.org/) installed on your system.
     * Ensure that the binaries are part of the _PATH_ environment variable and can be called from the terminal.
@@ -63,7 +63,7 @@ If you want to use the Context Mapper DSL (CML) language and the generator tools
 
 **Gradle:**
 ```gradle
-implementation 'org.contextmapper:context-mapper-dsl:6.6.0'
+implementation 'org.contextmapper:context-mapper-dsl:6.7.0'
 ```
 
 **Maven:**
@@ -71,7 +71,7 @@ implementation 'org.contextmapper:context-mapper-dsl:6.6.0'
 <dependency>
   <groupId>org.contextmapper</groupId>
   <artifactId>context-mapper-dsl</artifactId>
-  <version>6.6.0</version>
+  <version>6.7.0</version>
 </dependency>
 ```
 In our [context-mapper-standalone-example](https://github.com/ContextMapper/context-mapper-standalone-example) repository you find an example project showing how to include the library within your project. It further contains code examples illustrating how to use the CML models and the generator tools (PlantUML, MDSL, etc.).
