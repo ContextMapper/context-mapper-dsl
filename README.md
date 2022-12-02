@@ -108,18 +108,8 @@ To build the standalone projects only, you can use the Gradle Wrapper:
 ### Setup Eclipse IDE
 Since this is an Xtext project you need an Eclipse IDE to work on it. Download the **Eclipse IDE for Java and DSL Developers** from [here](https://www.eclipse.org/downloads/packages/). The latest version of Eclipse we worked with is [2019-12](https://www.eclipse.org/downloads/packages/release/2019-12/r/eclipse-ide-java-and-dsl-developers).
 
-#### Additional requirements
-Before importing the project you need to install the **Tycho Configurator** m2e connector. This can be done by following these steps:
-
-1. Start your Eclipse
-2. Open the maven preferences page: _Window -> Preferences -> Maven_
-3. Under _Discovery_ press the button _Open Catalog_ and search for _Tycho_. You should find the _Tycho Configurator_.
-4. Select the Configurator and press _Finish_.
-5. An eclipse installation wizard will appear. Go through the wizard to finish the installation and restart eclipse.
-
-
 #### Importing the project
-After having installed the Tycho Configurator you can import the project with as an existing maven project (_Import -> Existing Maven Project_).
+You can import the project with as an existing maven project (_Import -> Existing Maven Project_).
 
 #### Build in Eclipse
 After importing the project you will have lots of build errors. This is because you have to generate some Xtext sources first. There exists an eclipse launch configuration called 'GenerateContextMappingDSLInfrastructure' delivered with the project. Run this launch configuration (yes, even if there exist build errors). As soon this has completed, execute a clean build with _Project -> Clean... -> Clean all projects_. 
