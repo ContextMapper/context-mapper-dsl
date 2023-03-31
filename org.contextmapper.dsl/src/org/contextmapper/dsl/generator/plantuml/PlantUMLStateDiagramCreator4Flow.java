@@ -34,7 +34,7 @@ public class PlantUMLStateDiagramCreator4Flow extends AbstractPlantUMLStateDiagr
 		}
 		for (DomainEventProductionStep step : eventProductionStepsWithStateTransitions)
 			printTransition(step.getStateTransition(), step.getAction().getCommand() != null ? step.getAction().getCommand().getName() : step.getAction().getOperation().getName());
-
+		printEndTransitions(allStateTransitions);
 		linebreak(2);
 		sb.append("legend top center");
 		linebreak();

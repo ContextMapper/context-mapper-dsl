@@ -41,7 +41,7 @@ public class PlantUMLStateDiagramCreator4Aggregate extends AbstractPlantUMLState
 			printTransition(operation.getStateTransition(), operation.getName());
 		for (DomainObjectOperation operation : domainObjectOperationsWithStateTransitions)
 			printTransition(operation.getStateTransition(), operation.getName());
-
+		printEndTransitions(allStateTransitions);
 		linebreak(2);
 		sb.append("legend top center");
 		linebreak();

@@ -1,0 +1,47 @@
+BoundedContext InsuranceQuotes {
+	
+	Aggregate QuoteRequest {
+		Entity Request {
+			aggregateRoot
+		}
+		
+		DomainEvent RequestSubmitted
+		DomainEvent QuoteReceived
+		DomainEvent RequestRejected
+		DomainEvent QuoteRejected
+		DomainEvent QuoteAccepted
+		DomainEvent QuoteExpired
+		DomainEvent PolicyCreated
+		DomainEvent YetAnotherEvent
+		
+		Service QuoteRequestService {
+			void checkRequest(@Request request);
+			void receiveAndCheckQuote(@Request request);
+			void reject(@Request request);
+			void accept(@Request request);
+		}
+		
+		enum RequestState {
+			aggregateLifecycle
+			SUBMITTED, RECEIVED, REJECTED, ACCEPTED, EXPIRED, POLICY_CREATED
+		}
+	}
+	
+	Application {
+		Command SubmitRequest // command triggered by user
+		
+		Flow QuoteFlow {
+			command SubmitRequest delegates to QuoteRequest[-> SUBMITTED] emits event RequestSubmitted
+			event RequestSubmitted triggers operation checkRequest
+			operation checkRequest delegates to QuoteRequest[SUBMITTED -> RECEIVED X REJECTED*] emits event QuoteReceived X RequestRejected
+			operation checkRequest emits event YetAnotherEvent // event productions without state transitions should be ignored here
+			event QuoteReceived triggers operation receiveAndCheckQuote
+			operation receiveAndCheckQuote delegates to QuoteRequest[RECEIVED -> REJECTED* X ACCEPTED X EXPIRED*] emits event QuoteRejected X QuoteAccepted X QuoteExpired
+			event QuoteAccepted triggers operation accept
+			operation accept delegates to QuoteRequest[ACCEPTED -> POLICY_CREATED* X EXPIRED*] emits event PolicyCreated X QuoteExpired 
+		}
+		
+		Flow EmptyFlow // to be ignored
+	}
+	
+}
