@@ -19,11 +19,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
 import org.contextmapper.tactic.dsl.tacticdsl.EnumValue;
 import org.contextmapper.tactic.dsl.tacticdsl.StateTransition;
+import org.contextmapper.tactic.dsl.tacticdsl.TargetState;
 import org.eclipse.emf.ecore.EObject;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 abstract public class AbstractPlantUMLStateDiagramCreator<T extends EObject> extends AbstractPlantUMLDiagramCreator<T> {
@@ -33,31 +34,46 @@ abstract public class AbstractPlantUMLStateDiagramCreator<T extends EObject> ext
 		linebreak();
 	}
 
-	protected void printTransition(StateTransition transition, String label) {
+	protected void printTransition(final StateTransition transition, final String label) {
 		if (transition.getFrom() == null || transition.getFrom().isEmpty()) {
-			for (String target : mapStatesToStrings(transition.getTarget().getTo().stream().map(s -> s.getValue()).collect(Collectors.toList()))) {
+			for (String target : mapStatesToStrings(
+					transition.getTarget().getTo().stream().map(s -> s.getValue()).collect(Collectors.toList()))) {
 				sb.append("[*] --> ").append(target).append(" : ").append(label);
 				linebreak();
 			}
 		}
 		for (String from : transition.getFrom().stream().map(s -> s.getName()).collect(Collectors.toSet())) {
-			for (String target : mapStatesToStrings(transition.getTarget().getTo().stream().map(s -> s.getValue()).collect(Collectors.toList()))) {
+			for (String target : mapStatesToStrings(
+					transition.getTarget().getTo().stream().map(s -> s.getValue()).collect(Collectors.toList()))) {
 				sb.append(from).append(" --> ").append(target).append(" : ").append(label);
 				linebreak();
 			}
 		}
 	}
 
-	protected Set<String> collectStates(List<StateTransition> transitions) {
+	protected void printEndTransitions(final List<StateTransition> allStateTransitions) {
+		final Set<String> allEndStates = Sets.newHashSet();
+		allStateTransitions.forEach(t -> {
+			allEndStates.addAll(t.getTarget().getTo().stream().filter(to -> to.isEndState())
+					.map(to -> to.getValue().getName()).collect(Collectors.toSet()));
+		});
+		allEndStates.stream().forEach(t -> {
+			sb.append(t).append(" --> [*]");
+			linebreak();
+		});
+	}
+
+	protected Set<String> collectStates(final List<StateTransition> transitions) {
 		Set<String> states = Sets.newHashSet();
 		for (StateTransition transition : transitions) {
 			states.addAll(mapStatesToStrings(transition.getFrom()));
-			states.addAll(mapStatesToStrings(transition.getTarget().getTo().stream().map(s -> s.getValue()).collect(Collectors.toList())));
+			states.addAll(mapStatesToStrings(
+					transition.getTarget().getTo().stream().map(s -> s.getValue()).collect(Collectors.toList())));
 		}
 		return states;
 	}
 
-	private Set<String> mapStatesToStrings(List<EnumValue> states) {
+	private Set<String> mapStatesToStrings(final List<EnumValue> states) {
 		if (states != null && !states.isEmpty())
 			return states.stream().map(s -> s.getName()).collect(Collectors.toSet());
 		return Sets.newHashSet();

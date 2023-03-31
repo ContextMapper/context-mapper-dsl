@@ -1,0 +1,36 @@
+BoundedContext InsuranceQuotes {
+ 	
+ 	Aggregate QuoteRequest {
+ 		Entity QuoteRequest {
+ 			aggregateRoot
+ 		}
+ 		
+ 		Service QuoteRequestService {
+ 			// just grammar examples:
+ 			// @Object readOperation() : read-only;
+ 			// void writeOperation(@Object param) : write;
+ 			// void writeOperation(@Object param) : write [STATE1 -> STATE2];
+ 			// void writeOperation(@Object param) : write [STATE1 -> STATE2 X STATE3];
+ 			
+ 			void testOp() : read-only;
+ 			
+ 			void submitRequest(@QuoteRequest request) : write [-> REQUEST_SUBMITTED];
+ 			void rejectRequest(@QuoteRequest request): write [REQUEST_SUBMITTED -> REQUEST_REJECTED*];
+ 			void receiveQuote(@QuoteRequest request) : write [REQUEST_SUBMITTED -> QUOTE_RECEIVED];
+ 			void checkQuote(@QuoteRequest request) : write [QUOTE_RECEIVED -> QUOTE_REJECTED* X QUOTE_ACCEPTED X QUOTE_EXPIRED*];
+ 			void createPolicy(@QuoteRequest request) : write [QUOTE_ACCEPTED -> POLICY_CREATED* X QUOTE_EXPIRED*];
+ 		}
+ 		
+ 		enum RequestState {
+ 			aggregateLifecycle
+ 			REQUEST_SUBMITTED, QUOTE_RECEIVED, REQUEST_REJECTED, QUOTE_ACCEPTED, QUOTE_REJECTED, QUOTE_EXPIRED, POLICY_CREATED
+ 		}
+ 	}
+ 	
+ 	Aggregate AnotherAggregateThatMustBeIgnored {
+ 		enum States {
+ 			REQUEST_SUBMITTED, QUOTE_RECEIVED, REQUEST_REJECTED, QUOTE_ACCEPTED, QUOTE_REJECTED, QUOTE_EXPIRED, POLICY_CREATED
+ 		}
+ 	}
+ 	
+ }
