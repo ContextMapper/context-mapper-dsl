@@ -7,7 +7,7 @@ on:
 
 jobs:
   build_standalone:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     
     steps:
     - uses: actions/checkout@v2
@@ -34,7 +34,7 @@ jobs:
       uses: codecov/codecov-action@v1
 
   build_eclipse:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
         
     steps:
     - uses: actions/checkout@v2
@@ -57,7 +57,7 @@ jobs:
       run: ./mvnw clean verify
 
   publish_standalone_lib:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
 
     needs:
      - build_eclipse
@@ -98,7 +98,7 @@ jobs:
         OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
 
   publish_eclipse:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
 
     needs:
      - build_eclipse

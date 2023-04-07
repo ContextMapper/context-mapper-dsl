@@ -10,7 +10,7 @@ on:
 jobs:
   build_standalone:
     if: startsWith(github.event.head_commit.message, '[Tycho]') == false && startsWith(github.event.head_commit.message, '[maven-release-plugin] prepare release v') == false
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     
     steps:
     - uses: actions/checkout@v2
@@ -38,7 +38,7 @@ jobs:
 
   build_eclipse:
     if: startsWith(github.event.head_commit.message, '[Tycho]') == false && startsWith(github.event.head_commit.message, '[maven-release-plugin] prepare release v') == false
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
         
     steps:
     - uses: actions/checkout@v2
@@ -62,7 +62,7 @@ jobs:
 
   publish_standalone_lib:
     if: startsWith(github.event.head_commit.message, '[Tycho]') == false && startsWith(github.event.head_commit.message, '[maven-release-plugin] prepare release v') == false
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
 
     needs:
      - build_eclipse
@@ -104,7 +104,7 @@ jobs:
 
   publish_eclipse_snapshot:
     if: startsWith(github.event.head_commit.message, '[Tycho]') == false && startsWith(github.event.head_commit.message, '[maven-release-plugin] prepare release v') == false
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
 
     needs:
      - build_eclipse
