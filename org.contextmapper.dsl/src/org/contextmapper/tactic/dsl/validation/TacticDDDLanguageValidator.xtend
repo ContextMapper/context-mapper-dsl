@@ -356,17 +356,6 @@ val DIGITS_PATTERN = Pattern.compile("[0-9]+[0-9]*")
 	}
 
 	@Check
-	def checkEnumReference(Reference ref) {
-		if (ref.getDomainObjectType() instanceof Enum && ref.collectionType != CollectionType.NONE) {
-			val notPersistentVO = ((ref.eContainer() instanceof ValueObject)
-					&& (ref.eContainer as ValueObject).notPersistent)
-			if (!notPersistentVO) {
-				error("Collection of enum is not supported", ANY_PROPERTY__COLLECTION_TYPE)
-			}
-		}
-	}
-
-	@Check
 	def checkEnumValues(Enum dslEnum) {
 		if (dslEnum.values.isEmpty()) {
 			error("At least one enum value must be defined", ENUM__VALUES)
