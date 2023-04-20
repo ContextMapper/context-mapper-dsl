@@ -62,7 +62,8 @@ BoundedContext:
             ('evolution' ('=')? evolution=Evolution)? &
 			((application = Application)? &
 			(modules += SculptorModule)* &
-			(aggregates += Aggregate)*)
+			(aggregates += Aggregate)* &
+			(domainServices += Service)*)
 		CLOSE
 	)?
 ;
