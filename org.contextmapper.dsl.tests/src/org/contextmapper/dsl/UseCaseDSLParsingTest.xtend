@@ -85,6 +85,48 @@ class UseCaseDSLParsingTest {
 
 		assertEquals("tester", result.userRequirements.get(0).role)
 	}
+	
+	@Test
+	def void canDefineOneSecondaryActor() {
+		// given
+		val String dslSnippet = '''
+			UseCase testUsecase {
+				actor "tester"
+				secondaryActors "tester2"
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+
+		val uc = result.userRequirements.get(0) as UseCase;
+		assertEquals(1, uc.secondaryActors.size)
+		assertEquals("tester2", uc.secondaryActors.get(0))
+	}
+	
+	@Test
+	def void canDefineMultipleSecondaryActors() {
+		// given
+		val String dslSnippet = '''
+			UseCase testUsecase {
+				actor "tester"
+				secondaryActors "tester2", "tester3", "tester4"
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+
+		val uc = result.userRequirements.get(0) as UseCase;
+		assertEquals(3, uc.secondaryActors.size)
+		assertEquals("tester2", uc.secondaryActors.get(0))
+		assertEquals("tester3", uc.secondaryActors.get(1))
+		assertEquals("tester4", uc.secondaryActors.get(2))
+	}
 
 	@Test
 	def void canDefineActivity() {

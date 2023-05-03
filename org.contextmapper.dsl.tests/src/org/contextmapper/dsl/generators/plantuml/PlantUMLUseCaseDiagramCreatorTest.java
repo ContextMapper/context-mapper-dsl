@@ -33,9 +33,70 @@ class PlantUMLUseCaseDiagramCreatorTest extends AbstractCMLInputFileTest {
 	}
 
 	@Test
-	public void canCreateStateDiagram4FlowDefinition() throws IOException {
+	public void canCreateUseCaseDiagram() throws IOException {
 		// given
 		ContextMappingModel model = getOriginalResourceOfTestCML("use-case-diagram-generation-test-1.cml").getContextMappingModel();
+
+		// when
+		String useCaseDiagram = new PlantUMLUseCaseDiagramCreator().createDiagram(model);
+
+		// then
+		assertEquals("@startuml" + System.lineSeparator()
+		 		+ System.lineSeparator()
+				+ "skinparam componentStyle uml2" + System.lineSeparator()
+				+ System.lineSeparator()
+				+ "\"Get_paid_for_car_accident\" as (Get_paid_for_car_accident)" + System.lineSeparator()
+				+ "\"Just_do_something\" as (Just_do_something)" + System.lineSeparator()
+				+ "\"Order_Offer_for_new_Insurance\" as (Order_Offer_for_new_Insurance)" + System.lineSeparator()
+				+ System.lineSeparator()
+				+ "\"Claimant\" as Actor_0" + System.lineSeparator()
+				+ "\"Chiller\" as Actor_1" + System.lineSeparator()
+				+ System.lineSeparator()
+				+ "Actor_0 --> Get_paid_for_car_accident" + System.lineSeparator()
+				+ "Actor_0 --> Order_Offer_for_new_Insurance" + System.lineSeparator()
+				+ "Actor_1 --> Just_do_something" + System.lineSeparator()
+				+ System.lineSeparator()
+				+ System.lineSeparator()
+				+ System.lineSeparator()
+				+ "@enduml" + System.lineSeparator(), useCaseDiagram);
+	}
+	
+	@Test
+	public void canCreateUseCaseDiagramWithSecondaryActors() throws IOException {
+		// given
+		ContextMappingModel model = getOriginalResourceOfTestCML("use-case-diagram-generation-test-2.cml").getContextMappingModel();
+
+		// when
+		String useCaseDiagram = new PlantUMLUseCaseDiagramCreator().createDiagram(model);
+
+		// then
+		assertEquals("@startuml" + System.lineSeparator()
+				+ System.lineSeparator()
+				+ "skinparam componentStyle uml2" + System.lineSeparator()
+				+ System.lineSeparator()
+				+ "\"Get_paid_for_car_accident\" as (Get_paid_for_car_accident)" + System.lineSeparator()
+				+ "\"Just_do_something\" as (Just_do_something)" + System.lineSeparator()
+				+ "\"Order_Offer_for_new_Insurance\" as (Order_Offer_for_new_Insurance)" + System.lineSeparator()
+				+ System.lineSeparator()
+				+ "\"Claimant\" as Actor_0" + System.lineSeparator()
+				+ "\"Chiller\" as Actor_1" + System.lineSeparator()
+				+ "\"YetAnotherActor\" as Actor_2" + System.lineSeparator()
+				+ System.lineSeparator()
+				+ "Actor_0 --> Get_paid_for_car_accident" + System.lineSeparator()
+				+ "Actor_0 --> Order_Offer_for_new_Insurance" + System.lineSeparator()
+				+ "Actor_1 --> Get_paid_for_car_accident" + System.lineSeparator()
+				+ "Actor_1 --> Just_do_something" + System.lineSeparator()
+				+ "Actor_2 --> Get_paid_for_car_accident" + System.lineSeparator()
+				+ System.lineSeparator()
+				+ System.lineSeparator()
+				+ System.lineSeparator()
+				+ "@enduml" + System.lineSeparator(), useCaseDiagram);
+	}
+	
+	@Test
+	public void canCreateUseCaseDiagramForMixedUseCasesAndUserStories() throws IOException {
+		// given
+		ContextMappingModel model = getOriginalResourceOfTestCML("use-case-diagram-generation-test-3.cml").getContextMappingModel();
 
 		// when
 		String useCaseDiagram = new PlantUMLUseCaseDiagramCreator().createDiagram(model);
