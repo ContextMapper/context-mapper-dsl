@@ -21,6 +21,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
+import org.contextmapper.dsl.contextMappingDSL.UseCase;
 import org.contextmapper.dsl.contextMappingDSL.UserRequirement;
 
 public class PlantUMLUseCaseDiagramCreator extends AbstractPlantUMLDiagramCreator<ContextMappingModel>
@@ -74,9 +75,19 @@ public class PlantUMLUseCaseDiagramCreator extends AbstractPlantUMLDiagramCreato
 	private void prepareData(final List<UserRequirement> userRequirements) {
 		initializeDataStructures();
 		for (UserRequirement req : userRequirements) {
-			final Actor actor = getActorForName(req.getRole().trim());
+			final Actor primaryActor = getActorForName(req.getRole().trim());
 			useCasesAndStories.add(req.getName().trim());
-			actor.addUseCaseOrStory(req.getName().trim());
+			primaryActor.addUseCaseOrStory(req.getName().trim());
+			if (req instanceof UseCase) {
+				initSecondaryActors(((UseCase) req).getSecondaryActors(), req.getName().trim());
+			}
+		}
+	}
+
+	private void initSecondaryActors(final List<String> actorNames, final String useCaseOrStoryName) {
+		for (String name : actorNames) {
+			final Actor secondaryActor = getActorForName(name.trim());
+			secondaryActor.addUseCaseOrStory(useCaseOrStoryName);
 		}
 	}
 
