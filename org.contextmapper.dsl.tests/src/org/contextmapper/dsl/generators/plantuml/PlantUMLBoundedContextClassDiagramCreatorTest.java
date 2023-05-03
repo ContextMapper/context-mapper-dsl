@@ -15,6 +15,7 @@
  */
 package org.contextmapper.dsl.generators.plantuml;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -25,6 +26,7 @@ import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.Application;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
+import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.Domain;
 import org.contextmapper.dsl.contextMappingDSL.SculptorModule;
 import org.contextmapper.dsl.contextMappingDSL.Subdomain;
@@ -155,6 +157,58 @@ class PlantUMLBoundedContextClassDiagramCreatorTest extends AbstractCMLInputFile
 		// then
 		assertTrue(plantUML.contains("	class Test <<(E,DarkSeaGreen) Entity>> {" + System.lineSeparator() + "		int amount" + System.lineSeparator()
 				+ "		List<String> myList" + System.lineSeparator() + "	}" + System.lineSeparator()));
+	}
+	
+	@Test
+	public void canUseServicesOutsideAggregates() throws IOException {
+		// given
+		ContextMappingModel model = getOriginalResourceOfTestCML("class-diagram-generation-services-test-1.cml").getContextMappingModel();
+		BoundedContext boundedContext = model.getBoundedContexts().get(0);
+		
+		// when
+		String plantUML = this.creator.createDiagram(boundedContext);
+		
+		// then
+		assertEquals("@startuml" + System.lineSeparator()
+				+ System.lineSeparator()
+				+ "skinparam componentStyle uml2"
+				+ System.lineSeparator()
+				+ System.lineSeparator()
+				+ "package \"'QuoteRequest' Aggregate\" <<Rectangle>> {" + System.lineSeparator()
+				+ "	class QuoteRequest <<(A,#fffab8) Aggregate Root>> {" + System.lineSeparator()
+				+ "	}" + System.lineSeparator()
+				+ "	enum RequestState {" + System.lineSeparator()
+				+ "		REQUEST_SUBMITTED" + System.lineSeparator()
+				+ "		QUOTE_RECEIVED" + System.lineSeparator()
+				+ "		REQUEST_REJECTED" + System.lineSeparator()
+				+ "		QUOTE_ACCEPTED" + System.lineSeparator()
+				+ "		QUOTE_REJECTED" + System.lineSeparator()
+				+ "		QUOTE_EXPIRED" + System.lineSeparator()
+				+ "		POLICY_CREATED" + System.lineSeparator()
+				+ "	}" + System.lineSeparator()
+				+ "}" + System.lineSeparator()
+				+ "package \"'AnotherAggregateThatMustBeIgnored' Aggregate\" <<Rectangle>> {" + System.lineSeparator()
+				+ "	enum States {" + System.lineSeparator()
+				+ "		REQUEST_SUBMITTED" + System.lineSeparator()
+				+ "		QUOTE_RECEIVED" + System.lineSeparator()
+				+ "		REQUEST_REJECTED" + System.lineSeparator()
+				+ "		QUOTE_ACCEPTED" + System.lineSeparator()
+				+ "		QUOTE_REJECTED" + System.lineSeparator()
+				+ "		QUOTE_EXPIRED" + System.lineSeparator()
+				+ "		POLICY_CREATED" + System.lineSeparator()
+				+ "	}" + System.lineSeparator()
+				+ "}" + System.lineSeparator()
+				+ "class QuoteRequestService <<(S,DarkSeaGreen) Service>> {" + System.lineSeparator()
+				+ "	void testOp()" + System.lineSeparator()
+				+ "	void submitRequest(QuoteRequest request)" + System.lineSeparator()
+				+ "	void rejectRequest(QuoteRequest request)" + System.lineSeparator()
+				+ "	void receiveQuote(QuoteRequest request)" + System.lineSeparator()
+				+ "	void checkQuote(QuoteRequest request)" + System.lineSeparator()
+				+ "	void createPolicy(QuoteRequest request)" + System.lineSeparator()
+				+ "}" + System.lineSeparator()
+				+ System.lineSeparator()
+				+ System.lineSeparator()
+				+ "@enduml" + System.lineSeparator(), plantUML);
 	}
 
 	@Test
