@@ -1,0 +1,33 @@
+BoundedContext InsuranceQuotes {
+ 	
+ 	Aggregate QuoteRequest {
+ 		Entity QuoteRequest {
+ 			aggregateRoot
+ 		}
+ 		
+ 		enum RequestState {
+ 			aggregateLifecycle
+ 			REQUEST_SUBMITTED, QUOTE_RECEIVED, REQUEST_REJECTED, QUOTE_ACCEPTED, QUOTE_REJECTED, QUOTE_EXPIRED, POLICY_CREATED
+ 		}
+ 		
+ 		
+ 	}
+ 	
+ 	Aggregate AnotherAggregateThatMustBeIgnored {
+ 		enum States {
+ 			REQUEST_SUBMITTED, QUOTE_RECEIVED, REQUEST_REJECTED, QUOTE_ACCEPTED, QUOTE_REJECTED, QUOTE_EXPIRED, POLICY_CREATED
+ 		}
+ 	}
+
+	Service QuoteRequestService {
+ 		void testOp() : read-only;
+ 			
+ 		void submitRequest(@QuoteRequest request) : write;
+ 		void rejectRequest(@QuoteRequest request): write;
+ 		void receiveQuote(@QuoteRequest request) : write;
+ 		void checkQuote(@QuoteRequest request) : write;
+ 		void createPolicy(@QuoteRequest request) : write;
+ 	}
+  	
+ 	
+ }

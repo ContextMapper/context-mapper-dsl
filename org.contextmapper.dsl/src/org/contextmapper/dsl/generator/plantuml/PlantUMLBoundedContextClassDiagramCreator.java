@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 The Context Mapper Project Team
+ * Copyright 2023 The Context Mapper Project Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,13 +36,15 @@ import org.eclipse.xtext.EcoreUtil2;
 
 import com.google.common.collect.Lists;
 
-public class PlantUMLBoundedContextClassDiagramCreator extends AbstractPlantUMLClassDiagramCreator<BoundedContext> implements PlantUMLDiagramCreator<BoundedContext> {
+public class PlantUMLBoundedContextClassDiagramCreator extends AbstractPlantUMLClassDiagramCreator<BoundedContext>
+		implements PlantUMLDiagramCreator<BoundedContext> {
 
 	@Override
 	protected void printDiagramContent(BoundedContext boundedContext) {
 		this.associationInfos = new HashMap<>();
 		this.extensions = Lists.newArrayList();
-		this.domainObjects = EcoreUtil2.<SimpleDomainObject>getAllContentsOfType(boundedContext, SimpleDomainObject.class);
+		this.domainObjects = EcoreUtil2.<SimpleDomainObject>getAllContentsOfType(boundedContext,
+				SimpleDomainObject.class);
 		if (this.domainObjects.size() <= 0) {
 			printEmptyDiagramNote();
 			return;
@@ -52,6 +54,9 @@ public class PlantUMLBoundedContextClassDiagramCreator extends AbstractPlantUMLC
 		}
 		for (Aggregate aggregate : boundedContext.getAggregates()) {
 			printAggregate(aggregate, 0);
+		}
+		for (Service service : boundedContext.getDomainServices()) {
+			printService(service, 0);
 		}
 		if (boundedContext.getApplication() != null)
 			printApplication(boundedContext.getApplication(), 0);
@@ -66,15 +71,16 @@ public class PlantUMLBoundedContextClassDiagramCreator extends AbstractPlantUMLC
 		sb.append("legend left");
 		linebreak();
 		if (boundedContext.getRefinedBoundedContext() != null) {
-			sb.append("  ").append("This Bounded Context '").append(boundedContext.getName()).append("' refines the '").append(boundedContext.getRefinedBoundedContext().getName())
-					.append("' Bounded Context.");
+			sb.append("  ").append("This Bounded Context '").append(boundedContext.getName()).append("' refines the '")
+					.append(boundedContext.getRefinedBoundedContext().getName()).append("' Bounded Context.");
 			linebreak();
 		}
 		for (Subdomain subdomain : subdomains) {
 			if (subdomain.getEntities().isEmpty()) {
 				sb.append("  ").append("This bounded context implements the subdomain '" + subdomain.getName() + "'.");
 			} else {
-				sb.append("  ").append("This bounded context implements the subdomain '" + subdomain.getName() + "', which contains the following entities:");
+				sb.append("  ").append("This bounded context implements the subdomain '" + subdomain.getName()
+						+ "', which contains the following entities:");
 			}
 			linebreak();
 			for (Entity entity : subdomain.getEntities()) {
@@ -87,7 +93,8 @@ public class PlantUMLBoundedContextClassDiagramCreator extends AbstractPlantUMLC
 	}
 
 	private void printEmptyDiagramNote() {
-		sb.append("note").append(" ").append("\"").append(ValidationMessages.EMPTY_UML_CLASS_DIAGRAM_MESSAGE).append("\"").append(" as EmptyDiagramError");
+		sb.append("note").append(" ").append("\"").append(ValidationMessages.EMPTY_UML_CLASS_DIAGRAM_MESSAGE)
+				.append("\"").append(" as EmptyDiagramError");
 		linebreak();
 	}
 
@@ -101,7 +108,8 @@ public class PlantUMLBoundedContextClassDiagramCreator extends AbstractPlantUMLC
 			sb.append("legend left");
 			linebreak();
 			printIndentation(indentation + 2);
-			sb.append("This application layer contains flow definitions (visualization available via BPMN Sketch Miner).");
+			sb.append(
+					"This application layer contains flow definitions (visualization available via BPMN Sketch Miner).");
 			linebreak();
 			printIndentation(indentation + 1);
 			sb.append("end legend");
