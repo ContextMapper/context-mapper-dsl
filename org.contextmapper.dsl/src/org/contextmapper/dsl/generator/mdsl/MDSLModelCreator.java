@@ -44,6 +44,7 @@ import org.contextmapper.dsl.contextMappingDSL.SingleEventProduction;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamRole;
 import org.contextmapper.dsl.generator.exception.GeneratorInputException;
+import org.contextmapper.dsl.generator.exception.InputNotYetSupportedException;
 import org.contextmapper.dsl.generator.mdsl.generatorcontext.DownstreamContext;
 import org.contextmapper.dsl.generator.mdsl.generatorcontext.UpstreamAPIContext;
 import org.contextmapper.dsl.generator.mdsl.model.APIUsageContext;
@@ -219,6 +220,9 @@ public class MDSLModelCreator {
 			DomainEventProductionStep depStep = (DomainEventProductionStep) step;
 			EitherCommandOrOperation action = depStep.getAction();
 			EventProduction ep = depStep.getEventProduction();
+			
+			if(action.getCommand() == null && action.getOperation() != null)
+				throw new InputNotYetSupportedException("Operations are not yet supported in the MDSL generator. Please use commands instead.");
 			
 			if(ep instanceof SingleEventProduction) {
 				EList<DomainEvent> events = ep.getEvents();
