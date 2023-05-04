@@ -29,6 +29,7 @@ public class PlantUMLUseCaseDiagramCreator extends AbstractPlantUMLDiagramCreato
 
 	private Set<String> useCasesAndStories;
 	private Set<Actor> actors;
+	private Set<Actor> secondaryActors;
 	private int actorCounter = 0;
 
 	@Override
@@ -38,10 +39,14 @@ public class PlantUMLUseCaseDiagramCreator extends AbstractPlantUMLDiagramCreato
 		printUseCases();
 		linebreak();
 
-		printActors();
+		printActors(actors);
+		printActors(secondaryActors);
 		linebreak();
 
-		printConnections();
+		sb.append("left to right direction");
+		linebreak();
+		printConnections(actors, false);
+		printConnections(secondaryActors, true);
 		linebreak();
 	}
 
@@ -52,22 +57,26 @@ public class PlantUMLUseCaseDiagramCreator extends AbstractPlantUMLDiagramCreato
 		}
 	}
 
-	private void printActors() {
+	private void printActors(final Set<Actor> actors) {
 		for (Actor actor : actors) {
 			sb.append("\"").append(actor.name).append("\"").append(" as ").append(actor.id);
 			linebreak();
 		}
 	}
 
-	private void printConnections() {
+	private void printConnections(final Set<Actor> actors, final boolean secondaryActors) {
 		for (Actor actor : actors) {
-			printActorsConnections(actor);
+			printActorsConnections(actor, secondaryActors);
 		}
 	}
 
-	private void printActorsConnections(final Actor actor) {
+	private void printActorsConnections(final Actor actor, final boolean secondaryActor) {
 		for (String useCase : actor.connectedUseCasesAndStories) {
-			sb.append(actor.id).append(" --> ").append(useCase);
+			if (!secondaryActor) {
+				sb.append(actor.id).append(" -- ").append(useCase);
+			} else {
+				sb.append(useCase).append(" -- ").append(actor.id);
+			}
 			linebreak();
 		}
 	}
@@ -86,7 +95,7 @@ public class PlantUMLUseCaseDiagramCreator extends AbstractPlantUMLDiagramCreato
 
 	private void initSecondaryActors(final List<String> actorNames, final String useCaseOrStoryName) {
 		for (String name : actorNames) {
-			final Actor secondaryActor = getActorForName(name.trim());
+			final Actor secondaryActor = getActorSecondaryForName(name.trim());
 			secondaryActor.addUseCaseOrStory(useCaseOrStoryName);
 		}
 	}
@@ -94,17 +103,26 @@ public class PlantUMLUseCaseDiagramCreator extends AbstractPlantUMLDiagramCreato
 	private void initializeDataStructures() {
 		this.useCasesAndStories = new TreeSet<>();
 		this.actors = new TreeSet<>();
+		this.secondaryActors = new TreeSet<>();
 		this.actorCounter = 0;
 	}
 
 	private Actor getActorForName(final String actorName) {
-		final Optional<Actor> potentiallyExistingActor = this.actors.stream().filter(a -> a.name.equals(actorName))
+		return getActorForName(actorName, this.actors);
+	}
+
+	private Actor getActorSecondaryForName(final String actorName) {
+		return getActorForName(actorName, this.secondaryActors);
+	}
+
+	private Actor getActorForName(final String actorName, final Set<Actor> actors) {
+		final Optional<Actor> potentiallyExistingActor = actors.stream().filter(a -> a.name.equals(actorName))
 				.findFirst();
 		if (potentiallyExistingActor.isPresent()) {
 			return potentiallyExistingActor.get();
 		} else {
 			final Actor actor = new Actor(actorName, "Actor_" + actorCounter++);
-			this.actors.add(actor);
+			actors.add(actor);
 			return actor;
 		}
 	}
