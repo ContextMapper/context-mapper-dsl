@@ -28,6 +28,7 @@ import org.apache.commons.io.FileUtils;
 import org.contextmapper.dsl.AbstractCMLInputFileTest;
 import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.generator.exception.GeneratorInputException;
+import org.contextmapper.dsl.generator.exception.InputNotYetSupportedException;
 import org.contextmapper.dsl.generator.mdsl.MDSLAPIDescriptionCreator;
 import org.contextmapper.dsl.generator.mdsl.MDSLModelCreator;
 import org.contextmapper.dsl.generator.mdsl.ProtectedRegionContextFactory;
@@ -248,14 +249,14 @@ public class MDSLAPIDescriptionCreatorTest extends AbstractCMLInputFileTest {
 	
 	@Test
 	void anotherUnsupportedApplicationLayerFlow() throws IOException {
-		assertThrows(GeneratorInputException.class, () -> {
+		assertThrows(InputNotYetSupportedException.class, () -> {
 			testCMLInputAndMDSLOutputFiles("application-flow-example-3");
 		});
 	}
 	
 	@Test
 	void yetAnotherUnsupportedApplicationLayerFlow() throws IOException {
-		assertThrows(GeneratorInputException.class, () -> {
+		assertThrows(InputNotYetSupportedException.class, () -> {
 			testCMLInputAndMDSLOutputFiles("application-flow-example-4");
 		});
 	}
