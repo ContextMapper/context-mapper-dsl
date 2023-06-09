@@ -164,19 +164,6 @@
 								<id>org.eclipse.rcp</id>
 								<versionRange>0.0.0</versionRange>
 							</requirement>
-							<!-- to force the same version of jdt.compiler.apt and jdt.core
-								(for xtext-maven-plugin)
-								see https://github.com/eclipse/xtext-maven/issues/146 -->
-							<requirement>
-								<type>eclipse-plugin</type>
-								<id>org.eclipse.jdt.compiler.apt</id>
-								<versionRange>0.0.0</versionRange>
-							</requirement>
-							<requirement>
-								<type>eclipse-plugin</type>
-								<id>org.eclipse.jdt.compiler.tool</id>
-								<versionRange>0.0.0</versionRange>
-							</requirement>
 						</extraRequirements>
 					</dependency-resolution>
 				</configuration>
@@ -377,6 +364,33 @@
 			<properties>
 				<moduleProperties>--add-modules=ALL-SYSTEM</moduleProperties>
 			</properties>
+		</profile>
+		<profile>
+			<id>release-composite</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<build>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<artifactId>maven-install-plugin</artifactId>
+							<executions>
+								<execution>
+									<id>default-install</id>
+									<phase>none</phase>
+								</execution>
+							</executions>
+						</plugin>
+						<plugin>
+							<artifactId>maven-deploy-plugin</artifactId>
+							<configuration>
+								<skip>true</skip>
+							</configuration>
+						</plugin>
+					</plugins>
+				</pluginManagement>
+			</build>
 		</profile>
 	</profiles>
 

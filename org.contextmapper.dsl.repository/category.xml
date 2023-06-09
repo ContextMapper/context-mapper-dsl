@@ -19,7 +19,7 @@
       <category name="main"/>
    </feature>
    <category-def name="main" label="Context Mapper"/>
-   <repository-reference location="https://contextmapper.jfrog.io/artifactory/context-map-generator-releases/" enabled="true" />
-   <repository-reference location="https://contextmapper.jfrog.io/artifactory/service-cutter-library-releases/" enabled="true" />
-   <repository-reference location="https://contextmapper.jfrog.io/artifactory/context-mapper-osgi-bundles/1.0.0/" enabled="true" />
+   <repository-reference location="https://contextmapper.org/p2-repos/context-map-generator-releases/" enabled="true" />
+   <repository-reference location="https://contextmapper.org/p2-repos/service-cutter-library-releases/" enabled="true" />
+   <repository-reference location="https://contextmapper.org/p2-repos/context-mapper-osgi-bundles/1.0.0/" enabled="true" />
 </site>
