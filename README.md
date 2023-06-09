@@ -15,7 +15,7 @@ The Context Mapper project has originally been developed as part of research pro
      * [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=contextmapper.context-mapper-vscode-extension)
    * Eclipse:
      * [Eclipse Marketplace](https://marketplace.eclipse.org/content/context-mapper)
-     * Update Site: https://contextmapper.jfrog.io/artifactory/context-mapper-eclipse/updates/
+     * Update Site: [https://contextmapper.org/eclipse-update-site/](https://contextmapper.org/eclipse-update-site/)
  * [Release notes for latest releases](https://contextmapper.org/allnews)
 
 ## Features
