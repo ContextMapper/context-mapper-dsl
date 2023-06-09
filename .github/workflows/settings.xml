@@ -10,16 +10,4 @@
 			<password>${env.GH_CI_TOKEN}</password>
 		</server>
 	</servers>
-	<profiles>
-		<profile>
-			<id>release-composite</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-			</activation>
-			<properties>
-				<artifactory.user>${env.ARTIFACTORY_USERNAME}</artifactory.user>
-				<artifactory.apikey>${env.ARTIFACTORY_API_KEY}</artifactory.apikey>
-			</properties>
-		</profile>
-	</profiles>
 </settings>

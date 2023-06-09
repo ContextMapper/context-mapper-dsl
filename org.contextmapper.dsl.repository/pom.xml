@@ -9,14 +9,12 @@
 	<packaging>eclipse-repository</packaging>
 
 	<properties>
-		<artifactory.repo>${ARTIFACTORY_REPO}</artifactory.repo>
-		<artifactory.package>releases</artifactory.package>
 		<site.label>ContextMapper DSL Composite Site</site.label>
-		<artifactory.owner>contextmapper</artifactory.owner>
-		<artifactory.releases.path>releases</artifactory.releases.path>
-		<artifactory.composite.path>updates</artifactory.composite.path>
-		<artifactory.zip.path>zipped</artifactory.zip.path>
-		<child.repository.path.prefix>../../releases/</child.repository.path.prefix>
+		<github-repo-name>${GH_REPO_NAME}</github-repo-name>
+		<github-update-repo>git@github.com:ContextMapper/${github-repo-name}.git</github-update-repo>
+		<github-local-clone>${project.build.directory}/checkout</github-local-clone>
+		<releases-directory>${github-local-clone}/releases</releases-directory>
+		<current-release-directory>${releases-directory}/${qualifiedVersion}</current-release-directory>
 	</properties>
 
 	<build>
@@ -91,7 +89,8 @@
 						<version>3.3.0</version>
 						<executions>
 							<execution>
-								<phase>initialize</phase>
+								<phase>
+									initialize</phase>
 								<id>parse-version</id>
 								<goals>
 									<goal>parse-version</goal>
@@ -100,33 +99,95 @@
 						</executions>
 					</plugin>
 					<plugin>
-						<artifactId>maven-antrun-plugin</artifactId>
-						<version>${maven-antrun-plugin.version}</version>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>exec-maven-plugin</artifactId>
+						<configuration>
+							<executable>git</executable>
+						</configuration>
 						<executions>
 							<execution>
-								<id>update-local-repository</id>
+								<id>git-clone</id>
 								<phase>prepare-package</phase>
-								<configuration>
-									<target>
-										<ant antfile="${basedir}/artifactory.ant" target="get-composite-metadata" />
-									</target>
-								</configuration>
 								<goals>
-									<goal>run</goal>
+									<goal>exec</goal>
 								</goals>
+								<configuration>
+									<arguments>
+										<argument>clone</argument>
+										<argument>--depth=1</argument>
+										<argument>-b</argument>
+										<argument>master</argument>
+										<argument>${github-update-repo}</argument>
+										<argument>${github-local-clone}</argument>
+									</arguments>
+								</configuration>
 							</execution>
-
 							<execution>
-								<id>deploy-repository</id>
+								<id>git-add</id>
 								<phase>verify</phase>
-								<configuration>
-									<target>
-										<ant antfile="${basedir}/artifactory.ant" target="push-to-artifactory" />
-									</target>
-								</configuration>
 								<goals>
-									<goal>run</goal>
+									<goal>exec</goal>
 								</goals>
+								<configuration>
+									<arguments>
+										<argument>-C</argument>
+										<argument>${github-local-clone}</argument>
+										<argument>add</argument>
+										<argument>-A</argument>
+									</arguments>
+								</configuration>
+							</execution>
+							<execution>
+								<id>git-commit</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>exec</goal>
+								</goals>
+								<configuration>
+									<arguments>
+										<argument>-C</argument>
+										<argument>${github-local-clone}</argument>
+										<argument>commit</argument>
+										<argument>-m</argument>
+										<argument>Release ${qualifiedVersion}</argument>
+									</arguments>
+								</configuration>
+							</execution>
+							<execution>
+								<id>git-push</id>
+								<phase>deploy</phase>
+								<goals>
+									<goal>exec</goal>
+								</goals>
+								<configuration>
+									<arguments>
+										<argument>-C</argument>
+										<argument>${github-local-clone}</argument>
+										<argument>push</argument>
+										<argument>origin</argument>
+										<argument>master</argument>
+									</arguments>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<artifactId>maven-resources-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>copy-repository</id>
+								<phase>package</phase>
+								<goals>
+									<goal>copy-resources</goal>
+								</goals>
+								<configuration>
+									<outputDirectory>${current-release-directory}</outputDirectory>
+									<resources>
+										<resource>
+											<directory>${project.build.directory}/repository</directory>
+										</resource>
+									</resources>
+								</configuration>
 							</execution>
 						</executions>
 					</plugin>
@@ -138,7 +199,7 @@
 						<configuration>
 							<!-- Update p2 composite metadata or create it -->
 							<!-- IMPORTANT: DO NOT split the arg line -->
-							<appArgLine>-application org.eclipse.ant.core.antRunner -buildfile packaging-p2composite.ant p2.composite.add -DparsedVersion.majorVersion="${parsedVersion.majorVersion}" -DparsedVersion.minorVersion="${parsedVersion.minorVersion}" -Dsite.label="${site.label}" -Dproject.build.directory=${project.build.directory} -DunqualifiedVersion=${unqualifiedVersion} -Dchild.repository.path.prefix="${child.repository.path.prefix}"</appArgLine>
+							<appArgLine>-application org.eclipse.ant.core.antRunner -buildfile packaging-p2composite.ant p2.composite.add -DparsedVersion.majorVersion="${parsedVersion.majorVersion}" -DparsedVersion.minorVersion="${parsedVersion.minorVersion}" -DbuildQualifier=${buildQualifier} -Dsite.label="${site.label}" -Dcomposite.base.dir=${github-local-clone} -DunqualifiedVersion=${unqualifiedVersion} -Dchild.repository.path.prefix="${child.repository.path.prefix}"</appArgLine>
 							<jvmArgs>
 								<arg>--add-opens=java.base/java.net=ALL-UNNAMED</arg>
 							</jvmArgs>
