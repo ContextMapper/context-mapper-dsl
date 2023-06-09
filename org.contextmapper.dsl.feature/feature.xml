@@ -219,7 +219,7 @@
    </license>
 
    <url>
-      <update label="Context Mapper Eclipse Update Site" url="https://contextmapper.jfrog.io/artifactory/context-mapper-eclipse/updates/"/>
+      <update label="Context Mapper Eclipse Update Site" url="https://contextmapper.org/eclipse-update-site/"/>
    </url>
 
    <plugin

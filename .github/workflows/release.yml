@@ -123,7 +123,7 @@ jobs:
       run: chmod +x mvnw
     - name: Configure Git user
       run: |
-        git config user.email "contextmapper-ci@kapferer.ch"
-        git config user.name "Context Mapper CI"
+        git config --global user.email "contextmapper-ci@kapferer.ch"
+        git config --global user.name "Context Mapper CI"
     - name: Publish Eclipse plugin with Maven
       run: ./mvnw --settings ./.github/workflows/settings.xml clean deploy -Prelease-composite -Dgithub-update-repo=https://${{ secrets.GH_CI_USERNAME }}:${{ secrets.GH_CI_TOKEN }}@github.com/ContextMapper/eclipse-update-site
