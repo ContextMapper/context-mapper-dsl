@@ -89,8 +89,7 @@
 						<version>3.3.0</version>
 						<executions>
 							<execution>
-								<phase>
-									initialize</phase>
+								<phase>initialize</phase>
 								<id>parse-version</id>
 								<goals>
 									<goal>parse-version</goal>
@@ -191,7 +190,17 @@
 							</execution>
 						</executions>
 					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>release-snapshot-version</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
 
+			<build>
+				<plugins>
 					<plugin>
 						<groupId>org.eclipse.tycho.extras</groupId>
 						<artifactId>tycho-eclipserun-plugin</artifactId>
@@ -199,7 +208,73 @@
 						<configuration>
 							<!-- Update p2 composite metadata or create it -->
 							<!-- IMPORTANT: DO NOT split the arg line -->
-							<appArgLine>-application org.eclipse.ant.core.antRunner -buildfile packaging-p2composite.ant p2.composite.add -DparsedVersion.majorVersion="${parsedVersion.majorVersion}" -DparsedVersion.minorVersion="${parsedVersion.minorVersion}" -DbuildQualifier=${buildQualifier} -Dsite.label="${site.label}" -Dcomposite.base.dir=${github-local-clone} -DunqualifiedVersion=${unqualifiedVersion} -Dchild.repository.path.prefix="${child.repository.path.prefix}"</appArgLine>
+							<appArgLine>-application org.eclipse.ant.core.antRunner -buildfile packaging-p2composite.ant p2.composite.add -DparsedVersion.majorVersion="${parsedVersion.majorVersion}" -DparsedVersion.minorVersion="${parsedVersion.minorVersion}" -DbuildQualifier=${buildQualifier} -DcmFullVersion="${unqualifiedVersion}.${buildQualifier}" -Dsite.label="${site.label}" -Dcomposite.base.dir=${github-local-clone} -DunqualifiedVersion=${unqualifiedVersion} -Dchild.repository.path.prefix="${child.repository.path.prefix}"</appArgLine>
+							<jvmArgs>
+								<arg>--add-opens=java.base/java.net=ALL-UNNAMED</arg>
+							</jvmArgs>
+							<repositories>
+								<repository>
+									<id>2022-09</id>
+									<layout>p2</layout>
+									<url>http://download.eclipse.org/releases/2022-09</url>
+								</repository>
+							</repositories>
+							<dependencies>
+								<dependency>
+									<artifactId>org.eclipse.ant.core</artifactId>
+									<type>eclipse-plugin</type>
+								</dependency>
+								<dependency>
+									<artifactId>org.apache.ant</artifactId>
+									<type>eclipse-plugin</type>
+								</dependency>
+								<dependency>
+									<artifactId>org.eclipse.equinox.p2.repository.tools</artifactId>
+									<type>eclipse-plugin</type>
+								</dependency>
+								<dependency>
+									<artifactId>org.eclipse.equinox.p2.core.feature</artifactId>
+									<type>eclipse-feature</type>
+								</dependency>
+								<dependency>
+									<artifactId>org.eclipse.equinox.p2.extras.feature</artifactId>
+									<type>eclipse-feature</type>
+								</dependency>
+								<dependency>
+									<artifactId>org.eclipse.equinox.ds</artifactId>
+									<type>eclipse-plugin</type>
+								</dependency>
+							</dependencies>
+						</configuration>
+						<executions>
+							<execution>
+								<id>add-p2-composite-repository</id>
+								<phase>package</phase>
+								<goals>
+									<goal>eclipse-run</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>release-final-version</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.eclipse.tycho.extras</groupId>
+						<artifactId>tycho-eclipserun-plugin</artifactId>
+						<version>${tycho-version}</version>
+						<configuration>
+							<!-- Update p2 composite metadata or create it -->
+							<!-- IMPORTANT: DO NOT split the arg line -->
+							<appArgLine>-application org.eclipse.ant.core.antRunner -buildfile packaging-p2composite.ant p2.composite.add -DparsedVersion.majorVersion="${parsedVersion.majorVersion}" -DparsedVersion.minorVersion="${parsedVersion.minorVersion}" -DcmFullVersion="${unqualifiedVersion}" -Dsite.label="${site.label}" -Dcomposite.base.dir=${github-local-clone} -DunqualifiedVersion=${unqualifiedVersion} -Dchild.repository.path.prefix="${child.repository.path.prefix}"</appArgLine>
 							<jvmArgs>
 								<arg>--add-opens=java.base/java.net=ALL-UNNAMED</arg>
 							</jvmArgs>

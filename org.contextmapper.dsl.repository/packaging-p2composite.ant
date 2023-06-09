@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <project name="project">
 	<target name="compute.child.repository.data">
-		<property name="full.version" value="${unqualifiedVersion}.${buildQualifier}" />
+		<property name="full.version" value="${cmFullVersion}" />
 
 		<property name="updates.suffix" value=".x"/>
 		<property name="main.site.composite.name"
