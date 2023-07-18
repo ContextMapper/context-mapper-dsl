@@ -1,0 +1,21 @@
+UseCase Get_paid_for_car_accident { // title
+  secondaryActors "Insurance Employee"
+  scope "Insurance company" // scope
+  level "Summary" // level
+  benefit "A claimant submits a claim and and gets paid from the insurance company." // story (brief summary)
+  interactions
+    "submit" a "Claim",                // step 1: claimant submits claim
+    "verifyExistanceOf" "Policy",      // step 2: insurance company verifies that valid policy exists
+    "assign" an "Agent" for a "Claim", // step 3: agent is assigned to claim
+    "verify" "Policy",                 // step 4: agent verifies all details are within policy guidelines
+    "pay" "Claimant",                  // step 5 (1): claimant gets paid
+    "close" "Claim"                    // step 5 (2): file/claim gets closed
+}
+
+UseCase Order_Offer_for_new_Insurance {
+	actor "Claimant"
+}
+
+UseCase Just_do_something {
+	actor "Chiller"
+}
