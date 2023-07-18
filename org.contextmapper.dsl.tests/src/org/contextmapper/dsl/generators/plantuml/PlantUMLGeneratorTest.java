@@ -15,12 +15,11 @@
  */
 package org.contextmapper.dsl.generators.plantuml;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
-
-import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import org.contextmapper.dsl.AbstractCMLInputFileTest;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
@@ -31,7 +30,6 @@ import org.contextmapper.dsl.contextMappingDSL.Domain;
 import org.contextmapper.dsl.contextMappingDSL.Subdomain;
 import org.contextmapper.dsl.generator.PlantUMLGenerator;
 import org.contextmapper.dsl.generator.exception.GeneratorInputException;
-import org.contextmapper.dsl.generator.exception.NoContextMapDefinedException;
 import org.contextmapper.dsl.generators.mocks.ContextMappingModelResourceMock;
 import org.contextmapper.dsl.generators.mocks.IFileSystemAccess2Mock;
 import org.contextmapper.dsl.generators.mocks.IGeneratorContextMock;
@@ -167,6 +165,32 @@ class PlantUMLGeneratorTest extends AbstractCMLInputFileTest {
 
 		// then
 		assertTrue(filesystem.getGeneratedFilesSet().contains("testmodel_BC_InsuranceQuotes_QuoteRequest_StateDiagram.puml"));
+	}
+	
+	@Test
+	void canCreateUseCaseDiagram4UseCasesIfAvailable() throws IOException {
+		// given
+		ContextMappingModel model = getOriginalResourceOfTestCML("use-case-diagram-generation-test-1.cml").getContextMappingModel();
+
+		// when
+		IFileSystemAccess2Mock filesystem = new IFileSystemAccess2Mock();
+		this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem, new IGeneratorContextMock());
+
+		// then
+		assertTrue(filesystem.getGeneratedFilesSet().contains("testmodel_UseCases.puml"));
+	}
+	
+	@Test
+	void canCreateSequenceDiagram4UseCaseInteractionsIfAvailable() throws IOException {
+		// given
+		ContextMappingModel model = getOriginalResourceOfTestCML("use-case-diagram-generation-test-1.cml").getContextMappingModel();
+
+		// when
+		IFileSystemAccess2Mock filesystem = new IFileSystemAccess2Mock();
+		this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem, new IGeneratorContextMock());
+
+		// then
+		assertTrue(filesystem.getGeneratedFilesSet().contains("testmodel_UseCase_Get_paid_for_car_accident_Interactions.puml"));
 	}
 
 	@Test
