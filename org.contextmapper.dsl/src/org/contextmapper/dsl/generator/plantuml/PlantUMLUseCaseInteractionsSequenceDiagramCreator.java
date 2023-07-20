@@ -37,6 +37,7 @@ public class PlantUMLUseCaseInteractionsSequenceDiagramCreator extends AbstractP
 
 		printEndOfGroup();
 		printUseCaseBenefit();
+		printDisclaimerNote();
 	}
 
 	private void printStartOfGroup() {
@@ -82,9 +83,20 @@ public class PlantUMLUseCaseInteractionsSequenceDiagramCreator extends AbstractP
 
 	private void printUseCaseBenefit() {
 		if (useCase.getBenefit() != null && !"".equals(useCase.getBenefit())) {
-			sb.append("note right : ").append(useCase.getBenefit());
+			sb.append("note over " + SYSTEM_NAME + " : ").append(useCase.getBenefit());
 			linebreak();
 		}
+		linebreak();
+	}
+
+	private void printDisclaimerNote() {
+		sb.append("note right").append(System.lineSeparator())
+				.append("  Note: This diagram aims to illustrate").append(System.lineSeparator())
+				.append("  interactions of a use case in an early analysis state.").append(System.lineSeparator())
+				.append("  We are aware that some interactions might not be").append(System.lineSeparator())
+				.append("  triggered/connected by/with the correct actor(s)").append(System.lineSeparator())
+				.append("  (known limitation).").append(System.lineSeparator());
+		sb.append("end note").append(System.lineSeparator());
 		linebreak();
 	}
 
