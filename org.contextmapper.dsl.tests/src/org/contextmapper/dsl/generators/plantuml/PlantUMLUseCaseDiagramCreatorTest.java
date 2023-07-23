@@ -57,6 +57,12 @@ class PlantUMLUseCaseDiagramCreatorTest extends AbstractCMLInputFileTest {
 				+ "Actor_0 -- Order_Offer_for_new_Insurance" + System.lineSeparator()
 				+ "Actor_1 -- Just_do_something" + System.lineSeparator()
 				+ System.lineSeparator()
+				+ "note bottom of (Get_paid_for_car_accident)" + System.lineSeparator()
+				+ "  //Benefit:// A claimant submits a claim and and gets paid from the insurance company." + System.lineSeparator()
+				+ "  //Level:// Summary" + System.lineSeparator()
+				+ "  //Scope:// Insurance company" + System.lineSeparator()
+				+ "end note"
+				+ System.lineSeparator()
 				+ System.lineSeparator()
 				+ System.lineSeparator()
 				+ "@enduml" + System.lineSeparator(), useCaseDiagram);
@@ -91,6 +97,12 @@ class PlantUMLUseCaseDiagramCreatorTest extends AbstractCMLInputFileTest {
 				+ "Get_paid_for_car_accident -- Actor_1" + System.lineSeparator()
 				+ "Get_paid_for_car_accident -- Actor_2" + System.lineSeparator()
 				+ System.lineSeparator()
+				+ "note bottom of (Get_paid_for_car_accident)" + System.lineSeparator()
+				+ "  //Benefit:// A claimant submits a claim and and gets paid from the insurance company." + System.lineSeparator()
+				+ "  //Level:// Summary" + System.lineSeparator()
+				+ "  //Scope:// Insurance company" + System.lineSeparator()
+				+ "end note"
+				+ System.lineSeparator()
 				+ System.lineSeparator()
 				+ System.lineSeparator()
 				+ "@enduml" + System.lineSeparator(), useCaseDiagram);
@@ -120,6 +132,15 @@ class PlantUMLUseCaseDiagramCreatorTest extends AbstractCMLInputFileTest {
 				+ "Actor_0 -- Get_paid_for_car_accident" + System.lineSeparator()
 				+ "Actor_0 -- Order_Offer_for_new_Insurance" + System.lineSeparator()
 				+ "Actor_1 -- Just_do_something" + System.lineSeparator()
+				+ System.lineSeparator()
+				+ "note bottom of (Get_paid_for_car_accident)" + System.lineSeparator()
+				+ "  //Benefit:// A claimant submits a claim and and gets paid from the insurance company." + System.lineSeparator()
+				+ "  //Level:// Summary" + System.lineSeparator()
+				+ "  //Scope:// Insurance company" + System.lineSeparator()
+				+ "end note" + System.lineSeparator()
+				+ "note bottom of (Just_do_something)" + System.lineSeparator()
+				+ "  //Benefit:// I earn my name" + System.lineSeparator()
+				+ "end note"
 				+ System.lineSeparator()
 				+ System.lineSeparator()
 				+ System.lineSeparator()
