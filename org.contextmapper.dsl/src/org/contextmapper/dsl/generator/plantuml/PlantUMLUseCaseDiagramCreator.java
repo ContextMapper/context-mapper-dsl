@@ -48,6 +48,7 @@ public class PlantUMLUseCaseDiagramCreator extends AbstractPlantUMLDiagramCreato
 		printConnections(actors, false);
 		printConnections(secondaryActors, true);
 		linebreak();
+		printNotes(model.getUserRequirements());
 	}
 
 	private void printUseCases() {
@@ -77,6 +78,37 @@ public class PlantUMLUseCaseDiagramCreator extends AbstractPlantUMLDiagramCreato
 			} else {
 				sb.append(useCase).append(" -- ").append(actor.id);
 			}
+			linebreak();
+		}
+	}
+
+	private void printNotes(final List<UserRequirement> userRequirements) {
+		for (UserRequirement req : userRequirements) {
+			printNoteIfAvailable(req);
+		}
+	}
+
+	private void printNoteIfAvailable(final UserRequirement requirement) {
+		final Set<String> lines = new TreeSet<>();
+		if (requirement instanceof UseCase && ((UseCase) requirement).getScope() != null
+				&& !"".equals(((UseCase) requirement).getScope())) {
+			lines.add("//Scope:// " + ((UseCase) requirement).getScope());
+		}
+		if (requirement instanceof UseCase && ((UseCase) requirement).getLevel() != null
+				&& !"".equals(((UseCase) requirement).getLevel())) {
+			lines.add("//Level:// " + ((UseCase) requirement).getLevel());
+		}
+		if (requirement.getBenefit() != null && !"".equals(requirement.getBenefit())) {
+			lines.add("//Benefit:// " + requirement.getBenefit());
+		}
+		if (!lines.isEmpty()) {
+			sb.append("note bottom of (").append(requirement.getName().trim()).append(")");
+			linebreak();
+			for (String line : lines) {
+				sb.append("  ").append(line);
+				linebreak();
+			}
+			sb.append("end note");
 			linebreak();
 		}
 	}
