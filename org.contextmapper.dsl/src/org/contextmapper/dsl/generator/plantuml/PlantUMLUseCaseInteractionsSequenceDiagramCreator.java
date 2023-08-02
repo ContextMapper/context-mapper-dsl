@@ -91,11 +91,10 @@ public class PlantUMLUseCaseInteractionsSequenceDiagramCreator extends AbstractP
 
 	private void printDisclaimerNote() {
 		sb.append("note right").append(System.lineSeparator())
-				.append("  Note: This diagram aims to illustrate").append(System.lineSeparator())
-				.append("  interactions of a use case in an early analysis state.").append(System.lineSeparator())
-				.append("  We are aware that some interactions might not be").append(System.lineSeparator())
-				.append("  triggered/connected by/with the correct actor(s)").append(System.lineSeparator())
-				.append("  (known limitation).").append(System.lineSeparator());
+				.append("  Note: This diagram only illustrates the interactions of the").append(System.lineSeparator())
+				.append("  use case in an early analysis state, as modelled in CML.").append(System.lineSeparator())
+				.append("  Hence, some interactions might not be triggered/connected").append(System.lineSeparator())
+				.append("  by the correct actor(s) (known limitation).").append(System.lineSeparator());
 		sb.append("end note").append(System.lineSeparator());
 		linebreak();
 	}

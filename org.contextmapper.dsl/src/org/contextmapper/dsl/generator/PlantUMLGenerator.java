@@ -125,7 +125,7 @@ public class PlantUMLGenerator extends AbstractContextMappingModelGenerator {
 		if (this.contextMappingModel.getMap() == null && this.contextMappingModel.getBoundedContexts().isEmpty()
 				&& !modelHasSubdomainWithEntities() && this.contextMappingModel.getUserRequirements().isEmpty())
 			throw new GeneratorInputException(
-					"Your model does not contain a Context Map, a Bounded Context or Subdomain with domain objects (Entities, Value Objects, etc.), or Use Cases or User Stories. Therefore we have nothing that produces PlantUML output. Create at least one of the mentioned Objects.");
+					"Your model does not contain a) a Context Map, b) Bounded Contexts or Subdomains with domain objects (Entities, Value Objects, etc.), or c) Use Cases or User Stories. Create at least one of the mentioned model elements.");
 	}
 
 	private List<Flow> getFlowsWithStates(BoundedContext bc) {
