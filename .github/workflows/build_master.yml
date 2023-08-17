@@ -1,4 +1,4 @@
-name: Build (master)
+name: Build & Publish Snapshots (master Branch)
 
 on:
   push:
@@ -9,6 +9,7 @@ on:
 
 jobs:
   build_standalone:
+    name: Build Standalone Libraries (DSL, LSP)
     if: startsWith(github.event.head_commit.message, '[Tycho]') == false && startsWith(github.event.head_commit.message, '[maven-release-plugin] prepare release v') == false
     runs-on: ubuntu-latest
     
@@ -37,6 +38,7 @@ jobs:
       uses: codecov/codecov-action@v1
 
   build_eclipse:
+    name: Build Eclipse Plugin
     if: startsWith(github.event.head_commit.message, '[Tycho]') == false && startsWith(github.event.head_commit.message, '[maven-release-plugin] prepare release v') == false
     runs-on: ubuntu-latest
         
@@ -61,6 +63,7 @@ jobs:
       run: ./mvnw clean verify
 
   publish_standalone_lib:
+    name: Publish Snapshots of Libraries (DSL Standalone Lib, LSP)
     if: startsWith(github.event.head_commit.message, '[Tycho]') == false && startsWith(github.event.head_commit.message, '[maven-release-plugin] prepare release v') == false
     runs-on: ubuntu-latest
 
@@ -103,6 +106,7 @@ jobs:
         OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
 
   publish_eclipse_snapshot:
+    name: Publish Snapshot of Eclipse Plugin (P2 repo)
     if: startsWith(github.event.head_commit.message, '[Tycho]') == false && startsWith(github.event.head_commit.message, '[maven-release-plugin] prepare release v') == false
     runs-on: ubuntu-latest
 
