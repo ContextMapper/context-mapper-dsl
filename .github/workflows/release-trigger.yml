@@ -1,10 +1,11 @@
-name: Context Mapper Release Trigger
+name: Trigger Release (manual)
 
 on:
   workflow_dispatch:
 
 jobs:
   prepare_release:
+    name: Prepare Release
     runs-on: ubuntu-latest
     
     steps:
