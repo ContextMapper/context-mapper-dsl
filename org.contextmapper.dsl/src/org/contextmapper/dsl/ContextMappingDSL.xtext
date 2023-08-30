@@ -60,17 +60,12 @@ BoundedContext:
 			('knowledgeLevel' ('=')? knowledgeLevel=KnowledgeLevel)?)
 			('businessModel' ('=')? businessModel=STRING)? &
             ('evolution' ('=')? evolution=Evolution)? &
-            (Mappings += Mapping)* &
 			((application = Application)? &
 			(modules += SculptorModule)* &
 			(aggregates += Aggregate)* &
 			(domainServices += Service)*)
 		CLOSE
 	)?
-;
-
-Mapping: 
-	name=ID 'mapping' boundedContext=[BoundedContext] '::' aggregate=[Aggregate] '::' valueObject=[tacticdsl::ValueObject]
 ;
 
 DomainPart:

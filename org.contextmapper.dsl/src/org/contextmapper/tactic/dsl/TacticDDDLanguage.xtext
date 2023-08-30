@@ -207,7 +207,7 @@ Entity :
   (doc=STRING)?
   (abstract?="abstract")? "Entity" name=ID ("extends" (("@"extends=[Entity]) | (extendsName=JavaIdentifier)))?
   ("with" ("@")?traits+=[Trait])*
-  (uses?="uses" mappingId=ID)?
+  (uses?="uses" boundedContext=ID "::" aggregate=ID "::" valueObject=[ValueObject])?
    ("{"
     ("package" "=" package=JavaIdentifier )?
     (((notOptimisticLocking?=NOT "optimisticLocking") | ("optimisticLocking"))? &
