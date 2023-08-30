@@ -2,7 +2,6 @@ package org.contextmapper.dsl.validation;
 
 import static org.contextmapper.dsl.validation.ValidationMessages.AGGREGATE_ROOT_CANNOT_USE_VAlUE_OBJECT;
 import static org.contextmapper.dsl.validation.ValidationMessages.MAPPING_DOES_NOT_EXIST_FOR_USE;
-import static org.contextmapper.dsl.validation.ValidationMessages.USED_VALUE_OBJECT_DOES_NOT_MAP_KEY_ATTRIBUTE;
 import static org.contextmapper.tactic.dsl.tacticdsl.TacticdslPackage.Literals.DOMAIN_OBJECT__AGGREGATE_ROOT;
 import static org.contextmapper.tactic.dsl.tacticdsl.TacticdslPackage.Literals.ENTITY__MAPPING_ID;
 

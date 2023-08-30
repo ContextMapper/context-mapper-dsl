@@ -1,6 +1,5 @@
 package org.contextmapper.dsl.validation;
 
-import static org.contextmapper.dsl.validation.ValidationMessages.USED_VALUE_OBJECT_DOES_NOT_MAP_KEY_ATTRIBUTE;
 import static org.contextmapper.dsl.validation.ValidationMessages.AGGREGATE_DOES_NOT_BELONG_TO_BOUNDED_CONTEXT;
 import static org.contextmapper.dsl.validation.ValidationMessages.VALUE_OBJECT_DOES_NOT_BELONG_TO_AGGREGATE;
 import static org.contextmapper.dsl.validation.ValidationMessages.MAPPED_BOUNDED_CONTEXT_IS_NOT_UPSTREAM;
@@ -86,21 +85,5 @@ public class MappingSemanticsValidator extends AbstractCMLValidator {
 					mapping, ContextMappingDSLPackage.Literals.MAPPING__VALUE_OBJECT);
 		}
 	
-	}
-
-	@Check
-	public void ValidateUsedValueObjectMapsKeyAttribute(final Mapping mapping) {
-		ValueObject valueObject = mapping.getValueObject();
-			
-		if (!mapsAggregateKey(valueObject)) {
-			error(String.format(USED_VALUE_OBJECT_DOES_NOT_MAP_KEY_ATTRIBUTE, valueObject.getName()), 
-							mapping, ContextMappingDSLPackage.Literals.MAPPING__VALUE_OBJECT);
-		}
-	
-	}
-
-	private boolean mapsAggregateKey(ValueObject valueObject) {
-		// TO BE IMPLEMENTED
-		return true;
 	}
 }
