@@ -206,7 +206,9 @@ Entity :
   (comment=ML_COMMENT)?
   (doc=STRING)?
   (abstract?="abstract")? "Entity" name=ID ("extends" (("@"extends=[Entity]) | (extendsName=JavaIdentifier)))?
-  ("with" ("@")?traits+=[Trait])* ("{"
+  ("with" ("@")?traits+=[Trait])*
+  (uses?="uses" mappingId=ID)?
+   ("{"
     ("package" "=" package=JavaIdentifier )?
     (((notOptimisticLocking?=NOT "optimisticLocking") | ("optimisticLocking"))? &
      ((notAuditable?=NOT "auditable") | ("auditable"))? &

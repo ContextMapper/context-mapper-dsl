@@ -34,6 +34,13 @@ public class ValidationMessages {
 	public static final String COMMAND_OR_OPERATION_IS_NOT_PART_OF_BOUNDED_CONTEXT = "The command or operation '%s' is not part of the '%s' Bounded Context. Please ensure that your workflow only uses commands, operations and events that are part of the same Bounded Context.";
 	public static final String STATE_VALUE_DOES_NOT_BELONG_TO_AGGREGATE = "'%s' is not a state of the Aggregate '%s'.";
 
+	public static final String MAPPING_DOES_NOT_EXIST_FOR_USE = "Entity '%s' is using an undeclared mapping.";
+	public static final String AGGREGATE_ROOT_CANNOT_USE_VAlUE_OBJECT = "Aggregate root '%s' cannot use a value object.";
+	public static final String AGGREGATE_DOES_NOT_BELONG_TO_BOUNDED_CONTEXT = "Aggregate does not belong to bounded context '%s'";
+	public static final String VALUE_OBJECT_DOES_NOT_BELONG_TO_AGGREGATE = "Value object does not belong to aggregate '%s'";
+	public static final String MAPPED_BOUNDED_CONTEXT_IS_NOT_UPSTREAM = "Mapped Bounded Countext '%s' is not upstream.";
+
+	
 	/* Uniqueness problems */
 	public static final String BOUNDED_CONTEXT_NAME_NOT_UNIQUE = "Multiple bounded contexts with the name '%s' have been declared.";
 	public static final String AGGREGATE_NAME_NOT_UNIQUE = "Multiple aggregates with the name '%s' have been declared.";
@@ -47,6 +54,9 @@ public class ValidationMessages {
 	public static final String SERVICE_NAME_NOT_UNIQUE_IN_SUBDOMAIN = "Multiple services with the name '%s' have been declared in this Subdomain.";
 	public static final String FLOW_NAME_NOT_UNIQUE = "Multiple flows with the name '%s' have been declared. Please provide unique names!";
 
+	public static final String MAPPING_NAME_NOT_UNIQUE = "Multiple mappings with the name '%s' have been declared. Please provide unique names!";
+
+	
 	/* Generator problems */
 	public static final String EMPTY_UML_COMPONENT_DIAGRAM_MESSAGE = "Sorry, we cannot generate a component diagram. Your Context Map seems to be empty.";
 	public static final String EMPTY_UML_CLASS_DIAGRAM_MESSAGE = "Sorry, we cannot generate a class diagram for this Bounded Context. There are no Aggregates or none of the Aggregates contain any domain objects (entities, value objects or domain events).";
