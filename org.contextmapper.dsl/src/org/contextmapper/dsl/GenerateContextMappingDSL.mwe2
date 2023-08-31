@@ -143,7 +143,8 @@ Workflow {
 				composedCheck = "org.contextmapper.dsl.validation.DomainObjectValidator"
 				composedCheck = "org.contextmapper.dsl.validation.DomainValidator"
 				composedCheck = "org.contextmapper.dsl.validation.TacticDDDOperationsValidator"
-
+				composedCheck = "org.contextmapper.dsl.validation.EntitySemanticsValidator"
+				
 				// Generates checks for @Deprecated grammar annotations, an IssueProvider and a corresponding PropertyPage
 				generateDeprecationValidation = true
 
