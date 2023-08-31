@@ -38,6 +38,16 @@ public class ValidationMessages {
 	public static final String FUNCTIONALITY_STEP_OPERATION_NOT_ON_STEP_SERVICE = "The operation '%s' is not part of the Service '%s'.";
 	public static final String FUNCTIONALITY_STEP_SERVICE_NOT_APPLICATION_SERVICE = "The Service '%s' is not an Application service.";
 
+	public static final String AGGREGATE_ROOT_CANNOT_USE_VAlUE_OBJECT = "Aggregate root '%s' cannot use a value object.";
+	public static final String AGGREGATE_DOES_NOT_BELONG_TO_BOUNDED_CONTEXT = "Aggregate does not belong to bounded context '%s'";
+	public static final String VALUE_OBJECT_DOES_NOT_BELONG_TO_AGGREGATE = "Value object does not belong to aggregate '%s'";
+	public static final String MAPPED_BOUNDED_CONTEXT_IS_NOT_UPSTREAM = "Mapped bounded context '%s' is not upstream.";
+	public static final String NO_RELATIONSHIP_BETWEEN_BOUNDED_CONTEXTS = "Bounded contexts should have a relationship.";
+	public static final String BOUNDED_CONTEXT_IS_NOT_DEFINED = "Bounded context '%s' not defined";
+	public static final String USES_ENTITY_HAS_NOT_BODY = "	Entity '%s' uses cannot have body";
+
+
+	
 	/* Uniqueness problems */
 	public static final String BOUNDED_CONTEXT_NAME_NOT_UNIQUE = "Multiple bounded contexts with the name '%s' have been declared.";
 	public static final String AGGREGATE_NAME_NOT_UNIQUE = "Multiple aggregates with the name '%s' have been declared.";
