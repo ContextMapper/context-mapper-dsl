@@ -215,7 +215,7 @@ Functionality:
 ;
 
 FunctionalityStep:
-	boundedContext=[BoundedContext] '.' service=[tacticdsl::Service] '.' operation=[tacticdsl::ServiceOperation]
+	boundedContext=[BoundedContext] '.' service=[tacticdsl::Service] '.' operation=[tacticdsl::ServiceOperation] ';'
 ;
 
 Flow:
