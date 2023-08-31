@@ -25,6 +25,7 @@ import static org.contextmapper.dsl.validation.ValidationMessages.SUBDOMAIN_OBJE
 import static org.contextmapper.dsl.validation.ValidationMessages.USE_CASE_NAME_NOT_UNIQUE;
 import static org.contextmapper.dsl.validation.ValidationMessages.DOMAIN_NOT_UNIQUE;
 import static org.contextmapper.dsl.validation.ValidationMessages.FLOW_NAME_NOT_UNIQUE;
+import static org.contextmapper.dsl.validation.ValidationMessages.FUNCTIONALITY_NAME_NOT_UNIQUE;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -38,6 +39,7 @@ import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLPackage;
 import org.contextmapper.dsl.contextMappingDSL.Domain;
 import org.contextmapper.dsl.contextMappingDSL.Flow;
+import org.contextmapper.dsl.contextMappingDSL.Functionality;
 import org.contextmapper.dsl.contextMappingDSL.SculptorModule;
 import org.contextmapper.dsl.contextMappingDSL.Subdomain;
 import org.contextmapper.dsl.contextMappingDSL.UserRequirement;
@@ -190,6 +192,18 @@ public class UniquenessValidator extends AbstractCMLValidator {
 			}));
 			if (IteratorExtensions.size(duplicateFlows) > 1)
 				error(String.format(FLOW_NAME_NOT_UNIQUE, flow.getName()), flow, ContextMappingDSLPackage.Literals.FLOW__NAME);
+		}
+	}
+	
+	@Check
+	public void validateThatFunctionalityNameIsUnique(final Functionality functionality) {
+		if (functionality != null) {
+			Iterator<Functionality> allFunctionalities = EcoreUtil2.eAllOfType(getRootCMLModel(functionality), Functionality.class).iterator();
+			Iterator<Functionality> duplicateFunctionalities = IteratorExtensions.filter(allFunctionalities, ((Function1<Functionality, Boolean>) (Functionality f) -> {
+				return f.getName().equals(functionality.getName());
+			}));
+			if (IteratorExtensions.size(duplicateFunctionalities) > 1)
+				error(String.format(FUNCTIONALITY_NAME_NOT_UNIQUE, functionality.getName()), functionality, ContextMappingDSLPackage.Literals.FUNCTIONALITY__NAME);
 		}
 	}
 	

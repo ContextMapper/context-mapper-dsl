@@ -202,8 +202,20 @@ Application:
 		((commands+=CommandEvent)* &
 		(events+=DomainEvent)* &
 		(services+=Service)* &
-		(flows+=Flow)*)
+		(flows+=Flow)* &
+		(functionalities+=Functionality)*)
 CLOSE)?
+;
+
+Functionality:
+	"Functionality" name=ID (OPEN
+		(sagaOrchestrator?="sagaOrchestrator")?
+		(functionalitySteps+=FunctionalityStep)*
+	CLOSE)?
+;
+
+FunctionalityStep:
+	boundedContext=[BoundedContext] '.' service=[tacticdsl::Service] '.' operation=[tacticdsl::ServiceOperation]
 ;
 
 Flow:
