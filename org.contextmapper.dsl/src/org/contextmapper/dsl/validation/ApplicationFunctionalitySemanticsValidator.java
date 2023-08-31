@@ -16,9 +16,8 @@
 package org.contextmapper.dsl.validation;
 
 import static org.contextmapper.dsl.validation.ValidationMessages.FUNCTIONALITY_STEP_CONTEXT_NOT_ON_MAP;
-import static org.contextmapper.dsl.validation.ValidationMessages.FUNCTIONALITY_STEP_SERVICE_NOT_ON_STEP_CONTEXT;
+import static org.contextmapper.dsl.validation.ValidationMessages.FUNCTIONALITY_STEP_SERVICE_NOT_ON_STEP_CONTEXT_APPLICATION;
 import static org.contextmapper.dsl.validation.ValidationMessages.FUNCTIONALITY_STEP_OPERATION_NOT_ON_STEP_SERVICE;
-import static org.contextmapper.dsl.validation.ValidationMessages.FUNCTIONALITY_STEP_SERVICE_NOT_APPLICATION_SERVICE;
 
 import org.contextmapper.dsl.cml.CMLModelObjectsResolvingHelper;
 import org.contextmapper.dsl.contextMappingDSL.Application;
@@ -42,7 +41,7 @@ public class ApplicationFunctionalitySemanticsValidator extends AbstractDeclarat
 	}
 
 	@Check
-	public void contextInStepIsPartOfMap(final FunctionalityStep functionalityStep) {
+	public void operationInStepIsCorrectlyReferenced(final FunctionalityStep functionalityStep) {
 		CMLModelObjectsResolvingHelper helper = new CMLModelObjectsResolvingHelper((ContextMappingModel) EcoreUtil2.getRootContainer(functionalityStep));
 		
 		ContextMap map = helper.getContextMap(helper.resolveBoundedContext(functionalityStep));
@@ -50,47 +49,41 @@ public class ApplicationFunctionalitySemanticsValidator extends AbstractDeclarat
 		if (map == null || stepContext == null || !map.getBoundedContexts().contains(stepContext)) {
 			error(String.format(FUNCTIONALITY_STEP_CONTEXT_NOT_ON_MAP, stepContext.getName()), 
 					functionalityStep, ContextMappingDSLPackage.Literals.FUNCTIONALITY_STEP__BOUNDED_CONTEXT);
-		}
-	}
-
-	@Check
-	public void serviceInStepIsPartOfStepContext(final FunctionalityStep functionalityStep) {
-		CMLModelObjectsResolvingHelper helper = new CMLModelObjectsResolvingHelper((ContextMappingModel) EcoreUtil2.getRootContainer(functionalityStep));
-
-		BoundedContext stepContext = functionalityStep.getBoundedContext();
-		Service stepService = functionalityStep.getService();
-		if (stepContext == null || stepService == null) {
 			return;
 		}
 		
-		BoundedContext stepServiceContext = helper.resolveBoundedContext(stepService);
-		if (stepServiceContext == null || !stepContext.getName().equals(stepServiceContext.getName())) {
-			error(String.format(FUNCTIONALITY_STEP_SERVICE_NOT_ON_STEP_CONTEXT, stepService.getName(), stepContext.getName()), 
+		if (functionalityStep.getService() == null) {
+			return;
+		}
+		String stepServiceName = functionalityStep.getService().getName();
+		Service stepService = getServiceByName(stepContext.getApplication(), stepServiceName);
+		if (stepService == null) {
+			error(String.format(FUNCTIONALITY_STEP_SERVICE_NOT_ON_STEP_CONTEXT_APPLICATION, stepServiceName, stepContext.getName()), 
 					functionalityStep, ContextMappingDSLPackage.Literals.FUNCTIONALITY_STEP__SERVICE);
-		}
-	}
-	
-	@Check
-	public void serviceOperationInStepIsPartOfStepService(final FunctionalityStep functionalityStep) {
-		Service stepService = functionalityStep.getService();
-		ServiceOperation stepOperation = functionalityStep.getOperation();
-		if (stepService == null || stepOperation == null) {
 			return;
 		}
 		
-		Service stepOperationService = (Service) stepOperation.eContainer();
-		if (stepOperationService == null || !stepService.getName().equals(stepOperationService.getName())) {
-			error(String.format(FUNCTIONALITY_STEP_OPERATION_NOT_ON_STEP_SERVICE, stepOperation.getName(), stepService.getName()), 
+		if (functionalityStep.getOperation() == null) {
+			return;
+		}
+		String stepOperationName = functionalityStep.getOperation().getName();
+		if (getOperationByName(stepService, stepOperationName) == null) {
+			error(String.format(FUNCTIONALITY_STEP_OPERATION_NOT_ON_STEP_SERVICE, stepOperationName, stepServiceName, stepContext.getName()), 
 					functionalityStep, ContextMappingDSLPackage.Literals.FUNCTIONALITY_STEP__OPERATION);
 		}
 	}
 	
-	@Check
-	public void serviceInStepIsApplicationService(final FunctionalityStep functionalityStep) {
-		Service stepService = functionalityStep.getService();
-		if (stepService.eContainer() == null || !(stepService.eContainer() instanceof Application)) {
-			error(String.format(FUNCTIONALITY_STEP_SERVICE_NOT_APPLICATION_SERVICE, stepService.getName()), 
-					functionalityStep, ContextMappingDSLPackage.Literals.FUNCTIONALITY_STEP__SERVICE);
-		}
+	private Service getServiceByName(Application application, String serviceName) {
+		return application == null ? null : application.getServices().stream()
+				.filter(service -> service.getName().equals(serviceName))
+				.findAny()
+				.orElse(null);
+	}
+	
+	private ServiceOperation getOperationByName(Service service, String operationName) {
+		return service == null ? null : service.getOperations().stream()
+				.filter(operation -> operation.getName().equals(operationName))
+				.findAny()
+				.orElse(null);
 	}
 }

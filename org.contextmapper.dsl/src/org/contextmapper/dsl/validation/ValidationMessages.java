@@ -34,9 +34,8 @@ public class ValidationMessages {
 	public static final String COMMAND_OR_OPERATION_IS_NOT_PART_OF_BOUNDED_CONTEXT = "The command or operation '%s' is not part of the '%s' Bounded Context. Please ensure that your workflow only uses commands, operations and events that are part of the same Bounded Context.";
 	public static final String STATE_VALUE_DOES_NOT_BELONG_TO_AGGREGATE = "'%s' is not a state of the Aggregate '%s'.";
 	public static final String FUNCTIONALITY_STEP_CONTEXT_NOT_ON_MAP = "The Bounded Context '%s' is not part of the Context Map.";
-	public static final String FUNCTIONALITY_STEP_SERVICE_NOT_ON_STEP_CONTEXT = "The Service '%s' is not part of the Bounded Context '%s'.";
-	public static final String FUNCTIONALITY_STEP_OPERATION_NOT_ON_STEP_SERVICE = "The operation '%s' is not part of the Service '%s'.";
-	public static final String FUNCTIONALITY_STEP_SERVICE_NOT_APPLICATION_SERVICE = "The Service '%s' is not an Application service.";
+	public static final String FUNCTIONALITY_STEP_SERVICE_NOT_ON_STEP_CONTEXT_APPLICATION = "The Service '%s' is not part of the Bounded Context '%s' Application.";
+	public static final String FUNCTIONALITY_STEP_OPERATION_NOT_ON_STEP_SERVICE = "The operation '%s' is not part of the Service '%s' of the Bounded Context '%s' Application.";
 
 	public static final String AGGREGATE_ROOT_CANNOT_USE_VAlUE_OBJECT = "Aggregate root '%s' cannot use a value object.";
 	public static final String AGGREGATE_DOES_NOT_BELONG_TO_BOUNDED_CONTEXT = "Aggregate does not belong to bounded context '%s'";
