@@ -1,7 +1,7 @@
 ---
 title: Report generated from '${fileName}'
-project: ${projectName}
-author: ${userName}
-date: ${timeStamp}, Context Mapper version ${contextMapperVersion}
-copyright: The authors, 2020. All rights reserved.
+project: ${projectName!"undefined"}
+author: ${userName!"undefined"}
+date: ${timeStamp!"undefined"}, Context Mapper version ${contextMapperVersion!"undefined"}
+copyright: The authors, 2020-2023. All rights reserved.
 ---

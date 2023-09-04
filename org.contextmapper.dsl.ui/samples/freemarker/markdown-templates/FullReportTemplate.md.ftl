@@ -6,7 +6,7 @@
 Model Report for '${fileName}' 
 ==============================
 
-*Note:* This domain model is part of project '${projectName}'.
+*Note:* This domain model is part of project '${projectName!"undefined"}'.
 
 <#if domains?has_content>
     Analysis Part<#lt>
