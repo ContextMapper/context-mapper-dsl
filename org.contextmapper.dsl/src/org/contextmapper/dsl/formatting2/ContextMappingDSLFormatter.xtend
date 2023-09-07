@@ -26,6 +26,8 @@ import org.contextmapper.dsl.contextMappingDSL.Domain
 import org.contextmapper.dsl.contextMappingDSL.DomainEventProductionStep
 import org.contextmapper.dsl.contextMappingDSL.EitherCommandOrOperation
 import org.contextmapper.dsl.contextMappingDSL.Flow
+import org.contextmapper.dsl.contextMappingDSL.Functionality
+import org.contextmapper.dsl.contextMappingDSL.FunctionalityStep
 import org.contextmapper.dsl.contextMappingDSL.Relationship
 import org.contextmapper.dsl.contextMappingDSL.SculptorModule
 import org.contextmapper.dsl.contextMappingDSL.Subdomain
@@ -131,6 +133,9 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 		for (flow : application.flows) {
 			flow.format
 		}
+		for (functionality : application.functionalities) {
+			functionality.format
+		}
 	}
 
 	def dispatch void format(Flow flow, extension IFormattableDocument document) {
@@ -157,6 +162,33 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 	def dispatch void format(EitherCommandOrOperation commandOrOperation, extension IFormattableDocument document) {
 		commandOrOperation.regionFor.keyword("command").prepend[newLine]
 		commandOrOperation.regionFor.keyword("operation").prepend[newLine]
+	}
+	
+	def dispatch void format(Functionality functionality, extension IFormattableDocument document) {
+		interior(
+			functionality.regionFor.ruleCallTo(OPENRule).append[newLine],
+			functionality.regionFor.ruleCallTo(CLOSERule).prepend[newLine].append[newLines = 2]
+		)[indent]
+		
+		functionality.regionFor.keyword('Functionality').prepend[newLine]
+		
+		if (functionality.isSagaOrchestrator) {
+			functionality.regionFor.keyword('sagaOrchestrator').append[newLines = 2]	
+		}
+		
+		for (step : functionality.functionalitySteps) {
+			step.format
+		}
+	}
+	
+	def dispatch void format(FunctionalityStep step, extension IFormattableDocument document) {
+		step.prepend[newLine]
+		
+		step.regionFor.keywords('.').forEach [
+			surround[noSpace]
+		]
+		
+		step.regionFor.keyword(';').prepend[noSpace]
 	}
 
 	def dispatch void format(Domain domain, extension IFormattableDocument document) {
