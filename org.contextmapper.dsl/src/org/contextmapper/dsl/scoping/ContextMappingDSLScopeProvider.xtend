@@ -21,7 +21,7 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EReference
 import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider
 import com.google.inject.Inject
-import org.contextmapper.dsl.contextMappingDSL.FunctionalityStep
+import org.contextmapper.dsl.contextMappingDSL.CoordinationStep
 
 /**
  * This class contains custom scoping description.
@@ -40,7 +40,7 @@ class ContextMappingDSLScopeProvider extends AbstractDeclarativeScopeProvider {
 		if (context instanceof Association) {
 			return cmlScopingHelper.reduceReferenceScope(super.getScope(context, reference), context, reference);
 		}
-		if (context instanceof FunctionalityStep) {
+		if (context instanceof CoordinationStep) {
 			return cmlScopingHelper.reduceReferenceScope(super.getScope(context, reference), context, reference);
 		}
 		super.getScope(context, reference)

@@ -203,19 +203,18 @@ Application:
 		(events+=DomainEvent)* &
 		(services+=Service)* &
 		(flows+=Flow)* &
-		(functionalities+=Functionality)*)
+		(coordinations+=Coordination)*)
 CLOSE)?
 ;
 
-Functionality:
-	"Functionality" name=ID (OPEN
-		(sagaOrchestrator?="sagaOrchestrator")?
-		(functionalitySteps+=FunctionalityStep)*
+Coordination:
+	"Coordination" name=ID (OPEN
+		(coordinationSteps+=CoordinationStep)*
 	CLOSE)?
 ;
 
-FunctionalityStep:
-	boundedContext=[BoundedContext] '.' service=[tacticdsl::Service] '.' operation=[tacticdsl::ServiceOperation] ';'
+CoordinationStep:
+	boundedContext=[BoundedContext] '::' service=[tacticdsl::Service] '::' operation=[tacticdsl::ServiceOperation] ';'
 ;
 
 Flow:

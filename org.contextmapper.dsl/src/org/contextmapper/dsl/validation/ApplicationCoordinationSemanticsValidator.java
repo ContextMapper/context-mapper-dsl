@@ -15,9 +15,9 @@
  */
 package org.contextmapper.dsl.validation;
 
-import static org.contextmapper.dsl.validation.ValidationMessages.FUNCTIONALITY_STEP_CONTEXT_NOT_ON_MAP;
-import static org.contextmapper.dsl.validation.ValidationMessages.FUNCTIONALITY_STEP_SERVICE_NOT_ON_STEP_CONTEXT_APPLICATION;
-import static org.contextmapper.dsl.validation.ValidationMessages.FUNCTIONALITY_STEP_OPERATION_NOT_ON_STEP_SERVICE;
+import static org.contextmapper.dsl.validation.ValidationMessages.COORDINATION_STEP_CONTEXT_NOT_ON_MAP;
+import static org.contextmapper.dsl.validation.ValidationMessages.COORDINATION_STEP_SERVICE_NOT_ON_STEP_CONTEXT_APPLICATION;
+import static org.contextmapper.dsl.validation.ValidationMessages.COORDINATION_STEP_OPERATION_NOT_ON_STEP_SERVICE;
 
 import org.contextmapper.dsl.cml.CMLModelObjectsResolvingHelper;
 import org.contextmapper.dsl.contextMappingDSL.Application;
@@ -25,7 +25,7 @@ import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLPackage;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
-import org.contextmapper.dsl.contextMappingDSL.FunctionalityStep;
+import org.contextmapper.dsl.contextMappingDSL.CoordinationStep;
 import org.contextmapper.tactic.dsl.tacticdsl.Service;
 import org.contextmapper.tactic.dsl.tacticdsl.ServiceOperation;
 import org.eclipse.xtext.EcoreUtil2;
@@ -33,7 +33,7 @@ import org.eclipse.xtext.validation.AbstractDeclarativeValidator;
 import org.eclipse.xtext.validation.Check;
 import org.eclipse.xtext.validation.EValidatorRegistrar;
 
-public class ApplicationFunctionalitySemanticsValidator extends AbstractDeclarativeValidator {
+public class ApplicationCoordinationSemanticsValidator extends AbstractDeclarativeValidator {
 
 	@Override
 	public void register(EValidatorRegistrar registrar) {
@@ -41,35 +41,35 @@ public class ApplicationFunctionalitySemanticsValidator extends AbstractDeclarat
 	}
 
 	@Check
-	public void operationInStepIsCorrectlyReferenced(final FunctionalityStep functionalityStep) {
-		CMLModelObjectsResolvingHelper helper = new CMLModelObjectsResolvingHelper((ContextMappingModel) EcoreUtil2.getRootContainer(functionalityStep));
+	public void operationInStepIsCorrectlyReferenced(final CoordinationStep coordinationStep) {
+		CMLModelObjectsResolvingHelper helper = new CMLModelObjectsResolvingHelper((ContextMappingModel) EcoreUtil2.getRootContainer(coordinationStep));
 		
-		ContextMap map = helper.getContextMap(helper.resolveBoundedContext(functionalityStep));
-		BoundedContext stepContext = functionalityStep.getBoundedContext();
+		ContextMap map = helper.getContextMap(helper.resolveBoundedContext(coordinationStep));
+		BoundedContext stepContext = coordinationStep.getBoundedContext();
 		if (map == null || stepContext == null || !map.getBoundedContexts().contains(stepContext)) {
-			error(String.format(FUNCTIONALITY_STEP_CONTEXT_NOT_ON_MAP, stepContext.getName()), 
-					functionalityStep, ContextMappingDSLPackage.Literals.FUNCTIONALITY_STEP__BOUNDED_CONTEXT);
+			error(String.format(COORDINATION_STEP_CONTEXT_NOT_ON_MAP, stepContext.getName()), 
+					coordinationStep, ContextMappingDSLPackage.Literals.COORDINATION_STEP__BOUNDED_CONTEXT);
 			return;
 		}
 		
-		if (functionalityStep.getService() == null) {
+		if (coordinationStep.getService() == null) {
 			return;
 		}
-		String stepServiceName = functionalityStep.getService().getName();
+		String stepServiceName = coordinationStep.getService().getName();
 		Service stepService = getServiceByName(stepContext.getApplication(), stepServiceName);
 		if (stepService == null) {
-			error(String.format(FUNCTIONALITY_STEP_SERVICE_NOT_ON_STEP_CONTEXT_APPLICATION, stepServiceName, stepContext.getName()), 
-					functionalityStep, ContextMappingDSLPackage.Literals.FUNCTIONALITY_STEP__SERVICE);
+			error(String.format(COORDINATION_STEP_SERVICE_NOT_ON_STEP_CONTEXT_APPLICATION, stepServiceName, stepContext.getName()), 
+					coordinationStep, ContextMappingDSLPackage.Literals.COORDINATION_STEP__SERVICE);
 			return;
 		}
 		
-		if (functionalityStep.getOperation() == null) {
+		if (coordinationStep.getOperation() == null) {
 			return;
 		}
-		String stepOperationName = functionalityStep.getOperation().getName();
+		String stepOperationName = coordinationStep.getOperation().getName();
 		if (getOperationByName(stepService, stepOperationName) == null) {
-			error(String.format(FUNCTIONALITY_STEP_OPERATION_NOT_ON_STEP_SERVICE, stepOperationName, stepServiceName, stepContext.getName()), 
-					functionalityStep, ContextMappingDSLPackage.Literals.FUNCTIONALITY_STEP__OPERATION);
+			error(String.format(COORDINATION_STEP_OPERATION_NOT_ON_STEP_SERVICE, stepOperationName, stepServiceName, stepContext.getName()), 
+					coordinationStep, ContextMappingDSLPackage.Literals.COORDINATION_STEP__OPERATION);
 		}
 	}
 	

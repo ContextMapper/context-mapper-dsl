@@ -33,9 +33,9 @@ public class ValidationMessages {
 	public static final String ORGANIZATIONAL_MAP_DOES_NOT_CONTAIN_TEAM = "Your Context Map is of the type ORGANIZATIONAL but does not contain Bounded Contexts of the type TEAM. This type of Context Map is intended to model team relationships.";
 	public static final String COMMAND_OR_OPERATION_IS_NOT_PART_OF_BOUNDED_CONTEXT = "The command or operation '%s' is not part of the '%s' Bounded Context. Please ensure that your workflow only uses commands, operations and events that are part of the same Bounded Context.";
 	public static final String STATE_VALUE_DOES_NOT_BELONG_TO_AGGREGATE = "'%s' is not a state of the Aggregate '%s'.";
-	public static final String FUNCTIONALITY_STEP_CONTEXT_NOT_ON_MAP = "The Bounded Context '%s' is not part of the Context Map.";
-	public static final String FUNCTIONALITY_STEP_SERVICE_NOT_ON_STEP_CONTEXT_APPLICATION = "The Service '%s' is not part of the Bounded Context '%s' Application.";
-	public static final String FUNCTIONALITY_STEP_OPERATION_NOT_ON_STEP_SERVICE = "The operation '%s' is not part of the Service '%s' of the Bounded Context '%s' Application.";
+	public static final String COORDINATION_STEP_CONTEXT_NOT_ON_MAP = "The Bounded Context '%s' is not part of the Context Map.";
+	public static final String COORDINATION_STEP_SERVICE_NOT_ON_STEP_CONTEXT_APPLICATION = "The Service '%s' is not part of the Bounded Context '%s' Application.";
+	public static final String COORDINATION_STEP_OPERATION_NOT_ON_STEP_SERVICE = "The operation '%s' is not part of the Service '%s' of the Bounded Context '%s' Application.";
 	
 	/* Uniqueness problems */
 	public static final String BOUNDED_CONTEXT_NAME_NOT_UNIQUE = "Multiple bounded contexts with the name '%s' have been declared.";
@@ -49,7 +49,7 @@ public class ValidationMessages {
 	public static final String SERVICE_NAME_NOT_UNIQUE_IN_BC = "Multiple services with the name '%s' have been declared in this Bounded Context.";
 	public static final String SERVICE_NAME_NOT_UNIQUE_IN_SUBDOMAIN = "Multiple services with the name '%s' have been declared in this Subdomain.";
 	public static final String FLOW_NAME_NOT_UNIQUE = "Multiple flows with the name '%s' have been declared. Please provide unique names!";
-	public static final String FUNCTIONALITY_NAME_NOT_UNIQUE = "Multiple functionalities with the name '%s' have been declared. Please provide unique names!";
+	public static final String COORDINATION_NAME_NOT_UNIQUE = "Multiple coordinations with the name '%s' have been declared. Please provide unique names!";
 
 	/* Generator problems */
 	public static final String EMPTY_UML_COMPONENT_DIAGRAM_MESSAGE = "Sorry, we cannot generate a component diagram. Your Context Map seems to be empty.";

@@ -26,8 +26,8 @@ import org.contextmapper.dsl.contextMappingDSL.Domain
 import org.contextmapper.dsl.contextMappingDSL.DomainEventProductionStep
 import org.contextmapper.dsl.contextMappingDSL.EitherCommandOrOperation
 import org.contextmapper.dsl.contextMappingDSL.Flow
-import org.contextmapper.dsl.contextMappingDSL.Functionality
-import org.contextmapper.dsl.contextMappingDSL.FunctionalityStep
+import org.contextmapper.dsl.contextMappingDSL.Coordination
+import org.contextmapper.dsl.contextMappingDSL.CoordinationStep
 import org.contextmapper.dsl.contextMappingDSL.Relationship
 import org.contextmapper.dsl.contextMappingDSL.SculptorModule
 import org.contextmapper.dsl.contextMappingDSL.Subdomain
@@ -133,8 +133,8 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 		for (flow : application.flows) {
 			flow.format
 		}
-		for (functionality : application.functionalities) {
-			functionality.format
+		for (coordination : application.coordinations) {
+			coordination.format
 		}
 	}
 
@@ -164,27 +164,23 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 		commandOrOperation.regionFor.keyword("operation").prepend[newLine]
 	}
 	
-	def dispatch void format(Functionality functionality, extension IFormattableDocument document) {
+	def dispatch void format(Coordination coordination, extension IFormattableDocument document) {
 		interior(
-			functionality.regionFor.ruleCallTo(OPENRule).append[newLine],
-			functionality.regionFor.ruleCallTo(CLOSERule).prepend[newLine].append[newLines = 2]
+			coordination.regionFor.ruleCallTo(OPENRule).append[newLine],
+			coordination.regionFor.ruleCallTo(CLOSERule).prepend[newLine].append[newLines = 2]
 		)[indent]
 		
-		functionality.regionFor.keyword('Functionality').prepend[newLine]
+		coordination.regionFor.keyword('Coordination').prepend[newLine]
 		
-		if (functionality.isSagaOrchestrator) {
-			functionality.regionFor.keyword('sagaOrchestrator').append[newLines = 2]	
-		}
-		
-		for (step : functionality.functionalitySteps) {
+		for (step : coordination.coordinationSteps) {
 			step.format
 		}
 	}
 	
-	def dispatch void format(FunctionalityStep step, extension IFormattableDocument document) {
+	def dispatch void format(CoordinationStep step, extension IFormattableDocument document) {
 		step.prepend[newLine]
 		
-		step.regionFor.keywords('.').forEach [
+		step.regionFor.keywords('::').forEach [
 			surround[noSpace]
 		]
 		
