@@ -38,8 +38,8 @@ public class SketchMinerCoordinationModelCreatorTest extends AbstractCMLInputFil
 		String output = new SketchMinerCoordinationModelCreator().createText(coordination);
 
 		// then
-		assertEquals("ContextA: service ServiceA::operationA" + System.lineSeparator() +
-				"ContextB: service ServiceB::operationB" + System.lineSeparator() +
+		assertEquals("ContextA: service ServiceA.operationA" + System.lineSeparator() +
+				"ContextB: service ServiceB.operationB" + System.lineSeparator() +
 				System.lineSeparator(), output);
 	}
 	
@@ -53,10 +53,10 @@ public class SketchMinerCoordinationModelCreatorTest extends AbstractCMLInputFil
 		String output = new SketchMinerCoordinationModelCreator().createText(coordination);
 
 		// then
-		assertEquals("ContextA: service ServiceA::operationA1" + System.lineSeparator() +
-				"ContextB: service ServiceB::operationB" + System.lineSeparator() +
-				"ContextA: service ServiceA::operationA2" + System.lineSeparator() +
-				"ContextC: service ServiceC::operationC" + System.lineSeparator() +
+		assertEquals("ContextA: service ServiceA.operationA1" + System.lineSeparator() +
+				"ContextB: service ServiceB.operationB" + System.lineSeparator() +
+				"ContextA: service ServiceA.operationA2" + System.lineSeparator() +
+				"ContextC: service ServiceC.operationC" + System.lineSeparator() +
 				System.lineSeparator(), output);
 	}
 

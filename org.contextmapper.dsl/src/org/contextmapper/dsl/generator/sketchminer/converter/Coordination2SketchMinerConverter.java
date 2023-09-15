@@ -72,8 +72,8 @@ public class Coordination2SketchMinerConverter {
 	}
 
 	private Task getOrCreateTask(CoordinationStep step, TaskType type) {
-		String taskName = step.getService().getName() + "::" + step.getOperation().getName();
-		String taskMapKey = step.getBoundedContext().getName() + "::" + taskName;
+		String taskName = step.getService().getName() + "." + step.getOperation().getName();
+		String taskMapKey = step.getBoundedContext().getName() + "." + taskName;
 		
 		if (taskMap.containsKey(taskMapKey))
 			return taskMap.get(taskMapKey);
