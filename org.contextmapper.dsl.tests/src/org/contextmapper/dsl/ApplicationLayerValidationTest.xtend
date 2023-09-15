@@ -35,6 +35,7 @@ import static org.contextmapper.dsl.validation.ValidationMessages.COORDINATION_S
 import static org.contextmapper.dsl.validation.ValidationMessages.COORDINATION_STEP_CONTEXT_NOT_ON_MAP
 import static org.contextmapper.dsl.validation.ValidationMessages.COORDINATION_STEP_OPERATION_NOT_ON_STEP_SERVICE
 import static org.contextmapper.dsl.validation.ValidationMessages.COORDINATION_STEP_OPERATION_IS_AMBIGUOUS
+import org.contextmapper.dsl.validation.ApplicationCoordinationSemanticsValidator
 
 @ExtendWith(InjectionExtension)
 @InjectWith(ContextMappingDSLInjectorProvider)
@@ -431,29 +432,30 @@ class ApplicationLayerValidationTest {
 			String.format(COORDINATION_STEP_OPERATION_IS_AMBIGUOUS, "testOperation", "TestService"));
 	}
 	
+	@Test
+	def void canOfferSketchMinerLinkInCoordination() {
+		// given
+		val String dslSnippet = '''
+			ContextMap TestMap {
+				contains TestContext
+			}
+			BoundedContext TestContext {
+				Application {
+					Coordination TestCoordination {
+						TestContext::TestService::testOperation;
+					}
+					Service TestService {
+						testOperation;
+					}
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		validationTestHelper.assertIssue(result, ContextMappingDSLPackage.Literals.COORDINATION,
+			ApplicationCoordinationSemanticsValidator.SKETCH_MINER_INFO_ID, Severity.INFO, VISUALIZE_COORDINATION_WITH_SKETCH_MINER);
+	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
 }

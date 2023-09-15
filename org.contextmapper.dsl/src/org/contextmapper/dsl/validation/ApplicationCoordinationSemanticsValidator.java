@@ -19,6 +19,7 @@ import static org.contextmapper.dsl.validation.ValidationMessages.COORDINATION_S
 import static org.contextmapper.dsl.validation.ValidationMessages.COORDINATION_STEP_SERVICE_NOT_ON_STEP_CONTEXT_APPLICATION;
 import static org.contextmapper.dsl.validation.ValidationMessages.COORDINATION_STEP_OPERATION_NOT_ON_STEP_SERVICE;
 import static org.contextmapper.dsl.validation.ValidationMessages.COORDINATION_STEP_OPERATION_IS_AMBIGUOUS;
+import static org.contextmapper.dsl.validation.ValidationMessages.VISUALIZE_COORDINATION_WITH_SKETCH_MINER;
 
 import java.util.List;
 
@@ -26,6 +27,7 @@ import org.contextmapper.dsl.cml.CMLModelObjectsResolvingHelper;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLPackage;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
+import org.contextmapper.dsl.contextMappingDSL.Coordination;
 import org.contextmapper.dsl.contextMappingDSL.CoordinationStep;
 import org.contextmapper.tactic.dsl.tacticdsl.Service;
 import org.contextmapper.tactic.dsl.tacticdsl.ServiceOperation;
@@ -35,6 +37,8 @@ import org.eclipse.xtext.validation.Check;
 import org.eclipse.xtext.validation.EValidatorRegistrar;
 
 public class ApplicationCoordinationSemanticsValidator extends AbstractDeclarativeValidator {
+	
+	public static final String SKETCH_MINER_INFO_ID = "open-coordination-in-sketch-miner";
 
 	@Override
 	public void register(EValidatorRegistrar registrar) {
@@ -88,6 +92,12 @@ public class ApplicationCoordinationSemanticsValidator extends AbstractDeclarati
 			warning(String.format(COORDINATION_STEP_OPERATION_IS_AMBIGUOUS, stepOperation.getName(), stepService.getName()), 
 					coordinationStep, ContextMappingDSLPackage.Literals.COORDINATION_STEP__OPERATION);
 		}
+	}
+	
+	@Check
+	public void sketchMinerLink(final Coordination coordination) {
+		if (!coordination.getCoordinationSteps().isEmpty())
+			info(VISUALIZE_COORDINATION_WITH_SKETCH_MINER, coordination, ContextMappingDSLPackage.Literals.COORDINATION__NAME, SKETCH_MINER_INFO_ID);
 	}
 	
 	private boolean isNullName(String name) {
