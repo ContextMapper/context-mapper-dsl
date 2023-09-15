@@ -78,8 +78,9 @@ public class PlantUMLSubdomainClassDiagramCreator extends AbstractPlantUMLClassD
 			return "Generic Subdomain";
 		case SUPPORTING_DOMAIN:
 			return "Supporting Domain";
+		default:
+			return "";
 		}
-		return "";
 	}
 
 }

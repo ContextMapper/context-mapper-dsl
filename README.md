@@ -28,6 +28,8 @@ The Context Mapper project has originally been developed as part of research pro
 * Generate [graphical Context Maps](https://contextmapper.org/docs/context-map-generator/)
 * Generate [PlantUML](http://plantuml.com/) component diagram from context map
 * Generate [PlantUML](http://plantuml.com/) class diagram from bounded context and/or subdomain (tactic DDD)
+* Generate [PlantUML](http://plantuml.com/) state diagrams for aggregate states
+* Generate [PlantUML](http://plantuml.com/) use case diagrams
 * Generate [MDSL](https://socadk.github.io/MDSL/) (micro-) service contracts out of DDD context maps
 * Generate [generic text files](https://contextmapper.org/docs/generic-freemarker-generator/) using [Freemarker](https://freemarker.apache.org/) templates
 * Generate [ServiceCutter](https://github.com/ServiceCutter/ServiceCutter) input files for service decomposition proposals
@@ -62,7 +64,7 @@ If you want to use the Context Mapper DSL (CML) language and the generator tools
 
 **Gradle:**
 ```gradle
-implementation 'org.contextmapper:context-mapper-dsl:6.8.0'
+implementation 'org.contextmapper:context-mapper-dsl:6.9.0'
 ```
 
 **Maven:**
@@ -70,7 +72,7 @@ implementation 'org.contextmapper:context-mapper-dsl:6.8.0'
 <dependency>
   <groupId>org.contextmapper</groupId>
   <artifactId>context-mapper-dsl</artifactId>
-  <version>6.8.0</version>
+  <version>6.9.0</version>
 </dependency>
 ```
 In our [context-mapper-standalone-example](https://github.com/ContextMapper/context-mapper-standalone-example) repository you find an example project showing how to include the library within your project. It further contains code examples illustrating how to use the CML models and the generator tools (PlantUML, MDSL, etc.).

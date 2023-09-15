@@ -3,7 +3,7 @@ Automatic-Module-Name: org.contextmapper.dsl.ui
 Bundle-ManifestVersion: 2
 Bundle-Name: org.contextmapper.dsl.ui
 Bundle-Vendor: Context Mapper
-Bundle-Version: 6.8.1.qualifier
+Bundle-Version: 6.9.1.qualifier
 Bundle-SymbolicName: org.contextmapper.dsl.ui; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.contextmapper.dsl,

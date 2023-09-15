@@ -25,6 +25,8 @@ import org.contextmapper.dsl.contextMappingDSL.Domain;
 import org.contextmapper.dsl.contextMappingDSL.Flow;
 import org.contextmapper.dsl.contextMappingDSL.SculptorModule;
 import org.contextmapper.dsl.contextMappingDSL.Subdomain;
+import org.contextmapper.dsl.contextMappingDSL.UseCase;
+import org.contextmapper.dsl.contextMappingDSL.UserRequirement;
 import org.contextmapper.dsl.generator.exception.GeneratorInputException;
 import org.contextmapper.dsl.generator.plantuml.PlantUMLAggregateClassDiagramCreator;
 import org.contextmapper.dsl.generator.plantuml.PlantUMLBoundedContextClassDiagramCreator;
@@ -34,6 +36,7 @@ import org.contextmapper.dsl.generator.plantuml.PlantUMLStateDiagramCreator4Aggr
 import org.contextmapper.dsl.generator.plantuml.PlantUMLStateDiagramCreator4Flow;
 import org.contextmapper.dsl.generator.plantuml.PlantUMLSubdomainClassDiagramCreator;
 import org.contextmapper.dsl.generator.plantuml.PlantUMLUseCaseDiagramCreator;
+import org.contextmapper.dsl.generator.plantuml.PlantUMLUseCaseInteractionsSequenceDiagramCreator;
 import org.contextmapper.tactic.dsl.tacticdsl.StateTransition;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.xtext.EcoreUtil2;
@@ -106,13 +109,23 @@ public class PlantUMLGenerator extends AbstractContextMappingModelGenerator {
 		if (!model.getUserRequirements().isEmpty())
 			fsa.generateFile(fileName + "_UseCases." + PLANT_UML_FILE_EXT,
 					new PlantUMLUseCaseDiagramCreator().createDiagram(model));
+
+		// generate sequence diagrams for Use Cases with interactions
+		for (UserRequirement userRequirement : model.getUserRequirements()) {
+			if (userRequirement instanceof UseCase && !userRequirement.getFeatures().isEmpty()) {
+				fsa.generateFile(
+						fileName + "_UseCase_" + userRequirement.getName() + "_Interactions." + PLANT_UML_FILE_EXT,
+						new PlantUMLUseCaseInteractionsSequenceDiagramCreator()
+								.createDiagram((UseCase) userRequirement));
+			}
+		}
 	}
 
 	private void checkPreconditions() {
 		if (this.contextMappingModel.getMap() == null && this.contextMappingModel.getBoundedContexts().isEmpty()
 				&& !modelHasSubdomainWithEntities() && this.contextMappingModel.getUserRequirements().isEmpty())
 			throw new GeneratorInputException(
-					"Your model does not contain a Context Map, a Bounded Context, a Subdomain, or Use Cases or User Stories. Therefore we have nothing to generate. Create at least one of the mentioned Objects.");
+					"Your model does not contain a) a Context Map, b) Bounded Contexts or Subdomains with domain objects (Entities, Value Objects, etc.), or c) Use Cases or User Stories. Create at least one of the mentioned model elements.");
 	}
 
 	private List<Flow> getFlowsWithStates(BoundedContext bc) {

@@ -1,4 +1,4 @@
-name: Build (standard)
+name: Build (non-master branch)
 
 on:
   push:
@@ -8,6 +8,7 @@ on:
 
 jobs:
   build_standalone:
+    name: Build Standalone Libraries (DSL, LSP)
     runs-on: ubuntu-latest
     
     steps:
@@ -35,6 +36,7 @@ jobs:
       uses: codecov/codecov-action@v1
 
   build_eclipse:
+    name: Build Eclipse Plugin
     runs-on: ubuntu-latest
         
     steps:
