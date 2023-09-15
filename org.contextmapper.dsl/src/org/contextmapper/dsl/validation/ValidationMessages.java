@@ -33,10 +33,11 @@ public class ValidationMessages {
 	public static final String ORGANIZATIONAL_MAP_DOES_NOT_CONTAIN_TEAM = "Your Context Map is of the type ORGANIZATIONAL but does not contain Bounded Contexts of the type TEAM. This type of Context Map is intended to model team relationships.";
 	public static final String COMMAND_OR_OPERATION_IS_NOT_PART_OF_BOUNDED_CONTEXT = "The command or operation '%s' is not part of the '%s' Bounded Context. Please ensure that your workflow only uses commands, operations and events that are part of the same Bounded Context.";
 	public static final String STATE_VALUE_DOES_NOT_BELONG_TO_AGGREGATE = "'%s' is not a state of the Aggregate '%s'.";
-	public static final String COORDINATION_STEP_CONTEXT_NOT_ON_MAP = "The Bounded Context '%s' is not part of the Context Map.";
+	public static final String COORDINATION_STEP_CONTEXT_NOT_REACHABLE = "The Bounded Context '%s' is not reachable through Context Map relationships. Maybe you want to create a relationship with this context?";
 	public static final String COORDINATION_STEP_SERVICE_NOT_ON_STEP_CONTEXT_APPLICATION = "The Service '%s' is not part of the Bounded Context '%s' Application.";
 	public static final String COORDINATION_STEP_OPERATION_NOT_ON_STEP_SERVICE = "The operation '%s' is not part of the Service '%s' of the Bounded Context '%s' Application.";
-	
+	public static final String COORDINATION_STEP_OPERATION_IS_AMBIGUOUS = "The reference to operation '%s' is ambiguous, since there exist multiple operations with that name in Service '%s'. We suggest keeping the operation names distinct when referencing them through Coordinations.";
+
 	/* Uniqueness problems */
 	public static final String BOUNDED_CONTEXT_NAME_NOT_UNIQUE = "Multiple bounded contexts with the name '%s' have been declared.";
 	public static final String AGGREGATE_NAME_NOT_UNIQUE = "Multiple aggregates with the name '%s' have been declared.";

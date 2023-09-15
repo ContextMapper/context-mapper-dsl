@@ -19,16 +19,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 
-import org.contextmapper.dsl.contextMappingDSL.Application;
-import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
-import org.contextmapper.dsl.contextMappingDSL.CoordinationStep;
 import org.contextmapper.dsl.contextMappingDSL.impl.BoundedContextImpl;
 import org.contextmapper.dsl.contextMappingDSL.impl.DomainImpl;
 import org.contextmapper.tactic.dsl.tacticdsl.Association;
 import org.contextmapper.tactic.dsl.tacticdsl.DomainObject;
 import org.contextmapper.tactic.dsl.tacticdsl.Reference;
-import org.contextmapper.tactic.dsl.tacticdsl.Service;
-import org.contextmapper.tactic.dsl.tacticdsl.ServiceOperation;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.xtext.resource.IEObjectDescription;
@@ -68,30 +63,6 @@ public class CMLScopingHelper {
 		}
 		return existingScope;
 	}
-	
-	public IScope reduceReferenceScope(IScope existingScope, CoordinationStep coordinationStep, EReference eReference) {
-		// services in coordination steps shall not refer to services outside the bounded context referenced in the step
-		// services also need to be defined in the application layer
-		if (eReference.getName().equals("service")) {
-			return reduceServiceReferenceScope(existingScope, coordinationStep);
-		} else if (eReference.getName().equals("operation")) {
-			return reduceOperationReferenceScope(existingScope, coordinationStep);
-		}
-		return existingScope;
-	}
-	
-	private IScope reduceServiceReferenceScope(IScope existingScope, CoordinationStep coordinationStep) {
-		return filterScope(existingScope, (ieoDesc) -> {
-			return ieoDesc.getEObjectOrProxy() instanceof Service && isPartOfBoundedContextApplication(ieoDesc.getEObjectOrProxy().eContainer(), coordinationStep.getBoundedContext().getName());
-		});
-	}
-	
-	private IScope reduceOperationReferenceScope(IScope existingScope, CoordinationStep coordinationStep) {
-		return filterScope(existingScope, (ieoDesc) -> {
-			Service service = getServiceByName(coordinationStep.getBoundedContext().getApplication(), coordinationStep.getService().getName());
-			return ieoDesc.getEObjectOrProxy() instanceof ServiceOperation && !ieoDesc.getEObjectOrProxy().eContainer().equals(service);
-		});
-	}
 
 	private IScope filterScope(IScope scope, Predicate<IEObjectDescription> descriptionsToRemovePredicate) {
 		List<IEObjectDescription> descriptions = Lists.newLinkedList();
@@ -109,10 +80,6 @@ public class CMLScopingHelper {
 	private boolean isPartOfDomain(EObject object) {
 		return getParentTypes(object).contains(DomainImpl.class);
 	}
-	
-	private boolean isPartOfBoundedContextApplication(EObject object, String contextName) {
-		return object instanceof Application && object.eContainer() instanceof BoundedContext && !((BoundedContext) object.eContainer()).getName().equals(contextName);
-	}
 
 	private Set<Class<? extends EObject>> getParentTypes(EObject object) {
 		Set<Class<? extends EObject>> parentTypes = Sets.newHashSet();
@@ -124,10 +91,4 @@ public class CMLScopingHelper {
 		return parentTypes;
 	}
 	
-	private Service getServiceByName(Application application, String serviceName) {
-		return application == null ? null : application.getServices().stream()
-				.filter(service -> service.getName().equals(serviceName))
-				.findFirst()
-				.orElse(null);
-	}
 }

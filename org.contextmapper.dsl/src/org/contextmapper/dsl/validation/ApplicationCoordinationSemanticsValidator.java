@@ -15,14 +15,15 @@
  */
 package org.contextmapper.dsl.validation;
 
-import static org.contextmapper.dsl.validation.ValidationMessages.COORDINATION_STEP_CONTEXT_NOT_ON_MAP;
+import static org.contextmapper.dsl.validation.ValidationMessages.COORDINATION_STEP_CONTEXT_NOT_REACHABLE;
 import static org.contextmapper.dsl.validation.ValidationMessages.COORDINATION_STEP_SERVICE_NOT_ON_STEP_CONTEXT_APPLICATION;
 import static org.contextmapper.dsl.validation.ValidationMessages.COORDINATION_STEP_OPERATION_NOT_ON_STEP_SERVICE;
+import static org.contextmapper.dsl.validation.ValidationMessages.COORDINATION_STEP_OPERATION_IS_AMBIGUOUS;
+
+import java.util.List;
 
 import org.contextmapper.dsl.cml.CMLModelObjectsResolvingHelper;
-import org.contextmapper.dsl.contextMappingDSL.Application;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
-import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLPackage;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.CoordinationStep;
@@ -39,51 +40,58 @@ public class ApplicationCoordinationSemanticsValidator extends AbstractDeclarati
 	public void register(EValidatorRegistrar registrar) {
 		// not needed for classes used as ComposedCheck
 	}
-
+	
 	@Check
-	public void operationInStepIsCorrectlyReferenced(final CoordinationStep coordinationStep) {
+	public void stepComponentsMustBeCorrectlyReferenced(final CoordinationStep coordinationStep) {
 		CMLModelObjectsResolvingHelper helper = new CMLModelObjectsResolvingHelper((ContextMappingModel) EcoreUtil2.getRootContainer(coordinationStep));
 		
-		ContextMap map = helper.getContextMap(helper.resolveBoundedContext(coordinationStep));
+		BoundedContext containerContext = helper.resolveBoundedContext(coordinationStep);
 		BoundedContext stepContext = coordinationStep.getBoundedContext();
-		if (map == null || stepContext == null || !map.getBoundedContexts().contains(stepContext)) {
-			error(String.format(COORDINATION_STEP_CONTEXT_NOT_ON_MAP, stepContext.getName()), 
+		if (containerContext == null || stepContext == null || isNullName(stepContext.getName())) {
+			return; // BC is undefined
+		}
+		
+		// Outer context in step must be reachable by relationship
+		if (!helper.resolveAllUpstreamContexts(containerContext).contains(stepContext)) {
+			error(String.format(COORDINATION_STEP_CONTEXT_NOT_REACHABLE, stepContext.getName()), 
 					coordinationStep, ContextMappingDSLPackage.Literals.COORDINATION_STEP__BOUNDED_CONTEXT);
 			return;
 		}
-		
-		if (coordinationStep.getService() == null) {
-			return;
+
+		Service stepService = coordinationStep.getService();
+		if (stepService == null || isNullName(stepService.getName())) {
+			return; // Service is undefined or out of BC scope
 		}
-		String stepServiceName = coordinationStep.getService().getName();
-		Service stepService = getServiceByName(stepContext.getApplication(), stepServiceName);
-		if (stepService == null) {
-			error(String.format(COORDINATION_STEP_SERVICE_NOT_ON_STEP_CONTEXT_APPLICATION, stepServiceName, stepContext.getName()), 
+		
+		// Service in step must be part of step context application
+		if (helper.resolveApplicationServiceByName(stepContext.getApplication(), stepService.getName()) == null) {
+			error(String.format(COORDINATION_STEP_SERVICE_NOT_ON_STEP_CONTEXT_APPLICATION, stepService.getName(), stepContext.getName()), 
 					coordinationStep, ContextMappingDSLPackage.Literals.COORDINATION_STEP__SERVICE);
 			return;
 		}
 		
-		if (coordinationStep.getOperation() == null) {
+		ServiceOperation stepOperation = coordinationStep.getOperation();
+		if (stepOperation == null || isNullName(stepOperation.getName())) {
+			return; // Operation is undefined or out of Service scope
+		}
+		
+		// Operation in step must be part of step service
+		List<ServiceOperation> operations = helper.resolveServiceOperationsByName(stepService, stepOperation.getName());
+		if (operations.isEmpty()) {
+			error(String.format(COORDINATION_STEP_OPERATION_NOT_ON_STEP_SERVICE, stepOperation.getName(), stepService.getName(), stepContext.getName()), 
+					coordinationStep, ContextMappingDSLPackage.Literals.COORDINATION_STEP__OPERATION);
 			return;
 		}
-		String stepOperationName = coordinationStep.getOperation().getName();
-		if (getOperationByName(stepService, stepOperationName) == null) {
-			error(String.format(COORDINATION_STEP_OPERATION_NOT_ON_STEP_SERVICE, stepOperationName, stepServiceName, stepContext.getName()), 
+		
+		// Operation in step should be unique in step service
+		if (operations.size() > 1) {
+			warning(String.format(COORDINATION_STEP_OPERATION_IS_AMBIGUOUS, stepOperation.getName(), stepService.getName()), 
 					coordinationStep, ContextMappingDSLPackage.Literals.COORDINATION_STEP__OPERATION);
 		}
 	}
 	
-	private Service getServiceByName(Application application, String serviceName) {
-		return application == null ? null : application.getServices().stream()
-				.filter(service -> service.getName().equals(serviceName))
-				.findAny()
-				.orElse(null);
+	private boolean isNullName(String name) {
+		return name == null || "".equals(name);
 	}
 	
-	private ServiceOperation getOperationByName(Service service, String operationName) {
-		return service == null ? null : service.getOperations().stream()
-				.filter(operation -> operation.getName().equals(operationName))
-				.findAny()
-				.orElse(null);
-	}
 }
