@@ -228,13 +228,19 @@ public class CMLModelObjectsResolvingHelper {
 		return aggregates;
 	}
 	
-	private BoundedContext getUpstreamContext(Relationship relationship, BoundedContext downstreamContext) {
+	private BoundedContext getUpstreamContext(Relationship relationship, BoundedContext boundedContext) {
 		if (relationship instanceof SymmetricRelationship) {
 			SymmetricRelationship symmetricRelationship = (SymmetricRelationship) relationship;
-			return symmetricRelationship.getParticipant1().getName().equals(downstreamContext.getName()) ? 
-					symmetricRelationship.getParticipant2() : symmetricRelationship.getParticipant1();
+			if (symmetricRelationship.getParticipant1().getName().equals(boundedContext.getName())) {
+				return symmetricRelationship.getParticipant2();
+			} else if (symmetricRelationship.getParticipant2().getName().equals(boundedContext.getName())) {
+				return symmetricRelationship.getParticipant1();
+			}
 		} else if (relationship instanceof UpstreamDownstreamRelationship) {
-			return ((UpstreamDownstreamRelationship) relationship).getUpstream();
+			UpstreamDownstreamRelationship upstreamDownstreamRelationship = (UpstreamDownstreamRelationship) relationship;
+			if (upstreamDownstreamRelationship.getDownstream().getName().equals(boundedContext.getName())) {
+				return upstreamDownstreamRelationship.getUpstream();
+			}
 		}
 		return null;
 	}
