@@ -1062,28 +1062,5 @@ class ApplicationLayerDSLParsingTest {
 		assertEquals("ContextB", result.boundedContexts.get(0).application.coordinations.get(0).coordinationSteps.get(1).boundedContext.name);
 		assertEquals("ServiceB", result.boundedContexts.get(0).application.coordinations.get(0).coordinationSteps.get(1).service.name);
 		assertEquals("operationB", result.boundedContexts.get(0).application.coordinations.get(0).coordinationSteps.get(1).operation.name);
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	}	
 }
