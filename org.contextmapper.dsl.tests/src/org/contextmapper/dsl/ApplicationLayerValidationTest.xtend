@@ -257,9 +257,36 @@ class ApplicationLayerValidationTest {
 		validationTestHelper.assertIssue(result, ContextMappingDSLPackage.Literals.FLOW,
 			ApplicationFlowSemanticsValidator.SKETCH_MINER_INFO_ID, Severity.INFO, VISUALIZE_FLOW_WITH_SKETCH_MINER);
 	}
-	
+
 	@Test
-	def void coordinationStepCannotReferenceContextWithoutRelationship() {
+	def void coordinationStepCannotReferenceContextWithoutContextMap() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext ContextA {
+				Application {
+					Coordination TestCoordination {
+						ContextB::TestService::testOperation;
+					}
+				}
+			}
+			BoundedContext ContextB {
+				Application {
+					Service TestService {
+						testOperation;
+					}
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.COORDINATION_STEP , "",
+			String.format(COORDINATION_STEP_CONTEXT_NOT_REACHABLE, "ContextB"));
+	}
+
+	@Test
+	def void coordinationStepCannotReferenceContextWithoutUpstreamRelationships() {
 		// given
 		val String dslSnippet = '''
 			ContextMap TestMap {
@@ -288,7 +315,42 @@ class ApplicationLayerValidationTest {
 		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.COORDINATION_STEP , "",
 			String.format(COORDINATION_STEP_CONTEXT_NOT_REACHABLE, "ContextB"));
 	}
-	
+
+	@Test
+	def void coordinationStepCannotReferenceContextWithoutRespectiveUpstreamRelationship() {
+		// given
+		val String dslSnippet = '''
+			ContextMap TestMap {
+				contains ContextA
+				contains ContextB
+				contains ContextC
+				
+				ContextA <- ContextC
+			}
+			BoundedContext ContextA {
+				Application {
+					Coordination TestCoordination {
+						ContextB::TestService::testOperation;
+					}
+				}
+			}
+			BoundedContext ContextB {
+				Application {
+					Service TestService {
+						testOperation;
+					}
+				}
+			}
+			BoundedContext ContextC
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.COORDINATION_STEP , "",
+			String.format(COORDINATION_STEP_CONTEXT_NOT_REACHABLE, "ContextB"));
+	}
+
 	@Test
 	def void coordinationStepCannotReferenceDomainService() {
 		// given
@@ -317,7 +379,7 @@ class ApplicationLayerValidationTest {
 		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.COORDINATION_STEP, "",
 			String.format(COORDINATION_STEP_SERVICE_NOT_ON_STEP_CONTEXT_APPLICATION, "TestService", "TestContext"));
 	}
-	
+
 	@Test
 	def void coordinationStepCannotReferenceBoundedContextService() {
 		// given
