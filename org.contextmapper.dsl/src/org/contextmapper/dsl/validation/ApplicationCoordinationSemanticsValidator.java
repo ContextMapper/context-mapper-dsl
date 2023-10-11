@@ -37,16 +37,16 @@ import org.eclipse.xtext.validation.Check;
 import org.eclipse.xtext.validation.EValidatorRegistrar;
 
 public class ApplicationCoordinationSemanticsValidator extends AbstractDeclarativeValidator {
-	
+
 	public static final String SKETCH_MINER_INFO_ID = "open-coordination-in-sketch-miner";
 
 	@Override
 	public void register(EValidatorRegistrar registrar) {
 		// not needed for classes used as ComposedCheck
 	}
-	
+
 	@Check
-	public void stepComponentsMustBeCorrectlyReferenced(final CoordinationStep coordinationStep) {
+	public void stepContextIsReachableByRelationship(final CoordinationStep coordinationStep) {
 		CMLModelObjectsResolvingHelper helper = new CMLModelObjectsResolvingHelper((ContextMappingModel) EcoreUtil2.getRootContainer(coordinationStep));
 		
 		BoundedContext containerContext = helper.resolveBoundedContext(coordinationStep);
@@ -55,53 +55,87 @@ public class ApplicationCoordinationSemanticsValidator extends AbstractDeclarati
 			return; // BC is undefined
 		}
 		
-		// Outer context in step must be reachable by relationship
 		if (!helper.resolveAllUpstreamContexts(containerContext).contains(stepContext)) {
 			error(String.format(COORDINATION_STEP_CONTEXT_NOT_REACHABLE, stepContext.getName()), 
 					coordinationStep, ContextMappingDSLPackage.Literals.COORDINATION_STEP__BOUNDED_CONTEXT);
-			return;
+		}
+	}
+
+	@Check
+	public void stepServiceIsApplicationService(final CoordinationStep coordinationStep) {
+		CMLModelObjectsResolvingHelper helper = new CMLModelObjectsResolvingHelper((ContextMappingModel) EcoreUtil2.getRootContainer(coordinationStep));
+
+		BoundedContext stepContext = coordinationStep.getBoundedContext();
+		if (stepContext == null || isNullName(stepContext.getName())) {
+			return; // BC is undefined
 		}
 
 		Service stepService = coordinationStep.getService();
 		if (stepService == null || isNullName(stepService.getName())) {
 			return; // Service is undefined or out of BC scope
 		}
-		
-		// Service in step must be part of step context application
+
 		if (helper.resolveApplicationServiceByName(stepContext.getApplication(), stepService.getName()) == null) {
 			error(String.format(COORDINATION_STEP_SERVICE_NOT_ON_STEP_CONTEXT_APPLICATION, stepService.getName(), stepContext.getName()), 
 					coordinationStep, ContextMappingDSLPackage.Literals.COORDINATION_STEP__SERVICE);
-			return;
 		}
-		
+	}
+
+	@Check
+	public void stepOperationIsPartOfStepService(final CoordinationStep coordinationStep) {
+		CMLModelObjectsResolvingHelper helper = new CMLModelObjectsResolvingHelper((ContextMappingModel) EcoreUtil2.getRootContainer(coordinationStep));
+
+		BoundedContext stepContext = coordinationStep.getBoundedContext();
+		if (stepContext == null || isNullName(stepContext.getName())) {
+			return; // BC is undefined
+		}
+
+		Service stepService = coordinationStep.getService();
+		if (stepService == null || isNullName(stepService.getName())) {
+			return; // Service is undefined or out of BC scope
+		}
+
+		ServiceOperation stepOperation = coordinationStep.getOperation();
+		if (stepOperation == null || isNullName(stepOperation.getName())) {
+			return; // Operation is undefined or out of Service scope
+		}
+
+		List<ServiceOperation> operations = helper.resolveServiceOperationsByName(stepService, stepOperation.getName());
+		if (operations.isEmpty()) {
+			error(String.format(COORDINATION_STEP_OPERATION_NOT_ON_STEP_SERVICE, stepOperation.getName(), stepService.getName(), stepContext.getName()), 
+					coordinationStep, ContextMappingDSLPackage.Literals.COORDINATION_STEP__OPERATION);
+		}
+	}
+
+	@Check
+	public void stepOperationShouldBeUniqueInStepService(final CoordinationStep coordinationStep) {
+		CMLModelObjectsResolvingHelper helper = new CMLModelObjectsResolvingHelper((ContextMappingModel) EcoreUtil2.getRootContainer(coordinationStep));
+
+		Service stepService = coordinationStep.getService();
+		if (stepService == null || isNullName(stepService.getName())) {
+			return; // Service is undefined or out of BC scope
+		}
+
 		ServiceOperation stepOperation = coordinationStep.getOperation();
 		if (stepOperation == null || isNullName(stepOperation.getName())) {
 			return; // Operation is undefined or out of Service scope
 		}
 		
-		// Operation in step must be part of step service
-		List<ServiceOperation> operations = helper.resolveServiceOperationsByName(stepService, stepOperation.getName());
-		if (operations.isEmpty()) {
-			error(String.format(COORDINATION_STEP_OPERATION_NOT_ON_STEP_SERVICE, stepOperation.getName(), stepService.getName(), stepContext.getName()), 
-					coordinationStep, ContextMappingDSLPackage.Literals.COORDINATION_STEP__OPERATION);
-			return;
-		}
-		
-		// Operation in step should be unique in step service
+		List<ServiceOperation> operations = helper.resolveServiceOperationsByName(stepService, stepOperation.getName());		
 		if (operations.size() > 1) {
 			warning(String.format(COORDINATION_STEP_OPERATION_IS_AMBIGUOUS, stepOperation.getName(), stepService.getName()), 
 					coordinationStep, ContextMappingDSLPackage.Literals.COORDINATION_STEP__OPERATION);
 		}
 	}
-	
+
 	@Check
 	public void sketchMinerLink(final Coordination coordination) {
 		if (!coordination.getCoordinationSteps().isEmpty())
 			info(VISUALIZE_COORDINATION_WITH_SKETCH_MINER, coordination, ContextMappingDSLPackage.Literals.COORDINATION__NAME, SKETCH_MINER_INFO_ID);
 	}
-	
+
 	private boolean isNullName(String name) {
 		return name == null || "".equals(name);
 	}
-	
+
 }
