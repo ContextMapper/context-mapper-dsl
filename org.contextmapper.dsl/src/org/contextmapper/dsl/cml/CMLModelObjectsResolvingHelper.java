@@ -15,12 +15,14 @@
  */
 package org.contextmapper.dsl.cml;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
+import org.contextmapper.dsl.contextMappingDSL.Application;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
@@ -33,6 +35,8 @@ import org.contextmapper.dsl.contextMappingDSL.SymmetricRelationship;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
 import org.contextmapper.dsl.contextMappingDSL.UserRequirement;
 import org.contextmapper.tactic.dsl.tacticdsl.Enum;
+import org.contextmapper.tactic.dsl.tacticdsl.Service;
+import org.contextmapper.tactic.dsl.tacticdsl.ServiceOperation;
 import org.contextmapper.tactic.dsl.tacticdsl.SimpleDomainObject;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.EcoreUtil2;
@@ -166,6 +170,36 @@ public class CMLModelObjectsResolvingHelper {
 
 		return aggregateStates;
 	}
+	
+	public Set<BoundedContext> resolveAllUpstreamContexts(BoundedContext boundedContext) {
+		Set<BoundedContext> allUpstreamContexts = new HashSet<>();
+		allUpstreamContexts.add(boundedContext);
+		
+		ContextMap contextMap = getContextMap(boundedContext);
+		if (contextMap != null) {
+			for (Relationship relationship : contextMap.getRelationships()) {
+				BoundedContext upstreamContext = getUpstreamContext(relationship, boundedContext);
+				if (upstreamContext != null) {
+					allUpstreamContexts.add(upstreamContext);
+				}
+			}
+		}
+		
+		return allUpstreamContexts;
+	}
+	
+	public Service resolveApplicationServiceByName(Application application, String serviceName) {
+		return application == null ? null : application.getServices().stream()
+				.filter(service -> service.getName().equals(serviceName))
+				.findAny()
+				.orElse(null);
+	}
+	
+	public List<ServiceOperation> resolveServiceOperationsByName(Service service, String operationName) {
+		return service == null ? null : service.getOperations().stream()
+				.filter(operation -> operation.getName().equals(operationName))
+				.collect(Collectors.toList());
+	}
 
 	private boolean isBCDownstreamInRelationship(Relationship relationship, BoundedContext bc) {
 		if (relationship instanceof SymmetricRelationship) {
@@ -192,6 +226,23 @@ public class CMLModelObjectsResolvingHelper {
 			}
 		}
 		return aggregates;
+	}
+	
+	private BoundedContext getUpstreamContext(Relationship relationship, BoundedContext boundedContext) {
+		if (relationship instanceof SymmetricRelationship) {
+			SymmetricRelationship symmetricRelationship = (SymmetricRelationship) relationship;
+			if (symmetricRelationship.getParticipant1().getName().equals(boundedContext.getName())) {
+				return symmetricRelationship.getParticipant2();
+			} else if (symmetricRelationship.getParticipant2().getName().equals(boundedContext.getName())) {
+				return symmetricRelationship.getParticipant1();
+			}
+		} else if (relationship instanceof UpstreamDownstreamRelationship) {
+			UpstreamDownstreamRelationship upstreamDownstreamRelationship = (UpstreamDownstreamRelationship) relationship;
+			if (upstreamDownstreamRelationship.getDownstream().getName().equals(boundedContext.getName())) {
+				return upstreamDownstreamRelationship.getUpstream();
+			}
+		}
+		return null;
 	}
 
 }

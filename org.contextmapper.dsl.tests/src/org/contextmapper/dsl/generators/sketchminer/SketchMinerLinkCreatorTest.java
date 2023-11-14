@@ -22,6 +22,7 @@ import java.io.IOException;
 import org.contextmapper.dsl.AbstractCMLInputFileTest;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
+import org.contextmapper.dsl.contextMappingDSL.Coordination;
 import org.contextmapper.dsl.contextMappingDSL.Flow;
 import org.contextmapper.dsl.generator.sketchminer.SketchMinerLinkCreator;
 import org.eclipse.emf.ecore.EObject;
@@ -93,6 +94,38 @@ public class SketchMinerLinkCreatorTest extends AbstractCMLInputFileTest {
 		// then
 		assertEquals(
 				"https://www.bpmn-sketch-miner.ai/index.html#EYBwNgdgXAbgjAWAFAFoXIJIQM4FcBOAhhAMYCmAirgPYAuZ2ABAIIjgCWJht710yyAPSDGVOmQBKZAI64GtRgG1GKAHyMAygFUAQgFkMAFUMBRACIBdZNjL4YnMptzAAtu1pTZ85AApPc7FoNZzdaegATAEohETF6f3klbX0jUzMVdQkTAGETDAA1c0YADUYsgCkctKskGzsHRhIACzISAGsEwN84yVaydhgyKJjRGniZAIVFLNyCorUyk0rstJKWbNyABVXSk2LNjCzLa1t7ckZ8PoGyZghw7Jb2nu6x3oArVojopBGezqmMppdAZjOYanUzo5gq53P9fP9oaEvr9Xv8ksDUvNMjk8oV0qUKlUwSd6udmq0OhNvEg-FTAlIPiRkT8kMJRuI0coFskQdUSZCnDCPHTaPCRYj3My2X8ReiUqD0gsZriigSlkTjrVTg1ye04TSZeRrsNWbFUbLpji5orscsdustva9gcjuDtedLkbBrd7o82s8Da9mCRyCApWaORbmBsTNssYxNgB5AAyGGyAE0APrZLLMJ37Q7ErWkxyEENkMMvcQmAAeIHYlxNKMjXkCSkBPMxmohDQlwtboppCJCkqG32l5oHct58eV1rWhJWRZ7ZL9+p8hv6gxNE5bkyUc7xgMX9ujjtVjGdhe77scnq3NzuDwpAY3QfLYbHzfGU8UZ9jqwLEmqYZtmub5i6y63owZahoOPibNQYCcAAntklzcF+LK7j++5cuonYKm6JaCqE67DkK4bsrhiSKIRgHYrMR5qnaUEkbqlIDlW4xelhOG9L+h6zuqS74g6AEXlerr8g097XD6z5PK83FkLW9aNt8yBAA",
+				link);
+	}
+	
+	@Test
+	@DisabledOnOs(OS.WINDOWS)
+	public void canCreateSketchMinerLinkForCoordinationModelUnix() throws IOException {
+		// given
+		ContextMappingModel model = getOriginalResourceOfTestCML("link-integ-test2.cml").getContextMappingModel();
+		Coordination coordination = EcoreUtil2.eAllOfType(model, Coordination.class).get(0);
+
+		// when
+		String link = new SketchMinerLinkCreator().createSketchMinerLink(coordination);
+
+		// then
+		assertEquals(
+				"https://www.bpmn-sketch-miner.ai/index.html#EYBwNgdgXAbgjAKALRIQVQM4FMBOBhAewgBcsAPYqAAmxxgEsBjLKzXAZVweYDoMBXYAFt6xAEpYAjvywZiCAJIQBOAIYRmARX4FSGarW4tturBOmzinOkyw9GACyyMA1uZlzFy-mo1YTegZctlQBZlIeVsG8OM5Y9DBYAIIQACZ4Tq5hXirqWjqBNNHGBeEWctZGPKqMzCDyCEA", 
+				link);
+	}
+	
+	@Test
+	@DisabledOnOs(OS.WINDOWS)
+	public void canCreateSketchMinerLinkWithCoordinationEObjectUnix() throws IOException {
+		// given
+		ContextMappingModel model = getOriginalResourceOfTestCML("link-integ-test2.cml").getContextMappingModel();
+		EObject coordination = EcoreUtil2.eAllOfType(model, Coordination.class).get(0);
+
+		// when
+		String link = new SketchMinerLinkCreator().createSketchMinerLink(coordination);
+
+		// then
+		assertEquals(
+				"https://www.bpmn-sketch-miner.ai/index.html#EYBwNgdgXAbgjAKALRIQVQM4FMBOBhAewgBcsAPYqAAmxxgEsBjLKzXAZVweYDoMBXYAFt6xAEpYAjvywZiCAJIQBOAIYRmARX4FSGarW4tturBOmzinOkyw9GACyyMA1uZlzFy-mo1YTegZctlQBZlIeVsG8OM5Y9DBYAIIQACZ4Tq5hXirqWjqBNNHGBeEWctZGPKqMzCDyCEA", 
 				link);
 	}
 

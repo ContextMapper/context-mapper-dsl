@@ -20,8 +20,10 @@ import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
+import org.contextmapper.dsl.contextMappingDSL.Coordination;
 import org.contextmapper.dsl.contextMappingDSL.Flow;
 import org.contextmapper.dsl.generator.exception.GeneratorInputException;
+import org.contextmapper.dsl.generator.sketchminer.SketchMinerCoordinationModelCreator;
 import org.contextmapper.dsl.generator.sketchminer.SketchMinerModelCreator;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.xtext.generator.IFileSystemAccess2;
@@ -42,24 +44,35 @@ public class SketchMinerGenerator extends AbstractContextMappingModelGenerator {
 			for (Flow flow : getFlowsWithSteps(boundedContext)) {
 				fsa.generateFile(fileName + "_BC_" + boundedContext.getName() + "_" + flow.getName() + "." + SKETCH_MINER_FILE_EXT, new SketchMinerModelCreator().createText(flow));
 			}
+			for (Coordination coordination : getCoordinationsWithSteps(boundedContext)) {
+				fsa.generateFile("coordinations/" + fileName + "_BC_" + boundedContext.getName() + "_" + coordination.getName() + "." + SKETCH_MINER_FILE_EXT, new SketchMinerCoordinationModelCreator().createText(coordination));
+			}
 		}
 	}
 
 	private void checkPreconditions() {
 		for (BoundedContext boundedContext : this.contextMappingModel.getBoundedContexts()) {
-			if (boundedContext.getApplication() != null && boundedContext.getApplication().getFlows() != null) {
+			if (boundedContext.getApplication() != null && (boundedContext.getApplication().getFlows() != null || boundedContext.getApplication().getCoordinations() != null)) {
 				Set<Flow> nonEmptyFlows = boundedContext.getApplication().getFlows().stream().filter(f -> !f.getSteps().isEmpty()).collect(Collectors.toSet());
-				if (!nonEmptyFlows.isEmpty())
+				Set<Coordination> nonEmptyCoordinations = boundedContext.getApplication().getCoordinations().stream().filter(c -> !c.getCoordinationSteps().isEmpty()).collect(Collectors.toSet());
+
+				if (!nonEmptyFlows.isEmpty() || !nonEmptyCoordinations.isEmpty())
 					return;
 			}
 		}
-		throw new GeneratorInputException("Your model does not contain any Bounded Contexts with application layer and flow definition.");
+		throw new GeneratorInputException("Your model does not contain any Bounded Contexts with application layer and flow or coordination definition.");
 	}
 
 	private Set<Flow> getFlowsWithSteps(BoundedContext boundedContext) {
 		if (boundedContext.getApplication() == null || boundedContext.getApplication().getFlows() == null)
 			return Sets.newHashSet();
 		return boundedContext.getApplication().getFlows().stream().filter(f -> !f.getSteps().isEmpty()).collect(Collectors.toSet());
+	}
+	
+	private Set<Coordination> getCoordinationsWithSteps(BoundedContext boundedContext) {
+		if (boundedContext.getApplication() == null || boundedContext.getApplication().getFlows() == null)
+			return Sets.newHashSet();
+		return boundedContext.getApplication().getCoordinations().stream().filter(c -> !c.getCoordinationSteps().isEmpty()).collect(Collectors.toSet());
 	}
 
 }

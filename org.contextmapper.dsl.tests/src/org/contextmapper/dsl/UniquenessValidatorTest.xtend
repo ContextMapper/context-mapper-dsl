@@ -292,5 +292,51 @@ class UniquenessValidatorTest {
 		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.FLOW, "",
 			String.format(FLOW_NAME_NOT_UNIQUE, "TestFlow"));
 	}
+	
+	@Test
+	def void cannotDefineDuplicateCoordinationInSameContext() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext TestContext {
+				Application {
+					Coordination TestCoordination {
+					}
+					Coordination TestCoordination {
+					}
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.COORDINATION, "",
+			String.format(COORDINATION_NAME_NOT_UNIQUE, "TestCoordination"));
+	}
+	
+	@Test
+	def void cannotDefineDuplicateCoordinationInDifferentContexts() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext ContextA {
+				Application {
+					Coordination TestCoordination {
+					}
+				}
+			}
+			BoundedContext ContextB {
+				Application {
+					Coordination TestCoordination {
+					}
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.COORDINATION, "",
+			String.format(COORDINATION_NAME_NOT_UNIQUE, "TestCoordination"));
+	}
 
 }
