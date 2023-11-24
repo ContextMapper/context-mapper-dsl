@@ -214,9 +214,9 @@
 							</jvmArgs>
 							<repositories>
 								<repository>
-									<id>2022-09</id>
+									<id>2023-03</id>
 									<layout>p2</layout>
-									<url>http://download.eclipse.org/releases/2022-09</url>
+									<url>http://download.eclipse.org/releases/2023-03</url>
 								</repository>
 							</repositories>
 							<dependencies>
@@ -280,9 +280,9 @@
 							</jvmArgs>
 							<repositories>
 								<repository>
-									<id>2022-09</id>
+									<id>2023-03</id>
 									<layout>p2</layout>
-									<url>http://download.eclipse.org/releases/2022-09</url>
+									<url>http://download.eclipse.org/releases/2023-03</url>
 								</repository>
 							</repositories>
 							<dependencies>
