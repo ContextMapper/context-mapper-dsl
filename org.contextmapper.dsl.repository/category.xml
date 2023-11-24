@@ -6,13 +6,7 @@
    <feature id="org.contextmapper.dsl.feature.source" version="0.0.0">
       <category name="main"/>
    </feature>
-   <feature id="org.contextmapper.servicecutter.feature">
-      <category name="main"/>
-   </feature>
    <feature id="org.contextmapper.contextmap.generator.feature" version="0.0.0">
-      <category name="main"/>
-   </feature>
-   <feature id="org.contextmapper.servicecutter.feature" version="0.0.0">
       <category name="main"/>
    </feature>
    <feature id="contextmapper.freemarker">
@@ -20,6 +14,5 @@
    </feature>
    <category-def name="main" label="Context Mapper"/>
    <repository-reference location="https://contextmapper.org/p2-repos/context-map-generator-releases/" enabled="true" />
-   <repository-reference location="https://contextmapper.org/p2-repos/service-cutter-library-releases/" enabled="true" />
    <repository-reference location="https://contextmapper.org/p2-repos/context-mapper-osgi-bundles/1.0.0/" enabled="true" />
 </site>
