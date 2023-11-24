@@ -42,5 +42,3 @@ plugin.xml_gen
 .gradle/
 build/
 
-# MacOS
-.DS_Store

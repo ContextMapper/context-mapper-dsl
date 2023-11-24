@@ -15,7 +15,6 @@
  */
 package org.contextmapper.dsl.generator.sketchminer;
 
-import org.contextmapper.dsl.contextMappingDSL.Coordination;
 import org.contextmapper.dsl.contextMappingDSL.Flow;
 import org.eclipse.emf.ecore.EObject;
 
@@ -33,19 +32,11 @@ public class SketchMinerLinkCreator {
 		return SKETCH_MINER_URL + LZString.compressToEncodedURIComponent(
 				"bpln:v1\n--\n" + sketchMinerInput);
 	}
-	
-	public String createSketchMinerLink(Coordination coordination) {
-		String sketchMinerInput = new SketchMinerCoordinationModelCreator().createText(coordination);
-		return SKETCH_MINER_URL + LZString.compressToEncodedURIComponent(
-				"bpln:v1\n--\n" + sketchMinerInput);
-	}
 
-	public String createSketchMinerLink(EObject object) {
-		if (object instanceof Flow)
-			return createSketchMinerLink((Flow) object);
-		else if (object instanceof Coordination)
-			return createSketchMinerLink((Coordination) object);
-		return "";
+	public String createSketchMinerLink(EObject flow) {
+		if (!(flow instanceof Flow))
+			return "";
+		return createSketchMinerLink((Flow) flow);
 	}
 
 }

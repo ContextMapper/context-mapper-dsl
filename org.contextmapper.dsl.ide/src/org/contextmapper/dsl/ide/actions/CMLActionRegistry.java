@@ -42,14 +42,12 @@ import org.contextmapper.dsl.ide.actions.impl.SwitchFromPartnershipToSharedKerne
 import org.contextmapper.dsl.ide.actions.impl.SwitchFromSharedKernelToPartnershipAction;
 import org.contextmapper.dsl.ide.edit.WorkspaceEditRecorder;
 import org.contextmapper.dsl.ide.quickfix.QuickfixCommandMapper;
-import org.contextmapper.dsl.ide.quickfix.impl.OpenCoordinationInSketchMinerCommandMapper;
 import org.contextmapper.dsl.ide.quickfix.impl.OpenFlowInSketchMinerCommandMapper;
 import org.contextmapper.dsl.ide.quickfix.impl.SplitStoryByVerbCommandMapper;
 import org.contextmapper.dsl.quickfixes.CMLQuickFix;
 import org.contextmapper.dsl.quickfixes.CreateMissingBoundedContextQuickFix;
 import org.contextmapper.dsl.quickfixes.SplitStoryByVerb;
 import org.contextmapper.dsl.quickfixes.tactic.ExtractIDValueObjectQuickFix;
-import org.contextmapper.dsl.validation.ApplicationCoordinationSemanticsValidator;
 import org.contextmapper.dsl.validation.ApplicationFlowSemanticsValidator;
 import org.contextmapper.dsl.validation.DomainObjectValidator;
 import org.contextmapper.dsl.validation.UserRequirementsValidator;
@@ -121,7 +119,6 @@ public class CMLActionRegistry {
 		registerActionQuickFix(DomainObjectValidator.ID_IS_PRIMITIVE_CODE, new ExtractIDValueObjectQuickFix());
 		registerCommandQuickFix(UserRequirementsValidator.ID_SPLIT_FEATURE_BY_VERB_SUGGESTION, new SplitStoryByVerbCommandMapper(new SplitStoryByVerb()));
 		registerCommandQuickFix(ApplicationFlowSemanticsValidator.SKETCH_MINER_INFO_ID, new OpenFlowInSketchMinerCommandMapper());
-		registerCommandQuickFix(ApplicationCoordinationSemanticsValidator.SKETCH_MINER_INFO_ID, new OpenCoordinationInSketchMinerCommandMapper());
 	}
 
 	public List<? extends Command> getApplicableActionCommands(CMLResource resource, List<EObject> selectedObjects) {

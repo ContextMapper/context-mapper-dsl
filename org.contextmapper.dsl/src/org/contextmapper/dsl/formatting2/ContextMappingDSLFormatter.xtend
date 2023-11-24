@@ -26,8 +26,6 @@ import org.contextmapper.dsl.contextMappingDSL.Domain
 import org.contextmapper.dsl.contextMappingDSL.DomainEventProductionStep
 import org.contextmapper.dsl.contextMappingDSL.EitherCommandOrOperation
 import org.contextmapper.dsl.contextMappingDSL.Flow
-import org.contextmapper.dsl.contextMappingDSL.Coordination
-import org.contextmapper.dsl.contextMappingDSL.CoordinationStep
 import org.contextmapper.dsl.contextMappingDSL.Relationship
 import org.contextmapper.dsl.contextMappingDSL.SculptorModule
 import org.contextmapper.dsl.contextMappingDSL.Subdomain
@@ -133,9 +131,6 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 		for (flow : application.flows) {
 			flow.format
 		}
-		for (coordination : application.coordinations) {
-			coordination.format
-		}
 	}
 
 	def dispatch void format(Flow flow, extension IFormattableDocument document) {
@@ -162,29 +157,6 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 	def dispatch void format(EitherCommandOrOperation commandOrOperation, extension IFormattableDocument document) {
 		commandOrOperation.regionFor.keyword("command").prepend[newLine]
 		commandOrOperation.regionFor.keyword("operation").prepend[newLine]
-	}
-	
-	def dispatch void format(Coordination coordination, extension IFormattableDocument document) {
-		interior(
-			coordination.regionFor.ruleCallTo(OPENRule).append[newLine],
-			coordination.regionFor.ruleCallTo(CLOSERule).prepend[newLine].append[newLines = 2]
-		)[indent]
-		
-		coordination.regionFor.keyword('Coordination').prepend[newLine]
-		
-		for (step : coordination.coordinationSteps) {
-			step.format
-		}
-	}
-	
-	def dispatch void format(CoordinationStep step, extension IFormattableDocument document) {
-		step.prepend[newLine]
-		
-		step.regionFor.keywords('::').forEach [
-			surround[noSpace]
-		]
-		
-		step.regionFor.keyword(';').prepend[noSpace]
 	}
 
 	def dispatch void format(Domain domain, extension IFormattableDocument document) {
