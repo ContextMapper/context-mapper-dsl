@@ -1,7 +1,6 @@
 dependencies {
 	implementation project(':context-mapper-dsl')
 	implementation group: 'org.contextmapper', name: 'context-map-generator', version: '1.2.1'
-	implementation group: 'org.contextmapper', name: 'service-cutter-library', version: '1.2.1'
 	implementation group: 'commons-io', name: 'commons-io', version: '2.6'
 	implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
 	

@@ -48,10 +48,6 @@
 			<unit id="org.contextmapper.contextmap.generator.feature.feature.group" version="1.2.1"/>
 		</location>
 		<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-			<repository location="https://contextmapper.org/p2-repos/service-cutter-library-releases/"/>
-			<unit id="org.contextmapper.servicecutter.feature.feature.group" version="1.2.4"/>
-		</location>
-		<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 			<repository location="https://contextmapper.org/p2-repos/context-mapper-osgi-bundles/1.0.0/"/>
 			<unit id="contextmapper.freemarker.feature.group" version="2.3.30"/>
 		</location>
