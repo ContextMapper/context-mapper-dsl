@@ -202,8 +202,19 @@ Application:
 		((commands+=CommandEvent)* &
 		(events+=DomainEvent)* &
 		(services+=Service)* &
-		(flows+=Flow)*)
+		(flows+=Flow)* &
+		(coordinations+=Coordination)*)
 CLOSE)?
+;
+
+Coordination:
+	"Coordination" name=ID (OPEN
+		(coordinationSteps+=CoordinationStep)*
+	CLOSE)?
+;
+
+CoordinationStep:
+	boundedContext=[BoundedContext] '::' service=[tacticdsl::Service] '::' operation=[tacticdsl::ServiceOperation] ';'
 ;
 
 Flow:

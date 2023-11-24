@@ -33,6 +33,10 @@ public class ValidationMessages {
 	public static final String ORGANIZATIONAL_MAP_DOES_NOT_CONTAIN_TEAM = "Your Context Map is of the type ORGANIZATIONAL but does not contain Bounded Contexts of the type TEAM. This type of Context Map is intended to model team relationships.";
 	public static final String COMMAND_OR_OPERATION_IS_NOT_PART_OF_BOUNDED_CONTEXT = "The command or operation '%s' is not part of the '%s' Bounded Context. Please ensure that your workflow only uses commands, operations and events that are part of the same Bounded Context.";
 	public static final String STATE_VALUE_DOES_NOT_BELONG_TO_AGGREGATE = "'%s' is not a state of the Aggregate '%s'.";
+	public static final String COORDINATION_STEP_CONTEXT_NOT_REACHABLE = "The Bounded Context '%s' is not reachable through Context Map relationships. Maybe you want to create a relationship with this context?";
+	public static final String COORDINATION_STEP_SERVICE_NOT_ON_STEP_CONTEXT_APPLICATION = "The Service '%s' is not part of the Bounded Context '%s' Application.";
+	public static final String COORDINATION_STEP_OPERATION_NOT_ON_STEP_SERVICE = "The operation '%s' is not part of the Service '%s' of the Bounded Context '%s' Application.";
+	public static final String COORDINATION_STEP_OPERATION_IS_AMBIGUOUS = "The reference to operation '%s' is ambiguous, since there exist multiple operations with that name in Service '%s'. We suggest keeping the operation names distinct when referencing them through Coordinations.";
 
 	/* Uniqueness problems */
 	public static final String BOUNDED_CONTEXT_NAME_NOT_UNIQUE = "Multiple bounded contexts with the name '%s' have been declared.";
@@ -46,13 +50,14 @@ public class ValidationMessages {
 	public static final String SERVICE_NAME_NOT_UNIQUE_IN_BC = "Multiple services with the name '%s' have been declared in this Bounded Context.";
 	public static final String SERVICE_NAME_NOT_UNIQUE_IN_SUBDOMAIN = "Multiple services with the name '%s' have been declared in this Subdomain.";
 	public static final String FLOW_NAME_NOT_UNIQUE = "Multiple flows with the name '%s' have been declared. Please provide unique names!";
+	public static final String COORDINATION_NAME_NOT_UNIQUE = "Multiple coordinations with the name '%s' have been declared. Please provide unique names!";
 
 	/* Generator problems */
 	public static final String EMPTY_UML_COMPONENT_DIAGRAM_MESSAGE = "Sorry, we cannot generate a component diagram. Your Context Map seems to be empty.";
 	public static final String EMPTY_UML_CLASS_DIAGRAM_MESSAGE = "Sorry, we cannot generate a class diagram for this Bounded Context. There are no Aggregates or none of the Aggregates contain any domain objects (entities, value objects or domain events).";
 	public static final String EMPTY_UML_CLASS_DIAGRAM_MESSAGE_AGGREGATE = "Sorry, we cannot generate a class diagram for this Aggregate. There are no domain objects (entities, value objects or domain events).";
 	public static final String EMPTY_UML_CLASS_DIAGRAM_MESSAGE_MODULE = "Sorry, we cannot generate a class diagram for this module. There are no domain objects (entities, value objects or domain events).";
-
+	
 	/* General input problems */
 	public static final String ENTITY_NAME_CONTAINS_INVALID_CHARACTERS = "The entity name should consist of the following characters: a-z, A-Z, 0-9, _. Please rename the entity accordingly before applying transformations.";
 	public static final String VERB_CONTAINS_INVALID_CHARACTERS = "The verb should consist of the following characters: a-z, A-Z, 0-9, _. Please rename it accordingly before applying transformations.";
@@ -68,4 +73,6 @@ public class ValidationMessages {
 	/* Quickfix suggestions */
 	public static final String SPLIT_STORY_BY_VERB_SUGGESTION = "You could split your story by its operation/verb.";
 	public static final String VISUALIZE_FLOW_WITH_SKETCH_MINER = "Do you want to vizualize this flow? You can open it in BPMN Sketch Miner ...";
+	public static final String VISUALIZE_COORDINATION_WITH_SKETCH_MINER = "Do you want to vizualize this coordination? You can open it in BPMN Sketch Miner ...";
+
 }

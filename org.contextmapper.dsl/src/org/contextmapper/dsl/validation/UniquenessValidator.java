@@ -25,6 +25,7 @@ import static org.contextmapper.dsl.validation.ValidationMessages.SUBDOMAIN_OBJE
 import static org.contextmapper.dsl.validation.ValidationMessages.USE_CASE_NAME_NOT_UNIQUE;
 import static org.contextmapper.dsl.validation.ValidationMessages.DOMAIN_NOT_UNIQUE;
 import static org.contextmapper.dsl.validation.ValidationMessages.FLOW_NAME_NOT_UNIQUE;
+import static org.contextmapper.dsl.validation.ValidationMessages.COORDINATION_NAME_NOT_UNIQUE;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -38,6 +39,7 @@ import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLPackage;
 import org.contextmapper.dsl.contextMappingDSL.Domain;
 import org.contextmapper.dsl.contextMappingDSL.Flow;
+import org.contextmapper.dsl.contextMappingDSL.Coordination;
 import org.contextmapper.dsl.contextMappingDSL.SculptorModule;
 import org.contextmapper.dsl.contextMappingDSL.Subdomain;
 import org.contextmapper.dsl.contextMappingDSL.UserRequirement;
@@ -190,6 +192,18 @@ public class UniquenessValidator extends AbstractCMLValidator {
 			}));
 			if (IteratorExtensions.size(duplicateFlows) > 1)
 				error(String.format(FLOW_NAME_NOT_UNIQUE, flow.getName()), flow, ContextMappingDSLPackage.Literals.FLOW__NAME);
+		}
+	}
+	
+	@Check
+	public void validateThatCoordinationNameIsUnique(final Coordination coordination) {
+		if (coordination != null) {
+			Iterator<Coordination> allCoordinations = EcoreUtil2.eAllOfType(getRootCMLModel(coordination), Coordination.class).iterator();
+			Iterator<Coordination> duplicateCoordinations = IteratorExtensions.filter(allCoordinations, ((Function1<Coordination, Boolean>) (Coordination c) -> {
+				return c.getName().equals(coordination.getName());
+			}));
+			if (IteratorExtensions.size(duplicateCoordinations) > 1)
+				error(String.format(COORDINATION_NAME_NOT_UNIQUE, coordination.getName()), coordination, ContextMappingDSLPackage.Literals.COORDINATION__NAME);
 		}
 	}
 	

@@ -41,5 +41,4 @@ class ContextMappingDSLScopeProvider extends AbstractDeclarativeScopeProvider {
 		}
 		super.getScope(context, reference)
 	}
-
 }

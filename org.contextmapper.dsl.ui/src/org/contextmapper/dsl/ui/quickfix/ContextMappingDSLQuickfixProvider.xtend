@@ -38,6 +38,7 @@ import org.eclipse.xtext.ui.editor.utils.EditorUtils
 import org.eclipse.xtext.validation.Issue
 
 import static org.contextmapper.dsl.quickfixes.CreateMissingBoundedContextQuickFix.LINK_DIAGNOSTIC_MESSAGE_PATTERN
+import org.contextmapper.dsl.validation.ApplicationCoordinationSemanticsValidator
 
 /**
  * Custom quickfix registry.
@@ -73,6 +74,14 @@ class ContextMappingDSLQuickfixProvider extends DefaultQuickfixProvider {
 	@Fix(ApplicationFlowSemanticsValidator.SKETCH_MINER_INFO_ID)
 	def openSketchMiner(Issue issue, IssueResolutionAcceptor acceptor) {
 		acceptor.accept(issue, "Open flow in BPMN Sketch Miner", "Open this flow in BPMN Sketch Miner",
+			null, [ EObject element, IModificationContext context |
+				Program.launch(new SketchMinerLinkCreator().createSketchMinerLink(element));
+			]);
+	}
+	
+	@Fix(ApplicationCoordinationSemanticsValidator.SKETCH_MINER_INFO_ID)
+	def openSketchMinerForCoordination(Issue issue, IssueResolutionAcceptor acceptor) {
+		acceptor.accept(issue, "Open coordination in BPMN Sketch Miner", "Open this coordination in BPMN Sketch Miner",
 			null, [ EObject element, IModificationContext context |
 				Program.launch(new SketchMinerLinkCreator().createSketchMinerLink(element));
 			]);
