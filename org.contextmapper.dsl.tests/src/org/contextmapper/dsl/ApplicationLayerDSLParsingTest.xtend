@@ -973,4 +973,144 @@ class ApplicationLayerDSLParsingTest {
 		assertFalse(flowStep.stateTransition.target.to.get(1).isEndState);
 	}
 
+	@Test
+	def void canDefineCoordination() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext TestContext {
+				Application {
+					Coordination TestCoordination {
+					}
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		assertEquals(1, result.boundedContexts.get(0).application.coordinations.size);
+		assertEquals("TestCoordination", result.boundedContexts.get(0).application.coordinations.get(0).name);
+	}
+	
+	@Test
+	def void canDefineCoordinationStep() {
+		// given
+		val String dslSnippet = '''
+			ContextMap TestMap {
+				contains TestContext
+			}
+			BoundedContext TestContext {
+				Application {
+					Coordination TestCoordination {
+						TestContext::TestService::testOperation;
+					}
+					
+					Service TestService {
+						testOperation;
+					}
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		assertEquals(1, result.boundedContexts.get(0).application.coordinations.get(0).coordinationSteps.size);
+		assertEquals("TestContext", result.boundedContexts.get(0).application.coordinations.get(0).coordinationSteps.get(0).boundedContext.name);
+		assertEquals("TestService", result.boundedContexts.get(0).application.coordinations.get(0).coordinationSteps.get(0).service.name);
+		assertEquals("testOperation", result.boundedContexts.get(0).application.coordinations.get(0).coordinationSteps.get(0).operation.name);
+	}
+	
+	@Test
+	def void canDefineCoordinationStepReferencingUpstreamContext() {
+		// given
+		val String dslSnippet = '''
+			ContextMap TestMap {
+				contains ContextA
+				contains ContextB
+				
+				ContextA <- ContextB
+			}
+			BoundedContext ContextA {
+				Application {
+					Coordination TestCoordination {
+						ContextA::ServiceA::operationA;
+						ContextB::ServiceB::operationB;
+					}
+					
+					Service ServiceA {
+						operationA;
+					}
+				}
+			}
+			BoundedContext ContextB {
+				Application {
+					Service ServiceB {
+						operationB;
+					}
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		assertEquals(2, result.boundedContexts.get(0).application.coordinations.get(0).coordinationSteps.size);
+		assertEquals("ContextB", result.boundedContexts.get(0).application.coordinations.get(0).coordinationSteps.get(1).boundedContext.name);
+		assertEquals("ServiceB", result.boundedContexts.get(0).application.coordinations.get(0).coordinationSteps.get(1).service.name);
+		assertEquals("operationB", result.boundedContexts.get(0).application.coordinations.get(0).coordinationSteps.get(1).operation.name);
+	}	
+
+	@Test
+	def void canDefineCoordinationStepReferencingContextInSymetricRelationship() {
+		// given
+		val String dslSnippet = '''
+			ContextMap TestMap {
+				contains ContextA
+				contains ContextB
+				
+				ContextA <-> ContextB
+			}
+			BoundedContext ContextA {
+				Application {
+					Coordination CoordinationA {
+						ContextA::ServiceA::operationA;
+						ContextB::ServiceB::operationB;
+					}
+					
+					Service ServiceA {
+						operationA;
+					}
+				}
+			}
+			BoundedContext ContextB {
+				Application {
+					Coordination CoordinationB {
+						ContextB::ServiceB::operationB;
+						ContextA::ServiceA::operationA;
+					}
+					
+					Service ServiceB {
+						operationB;
+					}
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		assertEquals(2, result.boundedContexts.get(0).application.coordinations.get(0).coordinationSteps.size);
+		assertEquals("ContextB", result.boundedContexts.get(0).application.coordinations.get(0).coordinationSteps.get(1).boundedContext.name);
+		assertEquals("ServiceB", result.boundedContexts.get(0).application.coordinations.get(0).coordinationSteps.get(1).service.name);
+		assertEquals("operationB", result.boundedContexts.get(0).application.coordinations.get(0).coordinationSteps.get(1).operation.name);
+		assertEquals(2, result.boundedContexts.get(1).application.coordinations.get(0).coordinationSteps.size);
+		assertEquals("ContextA", result.boundedContexts.get(1).application.coordinations.get(0).coordinationSteps.get(1).boundedContext.name);
+		assertEquals("ServiceA", result.boundedContexts.get(1).application.coordinations.get(0).coordinationSteps.get(1).service.name);
+		assertEquals("operationA", result.boundedContexts.get(1).application.coordinations.get(0).coordinationSteps.get(1).operation.name);
+	}
 }

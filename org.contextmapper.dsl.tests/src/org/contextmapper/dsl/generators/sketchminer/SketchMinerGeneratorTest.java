@@ -67,6 +67,32 @@ public class SketchMinerGeneratorTest extends AbstractCMLInputFileTest {
 			this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem, new IGeneratorContextMock());
 		});
 	}
+	
+	@ParameterizedTest
+	@ValueSource(strings = { "simple-coordination-test-1" })
+	public void canGenerateFilesForBoundedContextCoordinations(String inputFileName) throws IOException {
+		// given
+		ContextMappingModel model = getOriginalResourceOfTestCML(inputFileName + ".cml").getContextMappingModel();
+
+		// when
+		IFileSystemAccess2Mock filesystem = new IFileSystemAccess2Mock();
+		this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem, new IGeneratorContextMock());
+
+		// then
+		assertTrue(filesystem.getGeneratedFilesSet().contains("coordinations/testmodel_BC_ContextA_TestCoordination.sketch_miner"));
+	}
+
+	@Test
+	public void cannotGenerateFileIfNoCoordinationExists() throws IOException {
+		// given
+		ContextMappingModel model = getOriginalResourceOfTestCML("no-coordination-existing-test-1.cml").getContextMappingModel();
+
+		// when, then
+		assertThrows(ContextMapperApplicationException.class, () -> {
+			IFileSystemAccess2Mock filesystem = new IFileSystemAccess2Mock();
+			this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem, new IGeneratorContextMock());
+		});
+	}
 
 	@Override
 	protected String getTestFileDirectory() {

@@ -1,0 +1,45 @@
+ContextMap InsuranceMap {
+  contains UserContext
+  contains InsuranceQuotes
+
+  InsuranceQuotes <- UserContext
+}
+
+BoundedContext UserContext {
+
+  Application {
+    Service UserService {
+      void submitRequest(@Request request);
+    }
+  }
+}
+
+BoundedContext InsuranceQuotes {
+  
+  Application {
+    Coordination QuoteRequestAcceptedCoordination {
+      UserContext::UserService::submitRequest;
+      InsuranceQuotes::QuoteRequestService::checkRequest;
+      InsuranceQuotes::QuoteRequestService::receiveAndCheckQuote;
+      InsuranceQuotes::QuoteRequestService::accept;
+    }
+
+    Service QuoteRequestService {
+      void checkRequest(@Request request);
+      void receiveAndCheckQuote(@Request request);
+      void reject(@Request request);
+      void accept(@Request request);
+    }
+  }
+  
+  Aggregate QuoteRequest {
+    Entity Request {
+      aggregateRoot
+    }
+    
+    enum RequestState {
+      aggregateLifecycle
+      SUBMITTED, RECEIVED, REJECTED, ACCEPTED, EXPIRED, POLICY_CREATED
+    }
+  }
+}

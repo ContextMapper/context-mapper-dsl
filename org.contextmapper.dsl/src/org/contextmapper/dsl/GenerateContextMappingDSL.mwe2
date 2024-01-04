@@ -132,6 +132,7 @@ Workflow {
 			validator = {
 				composedCheck = "org.contextmapper.dsl.validation.BoundedContextSemanticsValidator"
 				composedCheck = "org.contextmapper.dsl.validation.ApplicationFlowSemanticsValidator"
+				composedCheck = "org.contextmapper.dsl.validation.ApplicationCoordinationSemanticsValidator"
 				composedCheck = "org.contextmapper.dsl.validation.BoundedContextRelationshipSemanticsValidator"
 				composedCheck = "org.contextmapper.dsl.validation.ContextMapSemanticsValidator"
 				composedCheck = "org.contextmapper.dsl.validation.AggregateSemanticsValidator"
@@ -143,7 +144,7 @@ Workflow {
 				composedCheck = "org.contextmapper.dsl.validation.DomainObjectValidator"
 				composedCheck = "org.contextmapper.dsl.validation.DomainValidator"
 				composedCheck = "org.contextmapper.dsl.validation.TacticDDDOperationsValidator"
-
+				
 				// Generates checks for @Deprecated grammar annotations, an IssueProvider and a corresponding PropertyPage
 				generateDeprecationValidation = true
 
