@@ -1,0 +1,20 @@
+
+Domain TestDomain {
+
+	Subdomain TestSubDomain1 {
+	
+	}
+	
+	Subdomain TestSubDomain2 {
+	
+	}
+
+}
+
+Domain OtherDomain {
+
+    Subdomain TestSubDomain3 {
+        
+    }
+
+}

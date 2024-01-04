@@ -1,0 +1,22 @@
+import "./imported-file-test-1.cml"
+
+Domain DirectDomain {
+	
+	Subdomain DirectSubdomain {
+		
+		Entity DirectEntity
+	}
+}
+
+ContextMap testMap {
+    
+}
+
+BoundedContext context1 implements DirectSubdomain
+BoundedContext context2 implements OtherSubdomain {
+    Aggregate MyAggregate {
+        Entity MyEntity {
+            aggregateRoot
+        }
+    }
+}

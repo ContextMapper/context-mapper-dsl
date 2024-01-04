@@ -1,0 +1,10 @@
+Domain OtherDomain {
+	
+	Subdomain OtherSubdomain1 {
+		Entity OtherEntity1
+	}
+	
+	Subdomain OtherSubdomain2 {
+		Entity OtherEntity1
+	}
+}
