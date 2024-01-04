@@ -20,7 +20,8 @@ Require-Bundle: org.contextmapper.dsl,
  org.eclipse.osgi,
  org.freemarker.freemarker;bundle-version="2.3.30",
  junit-jupiter-api,
- junit-jupiter-params
+ junit-jupiter-params,
+ org.slf4j.api;bundle-version="1.7.30"
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: org.contextmapper.dsl.tests;x-internal=true,
  org.contextmapper.tactic.dsl.tests;x-internal=true,

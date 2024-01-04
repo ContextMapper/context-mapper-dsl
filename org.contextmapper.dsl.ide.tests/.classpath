@@ -5,6 +5,11 @@
 			<attribute name="test" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="src" output="target/test-classes" path="xtend-gen">
+		<attributes>
+			<attribute name="test" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="src" output="target/test-classes" path="src-gen">
 		<attributes>
 			<attribute name="test" value="true"/>

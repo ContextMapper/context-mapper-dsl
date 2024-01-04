@@ -18,13 +18,12 @@ package org.contextmapper.dsl.generator;
 import java.util.List;
 import java.util.Optional;
 
+import org.contextmapper.dsl.cml.CMLModelDomainAndSubdomainResolver;
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
-import org.contextmapper.dsl.contextMappingDSL.Domain;
 import org.contextmapper.dsl.contextMappingDSL.Flow;
 import org.contextmapper.dsl.contextMappingDSL.SculptorModule;
-import org.contextmapper.dsl.contextMappingDSL.Subdomain;
 import org.contextmapper.dsl.contextMappingDSL.UseCase;
 import org.contextmapper.dsl.contextMappingDSL.UserRequirement;
 import org.contextmapper.dsl.generator.exception.GeneratorInputException;
@@ -48,9 +47,12 @@ public class PlantUMLGenerator extends AbstractContextMappingModelGenerator {
 
 	private static final String PLANT_UML_FILE_EXT = "puml";
 
+	private CMLModelDomainAndSubdomainResolver subdomainResolver;
+
 	@Override
 	protected void generateFromContextMappingModel(ContextMappingModel model, IFileSystemAccess2 fsa,
 			URI inputFileURI) {
+		this.subdomainResolver = new CMLModelDomainAndSubdomainResolver(this.contextMappingModel);
 		checkPreconditions();
 		String fileName = inputFileURI.trimFileExtension().lastSegment();
 
@@ -97,13 +99,13 @@ public class PlantUMLGenerator extends AbstractContextMappingModelGenerator {
 		}
 
 		// generate class diagrams for subdomains (that have entities)
-		for (Domain domain : model.getDomains()) {
-			domain.getSubdomains().stream().filter(subdomain -> !subdomain.getEntities().isEmpty())
-					.forEach(subdomain -> {
-						fsa.generateFile(fileName + "_SD_" + subdomain.getName() + "." + PLANT_UML_FILE_EXT,
-								new PlantUMLSubdomainClassDiagramCreator(domain.getName()).createDiagram(subdomain));
-					});
-		}
+		subdomainResolver.resolveAllSubdomains().stream().filter(subdomain -> !subdomain.getEntities().isEmpty())
+				.forEach(subdomain -> {
+					fsa.generateFile(fileName + "_SD_" + subdomain.getName() + "." + PLANT_UML_FILE_EXT,
+							new PlantUMLSubdomainClassDiagramCreator(
+									subdomainResolver.resolveDomain4Subdomain(subdomain.getName()).getName())
+									.createDiagram(subdomain));
+				});
 
 		// generate Use Case diagram out of user requirements, if available
 		if (!model.getUserRequirements().isEmpty())
@@ -155,13 +157,8 @@ public class PlantUMLGenerator extends AbstractContextMappingModelGenerator {
 	}
 
 	private boolean modelHasSubdomainWithEntities() {
-		for (Domain domain : this.contextMappingModel.getDomains()) {
-			Optional<Subdomain> optSubdomain = domain.getSubdomains().stream()
-					.filter(subdomain -> !subdomain.getEntities().isEmpty()).findAny();
-			if (optSubdomain.isPresent())
-				return true;
-		}
-		return false;
+		return subdomainResolver.resolveAllSubdomains().stream().filter(subdomain -> !subdomain.getEntities().isEmpty())
+				.findAny().isPresent();
 	}
 
 }
