@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.contextmapper.dsl</groupId>
 		<artifactId>org.contextmapper.dsl.parent</artifactId>
-		<version>6.11.0-SNAPSHOT</version>
+		<version>6.11.0</version>
 	</parent>
 	<artifactId>org.contextmapper.dsl.tests</artifactId>
 	<packaging>eclipse-test-plugin</packaging>
