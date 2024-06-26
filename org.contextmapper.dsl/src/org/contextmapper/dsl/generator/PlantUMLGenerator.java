@@ -31,6 +31,7 @@ import org.contextmapper.dsl.generator.plantuml.PlantUMLAggregateClassDiagramCre
 import org.contextmapper.dsl.generator.plantuml.PlantUMLBoundedContextClassDiagramCreator;
 import org.contextmapper.dsl.generator.plantuml.PlantUMLComponentDiagramCreator;
 import org.contextmapper.dsl.generator.plantuml.PlantUMLModuleClassDiagramCreator;
+import org.contextmapper.dsl.generator.plantuml.PlantUMLStakeholderMapGenerator;
 import org.contextmapper.dsl.generator.plantuml.PlantUMLStateDiagramCreator4Aggregate;
 import org.contextmapper.dsl.generator.plantuml.PlantUMLStateDiagramCreator4Flow;
 import org.contextmapper.dsl.generator.plantuml.PlantUMLSubdomainClassDiagramCreator;
@@ -95,6 +96,12 @@ public class PlantUMLGenerator extends AbstractContextMappingModelGenerator {
 			for (Flow flow : getFlowsWithStates(boundedContext)) {
 				fsa.generateFile(fileName + "_BC_" + boundedContext.getName() + "_" + flow.getName() + "_StateDiagram."
 						+ PLANT_UML_FILE_EXT, new PlantUMLStateDiagramCreator4Flow().createDiagram(flow));
+			}
+			
+			// Stakeholder Map
+			if (!boundedContext.getStakeholders().isEmpty()) {
+				fsa.generateFile(fileName + "_BC_" + boundedContext.getName() + "_StakeholderMap." + PLANT_UML_FILE_EXT,
+						new PlantUMLStakeholderMapGenerator().createDiagram(boundedContext));
 			}
 		}
 

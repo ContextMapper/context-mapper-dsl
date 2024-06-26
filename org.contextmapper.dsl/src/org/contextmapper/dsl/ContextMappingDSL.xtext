@@ -60,7 +60,8 @@ BoundedContext:
 			('knowledgeLevel' ('=')? knowledgeLevel=KnowledgeLevel)?)
 			('businessModel' ('=')? businessModel=STRING)? &
             ('evolution' ('=')? evolution=Evolution)? &
-			((application = Application)? &
+			((stakeholders += AbstractStakeholder)* &
+			(application = Application)? &
 			(modules += SculptorModule)* &
 			(aggregates += Aggregate)* &
 			(domainServices += Service)*)
@@ -356,6 +357,23 @@ SculptorModule :
   CLOSE)?
 ;
 
+AbstractStakeholder:
+	StakeholderGroup | Stakeholder
+;
+
+StakeholderGroup:
+	"StakeholderGroup" name=STRING (OPEN
+		(stakeholders+=Stakeholder)*
+	CLOSE)?
+;
+
+Stakeholder:
+	"Stakeholder" name=STRING (OPEN
+		("influence" ("=")? influence=INFLUENCE)?
+		("interest" ("=")? interest=INTEREST)?
+	CLOSE)?
+;
+
 enum UpstreamRole:
 	PUBLISHED_LANGUAGE = 'PL' | OPEN_HOST_SERVICE = 'OHS'
 ;
@@ -402,6 +420,14 @@ enum Similarity :
 
 enum Evolution :
      UNDEFINED | GENESIS | CUSTOM_BUILT | PRODUCT | COMMODITY
+;
+
+enum INFLUENCE :
+     HIGH | MEDIUM | LOW
+;
+
+enum INTEREST :
+     HIGH | MEDIUM | LOW
 ;
 
 // define terminals
