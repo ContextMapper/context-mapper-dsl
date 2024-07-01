@@ -24,6 +24,7 @@ import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.Flow;
 import org.contextmapper.dsl.contextMappingDSL.SculptorModule;
+import org.contextmapper.dsl.contextMappingDSL.Stakeholders;
 import org.contextmapper.dsl.contextMappingDSL.UseCase;
 import org.contextmapper.dsl.contextMappingDSL.UserRequirement;
 import org.contextmapper.dsl.generator.exception.GeneratorInputException;
@@ -97,12 +98,11 @@ public class PlantUMLGenerator extends AbstractContextMappingModelGenerator {
 				fsa.generateFile(fileName + "_BC_" + boundedContext.getName() + "_" + flow.getName() + "_StateDiagram."
 						+ PLANT_UML_FILE_EXT, new PlantUMLStateDiagramCreator4Flow().createDiagram(flow));
 			}
-			
-			// Stakeholder Map
-			if (!boundedContext.getStakeholders().isEmpty()) {
-				fsa.generateFile(fileName + "_BC_" + boundedContext.getName() + "_StakeholderMap." + PLANT_UML_FILE_EXT,
-						new PlantUMLStakeholderMapGenerator().createDiagram(boundedContext));
-			}
+		}
+		
+		for (Stakeholders stakeholders : model.getStakeholders()) {
+			fsa.generateFile(fileName + "_BC_" + stakeholders.getContexts().get(0).getName() + "_StakeholderMap."
+					+ PLANT_UML_FILE_EXT, new PlantUMLStakeholderMapGenerator().createDiagram(stakeholders));
 		}
 
 		// generate class diagrams for subdomains (that have entities)

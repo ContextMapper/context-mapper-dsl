@@ -27,7 +27,9 @@ ContextMappingModel:
 		(map = ContextMap)? &
 		(boundedContexts += BoundedContext)* &
 		(domains += Domain)* &
-		(userRequirements += UserRequirement)*
+		(userRequirements += UserRequirement)* &
+		(stakeholders += Stakeholders)* &
+		(valueRegisters += ValueRegister)*
 	)
 ;
 
@@ -60,8 +62,7 @@ BoundedContext:
 			('knowledgeLevel' ('=')? knowledgeLevel=KnowledgeLevel)?)
 			('businessModel' ('=')? businessModel=STRING)? &
             ('evolution' ('=')? evolution=Evolution)? &
-			((stakeholders += AbstractStakeholder)* &
-			(application = Application)? &
+			((application = Application)? &
 			(modules += SculptorModule)* &
 			(aggregates += Aggregate)* &
 			(domainServices += Service)*)
@@ -357,6 +358,12 @@ SculptorModule :
   CLOSE)?
 ;
 
+Stakeholders:
+	"Stakeholders" "of" (contexts+=[BoundedContext]) ("," contexts+=[BoundedContext])*(OPEN
+		(stakeholders+=AbstractStakeholder)*
+	CLOSE)?
+;
+
 AbstractStakeholder:
 	StakeholderGroup | Stakeholder
 ;
@@ -372,6 +379,36 @@ Stakeholder:
 		("influence" ("=")? influence=INFLUENCE)?
 		("interest" ("=")? interest=INTEREST)?
 	CLOSE)?
+;
+
+ValueRegister:
+	"ValueRegister" name=ID "for" context=[BoundedContext] (OPEN
+		values+=ValueCluster*
+	CLOSE)
+;
+
+ValueCluster:
+	"Value" name=ID (OPEN
+		("core" ("=")? coreValue=CoreValue )?
+		(("demonstrator" ("=")?)? demonstrator=STRING)?
+		
+		elicitations+=ValueElicitation*
+	CLOSE)
+;
+
+ValueElicitation:
+	'Stakeholder' stakeholder=[Stakeholder]
+	'Priority' priority=PRIORITY? 
+	'Impact' impact=IMPACT? 
+	'Consequences' consequences+=Consequence* 
+;
+
+Consequence:
+	('good'|'bad'|'neutral') consequence=STRING action=Action?
+;
+
+Action:
+	'action' action=STRING type=('ACT'|'MONITOR'|'tbc') 	
 ;
 
 enum UpstreamRole:
@@ -428,6 +465,18 @@ enum INFLUENCE :
 
 enum INTEREST :
      HIGH | MEDIUM | LOW
+;
+
+enum PRIORITY:
+	HIGH | MEDIUM | LOW 
+;
+
+enum IMPACT:
+	HIGH | MEDIUM | LOW 
+;
+
+enum CoreValue:
+	AUTONOMY | CARE | CONTROL | FAIRNESS | INCLUSIVENESS | INNOVATION | PERFECTION | PRIVACY | RESPECT | SUSTAINABILITY | TRANSPARENCY | TRUST
 ;
 
 // define terminals

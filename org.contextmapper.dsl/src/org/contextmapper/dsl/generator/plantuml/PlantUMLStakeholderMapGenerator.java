@@ -18,14 +18,14 @@ package org.contextmapper.dsl.generator.plantuml;
 import java.util.List;
 
 import org.contextmapper.dsl.contextMappingDSL.AbstractStakeholder;
-import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.Stakeholder;
 import org.contextmapper.dsl.contextMappingDSL.StakeholderGroup;
+import org.contextmapper.dsl.contextMappingDSL.Stakeholders;
 
 import com.google.common.collect.Lists;
 
-public class PlantUMLStakeholderMapGenerator extends AbstractPlantUMLMindMapDiagramCreator<BoundedContext>
-		implements PlantUMLDiagramCreator<BoundedContext> {
+public class PlantUMLStakeholderMapGenerator extends AbstractPlantUMLMindMapDiagramCreator<Stakeholders>
+		implements PlantUMLDiagramCreator<Stakeholders> {
 
 	private static final String STAR = "*";
 
@@ -33,10 +33,10 @@ public class PlantUMLStakeholderMapGenerator extends AbstractPlantUMLMindMapDiag
 	private List<AbstractStakeholder> right = Lists.newArrayList();
 
 	@Override
-	protected void printDiagramContent(final BoundedContext context) {
-		initData(context);
+	protected void printDiagramContent(final Stakeholders stakeholders) {
+		initData(stakeholders);
 
-		sb.append(STAR).append(" ").append(context.getName());
+		sb.append(STAR).append(" ").append(stakeholders.getContexts().get(0).getName());
 		linebreak();
 		printStakeholders(right);
 		linebreak();
@@ -65,13 +65,13 @@ public class PlantUMLStakeholderMapGenerator extends AbstractPlantUMLMindMapDiag
 		}
 	}
 
-	private void initData(final BoundedContext context) {
+	private void initData(final Stakeholders stakeholders) {
 		left.clear();
 		right.clear();
 
 		boolean addLeft = true;
 
-		for (AbstractStakeholder s : context.getStakeholders()) {
+		for (AbstractStakeholder s : stakeholders.getStakeholders()) {
 			if (addLeft)
 				left.add(s);
 			else
