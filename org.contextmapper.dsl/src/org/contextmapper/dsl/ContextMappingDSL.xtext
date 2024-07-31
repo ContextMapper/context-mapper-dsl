@@ -346,10 +346,10 @@ UserActivityDefaultVerb:
 
 SculptorModule :
   (doc=STRING)?
-  "Module" name=ID (OPEN
-    (external?="external")?
-    ("basePackage" "=" basePackage=JavaIdentifier )?
-    ("hint" "=" hint=STRING)?
+  'Module' name=ID (OPEN
+    (external?='external')?
+    ('basePackage' '=' basePackage=JavaIdentifier )?
+    ('hint' '=' hint=STRING)?
     ((services+=Service) |
      (resources+=Resource) |
      (consumers+=Consumer) |
@@ -358,8 +358,9 @@ SculptorModule :
   CLOSE)?
 ;
 
+
 Stakeholders:
-	"Stakeholders" "of" (contexts+=[BoundedContext]) ("," contexts+=[BoundedContext])*(OPEN
+	'Stakeholders' 'of' (contexts+=[BoundedContext]) (',' contexts+=[BoundedContext])*(OPEN
 		(stakeholders+=AbstractStakeholder)*
 	CLOSE)?
 ;
@@ -369,37 +370,38 @@ AbstractStakeholder:
 ;
 
 StakeholderGroup:
-	"StakeholderGroup" name=STRING (OPEN
+	'StakeholderGroup' name=STRING (OPEN
 		(stakeholders+=Stakeholder)*
 	CLOSE)?
 ;
 
 Stakeholder:
-	"Stakeholder" name=STRING (OPEN
-		("influence" ("=")? influence=INFLUENCE)?
-		("interest" ("=")? interest=INTEREST)?
+	'Stakeholder' name=STRING (OPEN
+		('influence' ('=')? influence=INFLUENCE)?
+		('interest' ('=')? interest=INTEREST)?
 	CLOSE)?
 ;
 
 ValueRegister:
-	"ValueRegister" name=ID "for" context=[BoundedContext] (OPEN
+	'ValueRegister' name=ID 'for' context=[BoundedContext] (OPEN
 		valueClusters+=ValueCluster*
 		values+=Value*
 	CLOSE)
 ;
 
+
 ValueCluster:
-	"ValueCluster" name=ID (OPEN
-		"core" ("=")? coreValue=CoreValue
-		(("demonstrator" ("=")?)? demonstrators+=STRING)*
+	'ValueCluster' name=ID (OPEN
+		'core' ('=')? coreValue=CoreValue
+		(('demonstrator' ('=')?)? demonstrators+=STRING)*
 		values+=Value
-		elicitations+=ValueElicitation* // needed on this level?
+		//elicitations+=ValueElicitation* // needed on this level?
 	CLOSE)
 ;
 
 Value:
-	"Value" name=ID (OPEN
-		(("demonstrator" ("=")?)? demonstrators+=STRING)*
+	'Value' name=ID (OPEN
+		(('demonstrator' ('=')?)? demonstrators+=STRING)*
 		elicitations+=ValueElicitation*
 	CLOSE)
 ;
@@ -411,33 +413,34 @@ ValueElicitation:
 		'Consequences' consequences+=Consequence* 
 	CLOSE)
 ;
-
+/*
 ValueDemonstrator:
-	ValueEpic | ValueNarrative | ValueWeigthing | STRING
+	ValueEpic | ValueNarrative | ValueWeigthing
 ;
+*/
 
 ValueEpic: (OPEN
-    "As a" stakeholder=STRING "I value" coreValue=CoreValue "as demonstrated in" // TODO: stakeholder and value actually already defined upwards in hierarchy 
-    ("a realization of" realizedLevel1Values+=STRING)+
-    ("a reduction of" reducedLevel1Values+=STRING)+   
+    'As a' stakeholder=STRING 'I value' coreValue=CoreValue 'as demonstrated in' // TODO: stakeholder and value actually already defined upwards in hierarchy 
+    ('a realization of' realizedLevel1Values+=STRING)+
+    ('a reduction of' reducedLevel1Values+=STRING)+   
 	CLOSE)
 ;
 
 ValueNarrative: (OPEN
-	"When the SOI executes" feature=STRING ","
-    "stakeholders expect it to promote, protect or create" promotedValues=STRING ','
-    "possibly degrading or prohibiting" harmedValues=STRING 
-    "with the following externally observable and/or internally auditable behavior:" preAndPostConditions=STRING
+	'When the SOI executes' feature=STRING ','
+    'stakeholders expect it to promote, protect or create' promotedValues=STRING ','
+    'possibly degrading or prohibiting' harmedValues=STRING 
+    'with the following externally observable and/or internally auditable behavior:' preAndPostConditions=STRING
 	CLOSE)
 ;
 
 // Q: ValueDemonstrator vs. ValueElicitation ? contains overlapping information ... (stakeholder, priorities, benefits and harms are not same as consequences?)
 
 ValueWeigthing: (OPEN
-	"In the context of SOI" system=STRING ',' // TODO: system already defined above (BC)
-    "stakeholder" stakeholder=STRING "values" value1=STRING "more than" value2=STRING // TODO references
-    "expecting benefits such as" benefits=STRING 
-    "running the risk of harms such as" harms=STRING 
+	'In the context of SOI' system=STRING ',' // TODO: system already defined above (BC)
+    'stakeholder' stakeholder=STRING 'values' value1=STRING 'more than' value2=STRING // TODO references
+    'expecting benefits such as' benefits=STRING 
+    'running the risk of harms such as' harms=STRING 
 	CLOSE)
 ;
 
@@ -448,6 +451,7 @@ Consequence:
 Action:
 	'action' action=STRING type=('ACT'|'MONITOR'|'tbc') 	
 ;
+
 
 enum UpstreamRole:
 	PUBLISHED_LANGUAGE = 'PL' | OPEN_HOST_SERVICE = 'OHS'
