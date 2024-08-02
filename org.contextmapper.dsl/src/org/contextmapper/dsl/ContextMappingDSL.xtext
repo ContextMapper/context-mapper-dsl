@@ -310,8 +310,7 @@ UserRequirement:
 ;
 
 UseCase:
-	'UseCase' name=ID
-	(OPEN
+	'UseCase' name=ID (OPEN
 		(('actor' ('=')? role=STRING)? &
 		('secondaryActors' ('=')? secondaryActors+=STRING ("," secondaryActors+=STRING)*)? &
 		('interactions' ('=')? features+=Feature ("," features+=Feature)*)? &
@@ -322,8 +321,7 @@ UseCase:
 ;
 
 UserStory:
-	'UserStory' name=ID ('split by' splittingStory=[UserStory])?
-	(OPEN
+	'UserStory' name=ID ('split by' splittingStory=[UserStory])? (OPEN
 		(('As a' | 'As an') role=STRING (features+=Feature)+ 'so that' benefit=STRING)?
 	CLOSE)?
 ;
@@ -360,8 +358,10 @@ SculptorModule :
 
 
 Stakeholders:
-	'Stakeholders' 'of' (contexts+=[BoundedContext]) (',' contexts+=[BoundedContext])*(OPEN
-		(stakeholders+=AbstractStakeholder)*
+	'Stakeholders' 'of' (contexts+=[BoundedContext]) (',' contexts+=[BoundedContext])* (OPEN
+		(
+			(stakeholders += AbstractStakeholder)*	
+		)
 	CLOSE)?
 ;
 
@@ -371,76 +371,96 @@ AbstractStakeholder:
 
 StakeholderGroup:
 	'StakeholderGroup' name=STRING (OPEN
-		(stakeholders+=Stakeholder)*
+		(
+			(stakeholders += Stakeholder)*	
+		)
 	CLOSE)?
 ;
 
 Stakeholder:
 	'Stakeholder' name=STRING (OPEN
-		('influence' ('=')? influence=INFLUENCE)?
-		('interest' ('=')? interest=INTEREST)?
+		(
+			('influence' ('=')? influence=INFLUENCE)? &
+			('interest' ('=')? interest=INTEREST)?	
+		)
 	CLOSE)?
 ;
 
 ValueRegister:
 	'ValueRegister' name=ID 'for' context=[BoundedContext] (OPEN
-		valueClusters+=ValueCluster*
-		values+=Value*
-	CLOSE)
+		(
+			(valueClusters += ValueCluster)* &
+			(values += Value)* &
+			(valueEpics += ValueEpic)* &
+			(valueNarratives += ValueNarrative)* &
+			(valueWeightings += ValueWeigthing)*	
+		)
+	CLOSE)?
 ;
-
 
 ValueCluster:
 	'ValueCluster' name=ID (OPEN
-		'core' ('=')? coreValue=CoreValue
-		(('demonstrator' ('=')?)? demonstrators+=STRING)*
-		values+=Value
-		//elicitations+=ValueElicitation* // needed on this level?
-	CLOSE)
+		(
+			(('core' ('=')? coreValue7000 = CoreValue) | ('core' ('=')? coreValue = STRING)) &
+			('demonstrator' ('=')? demonstrators += STRING)* &
+			(values += Value)* &
+			(elicitations += ValueElicitation)*	
+		)
+	CLOSE)?
 ;
 
 Value:
 	'Value' name=ID (OPEN
-		(('demonstrator' ('=')?)? demonstrators+=STRING)*
-		elicitations+=ValueElicitation*
-	CLOSE)
+		(
+			(coreValue ?= 'core')? &
+			('demonstrator' ('=')? demonstrators += STRING)* &
+			(elicitations += ValueElicitation)*	
+		)
+	CLOSE)?
 ;
+
+// Q: table B.1  abbilden? if, how?
 
 ValueElicitation:
 	'Stakeholder' stakeholder=[Stakeholder] (OPEN
-		'Priority' priority=PRIORITY? 
-		'Impact' impact=IMPACT? 
-		'Consequences' consequences+=Consequence* 
+		(
+			('priority' priority = PRIORITY)? 
+			('impact' impact = IMPACT)? 
+			('consequences' consequences += Consequence)*	
+		)
+	CLOSE)?
+;
+
+
+ValueEpic: 
+	'ValueEpic' name=ID (OPEN
+    	(
+    		'As a' stakeholder=[Stakeholder] 'I value' value=STRING 'as demonstrated in' 
+    		(('realization of' realizedValues+=STRING)+ & 
+    		('reduction of' reducedValues+=STRING)+)	
+    	)
+	CLOSE)?
+;
+
+ValueNarrative: 
+	'ValueNarrative' name=ID (OPEN
+		(
+			'When the SOI executes' feature=STRING ','
+	    	'stakeholders expect it to promote, protect or create' promotedValues=STRING ','
+	    	'possibly degrading or prohibiting' harmedValues=STRING 
+	    	'with the following externally observable and/or internally auditable behavior:' preAndPostConditions=STRING	
+		)
 	CLOSE)
 ;
-/*
-ValueDemonstrator:
-	ValueEpic | ValueNarrative | ValueWeigthing
-;
-*/
 
-ValueEpic: (OPEN
-    'As a' stakeholder=STRING 'I value' coreValue=CoreValue 'as demonstrated in' // TODO: stakeholder and value actually already defined upwards in hierarchy 
-    ('a realization of' realizedLevel1Values+=STRING)+
-    ('a reduction of' reducedLevel1Values+=STRING)+   
-	CLOSE)
-;
-
-ValueNarrative: (OPEN
-	'When the SOI executes' feature=STRING ','
-    'stakeholders expect it to promote, protect or create' promotedValues=STRING ','
-    'possibly degrading or prohibiting' harmedValues=STRING 
-    'with the following externally observable and/or internally auditable behavior:' preAndPostConditions=STRING
-	CLOSE)
-;
-
-// Q: ValueDemonstrator vs. ValueElicitation ? contains overlapping information ... (stakeholder, priorities, benefits and harms are not same as consequences?)
-
-ValueWeigthing: (OPEN
-	'In the context of SOI' system=STRING ',' // TODO: system already defined above (BC)
-    'stakeholder' stakeholder=STRING 'values' value1=STRING 'more than' value2=STRING // TODO references
-    'expecting benefits such as' benefits=STRING 
-    'running the risk of harms such as' harms=STRING 
+ValueWeigthing: 
+	'ValueWeigthing' name=ID (OPEN
+		(
+			'In the context of the SOI,' 
+    		'stakeholder' stakeholder=[Stakeholder] 'values' value1=STRING 'more than' value2=STRING
+    		'expecting benefits such as' benefits=STRING 
+    		'running the risk of harms such as' harms=STRING	
+		)
 	CLOSE)
 ;
 
