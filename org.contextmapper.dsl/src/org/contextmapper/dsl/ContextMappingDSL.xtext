@@ -370,7 +370,7 @@ AbstractStakeholder:
 ;
 
 StakeholderGroup:
-	'StakeholderGroup' name=STRING (OPEN
+	'StakeholderGroup' name=ID (OPEN
 		(
 			(stakeholders += Stakeholder)*	
 		)
@@ -378,7 +378,7 @@ StakeholderGroup:
 ;
 
 Stakeholder:
-	'Stakeholder' name=STRING (OPEN
+	'Stakeholder' name=ID (OPEN
 		(
 			('influence' ('=')? influence=INFLUENCE)? &
 			('interest' ('=')? interest=INTEREST)?	
@@ -422,7 +422,7 @@ Value:
 // Q: table B.1  abbilden? if, how?
 
 ValueElicitation:
-	'Stakeholder' stakeholder=[Stakeholder] (OPEN
+	'Stakeholder' stakeholder=[AbstractStakeholder] (OPEN
 		(
 			('priority' priority = PRIORITY)? 
 			('impact' impact = IMPACT)? 
@@ -435,7 +435,7 @@ ValueElicitation:
 ValueEpic: 
 	'ValueEpic' name=ID (OPEN
     	(
-    		'As a' stakeholder=[Stakeholder] 'I value' value=STRING 'as demonstrated in' 
+    		'As a' stakeholder=[AbstractStakeholder] 'I value' value=STRING 'as demonstrated in' 
     		(('realization of' realizedValues+=STRING)+ & 
     		('reduction of' reducedValues+=STRING)+)	
     	)
@@ -457,7 +457,7 @@ ValueWeigthing:
 	'ValueWeigthing' name=ID (OPEN
 		(
 			'In the context of the SOI,' 
-    		'stakeholder' stakeholder=[Stakeholder] 'values' value1=STRING 'more than' value2=STRING
+    		'stakeholder' stakeholder=[AbstractStakeholder] 'values' value1=STRING 'more than' value2=STRING
     		'expecting benefits such as' benefits=STRING 
     		'running the risk of harms such as' harms=STRING	
 		)
