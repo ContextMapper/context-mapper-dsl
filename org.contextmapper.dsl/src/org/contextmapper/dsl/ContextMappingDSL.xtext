@@ -322,7 +322,7 @@ UseCase:
 
 UserStory:
 	'UserStory' name=ID ('split by' splittingStory=[UserStory])? (OPEN
-		(('As a' | 'As an') role=STRING (features+=Feature)+ 'so that' benefit=STRING)?
+		(('As a' | 'As an') role=STRING (features+=Feature)+ 'so that' benefit=STRING (valuation=StoryValuation)?)?
 	CLOSE)?
 ;
 
@@ -336,6 +336,11 @@ NormalFeature:
 
 StoryFeature:
 	'I want to' verb=(UserActivityDefaultVerb | STRING) (entityArticle='a' | entityArticle='an' | entityArticle='the')? entity=STRING ((entityAttributesPreposition='with its' | entityAttributesPreposition='with their') entityAttributes+=STRING ("," entityAttributes+=STRING)*)? ((containerEntityPreposition='in' | containerEntityPreposition='for' | containerEntityPreposition='to')(containerEntityArticle='a' | containerEntityArticle='an')? containerEntity=STRING)?
+;
+
+StoryValuation:
+	'and that' promotedValues+=STRING (',' promotedValues+=STRING)* ('is' | 'are') 'promoted' (',')?
+	'accepting that' harmedValues+=STRING (',' harmedValues+=STRING)* ('is' | 'are') ('reduced' | 'harmed')
 ;
 
 UserActivityDefaultVerb:
