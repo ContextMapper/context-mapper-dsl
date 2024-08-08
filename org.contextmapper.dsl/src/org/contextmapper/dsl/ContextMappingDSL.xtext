@@ -429,8 +429,8 @@ Value:
 ValueElicitation:
 	'Stakeholder' stakeholder=[AbstractStakeholder] (OPEN
 		(
-			('priority' priority = PRIORITY)? &
-			('impact' impact = IMPACT)? &
+			('priority' ('=')? priority = PRIORITY)? &
+			('impact' ('=')? impact = IMPACT)? &
 			('consequences' (consequences += Consequence)+)?	
 		)
 	CLOSE)?
@@ -470,7 +470,7 @@ ValueWeigthing:
 ;
 
 Consequence:
-	('good'|'bad'|'neutral') consequence=STRING action=Action?
+	(type='good'|type='bad'|type='neutral') consequence=STRING action=Action?
 ;
 
 Action:
