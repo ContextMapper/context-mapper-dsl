@@ -392,7 +392,7 @@ Stakeholder:
 ;
 
 ValueRegister:
-	'ValueRegister' name=ID 'for' context=[BoundedContext] (OPEN
+	'ValueRegister' name=ID ('for' context=[BoundedContext])? (OPEN
 		(
 			(valueClusters += ValueCluster)* &
 			(values += Value)* &
@@ -417,7 +417,7 @@ ValueCluster:
 Value:
 	'Value' name=ID (OPEN
 		(
-			(coreValue ?= 'core')? &
+			(coreValue ?= 'isCore')? &
 			('demonstrator' ('=')? demonstrators += STRING)* &
 			(elicitations += ValueElicitation)*	
 		)
@@ -429,9 +429,9 @@ Value:
 ValueElicitation:
 	'Stakeholder' stakeholder=[AbstractStakeholder] (OPEN
 		(
-			('priority' priority = PRIORITY)? 
-			('impact' impact = IMPACT)? 
-			('consequences' consequences += Consequence)*	
+			('priority' priority = PRIORITY)? &
+			('impact' impact = IMPACT)? &
+			('consequences' (consequences += Consequence)+)?	
 		)
 	CLOSE)?
 ;
@@ -474,7 +474,7 @@ Consequence:
 ;
 
 Action:
-	'action' action=STRING type=('ACT'|'MONITOR'|'tbc') 	
+	'action' action=STRING type=('ACT'|'MONITOR'|STRING) 	
 ;
 
 
