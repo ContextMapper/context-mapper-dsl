@@ -218,6 +218,34 @@ class ValueRegisterDSLParsingTest {
 	}
 	
 	@Test
+	def void canLinkValueToStakeholderGroup() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext TestContext
+			Stakeholders of TestContext {
+				StakeholderGroup TestUsers
+			}
+			ValueRegister TestRegister for TestContext {
+				Value Privacy {
+					isCore
+					demonstrator "right to be alone"
+					Stakeholders TestUsers
+				}
+			}
+		''';
+		
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		assertEquals(1, result.valueRegisters.get(0).values.size);
+		assertEquals("Privacy", result.valueRegisters.get(0).values.get(0).name);
+		assertEquals("TestUsers", result.valueRegisters.get(0).values.get(0).elicitations.get(0).stakeholder.name);
+	}
+	
+	@Test
 	def void canDefineValuePriorityForStakeholder1() {
 		// given
 		val String dslSnippet = '''

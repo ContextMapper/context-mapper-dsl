@@ -363,7 +363,7 @@ SculptorModule :
 
 
 Stakeholders:
-	'Stakeholders' 'of' (contexts+=[BoundedContext]) (',' contexts+=[BoundedContext])* (OPEN
+	{Stakeholders} 'Stakeholders' ('of' (contexts+=[BoundedContext]) (',' contexts+=[BoundedContext])*)? (OPEN
 		(
 			(stakeholders += AbstractStakeholder)*	
 		)
@@ -386,7 +386,8 @@ Stakeholder:
 	'Stakeholder' name=ID (OPEN
 		(
 			('influence' ('=')? influence=INFLUENCE)? &
-			('interest' ('=')? interest=INTEREST)?	
+			('interest' ('=')? interest=INTEREST)? &
+			('description' ('=')? description=STRING)?
 		)
 	CLOSE)?
 ;
@@ -427,7 +428,7 @@ Value:
 // Q: table B.1  abbilden? if, how?
 
 ValueElicitation:
-	'Stakeholder' stakeholder=[AbstractStakeholder] (OPEN
+	('Stakeholder'|'Stakeholders') stakeholder=[AbstractStakeholder] (OPEN
 		(
 			('priority' ('=')? priority = PRIORITY)? &
 			('impact' ('=')? impact = IMPACT)? &

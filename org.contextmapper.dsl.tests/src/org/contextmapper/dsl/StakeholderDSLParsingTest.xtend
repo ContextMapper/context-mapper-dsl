@@ -38,6 +38,42 @@ class StakeholderDSLParsingTest {
 	ParseHelper<ContextMappingModel> parseHelper
 
 	@Test
+	def void canDefineStakeholderContainerWithoutContext() {
+		// given
+		val String dslSnippet = '''
+			Stakeholders {}
+		''';
+		
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		assertEquals(1, result.stakeholders.size);
+		assertEquals(0, result.stakeholders.get(0).contexts.size);
+	}
+	
+	@Test
+	def void canDefineStakeholderWithoutContext() {
+		// given
+		val String dslSnippet = '''
+			Stakeholders {
+				Stakeholder TestUser
+			}
+		''';
+		
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		assertEquals(1, result.stakeholders.get(0).stakeholders.size);
+		assertEquals("TestUser", result.stakeholders.get(0).stakeholders.get(0).name);
+	}
+
+	@Test
 	def void canDefineStakeholderContainerForBoundedContext() {
 		// given
 		val String dslSnippet = '''
@@ -327,6 +363,54 @@ class StakeholderDSLParsingTest {
 		assertEquals("TestUser", (result.stakeholders.get(0).stakeholders.get(0) as Stakeholder).name);
 		assertEquals(INTEREST.LOW, (result.stakeholders.get(0).stakeholders.get(0) as Stakeholder).interest);
 		assertEquals(INFLUENCE.HIGH, (result.stakeholders.get(0).stakeholders.get(0) as Stakeholder).influence);
+	}
+	
+	@Test
+	def void canDefineStakeholderDescription1() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext testContext
+			
+			Stakeholders of testContext {
+				Stakeholder TestUser {
+					description = "User that tests something"
+				}
+			}
+		''';
+		
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		assertEquals(1, result.stakeholders.get(0).stakeholders.size);
+		assertEquals("TestUser", (result.stakeholders.get(0).stakeholders.get(0) as Stakeholder).name);
+		assertEquals("User that tests something", (result.stakeholders.get(0).stakeholders.get(0) as Stakeholder).description);
+	}
+	
+	@Test
+	def void canDefineStakeholderDescription2() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext testContext
+			
+			Stakeholders of testContext {
+				Stakeholder TestUser {
+					description "User that tests something"
+				}
+			}
+		''';
+		
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		assertEquals(1, result.stakeholders.get(0).stakeholders.size);
+		assertEquals("TestUser", (result.stakeholders.get(0).stakeholders.get(0) as Stakeholder).name);
+		assertEquals("User that tests something", (result.stakeholders.get(0).stakeholders.get(0) as Stakeholder).description);
 	}
 	
 }
