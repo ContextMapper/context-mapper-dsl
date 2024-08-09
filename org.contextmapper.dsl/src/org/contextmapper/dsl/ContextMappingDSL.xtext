@@ -409,6 +409,8 @@ ValueCluster:
 		(
 			(('core' ('=')? coreValue7000 = CoreValue) | ('core' ('=')? coreValue = STRING)) &
 			('demonstrator' ('=')? demonstrators += STRING)* &
+			('relatedValue' ('=')? relatedValues += STRING)* &
+			('opposingValue' ('=')? opposingValues += STRING)* &
 			(values += Value)* &
 			(elicitations += ValueElicitation)*	
 		)
@@ -420,6 +422,8 @@ Value:
 		(
 			(coreValue ?= 'isCore')? &
 			('demonstrator' ('=')? demonstrators += STRING)* &
+			('relatedValue' ('=')? relatedValues += STRING)* &
+			('opposingValue' ('=')? opposingValues += STRING)* &
 			(elicitations += ValueElicitation)*	
 		)
 	CLOSE)?

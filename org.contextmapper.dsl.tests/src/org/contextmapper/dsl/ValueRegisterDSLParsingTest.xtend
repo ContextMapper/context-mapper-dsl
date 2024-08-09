@@ -28,6 +28,7 @@ import static org.contextmapper.dsl.util.ParsingErrorAssertions.*
 import static org.junit.jupiter.api.Assertions.*
 import org.contextmapper.dsl.contextMappingDSL.PRIORITY
 import org.contextmapper.dsl.contextMappingDSL.IMPACT
+import org.contextmapper.dsl.contextMappingDSL.CoreValue
 
 @ExtendWith(InjectionExtension)
 @InjectWith(ContextMappingDSLInjectorProvider)
@@ -187,6 +188,60 @@ class ValueRegisterDSLParsingTest {
 		assertEquals("Privacy", result.valueRegisters.get(0).values.get(0).name);
 		assertEquals("right to be alone", result.valueRegisters.get(0).values.get(0).demonstrators.get(0));
 		assertEquals("right to keep private things secret", result.valueRegisters.get(0).values.get(0).demonstrators.get(1));
+	}
+	
+	@Test
+	def void canAddRelatedValuesToValue() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext TestContext
+			ValueRegister TestRegister for TestContext {
+				Value Privacy {
+					isCore
+					relatedValue "Intimacy"
+					relatedValue "Anonymity"
+				}
+			}
+		''';
+		
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		assertEquals(1, result.valueRegisters.get(0).values.size);
+		assertEquals("Privacy", result.valueRegisters.get(0).values.get(0).name);
+		assertEquals(2, result.valueRegisters.get(0).values.get(0).relatedValues.size);
+		assertEquals("Intimacy", result.valueRegisters.get(0).values.get(0).relatedValues.get(0));
+		assertEquals("Anonymity", result.valueRegisters.get(0).values.get(0).relatedValues.get(1));
+	}
+	
+	@Test
+	def void canAddOpposingValuesToValue() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext TestContext
+			ValueRegister TestRegister for TestContext {
+				Value Privacy {
+					isCore
+					opposingValue "Transparency"
+					opposingValue "Inclusiveness"
+				}
+			}
+		''';
+		
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		assertEquals(1, result.valueRegisters.get(0).values.size);
+		assertEquals("Privacy", result.valueRegisters.get(0).values.get(0).name);
+		assertEquals(2, result.valueRegisters.get(0).values.get(0).opposingValues.size);
+		assertEquals("Transparency", result.valueRegisters.get(0).values.get(0).opposingValues.get(0));
+		assertEquals("Inclusiveness", result.valueRegisters.get(0).values.get(0).opposingValues.get(1));
 	}
 	
 	@Test
@@ -511,6 +566,125 @@ class ValueRegisterDSLParsingTest {
 		assertEquals("but user has to provide too much information", result.valueRegisters.get(0).values.get(0).elicitations.get(0).consequences.get(0).consequence);
 		assertEquals("ask for less information", result.valueRegisters.get(0).values.get(0).elicitations.get(0).consequences.get(0).action.action);
 		assertEquals("ACT", result.valueRegisters.get(0).values.get(0).elicitations.get(0).consequences.get(0).action.type);
+	}
+	
+	@Test
+	def void canDefineValueClusterWithIEEE7000Core() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext TestContext
+			ValueRegister TestRegister for TestContext {
+				ValueCluster MyTestCluster {
+					core AUTONOMY
+				}
+			}
+		''';
+		
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		assertEquals(1, result.valueRegisters.get(0).valueClusters.size);
+		assertEquals("MyTestCluster", result.valueRegisters.get(0).valueClusters.get(0).name);
+		assertEquals(CoreValue.AUTONOMY, result.valueRegisters.get(0).valueClusters.get(0).coreValue7000);
+	}
+	
+	@Test
+	def void canDefineValueClusterWithCustomCore() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext TestContext
+			ValueRegister TestRegister for TestContext {
+				ValueCluster MyTestCluster {
+					core "MyValue"
+				}
+			}
+		''';
+		
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		assertEquals(1, result.valueRegisters.get(0).valueClusters.size);
+		assertEquals("MyTestCluster", result.valueRegisters.get(0).valueClusters.get(0).name);
+		assertEquals("MyValue", result.valueRegisters.get(0).valueClusters.get(0).coreValue);
+	}
+	
+	@Test
+	def void canAddDemonstratorToValueCluster() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext TestContext
+			ValueRegister TestRegister for TestContext {
+				ValueCluster Privacy {
+					core PRIVACY
+					demonstrator "right to be alone"
+				}
+			}
+		''';
+		
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		assertEquals(1, result.valueRegisters.get(0).valueClusters.size);
+		assertEquals("right to be alone", result.valueRegisters.get(0).valueClusters.get(0).demonstrators.get(0));
+	}
+	
+	@Test
+	def void canAddRelatedValuesToValueCluster() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext TestContext
+			ValueRegister TestRegister for TestContext {
+				ValueCluster Privacy {
+					core PRIVACY
+					relatedValue "Respect"
+					relatedValue "Trust"
+				}
+			}
+		''';
+		
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		assertEquals(1, result.valueRegisters.get(0).valueClusters.size);
+		assertEquals("Respect", result.valueRegisters.get(0).valueClusters.get(0).relatedValues.get(0));
+		assertEquals("Trust", result.valueRegisters.get(0).valueClusters.get(0).relatedValues.get(1));
+	}
+	
+	@Test
+	def void canAddOpposingValuesToValueCluster() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext TestContext
+			ValueRegister TestRegister for TestContext {
+				ValueCluster Privacy {
+					core PRIVACY
+					opposingValue "Transparency"
+					opposingValue "Inclusiveness"
+				}
+			}
+		''';
+		
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		assertEquals(1, result.valueRegisters.get(0).valueClusters.size);
+		assertEquals("Transparency", result.valueRegisters.get(0).valueClusters.get(0).opposingValues.get(0));
+		assertEquals("Inclusiveness", result.valueRegisters.get(0).valueClusters.get(0).opposingValues.get(1));
 	}
 	
 }
