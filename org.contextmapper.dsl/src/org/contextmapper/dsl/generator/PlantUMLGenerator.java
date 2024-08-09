@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 The Context Mapper Project Team
+ * Copyright 2018-2024 The Context Mapper Project Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.Flow;
 import org.contextmapper.dsl.contextMappingDSL.SculptorModule;
+import org.contextmapper.dsl.contextMappingDSL.Stakeholders;
 import org.contextmapper.dsl.contextMappingDSL.UseCase;
 import org.contextmapper.dsl.contextMappingDSL.UserRequirement;
 import org.contextmapper.dsl.generator.exception.GeneratorInputException;
@@ -31,6 +32,7 @@ import org.contextmapper.dsl.generator.plantuml.PlantUMLAggregateClassDiagramCre
 import org.contextmapper.dsl.generator.plantuml.PlantUMLBoundedContextClassDiagramCreator;
 import org.contextmapper.dsl.generator.plantuml.PlantUMLComponentDiagramCreator;
 import org.contextmapper.dsl.generator.plantuml.PlantUMLModuleClassDiagramCreator;
+import org.contextmapper.dsl.generator.plantuml.PlantUMLStakeholderMapGenerator;
 import org.contextmapper.dsl.generator.plantuml.PlantUMLStateDiagramCreator4Aggregate;
 import org.contextmapper.dsl.generator.plantuml.PlantUMLStateDiagramCreator4Flow;
 import org.contextmapper.dsl.generator.plantuml.PlantUMLSubdomainClassDiagramCreator;
@@ -56,12 +58,56 @@ public class PlantUMLGenerator extends AbstractContextMappingModelGenerator {
 		checkPreconditions();
 		String fileName = inputFileURI.trimFileExtension().lastSegment();
 
-		// generate component diagram, if Context Map available
-		if (model.getMap() != null)
-			fsa.generateFile(fileName + "_ContextMap." + PLANT_UML_FILE_EXT,
-					new PlantUMLComponentDiagramCreator().createDiagram(model.getMap()));
+		generateComponentDiagramIfContextMapAvailable(model, fsa, fileName);
+		generateClassAndStateDiagramsForBoundedContexts(model, fsa, fileName);
+		generateClassDiagramsForSubdomains(fsa, fileName);
+		generateUseCaseDiagram(model, fsa, fileName);
+		generateSequenceDiagramsForUseCases(model, fsa, fileName);
+		generateStakeholderDiagrams(model, fsa, fileName);
+	}
 
-		// generate class and state diagrams for Bounded Contexts
+	private void generateStakeholderDiagrams(ContextMappingModel model, IFileSystemAccess2 fsa, String fileName) {
+		PlantUMLStakeholderMapGenerator stakeholderDiagramGenerator = new PlantUMLStakeholderMapGenerator();
+		int index = 1;
+		for (Stakeholders stakeholders : model.getStakeholders()) {
+			fsa.generateFile(fileName + "_BC_"
+					+ stakeholderDiagramGenerator.getStakeholderDiagramContextName(stakeholders.getContexts())
+							.replace(", ", "-").replace(" ", "-")
+					+ "_StakeholderMap-" + index++ + "." + PLANT_UML_FILE_EXT,
+					stakeholderDiagramGenerator.createDiagram(stakeholders));
+		}
+	}
+
+	private void generateSequenceDiagramsForUseCases(ContextMappingModel model, IFileSystemAccess2 fsa,
+			String fileName) {
+		for (UserRequirement userRequirement : model.getUserRequirements()) {
+			if (userRequirement instanceof UseCase && !userRequirement.getFeatures().isEmpty()) {
+				fsa.generateFile(
+						fileName + "_UseCase_" + userRequirement.getName() + "_Interactions." + PLANT_UML_FILE_EXT,
+						new PlantUMLUseCaseInteractionsSequenceDiagramCreator()
+								.createDiagram((UseCase) userRequirement));
+			}
+		}
+	}
+
+	private void generateUseCaseDiagram(ContextMappingModel model, IFileSystemAccess2 fsa, String fileName) {
+		if (!model.getUserRequirements().isEmpty())
+			fsa.generateFile(fileName + "_UseCases." + PLANT_UML_FILE_EXT,
+					new PlantUMLUseCaseDiagramCreator().createDiagram(model));
+	}
+
+	private void generateClassDiagramsForSubdomains(IFileSystemAccess2 fsa, String fileName) {
+		subdomainResolver.resolveAllSubdomains().stream().filter(subdomain -> !subdomain.getEntities().isEmpty())
+				.forEach(subdomain -> {
+					fsa.generateFile(fileName + "_SD_" + subdomain.getName() + "." + PLANT_UML_FILE_EXT,
+							new PlantUMLSubdomainClassDiagramCreator(
+									subdomainResolver.resolveDomain4Subdomain(subdomain.getName()).getName())
+									.createDiagram(subdomain));
+				});
+	}
+
+	private void generateClassAndStateDiagramsForBoundedContexts(ContextMappingModel model, IFileSystemAccess2 fsa,
+			String fileName) {
 		for (BoundedContext boundedContext : model.getBoundedContexts()) {
 
 			// class diagram for complete BC
@@ -97,37 +143,21 @@ public class PlantUMLGenerator extends AbstractContextMappingModelGenerator {
 						+ PLANT_UML_FILE_EXT, new PlantUMLStateDiagramCreator4Flow().createDiagram(flow));
 			}
 		}
+	}
 
-		// generate class diagrams for subdomains (that have entities)
-		subdomainResolver.resolveAllSubdomains().stream().filter(subdomain -> !subdomain.getEntities().isEmpty())
-				.forEach(subdomain -> {
-					fsa.generateFile(fileName + "_SD_" + subdomain.getName() + "." + PLANT_UML_FILE_EXT,
-							new PlantUMLSubdomainClassDiagramCreator(
-									subdomainResolver.resolveDomain4Subdomain(subdomain.getName()).getName())
-									.createDiagram(subdomain));
-				});
-
-		// generate Use Case diagram out of user requirements, if available
-		if (!model.getUserRequirements().isEmpty())
-			fsa.generateFile(fileName + "_UseCases." + PLANT_UML_FILE_EXT,
-					new PlantUMLUseCaseDiagramCreator().createDiagram(model));
-
-		// generate sequence diagrams for Use Cases with interactions
-		for (UserRequirement userRequirement : model.getUserRequirements()) {
-			if (userRequirement instanceof UseCase && !userRequirement.getFeatures().isEmpty()) {
-				fsa.generateFile(
-						fileName + "_UseCase_" + userRequirement.getName() + "_Interactions." + PLANT_UML_FILE_EXT,
-						new PlantUMLUseCaseInteractionsSequenceDiagramCreator()
-								.createDiagram((UseCase) userRequirement));
-			}
-		}
+	private void generateComponentDiagramIfContextMapAvailable(ContextMappingModel model, IFileSystemAccess2 fsa,
+			String fileName) {
+		if (model.getMap() != null)
+			fsa.generateFile(fileName + "_ContextMap." + PLANT_UML_FILE_EXT,
+					new PlantUMLComponentDiagramCreator().createDiagram(model.getMap()));
 	}
 
 	private void checkPreconditions() {
 		if (this.contextMappingModel.getMap() == null && this.contextMappingModel.getBoundedContexts().isEmpty()
-				&& !modelHasSubdomainWithEntities() && this.contextMappingModel.getUserRequirements().isEmpty())
+				&& !modelHasSubdomainWithEntities() && this.contextMappingModel.getUserRequirements().isEmpty()
+				&& this.contextMappingModel.getStakeholders().isEmpty())
 			throw new GeneratorInputException(
-					"Your model does not contain a) a Context Map, b) Bounded Contexts or Subdomains with domain objects (Entities, Value Objects, etc.), or c) Use Cases or User Stories. Create at least one of the mentioned model elements.");
+					"Your model does not contain a) a Context Map, b) Bounded Contexts or Subdomains with domain objects (Entities, Value Objects, etc.), c) Use Cases or User Stories, or d) Stakeholders or Value Registers. Create at least one of the mentioned model elements.");
 	}
 
 	private List<Flow> getFlowsWithStates(BoundedContext bc) {

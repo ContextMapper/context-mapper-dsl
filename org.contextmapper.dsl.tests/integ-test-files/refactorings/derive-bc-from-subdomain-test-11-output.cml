@@ -25,7 +25,7 @@ BoundedContext ClaimsManagement implements ClaimsManagement {
 		Entity Claim {
 			Date date
 			Double amountClaimed
-			String description
+			String desc
 			String claimId key
 			- Agent agent
 		}
@@ -59,7 +59,7 @@ Domain Insurance_Application {
 		Entity Claim {
 			Date date
 			Double amountClaimed
-			String description
+			String desc
 			- Agent agent
 		}
 		Entity Policy {
@@ -100,7 +100,7 @@ Domain Insurance_Application {
 UseCase Get_paid_for_car_accident { // title
 	actor "Claimant" // primary actor
 	interactions
-	"submit" a "Claim" with its "date", "amountClaimed", "description" for a "Policy", // step 1: claimant submits claim
+	"submit" a "Claim" with its "date", "amountClaimed", "desc" for a "Policy", // step 1: claimant submits claim
 	"verifyExistanceOf" "Policy" with its "startDate", "endDate" for a "Contract", // step 2: insurance company verifies that valid policy exists
 	"assign" an "Agent" with its "personalID", "firstName", "lastName" for "Claim", // step 3: agent is assigned to claim
 	"verify" "Policy" for a "Contract", // step 4: agent verifies all details are within policy guidelines

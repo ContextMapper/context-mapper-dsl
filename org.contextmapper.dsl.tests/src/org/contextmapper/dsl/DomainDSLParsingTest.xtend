@@ -64,7 +64,7 @@ class DomainDSLParsingTest {
 			BoundedContext testContext
 
 			Domain Insurance {
-				Subdomain core
+				Subdomain CoreDomain
 				Subdomain support1
 				Subdomain generic
 			}
@@ -79,7 +79,7 @@ class DomainDSLParsingTest {
 		assertEquals(3, domain.subdomains.size);
 
 		val subdomainNames = domain.subdomains.stream.map[name].collect(Collectors.toList);
-		assertTrue(subdomainNames.contains("core"));
+		assertTrue(subdomainNames.contains("CoreDomain"));
 		assertTrue(subdomainNames.contains("support1"));
 		assertTrue(subdomainNames.contains("generic"));
 	}
@@ -88,10 +88,10 @@ class DomainDSLParsingTest {
 	def void canMapSubdomainToBoundedContexts() {
 		// given
 		val String dslSnippet = '''
-			BoundedContext testContext implements core
+			BoundedContext testContext implements CoreDomain
 
 			Domain Insurance {
-				Subdomain core {
+				Subdomain CoreDomain {
 					type = CORE_DOMAIN
 				}
 				Subdomain support1 {
@@ -108,17 +108,17 @@ class DomainDSLParsingTest {
 		assertThatNoParsingErrorsOccurred(result);
 		assertThatNoValidationErrorsOccurred(result);
 		assertEquals(1, result.boundedContexts.get(0).implementedDomainParts.size);
-		assertEquals("core", result.boundedContexts.get(0).implementedDomainParts.get(0).name);
+		assertEquals("CoreDomain", result.boundedContexts.get(0).implementedDomainParts.get(0).name);
 	}
 
 	@Test
 	def void canMapSubdomainsToBoundedContexts() {
 		// given
 		val String dslSnippet = '''
-			BoundedContext testContext implements core, support1
+			BoundedContext testContext implements CoreDomain, support1
 
 			Domain Insurance {
-				Subdomain core {
+				Subdomain CoreDomain {
 					type = CORE_DOMAIN
 				}
 				Subdomain support1 {
@@ -137,7 +137,7 @@ class DomainDSLParsingTest {
 		assertEquals(2, result.boundedContexts.get(0).implementedDomainParts.size);
 
 		val subdomainNames = result.boundedContexts.get(0).implementedDomainParts.stream.map[name].collect(Collectors.toList);
-		assertTrue(subdomainNames.contains("core"));
+		assertTrue(subdomainNames.contains("CoreDomain"));
 		assertTrue(subdomainNames.contains("support1"));
 	}
 
@@ -162,7 +162,7 @@ class DomainDSLParsingTest {
 		// given
 		val String dslSnippet = '''
 			Domain Insurance {
-				Subdomain core {
+				Subdomain CoreDomain {
 					type = CORE_DOMAIN
 					domainVisionStatement = "my domain vision for this subdomain"
 				}
@@ -183,7 +183,7 @@ class DomainDSLParsingTest {
 			BoundedContext testContext implements Insurance
 			
 			Domain Insurance {
-				Subdomain core {
+				Subdomain CoreDomain {
 					type = CORE_DOMAIN
 				}
 			}
@@ -200,10 +200,10 @@ class DomainDSLParsingTest {
 	def void cannotImplementSubdomainAlreadyImplementedByDomain() {
 		// given
 		val String dslSnippet = '''
-			BoundedContext testContext implements Insurance, core
+			BoundedContext testContext implements Insurance, CoreDomain
 			
 			Domain Insurance {
-				Subdomain core {
+				Subdomain CoreDomain {
 					type = CORE_DOMAIN
 				}
 			}
@@ -213,7 +213,7 @@ class DomainDSLParsingTest {
 		// then
 		assertThatNoParsingErrorsOccurred(result);
 		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.BOUNDED_CONTEXT, "",
-			String.format(ALREADY_IMPLEMENTED_SUBDOMAIN, "core", "Insurance"));
+			String.format(ALREADY_IMPLEMENTED_SUBDOMAIN, "CoreDomain", "Insurance"));
 	} 
 	
 	@Test
@@ -223,7 +223,7 @@ class DomainDSLParsingTest {
 			BoundedContext testContext implements Insurance, Banking
 			
 			Domain Insurance {
-				Subdomain core {
+				Subdomain CoreDomain {
 					type = CORE_DOMAIN
 				}
 			}
@@ -241,7 +241,7 @@ class DomainDSLParsingTest {
 		// given
 		val String dslSnippet = '''
 			Domain Insurance {
-				Subdomain core {
+				Subdomain CoreDomain {
 					type = CORE_DOMAIN
 					domainVisionStatement = "my domain vision for this subdomain"
 	
@@ -267,7 +267,7 @@ class DomainDSLParsingTest {
 		// given
 		val String dslSnippet = '''
 			Domain Insurance {
-				Subdomain core {
+				Subdomain CoreDomain {
 					type = CORE_DOMAIN
 					domainVisionStatement = "my domain vision for this subdomain"
 	
@@ -289,7 +289,7 @@ class DomainDSLParsingTest {
 		// given
 		val String dslSnippet = '''
 			Domain Insurance {
-				Subdomain core {
+				Subdomain CoreDomain {
 					type CORE_DOMAIN
 					domainVisionStatement "my domain vision for this subdomain"
 				}

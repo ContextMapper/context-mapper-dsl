@@ -27,7 +27,9 @@ ContextMappingModel:
 		(map = ContextMap)? &
 		(boundedContexts += BoundedContext)* &
 		(domains += Domain)* &
-		(userRequirements += UserRequirement)*
+		(userRequirements += UserRequirement)* &
+		(stakeholders += Stakeholders)* &
+		(valueRegisters += ValueRegister)*
 	)
 ;
 
@@ -308,8 +310,7 @@ UserRequirement:
 ;
 
 UseCase:
-	'UseCase' name=ID
-	(OPEN
+	'UseCase' name=ID (OPEN
 		(('actor' ('=')? role=STRING)? &
 		('secondaryActors' ('=')? secondaryActors+=STRING ("," secondaryActors+=STRING)*)? &
 		('interactions' ('=')? features+=Feature ("," features+=Feature)*)? &
@@ -320,9 +321,8 @@ UseCase:
 ;
 
 UserStory:
-	'UserStory' name=ID ('split by' splittingStory=[UserStory])?
-	(OPEN
-		(('As a' | 'As an') role=STRING (features+=Feature)+ 'so that' benefit=STRING)?
+	'UserStory' name=ID ('split by' splittingStory=[UserStory])? (OPEN
+		(('As a' | 'As an') role=STRING (features+=Feature)+ 'so that' benefit=STRING (valuation=StoryValuation)?)?
 	CLOSE)?
 ;
 
@@ -338,16 +338,21 @@ StoryFeature:
 	'I want to' verb=(UserActivityDefaultVerb | STRING) (entityArticle='a' | entityArticle='an' | entityArticle='the')? entity=STRING ((entityAttributesPreposition='with its' | entityAttributesPreposition='with their') entityAttributes+=STRING ("," entityAttributes+=STRING)*)? ((containerEntityPreposition='in' | containerEntityPreposition='for' | containerEntityPreposition='to')(containerEntityArticle='a' | containerEntityArticle='an')? containerEntity=STRING)?
 ;
 
+StoryValuation:
+	'and that' promotedValues+=STRING (',' promotedValues+=STRING)* ('is' | 'are') 'promoted' (',')?
+	'accepting that' harmedValues+=STRING (',' harmedValues+=STRING)* ('is' | 'are') ('reduced' | 'harmed')
+;
+
 UserActivityDefaultVerb:
 	'create' | 'read' | 'update' | 'delete'
 ;
 
 SculptorModule :
   (doc=STRING)?
-  "Module" name=ID (OPEN
-    (external?="external")?
-    ("basePackage" "=" basePackage=JavaIdentifier )?
-    ("hint" "=" hint=STRING)?
+  'Module' name=ID (OPEN
+    (external?='external')?
+    ('basePackage' '=' basePackage=JavaIdentifier )?
+    ('hint' '=' hint=STRING)?
     ((services+=Service) |
      (resources+=Resource) |
      (consumers+=Consumer) |
@@ -355,6 +360,128 @@ SculptorModule :
      (aggregates+=Aggregate))*
   CLOSE)?
 ;
+
+
+Stakeholders:
+	{Stakeholders} 'Stakeholders' ('of' (contexts+=[BoundedContext]) (',' contexts+=[BoundedContext])*)? (OPEN
+		(
+			(stakeholders += AbstractStakeholder)*	
+		)
+	CLOSE)?
+;
+
+AbstractStakeholder:
+	StakeholderGroup | Stakeholder
+;
+
+StakeholderGroup:
+	'StakeholderGroup' name=ID (OPEN
+		(
+			(stakeholders += Stakeholder)*	
+		)
+	CLOSE)?
+;
+
+Stakeholder:
+	'Stakeholder' name=ID (OPEN
+		(
+			('influence' ('=')? influence=INFLUENCE)? &
+			('interest' ('=')? interest=INTEREST)? &
+			('description' ('=')? description=STRING)?
+		)
+	CLOSE)?
+;
+
+ValueRegister:
+	'ValueRegister' name=ID ('for' context=[BoundedContext])? (OPEN
+		(
+			(valueClusters += ValueCluster)* &
+			(values += Value)* &
+			(valueEpics += ValueEpic)* &
+			(valueNarratives += ValueNarrative)* &
+			(valueWeightings += ValueWeigthing)*	
+		)
+	CLOSE)?
+;
+
+ValueCluster:
+	'ValueCluster' name=ID (OPEN
+		(
+			(('core' ('=')? coreValue7000 = CoreValue) | ('core' ('=')? coreValue = STRING)) &
+			('demonstrator' ('=')? demonstrators += STRING)* &
+			('relatedValue' ('=')? relatedValues += STRING)* &
+			('opposingValue' ('=')? opposingValues += STRING)* &
+			(values += Value)* &
+			(elicitations += ValueElicitation)*	
+		)
+	CLOSE)?
+;
+
+Value:
+	'Value' name=ID (OPEN
+		(
+			(coreValue ?= 'isCore')? &
+			('demonstrator' ('=')? demonstrators += STRING)* &
+			('relatedValue' ('=')? relatedValues += STRING)* &
+			('opposingValue' ('=')? opposingValues += STRING)* &
+			(elicitations += ValueElicitation)*	
+		)
+	CLOSE)?
+;
+
+// Q: table B.1  abbilden? if, how?
+
+ValueElicitation:
+	('Stakeholder'|'Stakeholders') stakeholder=[AbstractStakeholder] (OPEN
+		(
+			('priority' ('=')? priority = PRIORITY)? &
+			('impact' ('=')? impact = IMPACT)? &
+			('consequences' (consequences += Consequence)+)?	
+		)
+	CLOSE)?
+;
+
+
+ValueEpic: 
+	'ValueEpic' name=ID (OPEN
+    	(
+    		'As a' stakeholder=[AbstractStakeholder] 'I value' value=STRING 'as demonstrated in' 
+    		(('realization of' realizedValues+=STRING)+ & 
+    		('reduction of' reducedValues+=STRING)+)	
+    	)
+	CLOSE)?
+;
+
+ValueNarrative: 
+	'ValueNarrative' name=ID (OPEN
+		(
+			'When the SOI executes' feature=STRING ','
+	    	'stakeholders expect it to promote, protect or create' promotedValues=STRING ','
+	    	'possibly degrading or prohibiting' harmedValues=STRING 
+	    	'with the following externally observable and/or internally auditable behavior:' preAndPostConditions=STRING	
+		)
+	CLOSE)
+;
+
+ValueWeigthing: 
+	'ValueWeigthing' name=ID (OPEN
+		(
+			'In the context of the SOI,' 
+    		'stakeholder' stakeholder=[AbstractStakeholder] 'values' value1=STRING 'more than' value2=STRING
+    		'expecting benefits such as' benefits=STRING 
+    		'running the risk of harms such as' harms=STRING	
+		)
+	CLOSE)
+;
+
+Consequence:
+	(type='good'|type='bad'|type='neutral') consequence=STRING action=Action?
+;
+
+Action:
+	'action' action=STRING type=('ACT'|'MONITOR'|STRING) 	
+;
+
 
 enum UpstreamRole:
 	PUBLISHED_LANGUAGE = 'PL' | OPEN_HOST_SERVICE = 'OHS'
@@ -402,6 +529,26 @@ enum Similarity :
 
 enum Evolution :
      UNDEFINED | GENESIS | CUSTOM_BUILT | PRODUCT | COMMODITY
+;
+
+enum INFLUENCE :
+     HIGH | MEDIUM | LOW
+;
+
+enum INTEREST :
+     HIGH | MEDIUM | LOW
+;
+
+enum PRIORITY:
+	HIGH | MEDIUM | LOW 
+;
+
+enum IMPACT:
+	HIGH | MEDIUM | LOW 
+;
+
+enum CoreValue:
+	AUTONOMY | CARE | CONTROL | FAIRNESS | INCLUSIVENESS | INNOVATION | PERFECTION | PRIVACY | RESPECT | SUSTAINABILITY | TRANSPARENCY | TRUST
 ;
 
 // define terminals

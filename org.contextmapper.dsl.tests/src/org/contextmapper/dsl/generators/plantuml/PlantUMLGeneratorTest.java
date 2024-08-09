@@ -192,6 +192,20 @@ class PlantUMLGeneratorTest extends AbstractCMLInputFileTest {
 		// then
 		assertTrue(filesystem.getGeneratedFilesSet().contains("testmodel_UseCase_Get_paid_for_car_accident_Interactions.puml"));
 	}
+	
+	@Test
+	void canCreateStakeholderDiagramsIfStakeholdersAreAvailable() throws IOException {
+		// given
+		ContextMappingModel model = getOriginalResourceOfTestCML("stakeholder-diagram-generation-test-1.cml").getContextMappingModel();
+		
+		
+		// when
+		IFileSystemAccess2Mock filesystem = new IFileSystemAccess2Mock();
+		this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem, new IGeneratorContextMock());
+		
+		// then
+		assertTrue(filesystem.getGeneratedFilesSet().contains("testmodel_BC_System-of-Interest_StakeholderMap-1.puml"));
+	}
 
 	@Test
 	void expectExceptionForEmptyResource() {
