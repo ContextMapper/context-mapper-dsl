@@ -33,6 +33,8 @@ jobs:
       run: ./gradlew clean build
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v4
+	  with:
+  		token: ${{ secrets.CODECOV_TOKEN }}
 
   build_eclipse:
     name: Build Eclipse Plugin
