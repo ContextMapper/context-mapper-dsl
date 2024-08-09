@@ -16,8 +16,10 @@
 package org.contextmapper.dsl.generator.plantuml;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.contextMappingDSL.AbstractStakeholder;
+import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.Stakeholder;
 import org.contextmapper.dsl.contextMappingDSL.StakeholderGroup;
 import org.contextmapper.dsl.contextMappingDSL.Stakeholders;
@@ -36,13 +38,19 @@ public class PlantUMLStakeholderMapGenerator extends AbstractPlantUMLMindMapDiag
 	protected void printDiagramContent(final Stakeholders stakeholders) {
 		initData(stakeholders);
 
-		sb.append(STAR).append(" ").append(stakeholders.getContexts().get(0).getName());
+		sb.append(STAR).append(" ").append(getStakeholderDiagramContextName(stakeholders.getContexts()));
 		linebreak();
 		printStakeholders(right);
 		linebreak();
 		sb.append("left side");
 		linebreak();
 		printStakeholders(left);
+	}
+
+	public String getStakeholderDiagramContextName(final List<BoundedContext> bcs) {
+		if (bcs != null && !bcs.isEmpty())
+			return String.join(", ", bcs.stream().map(bc -> bc.getName()).collect(Collectors.toList()));
+		return "System of Interest";
 	}
 
 	private void printStakeholders(final List<AbstractStakeholder> stakeholders) {
