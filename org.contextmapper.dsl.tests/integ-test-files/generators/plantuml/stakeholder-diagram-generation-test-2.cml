@@ -1,0 +1,44 @@
+BoundedContext SameDayDelivery
+
+Stakeholders of SameDayDelivery {
+	StakeholderGroup Online_Shopping_Company {
+		Stakeholder Development_Team {
+			influence MEDIUM
+			interest HIGH
+		}
+		Stakeholder Product_Management {
+			influence HIGH
+			interest HIGH
+		}
+		Stakeholder Customer_Relationship_Manager {
+			influence HIGH
+			interest MEDIUM
+		}
+	}
+	
+	StakeholderGroup Product_Suppliers {
+		Stakeholder Managers
+		Stakeholder Logistics_Warehouse_Staff_of_Suppliers
+		Stakeholder Delivery_Staff_of_Suppliers
+	}
+	
+	StakeholderGroup Delivery_Partners {
+		Stakeholder Route_Planners
+		Stakeholder Drivers
+	}
+	
+	StakeholderGroup Competing_Companies
+	
+	StakeholderGroup Logistics_Team {
+		Stakeholder Logistics_Manager
+		Stakeholder Warehouse_Staff
+	}
+	
+	
+	Stakeholder Government
+	
+	StakeholderGroup Customers_and_Shoppers {
+		Stakeholder Shoppers_in_Emergency_Situations
+		Stakeholder Others
+	}
+}
