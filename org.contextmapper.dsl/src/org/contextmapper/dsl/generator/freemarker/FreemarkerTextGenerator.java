@@ -46,6 +46,8 @@ import org.contextmapper.dsl.contextMappingDSL.SharedKernel;
 import org.contextmapper.dsl.contextMappingDSL.SingleCommandInvokation;
 import org.contextmapper.dsl.contextMappingDSL.SingleEventProduction;
 import org.contextmapper.dsl.contextMappingDSL.SingleOperationInvokation;
+import org.contextmapper.dsl.contextMappingDSL.Stakeholder;
+import org.contextmapper.dsl.contextMappingDSL.StakeholderGroup;
 import org.contextmapper.dsl.contextMappingDSL.Subdomain;
 import org.contextmapper.dsl.contextMappingDSL.SymmetricRelationship;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
@@ -108,6 +110,8 @@ public class FreemarkerTextGenerator {
 		dataMap.put("imports", contextMappingModel.getImports());
 		dataMap.put("useCases", contextMappingModel.getUserRequirements());
 		dataMap.put("userStories", contextMappingModel.getUserRequirements());
+		dataMap.put("stakeholders", contextMappingModel.getStakeholders());
+		dataMap.put("valueRegisters", contextMappingModel.getValueRegisters());
 		String timeStamp = new SimpleDateFormat("dd.MM.YYYY HH:mm:ss z").format(new Date());
 		dataMap.put("timestamp", timeStamp); // for backwards compatibility
 		dataMap.put("timeStamp", timeStamp);
@@ -172,6 +176,8 @@ public class FreemarkerTextGenerator {
 		classMap.put("CommandInvokation", CommandInvokation.class);
 		classMap.put("OperationInvokation", OperationInvokation.class);
 		classMap.put("ExclusiveAlternativeStateTransitionTarget", ExclusiveAlternativeStateTransitionTarget.class);
+		classMap.put("StakeholderGroup", StakeholderGroup.class);
+		classMap.put("Stakeholder", Stakeholder.class);
 		return classMap;
 	}
 
