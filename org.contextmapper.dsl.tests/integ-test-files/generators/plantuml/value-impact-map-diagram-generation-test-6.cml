@@ -1,0 +1,45 @@
+
+Stakeholders {
+	StakeholderGroup Customers_and_Shoppers {
+		Stakeholder Shoppers_in_Emergency_Situations
+		Stakeholder Others
+	}
+	StakeholderGroup Delivery_Staff_of_Suppliers
+}
+
+ValueRegister SD_Values {
+	
+	ValueCluster Autonomy {
+		core AUTONOMY
+		demonstrator "customer values potentially increased freedom"
+		demonstrator "delivery staff's freedom might suffer because of work-life-balance"
+		
+		Value Freedom {
+			Stakeholder Customers_and_Shoppers {
+				priority HIGH
+				impact MEDIUM
+				consequences
+					good "increased freedom"
+			}
+			
+			Stakeholder Delivery_Staff_of_Suppliers {
+				priority HIGH
+				impact HIGH
+				consequences
+					bad "work-life-balance"
+					good "tbd" 
+				
+			}
+			
+		}
+		Value Sustainability {
+			Stakeholder Customers_and_Shoppers  {
+				priority HIGH
+				impact LOW
+				consequences
+					bad "fostering unsustainable behavior (always ordering last minute)"
+			}
+		}
+	}	
+
+}

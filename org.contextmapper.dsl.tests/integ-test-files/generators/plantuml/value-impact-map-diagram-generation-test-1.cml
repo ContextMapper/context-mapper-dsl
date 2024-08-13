@@ -1,0 +1,21 @@
+BoundedContext SameDayDelivery
+
+Stakeholders of SameDayDelivery {
+	StakeholderGroup Drivers
+}
+
+ValueRegister SD_Values for SameDayDelivery {
+	
+	Value WorkLifeBalance {
+		isCore 
+		demonstrator "Drivers value a healthy work-life-balance"
+		Stakeholder Drivers {
+			priority HIGH
+			impact HIGH
+			consequences
+				bad "SDD will harm work-life-balance of drivers"
+				action "hire more drivers" ACT	
+		}
+	}	
+
+}
