@@ -33,7 +33,7 @@ class PlantUMLValueImpactMapDiagramCreatorTest extends AbstractCMLInputFileTest 
 	}
 
 	@Test
-	public void canCreateStakeholderDiagramWithoutBoundedContext() throws IOException {
+	public void canCreateValueImpactMapDiagramDiagramWithoutBoundedContext() throws IOException {
 		// given
 		ContextMappingModel model = getOriginalResourceOfTestCML("value-impact-map-diagram-generation-test-2.cml").getContextMappingModel();
 
@@ -69,7 +69,7 @@ class PlantUMLValueImpactMapDiagramCreatorTest extends AbstractCMLInputFileTest 
 	}
 	
 	@Test
-	public void canCreateSimpleStakeholderDiagram() throws IOException {
+	public void canCreateSimpleValueImpactMapDiagram() throws IOException {
 		// given
 		ContextMappingModel model = getOriginalResourceOfTestCML("value-impact-map-diagram-generation-test-3.cml").getContextMappingModel();
 
@@ -110,7 +110,7 @@ class PlantUMLValueImpactMapDiagramCreatorTest extends AbstractCMLInputFileTest 
 	}
 	
 	@Test
-	public void canCreateSimpleStakeholderDiagram4ValueCluster() throws IOException {
+	public void canCreateSimpleValueImpactMapDiagram4ValueCluster() throws IOException {
 		// given
 		ContextMappingModel model = getOriginalResourceOfTestCML("value-impact-map-diagram-generation-test-4.cml").getContextMappingModel();
 
@@ -200,6 +200,66 @@ class PlantUMLValueImpactMapDiagramCreatorTest extends AbstractCMLInputFileTest 
 				+ "-- Consequence --" + System.lineSeparator()
 				+ "increased freedom" + System.lineSeparator()
 				+ "; <<green>>" + System.lineSeparator()
+				+ "@endmindmap" + System.lineSeparator(), valueImpactMapDiagram);
+	}
+	
+	@Test
+	public void canHandleRecurringStakeholders() throws IOException {
+		// given
+		ContextMappingModel model = getOriginalResourceOfTestCML("value-impact-map-diagram-generation-test-6.cml").getContextMappingModel();
+
+		// when
+		String valueImpactMapDiagram = new PlantUMLValueImpactMapGenerator().createDiagram(model.getValueRegisters().get(0));
+
+		// then
+		assertEquals("@startmindmap" + System.lineSeparator()
+				+ System.lineSeparator()
+				+ "<style>" + System.lineSeparator()
+				+ "node {" + System.lineSeparator()
+				+ "    MinimumWidth 200" + System.lineSeparator()
+				+ "    MaximumWidth 200" + System.lineSeparator()
+				+ "}" + System.lineSeparator()
+				+ "mindmapDiagram {" + System.lineSeparator()
+				+ "  .green {" + System.lineSeparator()
+				+ "    BackgroundColor lightgreen" + System.lineSeparator()
+				+ "  }" + System.lineSeparator()
+				+ "  .red {" + System.lineSeparator()
+				+ "    BackgroundColor tomato" + System.lineSeparator()
+				+ "  }" + System.lineSeparator()
+				+ "}" + System.lineSeparator()
+				+ "</style>" + System.lineSeparator()
+				+ System.lineSeparator()
+				+ "* System of Interest (SOI)" + System.lineSeparator()
+				+ "** Delivery_Staff_of_Suppliers" + System.lineSeparator()
+				+ "***:<b>Freedom" + System.lineSeparator()
+				+ "----" + System.lineSeparator()
+				+ "Priority HIGH" + System.lineSeparator()
+				+ "Impact HIGH" + System.lineSeparator()
+				+ "-- Consequence --" + System.lineSeparator()
+				+ "work-life-balance" + System.lineSeparator()
+				+ "; <<red>>" + System.lineSeparator()
+				+ "***:<b>Freedom" + System.lineSeparator()
+				+ "----" + System.lineSeparator()
+				+ "Priority HIGH" + System.lineSeparator()
+				+ "Impact HIGH" + System.lineSeparator()
+				+ "-- Consequence --" + System.lineSeparator()
+				+ "tbd" + System.lineSeparator()
+				+ "; <<green>>" + System.lineSeparator()
+				+ "** Customers_and_Shoppers" + System.lineSeparator()
+				+ "***:<b>Freedom" + System.lineSeparator()
+				+ "----" + System.lineSeparator()
+				+ "Priority HIGH" + System.lineSeparator()
+				+ "Impact MEDIUM" + System.lineSeparator()
+				+ "-- Consequence --" + System.lineSeparator()
+				+ "increased freedom" + System.lineSeparator()
+				+ "; <<green>>" + System.lineSeparator()
+				+ "***:<b>Sustainability" + System.lineSeparator()
+				+ "----" + System.lineSeparator()
+				+ "Priority HIGH" + System.lineSeparator()
+				+ "Impact LOW" + System.lineSeparator()
+				+ "-- Consequence --" + System.lineSeparator()
+				+ "fostering unsustainable behavior (always ordering last minute)" + System.lineSeparator()
+				+ "; <<red>>" + System.lineSeparator()
 				+ "@endmindmap" + System.lineSeparator(), valueImpactMapDiagram);
 	}
 	
