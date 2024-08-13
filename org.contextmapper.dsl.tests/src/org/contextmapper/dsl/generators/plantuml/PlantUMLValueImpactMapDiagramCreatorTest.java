@@ -21,7 +21,6 @@ import java.io.IOException;
 
 import org.contextmapper.dsl.AbstractCMLInputFileTest;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
-import org.contextmapper.dsl.generator.plantuml.PlantUMLStakeholderMapGenerator;
 import org.contextmapper.dsl.generator.plantuml.PlantUMLValueImpactMapGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,7 +33,7 @@ class PlantUMLValueImpactMapDiagramCreatorTest extends AbstractCMLInputFileTest 
 	}
 
 	@Test
-	public void canCreateStakeholderDiagramWithContext() throws IOException {
+	public void canCreateStakeholderDiagramWithoutBoundedContext() throws IOException {
 		// given
 		ContextMappingModel model = getOriginalResourceOfTestCML("value-impact-map-diagram-generation-test-2.cml").getContextMappingModel();
 
@@ -66,6 +65,141 @@ class PlantUMLValueImpactMapDiagramCreatorTest extends AbstractCMLInputFileTest 
 				+ "Priority HIGH" + System.lineSeparator()
 				+ "Impact HIGH" + System.lineSeparator()
 				+ ";" + System.lineSeparator()
+				+ "@endmindmap" + System.lineSeparator(), valueImpactMapDiagram);
+	}
+	
+	@Test
+	public void canCreateSimpleStakeholderDiagram() throws IOException {
+		// given
+		ContextMappingModel model = getOriginalResourceOfTestCML("value-impact-map-diagram-generation-test-3.cml").getContextMappingModel();
+
+		// when
+		String valueImpactMapDiagram = new PlantUMLValueImpactMapGenerator().createDiagram(model.getValueRegisters().get(0));
+
+		// then
+		assertEquals("@startmindmap" + System.lineSeparator()
+				+ System.lineSeparator()
+				+ "<style>" + System.lineSeparator()
+				+ "node {" + System.lineSeparator()
+				+ "    MinimumWidth 200" + System.lineSeparator()
+				+ "    MaximumWidth 200" + System.lineSeparator()
+				+ "}" + System.lineSeparator()
+				+ "mindmapDiagram {" + System.lineSeparator()
+				+ "  .green {" + System.lineSeparator()
+				+ "    BackgroundColor lightgreen" + System.lineSeparator()
+				+ "  }" + System.lineSeparator()
+				+ "  .red {" + System.lineSeparator()
+				+ "    BackgroundColor tomato" + System.lineSeparator()
+				+ "  }" + System.lineSeparator()
+				+ "}" + System.lineSeparator()
+				+ "</style>" + System.lineSeparator()
+				+ System.lineSeparator()
+				+ "* SameDayDelivery" + System.lineSeparator()
+				+ "** Drivers" + System.lineSeparator()
+				+ "***:<b>WorkLifeBalance" + System.lineSeparator()
+				+ "----" + System.lineSeparator()
+				+ "Priority HIGH" + System.lineSeparator()
+				+ "Impact HIGH" + System.lineSeparator()
+				+ "-- Consequence --" + System.lineSeparator()
+				+ "SDD will harm work-life-balance of drivers" + System.lineSeparator()
+				+ "-- Demonstrators --" + System.lineSeparator()
+				+ "* Drivers value a healthy work-life-balance" + System.lineSeparator()
+				+ "; <<red>>" + System.lineSeparator()
+				+ "**** ACT: hire more drivers" + System.lineSeparator()
+				+ "@endmindmap" + System.lineSeparator(), valueImpactMapDiagram);
+	}
+	
+	@Test
+	public void canCreateSimpleStakeholderDiagram4ValueCluster() throws IOException {
+		// given
+		ContextMappingModel model = getOriginalResourceOfTestCML("value-impact-map-diagram-generation-test-4.cml").getContextMappingModel();
+
+		// when
+		String valueImpactMapDiagram = new PlantUMLValueImpactMapGenerator().createDiagram(model.getValueRegisters().get(0));
+
+		// then
+		assertEquals("@startmindmap" + System.lineSeparator()
+				+ System.lineSeparator()
+				+ "<style>" + System.lineSeparator()
+				+ "node {" + System.lineSeparator()
+				+ "    MinimumWidth 200" + System.lineSeparator()
+				+ "    MaximumWidth 200" + System.lineSeparator()
+				+ "}" + System.lineSeparator()
+				+ "mindmapDiagram {" + System.lineSeparator()
+				+ "  .green {" + System.lineSeparator()
+				+ "    BackgroundColor lightgreen" + System.lineSeparator()
+				+ "  }" + System.lineSeparator()
+				+ "  .red {" + System.lineSeparator()
+				+ "    BackgroundColor tomato" + System.lineSeparator()
+				+ "  }" + System.lineSeparator()
+				+ "}" + System.lineSeparator()
+				+ "</style>" + System.lineSeparator()
+				+ System.lineSeparator()
+				+ "* System of Interest (SOI)" + System.lineSeparator()
+				+ "** Customers_and_Shoppers" + System.lineSeparator()
+				+ "***:<b>AUTONOMY" + System.lineSeparator()
+				+ "----" + System.lineSeparator()
+				+ "Priority HIGH" + System.lineSeparator()
+				+ "Impact MEDIUM" + System.lineSeparator()
+				+ "-- Consequence --" + System.lineSeparator()
+				+ "increased freedom" + System.lineSeparator()
+				+ "-- Demonstrators --" + System.lineSeparator()
+				+ "* customer values potentially increased freedom" + System.lineSeparator()
+				+ "* delivery staff's freedom might suffer because of work-life-balance" + System.lineSeparator()
+				+ "; <<green>>" + System.lineSeparator()
+				+ "@endmindmap" + System.lineSeparator(), valueImpactMapDiagram);
+	}
+	
+	@Test
+	public void canRespectValuesInValueClusters() throws IOException {
+		// given
+		ContextMappingModel model = getOriginalResourceOfTestCML("value-impact-map-diagram-generation-test-5.cml").getContextMappingModel();
+
+		// when
+		String valueImpactMapDiagram = new PlantUMLValueImpactMapGenerator().createDiagram(model.getValueRegisters().get(0));
+
+		// then
+		assertEquals("@startmindmap" + System.lineSeparator()
+				+ System.lineSeparator()
+				+ "<style>" + System.lineSeparator()
+				+ "node {" + System.lineSeparator()
+				+ "    MinimumWidth 200" + System.lineSeparator()
+				+ "    MaximumWidth 200" + System.lineSeparator()
+				+ "}" + System.lineSeparator()
+				+ "mindmapDiagram {" + System.lineSeparator()
+				+ "  .green {" + System.lineSeparator()
+				+ "    BackgroundColor lightgreen" + System.lineSeparator()
+				+ "  }" + System.lineSeparator()
+				+ "  .red {" + System.lineSeparator()
+				+ "    BackgroundColor tomato" + System.lineSeparator()
+				+ "  }" + System.lineSeparator()
+				+ "}" + System.lineSeparator()
+				+ "</style>" + System.lineSeparator()
+				+ System.lineSeparator()
+				+ "* System of Interest (SOI)" + System.lineSeparator()
+				+ "** Delivery_Staff_of_Suppliers" + System.lineSeparator()
+				+ "***:<b>Freedom" + System.lineSeparator()
+				+ "----" + System.lineSeparator()
+				+ "Priority HIGH" + System.lineSeparator()
+				+ "Impact HIGH" + System.lineSeparator()
+				+ "-- Consequence --" + System.lineSeparator()
+				+ "work-life-balance" + System.lineSeparator()
+				+ "; <<red>>" + System.lineSeparator()
+				+ "***:<b>Freedom" + System.lineSeparator()
+				+ "----" + System.lineSeparator()
+				+ "Priority HIGH" + System.lineSeparator()
+				+ "Impact HIGH" + System.lineSeparator()
+				+ "-- Consequence --" + System.lineSeparator()
+				+ "tbd" + System.lineSeparator()
+				+ "; <<green>>" + System.lineSeparator()
+				+ "** Customers_and_Shoppers" + System.lineSeparator()
+				+ "***:<b>Freedom" + System.lineSeparator()
+				+ "----" + System.lineSeparator()
+				+ "Priority HIGH" + System.lineSeparator()
+				+ "Impact MEDIUM" + System.lineSeparator()
+				+ "-- Consequence --" + System.lineSeparator()
+				+ "increased freedom" + System.lineSeparator()
+				+ "; <<green>>" + System.lineSeparator()
 				+ "@endmindmap" + System.lineSeparator(), valueImpactMapDiagram);
 	}
 	
