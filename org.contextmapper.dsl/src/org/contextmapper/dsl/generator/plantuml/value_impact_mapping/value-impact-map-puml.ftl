@@ -39,7 +39,7 @@ ${value.consequence}
 * ${demonstrator}
       </#list>
     </#if>
-; <#if value.consequenceType == "GOOD"><<green>><#elseif value.consequenceType == "BAD"><<red>></#if>
+;<#if value.consequenceType == "GOOD"> <<green>><#elseif value.consequenceType == "BAD"> <<red>></#if>
     <#list value.mitigationActions as mitigationAction>
 **** ${mitigationAction.actionType}: ${mitigationAction.action}
     </#list>

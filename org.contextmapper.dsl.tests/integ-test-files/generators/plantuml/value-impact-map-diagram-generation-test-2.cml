@@ -1,0 +1,13 @@
+
+Stakeholders {
+	StakeholderGroup Drivers
+}
+
+ValueRegister SD_Values {
+	
+	Value WorkLifeBalance {
+		Stakeholder Drivers {
+		}
+	}	
+
+}
