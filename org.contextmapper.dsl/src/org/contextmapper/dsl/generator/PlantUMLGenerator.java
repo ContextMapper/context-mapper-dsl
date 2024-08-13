@@ -27,6 +27,7 @@ import org.contextmapper.dsl.contextMappingDSL.SculptorModule;
 import org.contextmapper.dsl.contextMappingDSL.Stakeholders;
 import org.contextmapper.dsl.contextMappingDSL.UseCase;
 import org.contextmapper.dsl.contextMappingDSL.UserRequirement;
+import org.contextmapper.dsl.contextMappingDSL.ValueRegister;
 import org.contextmapper.dsl.generator.exception.GeneratorInputException;
 import org.contextmapper.dsl.generator.plantuml.PlantUMLAggregateClassDiagramCreator;
 import org.contextmapper.dsl.generator.plantuml.PlantUMLBoundedContextClassDiagramCreator;
@@ -38,6 +39,7 @@ import org.contextmapper.dsl.generator.plantuml.PlantUMLStateDiagramCreator4Flow
 import org.contextmapper.dsl.generator.plantuml.PlantUMLSubdomainClassDiagramCreator;
 import org.contextmapper.dsl.generator.plantuml.PlantUMLUseCaseDiagramCreator;
 import org.contextmapper.dsl.generator.plantuml.PlantUMLUseCaseInteractionsSequenceDiagramCreator;
+import org.contextmapper.dsl.generator.plantuml.PlantUMLValueImpactMapGenerator;
 import org.contextmapper.tactic.dsl.tacticdsl.StateTransition;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.xtext.EcoreUtil2;
@@ -64,6 +66,7 @@ public class PlantUMLGenerator extends AbstractContextMappingModelGenerator {
 		generateUseCaseDiagram(model, fsa, fileName);
 		generateSequenceDiagramsForUseCases(model, fsa, fileName);
 		generateStakeholderDiagrams(model, fsa, fileName);
+		generateValueImpactMapsForValueRegisters(model, fsa, fileName);
 	}
 
 	private void generateStakeholderDiagrams(ContextMappingModel model, IFileSystemAccess2 fsa, String fileName) {
@@ -75,6 +78,18 @@ public class PlantUMLGenerator extends AbstractContextMappingModelGenerator {
 							.replace(", ", "-").replace(" ", "-")
 					+ "_StakeholderMap-" + index++ + "." + PLANT_UML_FILE_EXT,
 					stakeholderDiagramGenerator.createDiagram(stakeholders));
+		}
+	}
+
+	private void generateValueImpactMapsForValueRegisters(ContextMappingModel model, IFileSystemAccess2 fsa,
+			String fileName) {
+		for (ValueRegister valueRegister : model.getValueRegisters()) {
+			if (!(valueRegister.getValueClusters().isEmpty() && valueRegister.getValues().isEmpty())) {
+				fsa.generateFile(
+						fileName + "_ValueRegister_" + valueRegister.getName() + "_Value-Impact-Map" + "."
+								+ PLANT_UML_FILE_EXT,
+						new PlantUMLValueImpactMapGenerator().createDiagram(valueRegister));
+			}
 		}
 	}
 
@@ -155,7 +170,8 @@ public class PlantUMLGenerator extends AbstractContextMappingModelGenerator {
 	private void checkPreconditions() {
 		if (this.contextMappingModel.getMap() == null && this.contextMappingModel.getBoundedContexts().isEmpty()
 				&& !modelHasSubdomainWithEntities() && this.contextMappingModel.getUserRequirements().isEmpty()
-				&& this.contextMappingModel.getStakeholders().isEmpty())
+				&& this.contextMappingModel.getStakeholders().isEmpty()
+				&& this.contextMappingModel.getValueRegisters().isEmpty())
 			throw new GeneratorInputException(
 					"Your model does not contain a) a Context Map, b) Bounded Contexts or Subdomains with domain objects (Entities, Value Objects, etc.), c) Use Cases or User Stories, or d) Stakeholders or Value Registers. Create at least one of the mentioned model elements.");
 	}

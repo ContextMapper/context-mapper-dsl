@@ -67,7 +67,8 @@ class PlantUMLGeneratorTest extends AbstractCMLInputFileTest {
 
 		// when
 		IFileSystemAccess2Mock filesystem = new IFileSystemAccess2Mock();
-		this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem, new IGeneratorContextMock());
+		this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem,
+				new IGeneratorContextMock());
 
 		// then
 		assertTrue(filesystem.getGeneratedFilesSet().contains("testmodel_ContextMap.puml"));
@@ -85,7 +86,8 @@ class PlantUMLGeneratorTest extends AbstractCMLInputFileTest {
 
 		// when
 		IFileSystemAccess2Mock filesystem = new IFileSystemAccess2Mock();
-		this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem, new IGeneratorContextMock());
+		this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem,
+				new IGeneratorContextMock());
 
 		// then
 		assertTrue(filesystem.getGeneratedFilesSet().contains("testmodel_BC_TestContext.puml"));
@@ -108,7 +110,8 @@ class PlantUMLGeneratorTest extends AbstractCMLInputFileTest {
 
 		// when
 		IFileSystemAccess2Mock filesystem = new IFileSystemAccess2Mock();
-		this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem, new IGeneratorContextMock());
+		this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem,
+				new IGeneratorContextMock());
 
 		// then
 		assertFalse(filesystem.getGeneratedFilesSet().contains("testmodel_SD_TestSubdomain1.puml"));
@@ -118,100 +121,133 @@ class PlantUMLGeneratorTest extends AbstractCMLInputFileTest {
 	@Test
 	void canCreateStateDiagram4ApplicationFlowIfAvailable() throws IOException {
 		// given
-		ContextMappingModel model = getOriginalResourceOfTestCML("state-diagram-generation-flow-test.cml").getContextMappingModel();
+		ContextMappingModel model = getOriginalResourceOfTestCML("state-diagram-generation-flow-test.cml")
+				.getContextMappingModel();
 
 		// when
 		IFileSystemAccess2Mock filesystem = new IFileSystemAccess2Mock();
-		this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem, new IGeneratorContextMock());
+		this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem,
+				new IGeneratorContextMock());
 
 		// then
-		assertTrue(filesystem.getGeneratedFilesSet().contains("testmodel_BC_InsuranceQuotes_QuoteFlow_StateDiagram.puml"));
+		assertTrue(
+				filesystem.getGeneratedFilesSet().contains("testmodel_BC_InsuranceQuotes_QuoteFlow_StateDiagram.puml"));
 	}
 
 	@Test
 	void canCreateClass4AggregateIfAvailable() throws IOException {
 		// given
-		ContextMappingModel model = getOriginalResourceOfTestCML("class-diagram-generation-aggregate-test-1.cml").getContextMappingModel();
+		ContextMappingModel model = getOriginalResourceOfTestCML("class-diagram-generation-aggregate-test-1.cml")
+				.getContextMappingModel();
 
 		// when
 		IFileSystemAccess2Mock filesystem = new IFileSystemAccess2Mock();
-		this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem, new IGeneratorContextMock());
+		this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem,
+				new IGeneratorContextMock());
 
 		// then
 		assertTrue(filesystem.getGeneratedFilesSet().contains("testmodel_BC_InsuranceQuotes_QuoteRequest.puml"));
 	}
-	
+
 	@Test
 	void canCreateClass4ModuleIfAvailable() throws IOException {
 		// given
-		ContextMappingModel model = getOriginalResourceOfTestCML("class-diagram-generation-module-test-1.cml").getContextMappingModel();
+		ContextMappingModel model = getOriginalResourceOfTestCML("class-diagram-generation-module-test-1.cml")
+				.getContextMappingModel();
 
 		// when
 		IFileSystemAccess2Mock filesystem = new IFileSystemAccess2Mock();
-		this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem, new IGeneratorContextMock());
+		this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem,
+				new IGeneratorContextMock());
 
 		// then
 		assertTrue(filesystem.getGeneratedFilesSet().contains("testmodel_BC_InsuranceQuotes_QuoteRequest.puml"));
 	}
-	
+
 	@Test
 	void canCreateStateDiagram4AggregateIfAvailable() throws IOException {
 		// given
-		ContextMappingModel model = getOriginalResourceOfTestCML("state-diagram-generation-aggregate-test-1.cml").getContextMappingModel();
+		ContextMappingModel model = getOriginalResourceOfTestCML("state-diagram-generation-aggregate-test-1.cml")
+				.getContextMappingModel();
 
 		// when
 		IFileSystemAccess2Mock filesystem = new IFileSystemAccess2Mock();
-		this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem, new IGeneratorContextMock());
+		this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem,
+				new IGeneratorContextMock());
 
 		// then
-		assertTrue(filesystem.getGeneratedFilesSet().contains("testmodel_BC_InsuranceQuotes_QuoteRequest_StateDiagram.puml"));
+		assertTrue(filesystem.getGeneratedFilesSet()
+				.contains("testmodel_BC_InsuranceQuotes_QuoteRequest_StateDiagram.puml"));
 	}
-	
+
 	@Test
 	void canCreateUseCaseDiagram4UseCasesIfAvailable() throws IOException {
 		// given
-		ContextMappingModel model = getOriginalResourceOfTestCML("use-case-diagram-generation-test-1.cml").getContextMappingModel();
+		ContextMappingModel model = getOriginalResourceOfTestCML("use-case-diagram-generation-test-1.cml")
+				.getContextMappingModel();
 
 		// when
 		IFileSystemAccess2Mock filesystem = new IFileSystemAccess2Mock();
-		this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem, new IGeneratorContextMock());
+		this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem,
+				new IGeneratorContextMock());
 
 		// then
 		assertTrue(filesystem.getGeneratedFilesSet().contains("testmodel_UseCases.puml"));
 	}
-	
+
 	@Test
 	void canCreateSequenceDiagram4UseCaseInteractionsIfAvailable() throws IOException {
 		// given
-		ContextMappingModel model = getOriginalResourceOfTestCML("use-case-diagram-generation-test-1.cml").getContextMappingModel();
+		ContextMappingModel model = getOriginalResourceOfTestCML("use-case-diagram-generation-test-1.cml")
+				.getContextMappingModel();
 
 		// when
 		IFileSystemAccess2Mock filesystem = new IFileSystemAccess2Mock();
-		this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem, new IGeneratorContextMock());
+		this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem,
+				new IGeneratorContextMock());
 
 		// then
-		assertTrue(filesystem.getGeneratedFilesSet().contains("testmodel_UseCase_Get_paid_for_car_accident_Interactions.puml"));
+		assertTrue(filesystem.getGeneratedFilesSet()
+				.contains("testmodel_UseCase_Get_paid_for_car_accident_Interactions.puml"));
 	}
-	
+
 	@Test
 	void canCreateStakeholderDiagramsIfStakeholdersAreAvailable() throws IOException {
 		// given
-		ContextMappingModel model = getOriginalResourceOfTestCML("stakeholder-diagram-generation-test-1.cml").getContextMappingModel();
-		
-		
+		ContextMappingModel model = getOriginalResourceOfTestCML("stakeholder-diagram-generation-test-1.cml")
+				.getContextMappingModel();
+
 		// when
 		IFileSystemAccess2Mock filesystem = new IFileSystemAccess2Mock();
-		this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem, new IGeneratorContextMock());
-		
+		this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem,
+				new IGeneratorContextMock());
+
 		// then
 		assertTrue(filesystem.getGeneratedFilesSet().contains("testmodel_BC_System-of-Interest_StakeholderMap-1.puml"));
+	}
+
+	@Test
+	void canCreateValueImpactMapDiagramsIfValueRegistersAreAvailable() throws IOException {
+		// given
+		ContextMappingModel model = getOriginalResourceOfTestCML("value-impact-map-diagram-generation-test-1.cml")
+				.getContextMappingModel();
+
+		// when
+		IFileSystemAccess2Mock filesystem = new IFileSystemAccess2Mock();
+		this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem,
+				new IGeneratorContextMock());
+
+		// then
+		assertTrue(
+				filesystem.getGeneratedFilesSet().contains("testmodel_ValueRegister_SD_Values_Value-Impact-Map.puml"));
 	}
 
 	@Test
 	void expectExceptionForEmptyResource() {
 		IFileSystemAccess2Mock filesystem = new IFileSystemAccess2Mock();
 		assertThrows(GeneratorInputException.class, () -> {
-			this.generator.doGenerate(new ContextMappingModelResourceMock(null, "testmodel", "cml"), filesystem, new IGeneratorContextMock());
+			this.generator.doGenerate(new ContextMappingModelResourceMock(null, "testmodel", "cml"), filesystem,
+					new IGeneratorContextMock());
 		});
 	}
 
@@ -220,7 +256,8 @@ class PlantUMLGeneratorTest extends AbstractCMLInputFileTest {
 		ContextMappingModel model = ContextMappingDSLFactory.eINSTANCE.createContextMappingModel();
 		IFileSystemAccess2Mock filesystem = new IFileSystemAccess2Mock();
 		assertThrows(GeneratorInputException.class, () -> {
-			this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem, new IGeneratorContextMock());
+			this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem,
+					new IGeneratorContextMock());
 		});
 	}
 
@@ -232,7 +269,8 @@ class PlantUMLGeneratorTest extends AbstractCMLInputFileTest {
 		model.getDomains().add(emptyDomain);
 		IFileSystemAccess2Mock filesystem = new IFileSystemAccess2Mock();
 		assertThrows(GeneratorInputException.class, () -> {
-			this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem, new IGeneratorContextMock());
+			this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem,
+					new IGeneratorContextMock());
 		});
 	}
 
