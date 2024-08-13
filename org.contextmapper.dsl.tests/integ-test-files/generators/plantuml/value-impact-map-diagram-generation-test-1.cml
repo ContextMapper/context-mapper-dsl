@@ -1,3 +1,9 @@
+BoundedContext SameDayDelivery
+
+Stakeholders of SameDayDelivery {
+	StakeholderGroup Drivers
+}
+
 ValueRegister SD_Values for SameDayDelivery {
 	
 	Value WorkLifeBalance {
