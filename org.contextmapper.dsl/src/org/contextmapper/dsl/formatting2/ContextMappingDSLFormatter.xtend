@@ -424,6 +424,7 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 		valueCluster.regionFor.keyword('demonstrator').prepend[newLine]
 		valueCluster.regionFor.keyword('relatedValue').prepend[newLine]
 		valueCluster.regionFor.keyword('opposingValue').prepend[newLine]
+		valueCluster.prepend[newLines = 1]
 		for (value : valueCluster.values) {
 			value.format
 		}
@@ -441,6 +442,7 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 		value.regionFor.keyword('demonstrator').prepend[newLine]
 		value.regionFor.keyword('relatedValue').prepend[newLine]
 		value.regionFor.keyword('opposingValue').prepend[newLine]
+		value.prepend[newLines = 1]
 		for (elicitation : value.elicitations) {
 			elicitation.format
 		}

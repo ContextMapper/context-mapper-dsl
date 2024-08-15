@@ -42,6 +42,7 @@ import org.contextmapper.dsl.ide.commands.impl.refactoring.SplitSystemContextInt
 import org.contextmapper.dsl.ide.commands.impl.refactoring.SuspendPartnershipCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.SwitchFromPartnershipToSharedKernelCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.SwitchFromSharedKernelToPartnershipCommand;
+import org.contextmapper.dsl.ide.commands.impl.refactoring.WrapValueInClusterCommand;
 import org.contextmapper.dsl.ide.edit.WorkspaceEditRecorder;
 
 import com.google.common.collect.Maps;
@@ -91,6 +92,7 @@ public class CMLCommandRegistry {
 		commandMap.put("cml.ar.moveStakeholderToGroup", new MoveStakeholderToGroupCommand(editRecorder));
 		commandMap.put("cml.ar.createValueForStakeholder", new CreateValue4StakeholderCommand(editRecorder));
 		commandMap.put("cml.ar.addEthicalValueAssessment", new AddEthicalValueAssessmentCommand(editRecorder));
+		commandMap.put("cml.ar.wrapValueInCluster", new WrapValueInClusterCommand(editRecorder));
 	}
 
 	public CMLResourceCommand getCommand(String commandId) {

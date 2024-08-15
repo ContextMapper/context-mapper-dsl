@@ -42,6 +42,7 @@ import org.contextmapper.dsl.ide.actions.impl.SplitSystemIntoSubsystemsAction;
 import org.contextmapper.dsl.ide.actions.impl.SuspendPartnershipAction;
 import org.contextmapper.dsl.ide.actions.impl.SwitchFromPartnershipToSharedKernelAction;
 import org.contextmapper.dsl.ide.actions.impl.SwitchFromSharedKernelToPartnershipAction;
+import org.contextmapper.dsl.ide.actions.impl.WrapValueInClusterAction;
 import org.contextmapper.dsl.ide.edit.WorkspaceEditRecorder;
 import org.contextmapper.dsl.ide.quickfix.QuickfixCommandMapper;
 import org.contextmapper.dsl.ide.quickfix.impl.OpenCoordinationInSketchMinerCommandMapper;
@@ -116,6 +117,7 @@ public class CMLActionRegistry {
 		codeActions.add(new MoveStakeholderToGroupAction(resource, selectedObjects));
 		codeActions.add(new CreateValue4StakeholderAction(resource, selectedObjects));
 		codeActions.add(new AddEthicalValueAssessmentAction(resource, selectedObjects));
+		codeActions.add(new WrapValueInClusterAction(resource, selectedObjects));
 
 		return Lists.newLinkedList(codeActions);
 	}
