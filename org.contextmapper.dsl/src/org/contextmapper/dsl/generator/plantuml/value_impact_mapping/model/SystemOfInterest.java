@@ -28,7 +28,7 @@ public class SystemOfInterest {
 
 	public SystemOfInterest(final String name) {
 		this.name = name;
-		this.stakeholders = Sets.newHashSet();
+		this.stakeholders = Sets.newLinkedHashSet();
 	}
 
 	public String getName() {
@@ -39,12 +39,12 @@ public class SystemOfInterest {
 		return Collections.unmodifiableSet(stakeholders);
 	}
 
-	public Stakeholder getOrCreateStakeholder(final String name) {
+	public Stakeholder getOrCreateStakeholder(final String name, final String description) {
 		Optional<Stakeholder> optStakeholder = stakeholders.stream().filter(s -> s.getName().equals(name)).findFirst();
 		if (optStakeholder.isPresent())
 			return optStakeholder.get();
 
-		Stakeholder stakeholder = new Stakeholder(name);
+		Stakeholder stakeholder = new Stakeholder(name, description);
 		this.stakeholders.add(stakeholder);
 		return stakeholder;
 	}
