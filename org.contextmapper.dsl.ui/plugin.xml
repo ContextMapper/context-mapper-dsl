@@ -420,7 +420,7 @@
 	<extension point="org.eclipse.ui.handlers">
 		<handler 
 			class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.contextmapper.dsl.ui.handler.SplitAggregateByEntitiesRefactoringHandler"
-			commandId="org.contextmapper.dsl.ui.handler.SplitAggregateByEntitiesRefactoringCommand">
+			commandId="org.contextmapper.dsl.ui.handler.Command">
 			<activeWhen>
 				<reference
 					definitionId="org.contextmapper.dsl.ContextMappingDSL.Editor.opened">
@@ -562,6 +562,42 @@
 				</reference>
 			</activeWhen>
 		</handler>
+		<handler 
+			class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.contextmapper.dsl.ui.handler.stakeholders.MoveStakeholderToNewGroupHandler"
+			commandId="org.contextmapper.dsl.ui.handler.stakeholders.MoveStakeholderToNewGroupRefactoringCommand">
+			<activeWhen>
+				<reference
+					definitionId="org.contextmapper.dsl.ContextMappingDSL.Editor.opened">
+				</reference>
+			</activeWhen>
+		</handler>
+		<handler 
+			class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.contextmapper.dsl.ui.handler.stakeholders.CreateValue4StakeholderHandler"
+			commandId="org.contextmapper.dsl.ui.handler.stakeholders.CreateValue4StakeholderRefactoringCommand">
+			<activeWhen>
+				<reference
+					definitionId="org.contextmapper.dsl.ContextMappingDSL.Editor.opened">
+				</reference>
+			</activeWhen>
+		</handler>
+		<handler 
+			class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.contextmapper.dsl.ui.handler.AddEthicalValueAssessmentToStoryHandler"
+			commandId="org.contextmapper.dsl.ui.handler.AddEthicalValueAssessmentToStoryRefactoringCommand">
+			<activeWhen>
+				<reference
+					definitionId="org.contextmapper.dsl.ContextMappingDSL.Editor.opened">
+				</reference>
+			</activeWhen>
+		</handler>
+		<handler 
+			class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.contextmapper.dsl.ui.handler.value_registers.WrapValueInClusterHandler"
+			commandId="org.contextmapper.dsl.ui.handler.value_registers.WrapValueInClusterRefactoringCommand">
+			<activeWhen>
+				<reference
+					definitionId="org.contextmapper.dsl.ContextMappingDSL.Editor.opened">
+				</reference>
+			</activeWhen>
+		</handler>
 	</extension>
 	<extension
 	      point="org.eclipse.ui.commands">
@@ -663,6 +699,30 @@
 	      point="org.eclipse.ui.commands">
 	      <command name="Extract Suggested Service in Original Model" categoryId="org.eclipse.xtext.ui.category.refactoring"
              id="org.contextmapper.dsl.ui.handler.ExtractSuggestedServiceRefactoringCommand">
+	      </command>
+	</extension>
+	<extension
+	      point="org.eclipse.ui.commands">
+	      <command name="Move Stakeholder To New Group" categoryId="org.eclipse.xtext.ui.category.refactoring"
+             id="org.contextmapper.dsl.ui.handler.stakeholders.MoveStakeholderToNewGroupRefactoringCommand">
+	      </command>
+	</extension>
+	<extension
+	      point="org.eclipse.ui.commands">
+	      <command name="Create Value For Stakeholder" categoryId="org.eclipse.xtext.ui.category.refactoring"
+             id="org.contextmapper.dsl.ui.handler.stakeholders.CreateValue4StakeholderRefactoringCommand">
+	      </command>
+	</extension>
+	<extension
+	      point="org.eclipse.ui.commands">
+	      <command name="Add Ethical Value Assessment" categoryId="org.eclipse.xtext.ui.category.refactoring"
+             id="org.contextmapper.dsl.ui.handler.AddEthicalValueAssessmentToStoryRefactoringCommand">
+	      </command>
+	</extension>
+	<extension
+	      point="org.eclipse.ui.commands">
+	      <command name="Wrap Value In Cluster" categoryId="org.eclipse.xtext.ui.category.refactoring"
+             id="org.contextmapper.dsl.ui.handler.value_registers.WrapValueInClusterRefactoringCommand">
 	      </command>
 	</extension>
 	<extension point="org.eclipse.ui.menus">

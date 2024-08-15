@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 The Context Mapper Project Team
+ * Copyright 2018-2024 The Context Mapper Project Team
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,6 +37,18 @@ import org.contextmapper.dsl.contextMappingDSL.UserStory
 import org.contextmapper.dsl.services.ContextMappingDSLGrammarAccess
 import org.contextmapper.tactic.dsl.formatting2.TacticDDDLanguageFormatter
 import org.eclipse.xtext.formatting2.IFormattableDocument
+import org.contextmapper.dsl.contextMappingDSL.Stakeholders
+import org.contextmapper.dsl.contextMappingDSL.ValueRegister
+import org.contextmapper.dsl.contextMappingDSL.Stakeholder
+import org.contextmapper.dsl.contextMappingDSL.StakeholderGroup
+import org.contextmapper.dsl.contextMappingDSL.ValueEpic
+import org.contextmapper.dsl.contextMappingDSL.ValueNarrative
+import org.contextmapper.dsl.contextMappingDSL.ValueWeigthing
+import org.contextmapper.dsl.contextMappingDSL.ValueCluster
+import org.contextmapper.dsl.contextMappingDSL.Value
+import org.contextmapper.dsl.contextMappingDSL.ValueElicitation
+import org.contextmapper.dsl.contextMappingDSL.Consequence
+import org.contextmapper.dsl.contextMappingDSL.Action
 
 class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 
@@ -63,6 +75,12 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 		}
 		for (userRequirement : contextMappingModel.userRequirements) {
 			userRequirement.format
+		}
+		for (stakeholders : contextMappingModel.stakeholders) {
+			stakeholders.format
+		}
+		for (valueRegister : contextMappingModel.valueRegisters) {
+			valueRegister.format
 		}
 	}
 
@@ -323,5 +341,135 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 			aggregate.format
 		}
 	}
-
+	
+	def dispatch void format(Stakeholders stakeholderContainer, extension IFormattableDocument document) {
+		interior(
+			stakeholderContainer.regionFor.ruleCallTo(OPENRule).append[newLine],
+			stakeholderContainer.regionFor.ruleCallTo(CLOSERule).prepend[newLine].append[newLine]
+		)[indent]
+		for (stakeholder : stakeholderContainer.stakeholders) {
+			stakeholder.format
+		}
+	}
+	
+	def dispatch void format(StakeholderGroup stakeholderGroup, extension IFormattableDocument document) {
+		interior(
+			stakeholderGroup.regionFor.ruleCallTo(OPENRule).append[newLine],
+			stakeholderGroup.regionFor.ruleCallTo(CLOSERule).prepend[newLine].append[newLine]
+		)[indent]
+		for (stakeholder: stakeholderGroup.stakeholders) {
+			stakeholder.format
+		}
+	}
+	
+	def dispatch void format(Stakeholder stakeholder, extension IFormattableDocument document) {
+		interior(
+			stakeholder.regionFor.ruleCallTo(OPENRule).append[newLine],
+			stakeholder.regionFor.ruleCallTo(CLOSERule).prepend[newLine].append[newLine]
+		)[indent]
+		stakeholder.regionFor.keyword('influence').prepend[newLine]
+		stakeholder.regionFor.keyword('interest').prepend[newLine]
+		stakeholder.regionFor.keyword('description').prepend[newLine]
+	}
+	
+	def dispatch void format(ValueRegister valueRegister, extension IFormattableDocument document) {
+		interior(
+			valueRegister.regionFor.ruleCallTo(OPENRule).append[newLine],
+			valueRegister.regionFor.ruleCallTo(CLOSERule).prepend[newLine].append[newLine]
+		)[indent]
+		for (valueCluster : valueRegister.valueClusters) {
+			valueCluster.format
+		}
+		for (value : valueRegister.values) {
+			value.format
+		}
+		for (valueEpic : valueRegister.valueEpics) {
+			valueEpic.format
+		}
+		for (valueNarrative : valueRegister.valueNarratives) {
+			valueNarrative.format
+		}
+		for (valueWeighting : valueRegister.valueWeightings) {
+			valueWeighting.format
+		}
+	}
+	
+	def dispatch void format(ValueEpic valueEpic, extension IFormattableDocument document) {
+		interior(
+			valueEpic.regionFor.ruleCallTo(OPENRule).append[newLine],
+			valueEpic.regionFor.ruleCallTo(CLOSERule).prepend[newLine].append[newLine]
+		)[indent]
+	}
+	
+	def dispatch void format(ValueNarrative valueNarrative, extension IFormattableDocument document) {
+		interior(
+			valueNarrative.regionFor.ruleCallTo(OPENRule).append[newLine],
+			valueNarrative.regionFor.ruleCallTo(CLOSERule).prepend[newLine].append[newLine]
+		)[indent]
+	}
+	
+	def dispatch void format(ValueWeigthing valueWeighting, extension IFormattableDocument document) {
+		interior(
+			valueWeighting.regionFor.ruleCallTo(OPENRule).append[newLine],
+			valueWeighting.regionFor.ruleCallTo(CLOSERule).prepend[newLine].append[newLine]
+		)[indent]
+	}
+	
+	def dispatch void format(ValueCluster valueCluster, extension IFormattableDocument document) {
+		interior(
+			valueCluster.regionFor.ruleCallTo(OPENRule).append[newLine],
+			valueCluster.regionFor.ruleCallTo(CLOSERule).prepend[newLine].append[newLine]
+		)[indent]
+		valueCluster.regionFor.keyword('core').prepend[newLine]
+		valueCluster.regionFor.keyword('demonstrator').prepend[newLine]
+		valueCluster.regionFor.keyword('relatedValue').prepend[newLine]
+		valueCluster.regionFor.keyword('opposingValue').prepend[newLine]
+		valueCluster.prepend[newLines = 1]
+		for (value : valueCluster.values) {
+			value.format
+		}
+		for (elicitation : valueCluster.elicitations) {
+			elicitation.format
+		}
+	}
+	
+	def dispatch void format(Value value, extension IFormattableDocument document) {
+		interior(
+			value.regionFor.ruleCallTo(OPENRule).append[newLine],
+			value.regionFor.ruleCallTo(CLOSERule).prepend[newLine].append[newLine]
+		)[indent]
+		value.regionFor.keyword('isCore').prepend[newLine]
+		value.regionFor.keyword('demonstrator').prepend[newLine]
+		value.regionFor.keyword('relatedValue').prepend[newLine]
+		value.regionFor.keyword('opposingValue').prepend[newLine]
+		value.prepend[newLines = 1]
+		for (elicitation : value.elicitations) {
+			elicitation.format
+		}
+	}
+	
+	def dispatch void format(ValueElicitation elicitation, extension IFormattableDocument document) {
+		interior(
+			elicitation.regionFor.ruleCallTo(OPENRule).append[newLine],
+			elicitation.regionFor.ruleCallTo(CLOSERule).prepend[newLine].append[newLine]
+		)[indent]
+		elicitation.regionFor.keyword('priority').prepend[newLine]
+		elicitation.regionFor.keyword('impact').prepend[newLine]
+		elicitation.regionFor.keyword('consequences').prepend[newLine]
+		for (consequence : elicitation.consequences) {
+			consequence.format
+		}
+	}
+	
+	def dispatch void format(Consequence consequence, extension IFormattableDocument document) {
+		consequence.regionFor.keyword('good').prepend[newLine]
+		consequence.regionFor.keyword('bad').prepend[newLine]
+		consequence.regionFor.keyword('neutral').prepend[newLine]
+		consequence.action.format
+	}
+	
+	def dispatch void format(Action action, extension IFormattableDocument document) {
+		action.regionFor.keyword('action').prepend[newLine]
+	}
+	
 }

@@ -1,0 +1,4 @@
+
+ValueRegister TestRegister {
+	Value TestValue
+}

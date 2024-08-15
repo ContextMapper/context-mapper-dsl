@@ -24,6 +24,8 @@ import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.exception.ContextMapperApplicationException;
+import org.contextmapper.dsl.ide.actions.impl.AddEthicalValueAssessmentAction;
+import org.contextmapper.dsl.ide.actions.impl.CreateValue4StakeholderAction;
 import org.contextmapper.dsl.ide.actions.impl.DeriveBoundedContextFromSubdomainsAction;
 import org.contextmapper.dsl.ide.actions.impl.DeriveFrontendAndBackendFromFeatureBCAction;
 import org.contextmapper.dsl.ide.actions.impl.DeriveSubdomainFromUserRequirementsAction;
@@ -32,6 +34,7 @@ import org.contextmapper.dsl.ide.actions.impl.ExtractAggregatesByVolatilityActio
 import org.contextmapper.dsl.ide.actions.impl.ExtractSharedKernelAction;
 import org.contextmapper.dsl.ide.actions.impl.MergeAggregatesAction;
 import org.contextmapper.dsl.ide.actions.impl.MergeBoundedContextsAction;
+import org.contextmapper.dsl.ide.actions.impl.MoveStakeholderToGroupAction;
 import org.contextmapper.dsl.ide.actions.impl.SplitAggregateByEntitiesAction;
 import org.contextmapper.dsl.ide.actions.impl.SplitBoundedContextByFeaturesAction;
 import org.contextmapper.dsl.ide.actions.impl.SplitBoundedContextByOwnerAction;
@@ -39,6 +42,7 @@ import org.contextmapper.dsl.ide.actions.impl.SplitSystemIntoSubsystemsAction;
 import org.contextmapper.dsl.ide.actions.impl.SuspendPartnershipAction;
 import org.contextmapper.dsl.ide.actions.impl.SwitchFromPartnershipToSharedKernelAction;
 import org.contextmapper.dsl.ide.actions.impl.SwitchFromSharedKernelToPartnershipAction;
+import org.contextmapper.dsl.ide.actions.impl.WrapValueInClusterAction;
 import org.contextmapper.dsl.ide.edit.WorkspaceEditRecorder;
 import org.contextmapper.dsl.ide.quickfix.QuickfixCommandMapper;
 import org.contextmapper.dsl.ide.quickfix.impl.OpenCoordinationInSketchMinerCommandMapper;
@@ -110,6 +114,10 @@ public class CMLActionRegistry {
 		codeActions.add(new SuspendPartnershipAction(resource, selectedObjects));
 		codeActions.add(new SwitchFromPartnershipToSharedKernelAction(resource, selectedObjects));
 		codeActions.add(new SwitchFromSharedKernelToPartnershipAction(resource, selectedObjects));
+		codeActions.add(new MoveStakeholderToGroupAction(resource, selectedObjects));
+		codeActions.add(new CreateValue4StakeholderAction(resource, selectedObjects));
+		codeActions.add(new AddEthicalValueAssessmentAction(resource, selectedObjects));
+		codeActions.add(new WrapValueInClusterAction(resource, selectedObjects));
 
 		return Lists.newLinkedList(codeActions);
 	}

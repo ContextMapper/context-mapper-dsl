@@ -24,6 +24,8 @@ import org.contextmapper.dsl.ide.commands.impl.generation.MDSLGenerationCommand;
 import org.contextmapper.dsl.ide.commands.impl.generation.PlantUMLGenerationCommand;
 import org.contextmapper.dsl.ide.commands.impl.generation.SketchMinerGenerationCommand;
 import org.contextmapper.dsl.ide.commands.impl.quickfix.SplitStoryByVerbCommand;
+import org.contextmapper.dsl.ide.commands.impl.refactoring.AddEthicalValueAssessmentCommand;
+import org.contextmapper.dsl.ide.commands.impl.refactoring.CreateValue4StakeholderCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.DeriveBoundedContextFromSubdomainsCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.DeriveFrontendAndBackendFromFeatureBCCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.DeriveSubdomainFromUserRequirementsCommand;
@@ -32,6 +34,7 @@ import org.contextmapper.dsl.ide.commands.impl.refactoring.ExtractAggregatesByVo
 import org.contextmapper.dsl.ide.commands.impl.refactoring.ExtractSharedKernelCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.MergeAggregatesCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.MergeBoundedContextsCommand;
+import org.contextmapper.dsl.ide.commands.impl.refactoring.MoveStakeholderToGroupCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.SplitAggregateByEntitiesRefactoringCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.SplitBoundedContextByFeaturesRefactoringCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.SplitBoundedContextByOwnerRefactoringCommand;
@@ -39,6 +42,7 @@ import org.contextmapper.dsl.ide.commands.impl.refactoring.SplitSystemContextInt
 import org.contextmapper.dsl.ide.commands.impl.refactoring.SuspendPartnershipCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.SwitchFromPartnershipToSharedKernelCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.SwitchFromSharedKernelToPartnershipCommand;
+import org.contextmapper.dsl.ide.commands.impl.refactoring.WrapValueInClusterCommand;
 import org.contextmapper.dsl.ide.edit.WorkspaceEditRecorder;
 
 import com.google.common.collect.Maps;
@@ -85,6 +89,10 @@ public class CMLCommandRegistry {
 		commandMap.put("cml.ar.switchPartnershipToSharedKernel", new SwitchFromPartnershipToSharedKernelCommand(editRecorder));
 		commandMap.put("cml.ar.switchSharedKernelToPartnership", new SwitchFromSharedKernelToPartnershipCommand(editRecorder));
 		commandMap.put("cml.quickfix.command.splitStoryByVerb", new SplitStoryByVerbCommand(editRecorder));
+		commandMap.put("cml.ar.moveStakeholderToGroup", new MoveStakeholderToGroupCommand(editRecorder));
+		commandMap.put("cml.ar.createValueForStakeholder", new CreateValue4StakeholderCommand(editRecorder));
+		commandMap.put("cml.ar.addEthicalValueAssessment", new AddEthicalValueAssessmentCommand(editRecorder));
+		commandMap.put("cml.ar.wrapValueInCluster", new WrapValueInClusterCommand(editRecorder));
 	}
 
 	public CMLResourceCommand getCommand(String commandId) {
