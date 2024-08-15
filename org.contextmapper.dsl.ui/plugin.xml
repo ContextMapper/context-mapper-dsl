@@ -571,6 +571,15 @@
 				</reference>
 			</activeWhen>
 		</handler>
+		<handler 
+			class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.contextmapper.dsl.ui.handler.stakeholders.CreateValue4StakeholderHandler"
+			commandId="org.contextmapper.dsl.ui.handler.stakeholders.CreateValue4StakeholderRefactoringCommand">
+			<activeWhen>
+				<reference
+					definitionId="org.contextmapper.dsl.ContextMappingDSL.Editor.opened">
+				</reference>
+			</activeWhen>
+		</handler>
 	</extension>
 	<extension
 	      point="org.eclipse.ui.commands">
@@ -678,6 +687,12 @@
 	      point="org.eclipse.ui.commands">
 	      <command name="Move Stakeholder To New Group" categoryId="org.eclipse.xtext.ui.category.refactoring"
              id="org.contextmapper.dsl.ui.handler.stakeholders.MoveStakeholderToNewGroupRefactoringCommand">
+	      </command>
+	</extension>
+	<extension
+	      point="org.eclipse.ui.commands">
+	      <command name="Create Value For Stakeholder" categoryId="org.eclipse.xtext.ui.category.refactoring"
+             id="org.contextmapper.dsl.ui.handler.stakeholders.CreateValue4StakeholderRefactoringCommand">
 	      </command>
 	</extension>
 	<extension point="org.eclipse.ui.menus">

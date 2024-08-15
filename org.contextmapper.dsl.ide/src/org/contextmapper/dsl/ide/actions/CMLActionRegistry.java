@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.exception.ContextMapperApplicationException;
+import org.contextmapper.dsl.ide.actions.impl.CreateValue4StakeholderAction;
 import org.contextmapper.dsl.ide.actions.impl.DeriveBoundedContextFromSubdomainsAction;
 import org.contextmapper.dsl.ide.actions.impl.DeriveFrontendAndBackendFromFeatureBCAction;
 import org.contextmapper.dsl.ide.actions.impl.DeriveSubdomainFromUserRequirementsAction;
@@ -112,6 +113,7 @@ public class CMLActionRegistry {
 		codeActions.add(new SwitchFromPartnershipToSharedKernelAction(resource, selectedObjects));
 		codeActions.add(new SwitchFromSharedKernelToPartnershipAction(resource, selectedObjects));
 		codeActions.add(new MoveStakeholderToGroupAction(resource, selectedObjects));
+		codeActions.add(new CreateValue4StakeholderAction(resource, selectedObjects));
 
 		return Lists.newLinkedList(codeActions);
 	}

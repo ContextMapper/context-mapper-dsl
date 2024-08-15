@@ -17,10 +17,10 @@ package org.contextmapper.dsl.ide.tests.actions
 
 import org.junit.jupiter.api.Test
 
-class MoveStakeholderToGroupActionTest extends AbstractBoundedContextCodeActionTest {
+class StakeholdersActionsTest extends AbstractBoundedContextCodeActionTest {
 
 	@Test
-	def void canOfferAction2MoveStakeholderToGroup() {
+	def void canOfferActionsOnStakeholder() {
 		testCodeAction [
 			model = '''
 				Stakeholders {
@@ -31,6 +31,10 @@ class MoveStakeholderToGroupActionTest extends AbstractBoundedContextCodeActionT
 			expectedCodeActions = '''
 				command : cml.ar.moveStakeholderToGroup.proxy
 				title : Move Stakeholder To New Group
+				args : 
+				    file://«this.root»/MyModel.cml,Tester
+				command : cml.ar.createValueForStakeholder.proxy
+				title : Create Value For Stakeholder
 				args : 
 				    file://«this.root»/MyModel.cml,Tester
 			'''

@@ -24,6 +24,7 @@ import org.contextmapper.dsl.ide.commands.impl.generation.MDSLGenerationCommand;
 import org.contextmapper.dsl.ide.commands.impl.generation.PlantUMLGenerationCommand;
 import org.contextmapper.dsl.ide.commands.impl.generation.SketchMinerGenerationCommand;
 import org.contextmapper.dsl.ide.commands.impl.quickfix.SplitStoryByVerbCommand;
+import org.contextmapper.dsl.ide.commands.impl.refactoring.CreateValue4StakeholderCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.DeriveBoundedContextFromSubdomainsCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.DeriveFrontendAndBackendFromFeatureBCCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.DeriveSubdomainFromUserRequirementsCommand;
@@ -87,6 +88,7 @@ public class CMLCommandRegistry {
 		commandMap.put("cml.ar.switchSharedKernelToPartnership", new SwitchFromSharedKernelToPartnershipCommand(editRecorder));
 		commandMap.put("cml.quickfix.command.splitStoryByVerb", new SplitStoryByVerbCommand(editRecorder));
 		commandMap.put("cml.ar.moveStakeholderToGroup", new MoveStakeholderToGroupCommand(editRecorder));
+		commandMap.put("cml.ar.createValueForStakeholder", new CreateValue4StakeholderCommand(editRecorder));
 	}
 
 	public CMLResourceCommand getCommand(String commandId) {
