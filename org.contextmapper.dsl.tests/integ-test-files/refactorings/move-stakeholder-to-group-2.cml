@@ -1,0 +1,6 @@
+
+Stakeholders {
+	StakeholderGroup Testers {
+		Stakeholder Tester
+	}
+}

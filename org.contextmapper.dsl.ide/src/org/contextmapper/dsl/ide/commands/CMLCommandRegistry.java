@@ -32,6 +32,7 @@ import org.contextmapper.dsl.ide.commands.impl.refactoring.ExtractAggregatesByVo
 import org.contextmapper.dsl.ide.commands.impl.refactoring.ExtractSharedKernelCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.MergeAggregatesCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.MergeBoundedContextsCommand;
+import org.contextmapper.dsl.ide.commands.impl.refactoring.MoveStakeholderToGroupCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.SplitAggregateByEntitiesRefactoringCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.SplitBoundedContextByFeaturesRefactoringCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.SplitBoundedContextByOwnerRefactoringCommand;
@@ -85,6 +86,7 @@ public class CMLCommandRegistry {
 		commandMap.put("cml.ar.switchPartnershipToSharedKernel", new SwitchFromPartnershipToSharedKernelCommand(editRecorder));
 		commandMap.put("cml.ar.switchSharedKernelToPartnership", new SwitchFromSharedKernelToPartnershipCommand(editRecorder));
 		commandMap.put("cml.quickfix.command.splitStoryByVerb", new SplitStoryByVerbCommand(editRecorder));
+		commandMap.put("cml.ar.moveStakeholderToGroup", new MoveStakeholderToGroupCommand(editRecorder));
 	}
 
 	public CMLResourceCommand getCommand(String commandId) {

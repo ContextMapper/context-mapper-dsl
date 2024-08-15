@@ -32,6 +32,7 @@ import org.contextmapper.dsl.ide.actions.impl.ExtractAggregatesByVolatilityActio
 import org.contextmapper.dsl.ide.actions.impl.ExtractSharedKernelAction;
 import org.contextmapper.dsl.ide.actions.impl.MergeAggregatesAction;
 import org.contextmapper.dsl.ide.actions.impl.MergeBoundedContextsAction;
+import org.contextmapper.dsl.ide.actions.impl.MoveStakeholderToGroupAction;
 import org.contextmapper.dsl.ide.actions.impl.SplitAggregateByEntitiesAction;
 import org.contextmapper.dsl.ide.actions.impl.SplitBoundedContextByFeaturesAction;
 import org.contextmapper.dsl.ide.actions.impl.SplitBoundedContextByOwnerAction;
@@ -110,6 +111,7 @@ public class CMLActionRegistry {
 		codeActions.add(new SuspendPartnershipAction(resource, selectedObjects));
 		codeActions.add(new SwitchFromPartnershipToSharedKernelAction(resource, selectedObjects));
 		codeActions.add(new SwitchFromSharedKernelToPartnershipAction(resource, selectedObjects));
+		codeActions.add(new MoveStakeholderToGroupAction(resource, selectedObjects));
 
 		return Lists.newLinkedList(codeActions);
 	}
