@@ -11,8 +11,8 @@ class StakeholderTest {
 
 	@Test
 	void ensureStakeholdersWithSameNameAreEqual() {
-		Stakeholder stakeholder1 = new Stakeholder("User");
-		Stakeholder stakeholder2 = new Stakeholder("User");
+		Stakeholder stakeholder1 = new Stakeholder("User", "desc1");
+		Stakeholder stakeholder2 = new Stakeholder("User", "desc2");
 
 		assertTrue(stakeholder1.equals(stakeholder2));
 		assertTrue(stakeholder1.equals(stakeholder1));

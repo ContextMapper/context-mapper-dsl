@@ -1,7 +1,9 @@
 
 Stakeholders {
 	StakeholderGroup Customers_and_Shoppers {
-		Stakeholder Shoppers_in_Emergency_Situations
+		Stakeholder Shoppers_in_Emergency_Situations {
+			description = "just for testing"
+		}
 		Stakeholder Others
 	}
 	StakeholderGroup Delivery_Staff_of_Suppliers
@@ -15,7 +17,7 @@ ValueRegister SD_Values {
 		demonstrator "delivery staff's freedom might suffer because of work-life-balance"
 		
 		Value Freedom {
-			Stakeholder Customers_and_Shoppers {
+			Stakeholder Shoppers_in_Emergency_Situations {
 				priority HIGH
 				impact MEDIUM
 				consequences

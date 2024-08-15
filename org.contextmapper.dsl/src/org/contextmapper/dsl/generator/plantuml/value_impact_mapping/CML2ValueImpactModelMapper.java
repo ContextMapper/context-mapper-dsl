@@ -69,7 +69,13 @@ public class CML2ValueImpactModelMapper {
 
 	private void mapStakeholderElicitedValue(final String valueName, final List<String> demonstrators,
 			final ValueElicitation elicitation) {
-		Stakeholder stakeholder = soi.getOrCreateStakeholder(elicitation.getStakeholder().getName());
+		String stakeholderDescription = elicitation
+				.getStakeholder() instanceof org.contextmapper.dsl.contextMappingDSL.Stakeholder
+						? ((org.contextmapper.dsl.contextMappingDSL.Stakeholder) elicitation.getStakeholder())
+								.getDescription()
+						: null;
+		Stakeholder stakeholder = soi.getOrCreateStakeholder(elicitation.getStakeholder().getName(),
+				stakeholderDescription);
 		if (elicitation.getConsequences().isEmpty()) {
 			Value value = createValueObject(valueName, demonstrators, elicitation);
 			value.setConsequenceType(ConsequenceOnValue.NEUTRAL);

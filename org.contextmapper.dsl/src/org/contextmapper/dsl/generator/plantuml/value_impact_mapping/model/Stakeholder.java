@@ -24,10 +24,12 @@ import com.google.common.collect.Lists;
 public class Stakeholder {
 
 	private final String name;
+	private final String description;
 	private final List<Value> values;
 
-	public Stakeholder(final String name) {
+	public Stakeholder(final String name, final String description) {
 		this.name = name;
+		this.description = description;
 		this.values = Lists.newArrayList();
 	}
 
@@ -41,6 +43,10 @@ public class Stakeholder {
 
 	public void addValue(final Value value) {
 		this.values.add(value);
+	}
+	
+	public String getDescription() {
+		return description;
 	}
 
 	@Override
