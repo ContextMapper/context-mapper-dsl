@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 The Context Mapper Project Team
+ * Copyright 2020-2024 The Context Mapper Project Team
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,10 @@ package org.contextmapper.dsl.ide.tests.actions
 
 import org.junit.jupiter.api.Test
 
-class DeriveSubdomainFromUserRequirementsActionTest extends AbstractBoundedContextCodeActionTest {
+class UserStoryActionsTest extends AbstractBoundedContextCodeActionTest {
 
 	@Test
-	def void canOfferAction4UserStory() {
+	def void canOfferActions4UserStories() {
 		testCodeAction [
 			model = '''
 				UserStory TestStory
@@ -28,6 +28,10 @@ class DeriveSubdomainFromUserRequirementsActionTest extends AbstractBoundedConte
 			expectedCodeActions = '''
 				command : cml.ar.deriveSubdomainFromURs.proxy
 				title : Derive Subdomain From User Requirements
+				args : 
+				    file://«this.root»/MyModel.cml,TestStory
+				command : cml.ar.addEthicalValueAssessment.proxy
+				title : Add Ethical Value Assessment
 				args : 
 				    file://«this.root»/MyModel.cml,TestStory
 			'''
