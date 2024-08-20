@@ -34,6 +34,7 @@ import org.contextmapper.dsl.contextMappingDSL.Subdomain;
 import org.contextmapper.dsl.contextMappingDSL.SymmetricRelationship;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
 import org.contextmapper.dsl.contextMappingDSL.UserRequirement;
+import org.contextmapper.dsl.contextMappingDSL.ValueRegister;
 import org.contextmapper.tactic.dsl.tacticdsl.Enum;
 import org.contextmapper.tactic.dsl.tacticdsl.Service;
 import org.contextmapper.tactic.dsl.tacticdsl.ServiceOperation;
@@ -54,7 +55,8 @@ public class CMLModelObjectsResolvingHelper {
 	}
 
 	private Set<ContextMappingModel> resolveImportedModels() {
-		Set<CMLResource> importedResources = new CMLImportResolver().resolveImportedResources(new CMLResource(rootModel.eResource()));
+		Set<CMLResource> importedResources = new CMLImportResolver()
+				.resolveImportedResources(new CMLResource(rootModel.eResource()));
 		return importedResources.stream().map(r -> r.getContextMappingModel()).collect(Collectors.toSet());
 	}
 
@@ -163,18 +165,20 @@ public class CMLModelObjectsResolvingHelper {
 	public Set<String> resolveAggregateStates(Aggregate aggregate) {
 		Set<String> aggregateStates = Sets.newHashSet();
 
-		Optional<org.contextmapper.tactic.dsl.tacticdsl.Enum> optStatesEnum = aggregate.getDomainObjects().stream().filter(o -> o instanceof Enum).map(o -> (Enum) o)
-				.filter(o -> o.isDefinesAggregateLifecycle()).findFirst();
+		Optional<org.contextmapper.tactic.dsl.tacticdsl.Enum> optStatesEnum = aggregate.getDomainObjects().stream()
+				.filter(o -> o instanceof Enum).map(o -> (Enum) o).filter(o -> o.isDefinesAggregateLifecycle())
+				.findFirst();
 		if (optStatesEnum.isPresent())
-			aggregateStates.addAll(optStatesEnum.get().getValues().stream().map(v -> v.getName()).collect(Collectors.toSet()));
+			aggregateStates
+					.addAll(optStatesEnum.get().getValues().stream().map(v -> v.getName()).collect(Collectors.toSet()));
 
 		return aggregateStates;
 	}
-	
+
 	public Set<BoundedContext> resolveAllUpstreamContexts(BoundedContext boundedContext) {
 		Set<BoundedContext> allUpstreamContexts = new HashSet<>();
 		allUpstreamContexts.add(boundedContext);
-		
+
 		ContextMap contextMap = getContextMap(boundedContext);
 		if (contextMap != null) {
 			for (Relationship relationship : contextMap.getRelationships()) {
@@ -184,27 +188,40 @@ public class CMLModelObjectsResolvingHelper {
 				}
 			}
 		}
-		
+
 		return allUpstreamContexts;
 	}
-	
+
 	public Service resolveApplicationServiceByName(Application application, String serviceName) {
-		return application == null ? null : application.getServices().stream()
-				.filter(service -> service.getName().equals(serviceName))
-				.findAny()
-				.orElse(null);
+		return application == null ? null
+				: application.getServices().stream().filter(service -> service.getName().equals(serviceName)).findAny()
+						.orElse(null);
 	}
-	
+
 	public List<ServiceOperation> resolveServiceOperationsByName(Service service, String operationName) {
-		return service == null ? null : service.getOperations().stream()
-				.filter(operation -> operation.getName().equals(operationName))
-				.collect(Collectors.toList());
+		return service == null ? null
+				: service.getOperations().stream().filter(operation -> operation.getName().equals(operationName))
+						.collect(Collectors.toList());
+	}
+
+	public boolean isReferencedInAValueRegister(BoundedContext bc) {
+		if (rootModel == null)
+			return false;
+		List<ValueRegister> allValueRegisters = EcoreUtil2.<ValueRegister>getAllContentsOfType(rootModel,
+				ValueRegister.class);
+		for (ValueRegister nextRegister : allValueRegisters) {
+			if (nextRegister.getContext() != null && nextRegister.getContext() == bc) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private boolean isBCDownstreamInRelationship(Relationship relationship, BoundedContext bc) {
 		if (relationship instanceof SymmetricRelationship) {
 			SymmetricRelationship symRel = (SymmetricRelationship) relationship;
-			return symRel.getParticipant1().getName().equals(bc.getName()) || symRel.getParticipant2().getName().equals(bc.getName());
+			return symRel.getParticipant1().getName().equals(bc.getName())
+					|| symRel.getParticipant2().getName().equals(bc.getName());
 		} else if (relationship instanceof UpstreamDownstreamRelationship) {
 			UpstreamDownstreamRelationship upDownRel = (UpstreamDownstreamRelationship) relationship;
 			return upDownRel.getDownstream().getName().equals(bc.getName());
@@ -215,11 +232,14 @@ public class CMLModelObjectsResolvingHelper {
 	private List<Aggregate> getExposedAggregates(Relationship relationship) {
 		List<Aggregate> aggregates = Lists.newLinkedList();
 		if (relationship instanceof SymmetricRelationship) {
-			aggregates.addAll(EcoreUtil2.eAllOfType(((SymmetricRelationship) relationship).getParticipant1(), Aggregate.class));
-			aggregates.addAll(EcoreUtil2.eAllOfType(((SymmetricRelationship) relationship).getParticipant2(), Aggregate.class));
+			aggregates.addAll(
+					EcoreUtil2.eAllOfType(((SymmetricRelationship) relationship).getParticipant1(), Aggregate.class));
+			aggregates.addAll(
+					EcoreUtil2.eAllOfType(((SymmetricRelationship) relationship).getParticipant2(), Aggregate.class));
 		} else if (relationship instanceof UpstreamDownstreamRelationship) {
 			UpstreamDownstreamRelationship upDownRel = (UpstreamDownstreamRelationship) relationship;
-			if (upDownRel.getUpstreamExposedAggregates() != null && !upDownRel.getUpstreamExposedAggregates().isEmpty()) {
+			if (upDownRel.getUpstreamExposedAggregates() != null
+					&& !upDownRel.getUpstreamExposedAggregates().isEmpty()) {
 				aggregates.addAll(upDownRel.getUpstreamExposedAggregates());
 			} else {
 				aggregates.addAll(EcoreUtil2.eAllOfType(upDownRel.getUpstream(), Aggregate.class));
@@ -227,7 +247,7 @@ public class CMLModelObjectsResolvingHelper {
 		}
 		return aggregates;
 	}
-	
+
 	private BoundedContext getUpstreamContext(Relationship relationship, BoundedContext boundedContext) {
 		if (relationship instanceof SymmetricRelationship) {
 			SymmetricRelationship symmetricRelationship = (SymmetricRelationship) relationship;

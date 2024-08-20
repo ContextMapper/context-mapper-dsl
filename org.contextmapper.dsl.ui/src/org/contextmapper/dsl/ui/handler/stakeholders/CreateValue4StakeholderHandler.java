@@ -35,6 +35,9 @@ public class CreateValue4StakeholderHandler extends AbstractRefactoringHandler {
 
 	@Override
 	public boolean isEnabled() {
+		if (moreThenOneElementSelected())
+			return false;
+
 		EObject obj = getSelectedElement();
 
 		if (obj == null || !super.isEnabled())

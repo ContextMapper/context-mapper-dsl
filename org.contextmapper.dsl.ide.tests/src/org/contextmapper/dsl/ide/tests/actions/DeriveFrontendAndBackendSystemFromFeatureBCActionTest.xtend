@@ -33,6 +33,10 @@ class DeriveFrontendAndBackendSystemFromFeatureBCActionTest extends AbstractBoun
 				title : Derive Frontend And Backend System From Feature BC
 				args : 
 				    file://«this.root»/MyModel.cml,TestFeatureContext
+				command : cml.ar.createValueRegisterForBoundedContext.proxy
+				title : Create Value Register For Bounded Context
+				args : 
+				    file://«this.root»/MyModel.cml,TestFeatureContext
 			'''
 		]
 	}

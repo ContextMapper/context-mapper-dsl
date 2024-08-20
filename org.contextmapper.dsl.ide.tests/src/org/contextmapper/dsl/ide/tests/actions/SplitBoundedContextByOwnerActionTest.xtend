@@ -48,6 +48,10 @@ class SplitBoundedContextByOwnerActionTest extends AbstractBoundedContextCodeAct
 				title : Merge Bounded Contexts
 				args : 
 				    file://«this.root»/MyModel.cml,TestContext,Team2,Team1
+				command : cml.ar.createValueRegisterForBoundedContext.proxy
+				title : Create Value Register For Bounded Context
+				args : 
+				    file://«this.root»/MyModel.cml,TestContext
 			'''
 		]
 	}
@@ -76,6 +80,10 @@ class SplitBoundedContextByOwnerActionTest extends AbstractBoundedContextCodeAct
 				title : Merge Bounded Contexts
 				args : 
 				    file://«this.root»/MyModel.cml,TestContext,Team1
+				command : cml.ar.createValueRegisterForBoundedContext.proxy
+				title : Create Value Register For Bounded Context
+				args : 
+				    file://«this.root»/MyModel.cml,TestContext
 			'''
 		]
 	}

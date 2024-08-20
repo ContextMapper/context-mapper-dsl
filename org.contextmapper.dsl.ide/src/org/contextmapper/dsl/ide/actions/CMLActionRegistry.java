@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 The Context Mapper Project Team
+ * Copyright 2020-2024 The Context Mapper Project Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,9 @@ import java.util.stream.Collectors;
 import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.exception.ContextMapperApplicationException;
 import org.contextmapper.dsl.ide.actions.impl.AddEthicalValueAssessmentAction;
+import org.contextmapper.dsl.ide.actions.impl.CreateStakeholderForUserStoryRoleAction;
 import org.contextmapper.dsl.ide.actions.impl.CreateValue4StakeholderAction;
+import org.contextmapper.dsl.ide.actions.impl.CreateValueRegisterForBoundedContextAction;
 import org.contextmapper.dsl.ide.actions.impl.DeriveBoundedContextFromSubdomainsAction;
 import org.contextmapper.dsl.ide.actions.impl.DeriveFrontendAndBackendFromFeatureBCAction;
 import org.contextmapper.dsl.ide.actions.impl.DeriveSubdomainFromUserRequirementsAction;
@@ -118,6 +120,8 @@ public class CMLActionRegistry {
 		codeActions.add(new CreateValue4StakeholderAction(resource, selectedObjects));
 		codeActions.add(new AddEthicalValueAssessmentAction(resource, selectedObjects));
 		codeActions.add(new WrapValueInClusterAction(resource, selectedObjects));
+		codeActions.add(new CreateStakeholderForUserStoryRoleAction(resource, selectedObjects));
+		codeActions.add(new CreateValueRegisterForBoundedContextAction(resource, selectedObjects));
 
 		return Lists.newLinkedList(codeActions);
 	}

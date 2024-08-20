@@ -64,17 +64,20 @@ public abstract class AbstractRefactoringHandler extends AbstractHandler impleme
 			currentResource = getCurrentResource();
 			executeRefactoring(new CMLResource(currentResource), event);
 		} catch (RefactoringSerializationException e) {
-			String message = e.getMessage() != null && !"".equals(e.getMessage()) ? e.getMessage() : e.getClass().getName() + " occurred in " + this.getClass().getName();
+			String message = e.getMessage() != null && !"".equals(e.getMessage()) ? e.getMessage()
+					: e.getClass().getName() + " occurred in " + this.getClass().getName();
 			Status status = new Status(IStatus.ERROR, DslActivator.PLUGIN_ID, message, e);
 			StatusManager.getManager().handle(status);
 			MessageDialog.openInformation(HandlerUtil.getActiveShell(event), "Model Input", e.getMessage());
 		} catch (ContextMapperApplicationException e) {
 			MessageDialog.openInformation(HandlerUtil.getActiveShell(event), "Model Input", e.getMessage());
 		} catch (Exception e) {
-			String message = e.getMessage() != null && !"".equals(e.getMessage()) ? e.getMessage() : e.getClass().getName() + " occurred in " + this.getClass().getName();
+			String message = e.getMessage() != null && !"".equals(e.getMessage()) ? e.getMessage()
+					: e.getClass().getName() + " occurred in " + this.getClass().getName();
 			Status status = new Status(IStatus.ERROR, DslActivator.PLUGIN_ID, message, e);
 			StatusManager.getManager().handle(status);
-			ErrorDialog.openError(HandlerUtil.getActiveShell(event), "Error", "Exception occured during execution of command!", status);
+			ErrorDialog.openError(HandlerUtil.getActiveShell(event), "Error",
+					"Exception occured during execution of command!", status);
 		}
 		return null;
 	}
@@ -91,7 +94,8 @@ public abstract class AbstractRefactoringHandler extends AbstractHandler impleme
 	protected ContextMappingModel getCurrentContextMappingModel() {
 		Resource resource = currentResource == null ? getCurrentResource() : currentResource;
 
-		List<ContextMappingModel> contextMappingModels = IteratorExtensions.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(resource.getAllContents(), ContextMappingModel.class));
+		List<ContextMappingModel> contextMappingModels = IteratorExtensions.<ContextMappingModel>toList(
+				Iterators.<ContextMappingModel>filter(resource.getAllContents(), ContextMappingModel.class));
 
 		if (contextMappingModels.size() > 0) {
 			return contextMappingModels.get(0);
@@ -117,8 +121,8 @@ public abstract class AbstractRefactoringHandler extends AbstractHandler impleme
 			URI importURI = URI.createURI(cmlImport.getImportURI());
 			Resource resource = rs.getResource(importURI.resolve(currentResource.getURI()), true);
 			if (resource != null) {
-				List<ContextMappingModel> contextMappingModels = IteratorExtensions
-						.<ContextMappingModel>toList(Iterators.<ContextMappingModel>filter(resource.getAllContents(), ContextMappingModel.class));
+				List<ContextMappingModel> contextMappingModels = IteratorExtensions.<ContextMappingModel>toList(
+						Iterators.<ContextMappingModel>filter(resource.getAllContents(), ContextMappingModel.class));
 				models.addAll(contextMappingModels);
 			}
 		}
@@ -147,6 +151,10 @@ public abstract class AbstractRefactoringHandler extends AbstractHandler impleme
 	 */
 	protected Set<EObject> getAllSelectedElements() {
 		return xtextEditorHelper.getAllSelectedElements(EditorUtils.getActiveXtextEditor());
+	}
+
+	protected boolean moreThenOneElementSelected() {
+		return getAllSelectedElements().size() > 1;
 	}
 
 	private boolean editorHasChanges() {

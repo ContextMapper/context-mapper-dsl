@@ -35,6 +35,10 @@ class ExtractIDValueObjectQuickFixTest extends AbstractCMLLanguageServerTest {
 				}
 			'''
 			expectedCodeActions = '''
+				command : cml.ar.createValueRegisterForBoundedContext.proxy
+				title : Create Value Register For Bounded Context
+				args : 
+				    file://«this.root»/MyModel.cml,TestContext
 				title : Extract Value Object
 				kind : quickfix
 				command : 

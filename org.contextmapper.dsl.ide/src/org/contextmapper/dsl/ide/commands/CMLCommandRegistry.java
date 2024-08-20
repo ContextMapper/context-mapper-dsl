@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 The Context Mapper Project Team
+ * Copyright 2020-2024 The Context Mapper Project Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,9 @@ import org.contextmapper.dsl.ide.commands.impl.generation.PlantUMLGenerationComm
 import org.contextmapper.dsl.ide.commands.impl.generation.SketchMinerGenerationCommand;
 import org.contextmapper.dsl.ide.commands.impl.quickfix.SplitStoryByVerbCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.AddEthicalValueAssessmentCommand;
+import org.contextmapper.dsl.ide.commands.impl.refactoring.CreateStakeholderForUserStoryRoleCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.CreateValue4StakeholderCommand;
+import org.contextmapper.dsl.ide.commands.impl.refactoring.CreateValueRegisterForBoundedContextCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.DeriveBoundedContextFromSubdomainsCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.DeriveFrontendAndBackendFromFeatureBCCommand;
 import org.contextmapper.dsl.ide.commands.impl.refactoring.DeriveSubdomainFromUserRequirementsCommand;
@@ -93,6 +95,8 @@ public class CMLCommandRegistry {
 		commandMap.put("cml.ar.createValueForStakeholder", new CreateValue4StakeholderCommand(editRecorder));
 		commandMap.put("cml.ar.addEthicalValueAssessment", new AddEthicalValueAssessmentCommand(editRecorder));
 		commandMap.put("cml.ar.wrapValueInCluster", new WrapValueInClusterCommand(editRecorder));
+		commandMap.put("cml.ar.createStakeholderForUserStoryRole", new CreateStakeholderForUserStoryRoleCommand(editRecorder));
+		commandMap.put("cml.ar.createValueRegisterForBoundedContext", new CreateValueRegisterForBoundedContextCommand(editRecorder));
 	}
 
 	public CMLResourceCommand getCommand(String commandId) {

@@ -38,4 +38,43 @@ class UserStoryActionsTest extends AbstractBoundedContextCodeActionTest {
 		]
 	}
 	
+	@Test
+	def void canOfferAction2CreateStakeholderIfRoleIsDefined() {
+		testCodeAction [
+			model = '''
+				UserStory SampleStory1 {
+					As a "SampleUserOfFutureSystem" 
+					I want to "manipulate" a "BusinessObject" with its "property1", "property2" 
+					so that "I am more efficient"
+				}
+			'''
+			expectedCodeActions = '''
+				command : cml.ar.deriveSubdomainFromURs.proxy
+				title : Derive Subdomain From User Requirements
+				args : 
+				    file://«this.root»/MyModel.cml,SampleStory1
+				command : cml.ar.addEthicalValueAssessment.proxy
+				title : Add Ethical Value Assessment
+				args : 
+				    file://«this.root»/MyModel.cml,SampleStory1
+				command : cml.ar.createStakeholderForUserStoryRole.proxy
+				title : Create Stakeholder For User Story Role
+				args : 
+				    file://«this.root»/MyModel.cml,SampleStory1
+				title : Split Story by Verb/Operation
+				kind : quickfix
+				command : Command [
+				  title = "Split Story by Verb/Operation"
+				  command = "cml.quickfix.command.splitStoryByVerb.proxy"
+				  arguments = LinkedList (
+				    "file://«this.root»/MyModel.cml",
+				    "SampleStory1"
+				  )
+				]
+				codes : split-feature-by-verb-suggestion
+				edit : 
+			'''
+		]
+	}
+	
 }

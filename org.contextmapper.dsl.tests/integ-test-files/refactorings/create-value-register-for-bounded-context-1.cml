@@ -1,0 +1,7 @@
+
+BoundedContext TestContextWithRegister
+
+BoundedContext TestContextWithoutRegister {}
+
+ValueRegister ExistingRegister for TestContextWithRegister {
+}

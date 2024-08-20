@@ -33,6 +33,10 @@ class SplitSystemContextIntoSubsystemsActionTest extends AbstractBoundedContextC
 				title : Split System Context Into Subsystems
 				args : 
 				    file://«this.root»/MyModel.cml,TestSystemContext
+				command : cml.ar.createValueRegisterForBoundedContext.proxy
+				title : Create Value Register For Bounded Context
+				args : 
+				    file://«this.root»/MyModel.cml,TestSystemContext
 			'''
 		]
 	}
