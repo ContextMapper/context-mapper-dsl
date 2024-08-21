@@ -590,8 +590,26 @@
 			</activeWhen>
 		</handler>
 		<handler 
+			class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.contextmapper.dsl.ui.handler.stakeholders.CreateStakeholderForUserStoryRoleHandler"
+			commandId="org.contextmapper.dsl.ui.handler.stakeholders.CreateStakeholderForUserStoryRoleRefactoringCommand">
+			<activeWhen>
+				<reference
+					definitionId="org.contextmapper.dsl.ContextMappingDSL.Editor.opened">
+				</reference>
+			</activeWhen>
+		</handler>
+		<handler 
 			class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.contextmapper.dsl.ui.handler.value_registers.WrapValueInClusterHandler"
 			commandId="org.contextmapper.dsl.ui.handler.value_registers.WrapValueInClusterRefactoringCommand">
+			<activeWhen>
+				<reference
+					definitionId="org.contextmapper.dsl.ContextMappingDSL.Editor.opened">
+				</reference>
+			</activeWhen>
+		</handler>
+		<handler 
+			class="org.contextmapper.dsl.ui.ContextMappingDSLExecutableExtensionFactory:org.contextmapper.dsl.ui.handler.value_registers.CreateValueRegisterForBoundedContextHandler"
+			commandId="org.contextmapper.dsl.ui.handler.value_registers.CreateValueRegisterForBoundedContextRefactoringCommand">
 			<activeWhen>
 				<reference
 					definitionId="org.contextmapper.dsl.ContextMappingDSL.Editor.opened">
@@ -715,6 +733,12 @@
 	</extension>
 	<extension
 	      point="org.eclipse.ui.commands">
+	      <command name="Create Stakeholder for Role" categoryId="org.eclipse.xtext.ui.category.refactoring"
+             id="org.contextmapper.dsl.ui.handler.stakeholders.CreateStakeholderForUserStoryRoleRefactoringCommand">
+	      </command>
+	</extension>
+	<extension
+	      point="org.eclipse.ui.commands">
 	      <command name="Add Ethical Value Assessment" categoryId="org.eclipse.xtext.ui.category.refactoring"
              id="org.contextmapper.dsl.ui.handler.AddEthicalValueAssessmentToStoryRefactoringCommand">
 	      </command>
@@ -723,6 +747,12 @@
 	      point="org.eclipse.ui.commands">
 	      <command name="Wrap Value In Cluster" categoryId="org.eclipse.xtext.ui.category.refactoring"
              id="org.contextmapper.dsl.ui.handler.value_registers.WrapValueInClusterRefactoringCommand">
+	      </command>
+	</extension>
+	<extension
+	      point="org.eclipse.ui.commands">
+	      <command name="Create Value Register For Bounded Context" categoryId="org.eclipse.xtext.ui.category.refactoring"
+             id="org.contextmapper.dsl.ui.handler.value_registers.CreateValueRegisterForBoundedContextRefactoringCommand">
 	      </command>
 	</extension>
 	<extension point="org.eclipse.ui.menus">

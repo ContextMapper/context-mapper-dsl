@@ -32,6 +32,10 @@ class MergeBoundedContextsActionTest extends AbstractBoundedContextCodeActionTes
 				title : Merge Bounded Contexts
 				args : 
 				    file://«this.root»/MyModel.cml,TestContext1,TestContext2
+				command : cml.ar.createValueRegisterForBoundedContext.proxy
+				title : Create Value Register For Bounded Context
+				args : 
+				    file://«this.root»/MyModel.cml,TestContext1
 			'''
 		]
 	}
@@ -49,6 +53,10 @@ class MergeBoundedContextsActionTest extends AbstractBoundedContextCodeActionTes
 			line = 1
 			column = 12 
 			expectedCodeActions = '''
+				command : cml.ar.createValueRegisterForBoundedContext.proxy
+				title : Create Value Register For Bounded Context
+				args : 
+				    file://«this.root»/MyModel.cml,
 				title : Create a Bounded Context named 'SomeContext'.
 				kind : quickfix
 				command : 

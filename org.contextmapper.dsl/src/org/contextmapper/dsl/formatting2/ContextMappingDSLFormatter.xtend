@@ -392,6 +392,7 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 		for (valueWeighting : valueRegister.valueWeightings) {
 			valueWeighting.format
 		}
+		valueRegister.regionFor.keyword('ValueRegister').prepend[newLine]
 	}
 	
 	def dispatch void format(ValueEpic valueEpic, extension IFormattableDocument document) {
@@ -453,6 +454,7 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 			elicitation.regionFor.ruleCallTo(OPENRule).append[newLine],
 			elicitation.regionFor.ruleCallTo(CLOSERule).prepend[newLine].append[newLine]
 		)[indent]
+		elicitation.regionFor.keyword('Stakeholder').prepend[newLine]
 		elicitation.regionFor.keyword('priority').prepend[newLine]
 		elicitation.regionFor.keyword('impact').prepend[newLine]
 		elicitation.regionFor.keyword('consequences').prepend[newLine]

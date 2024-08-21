@@ -15,21 +15,22 @@
  */
 package org.contextmapper.dsl.ui.handler.value_registers;
 
+import org.contextmapper.dsl.cml.CMLModelObjectsResolvingHelper;
 import org.contextmapper.dsl.cml.CMLResource;
-import org.contextmapper.dsl.contextMappingDSL.Value;
-import org.contextmapper.dsl.contextMappingDSL.ValueRegister;
+import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
+import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.refactoring.SemanticCMLRefactoring;
-import org.contextmapper.dsl.refactoring.value_registers.WrapValueInClusterRefactoring;
+import org.contextmapper.dsl.refactoring.value_registers.CreateValueRegisterForBoundedContext;
 import org.contextmapper.dsl.ui.handler.AbstractRefactoringHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.emf.ecore.EObject;
 
-public class WrapValueInClusterHandler extends AbstractRefactoringHandler {
+public class CreateValueRegisterForBoundedContextHandler extends AbstractRefactoringHandler {
 
 	@Override
 	protected void executeRefactoring(CMLResource resource, ExecutionEvent event) {
-		Value value = (Value) getSelectedElement();
-		SemanticCMLRefactoring ar = new WrapValueInClusterRefactoring(value.getName());
+		BoundedContext context = (BoundedContext) this.getSelectedElement();
+		SemanticCMLRefactoring ar = new CreateValueRegisterForBoundedContext(context.getName());
 		ar.refactor(resource, getAllResources());
 		ar.persistChanges(serializer);
 	}
@@ -38,17 +39,18 @@ public class WrapValueInClusterHandler extends AbstractRefactoringHandler {
 	public boolean isEnabled() {
 		if (moreThenOneElementSelected())
 			return false;
-		
+
 		EObject obj = getSelectedElement();
 
 		if (obj == null || !super.isEnabled())
 			return false;
 
-		if (!(obj instanceof Value))
+		if (!(obj instanceof BoundedContext))
 			return false;
 
-		Value value = (Value) obj;
-		return value.eContainer() instanceof ValueRegister;
+		BoundedContext bc = (BoundedContext) obj;
+		return !(new CMLModelObjectsResolvingHelper((ContextMappingModel) bc.eContainer())
+				.isReferencedInAValueRegister(bc));
 	}
 
 }

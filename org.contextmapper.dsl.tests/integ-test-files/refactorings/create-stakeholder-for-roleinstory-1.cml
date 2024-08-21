@@ -1,0 +1,12 @@
+
+UserStory SampleStory1	 {
+	As a "SampleUserOfFutureSystem" 
+	I want to "manipulate" a "BusinessObject" with its "property1", "property2" 
+	so that "I am more efficient"
+}
+
+UserStory SampleStory2	 {
+	As a "Sample User Of Future System" 
+	I want to "manipulate" a "BusinessObject" with its "property1", "property2" 
+	so that "I am more efficient"
+}

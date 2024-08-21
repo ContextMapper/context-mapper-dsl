@@ -45,6 +45,10 @@ class SplitStoryByVerbQuickFixTest extends AbstractCMLCommandTest {
 				title : Add Ethical Value Assessment
 				args : 
 				    file://«this.root»/MyModel.cml,TestStory
+				command : cml.ar.createStakeholderForUserStoryRole.proxy
+				title : Create Stakeholder For User Story Role
+				args : 
+				    file://«this.root»/MyModel.cml,TestStory
 				title : Split Story by Verb/Operation
 				kind : quickfix
 				command : Command [

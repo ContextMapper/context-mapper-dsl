@@ -38,6 +38,10 @@ class OpenFlowInBPMNSketchMinerActionTest extends AbstractCMLCommandTest {
 				}
 			'''
 			expectedCodeActions = '''
+				command : cml.ar.createValueRegisterForBoundedContext.proxy
+				title : Create Value Register For Bounded Context
+				args : 
+				    file://«this.root»/MyModel.cml,ContextA
 				title : Open flow in BPMN Sketch Miner
 				kind : quickfix
 				command : Command [

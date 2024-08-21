@@ -36,6 +36,10 @@ class OpenCoordinationInBPMNSketchMinerActionTest extends AbstractCMLCommandTest
 				}
 			'''
 			expectedCodeActions = '''
+				command : cml.ar.createValueRegisterForBoundedContext.proxy
+				title : Create Value Register For Bounded Context
+				args : 
+				    file://«this.root»/MyModel.cml,ContextA
 				title : Open coordination in BPMN Sketch Miner
 				kind : quickfix
 				command : Command [

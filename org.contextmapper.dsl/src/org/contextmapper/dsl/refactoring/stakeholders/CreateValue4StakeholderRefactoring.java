@@ -15,11 +15,15 @@
  */
 package org.contextmapper.dsl.refactoring.stakeholders;
 
+import org.contextmapper.dsl.contextMappingDSL.Consequence;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
+import org.contextmapper.dsl.contextMappingDSL.IMPACT;
+import org.contextmapper.dsl.contextMappingDSL.PRIORITY;
 import org.contextmapper.dsl.contextMappingDSL.Stakeholder;
 import org.contextmapper.dsl.contextMappingDSL.Value;
 import org.contextmapper.dsl.contextMappingDSL.ValueElicitation;
 import org.contextmapper.dsl.contextMappingDSL.ValueRegister;
+
 import org.contextmapper.dsl.refactoring.AbstractRefactoring;
 import org.contextmapper.dsl.refactoring.SemanticCMLRefactoring;
 import org.eclipse.xtext.EcoreUtil2;
@@ -39,9 +43,18 @@ public class CreateValue4StakeholderRefactoring extends AbstractRefactoring impl
 		ValueRegister valueRegister = getOrCreateValueRegister();
 		Value value = ContextMappingDSLFactory.eINSTANCE.createValue();
 		value.setName("To_Be_Defined");
+		value.getDemonstrators().add("Example where and how this value can be observed.");
+		
 		ValueElicitation elicitation = ContextMappingDSLFactory.eINSTANCE.createValueElicitation();
 		elicitation.setStakeholder(s);
+		elicitation.setImpact(IMPACT.MEDIUM);
+		elicitation.setPriority(PRIORITY.MEDIUM);
+		Consequence consequence = ContextMappingDSLFactory.eINSTANCE.createConsequence();
+		consequence.setConsequence("Sample consequence for/of [value] for [stakeholder], can be good, bad or neutral.");
+		consequence.setType("neutral");
+		elicitation.getConsequences().add(consequence);
 		value.getElicitations().add(elicitation);
+		
 		valueRegister.getValues().add(value);
 	}
 
