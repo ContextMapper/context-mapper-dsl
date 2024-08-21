@@ -133,8 +133,6 @@ public class PlantUMLUseCaseDiagramCreator extends AbstractPlantUMLDiagramCreato
 					&& !"".equals(feature.getContainerEntityPreposition())) {
 				sb.append(feature.getContainerEntityPreposition());
 				sb.append(" ");
-			} else {
-				sb.append("in/for/to ");
 			}
 			if (feature.getContainerEntityArticle() != null && !"".equals(feature.getContainerEntityArticle())) {
 				sb.append(feature.getContainerEntityArticle());
