@@ -21,6 +21,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.contextmapper.dsl.cml.XtextIdHelper;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
 import org.contextmapper.dsl.contextMappingDSL.Domain;
 import org.contextmapper.dsl.contextMappingDSL.Feature;
@@ -45,6 +46,8 @@ public class DeriveSubdomainFromUserRequirements extends AbstractRefactoring imp
 	private Set<String> userRequiremendIds = Sets.newHashSet();
 	private String domainName;
 	private String subdomainName;
+	
+	private XtextIdHelper idHelper = new XtextIdHelper();
 
 	public DeriveSubdomainFromUserRequirements(String domainName, String subdomainName, Set<String> userRequirements) {
 		this.domainName = domainName;
@@ -102,7 +105,7 @@ public class DeriveSubdomainFromUserRequirements extends AbstractRefactoring imp
 			String entityName = createEntityIfNotExisting(feature.getEntity(), subdomain, feature.getEntityAttributes());
 
 			// create the service
-			String serviceName = urName.substring(0, 1).toUpperCase() + urName.substring(1) + "Service";
+			String serviceName = idHelper.convertStringToXtextID(urName.substring(0, 1).toUpperCase() + urName.substring(1) + "Service");
 			Optional<Service> alreadyExistingService = subdomain.getServices().stream().filter(s -> serviceName.equals(s.getName())).findFirst();
 			Service service;
 			if (!alreadyExistingService.isPresent()) {
@@ -112,7 +115,7 @@ public class DeriveSubdomainFromUserRequirements extends AbstractRefactoring imp
 				service = alreadyExistingService.get();
 			}
 
-			String operationName = feature.getVerb().replace(" ", "_") + entityName;
+			String operationName = idHelper.convertStringToXtextID(feature.getVerb().replace(" ", "_") + entityName);
 			Optional<ServiceOperation> alreadyExistingServiceOperation = service.getOperations().stream().filter(o -> operationName.equals(o.getName())).findFirst();
 			if (!alreadyExistingServiceOperation.isPresent())
 				addElementToEList(service.getOperations(), createServiceOperation(operationName));
@@ -160,7 +163,7 @@ public class DeriveSubdomainFromUserRequirements extends AbstractRefactoring imp
 	}
 
 	private String mapEntityName(String entityName) {
-		return entityName.trim().replace(" ", "_");
+		return idHelper.convertStringToXtextID(entityName.trim());
 	}
 
 	private void createEntityAttributes(Entity entity, List<String> attributeNames) {
@@ -183,7 +186,7 @@ public class DeriveSubdomainFromUserRequirements extends AbstractRefactoring imp
 	private String encodeAttrName(String originalName) {
 		String name = originalName.trim();
 		name = name.substring(0, 1).toLowerCase() + name.substring(1);
-		return name;
+		return new XtextIdHelper().convertStringToXtextID(name);
 	}
 
 	private Service createService(String serviceName, String entityName, String verb) {

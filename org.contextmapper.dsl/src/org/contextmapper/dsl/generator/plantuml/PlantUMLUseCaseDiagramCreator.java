@@ -15,12 +15,14 @@
  */
 package org.contextmapper.dsl.generator.plantuml;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
+import org.contextmapper.dsl.contextMappingDSL.Feature;
 import org.contextmapper.dsl.contextMappingDSL.UseCase;
 import org.contextmapper.dsl.contextMappingDSL.UserRequirement;
 
@@ -89,7 +91,7 @@ public class PlantUMLUseCaseDiagramCreator extends AbstractPlantUMLDiagramCreato
 	}
 
 	private void printNoteIfAvailable(final UserRequirement requirement) {
-		final Set<String> lines = new TreeSet<>();
+		final List<String> lines = new ArrayList<>();
 		if (requirement instanceof UseCase && ((UseCase) requirement).getScope() != null
 				&& !"".equals(((UseCase) requirement).getScope())) {
 			lines.add("//Scope:// " + ((UseCase) requirement).getScope());
@@ -97,6 +99,9 @@ public class PlantUMLUseCaseDiagramCreator extends AbstractPlantUMLDiagramCreato
 		if (requirement instanceof UseCase && ((UseCase) requirement).getLevel() != null
 				&& !"".equals(((UseCase) requirement).getLevel())) {
 			lines.add("//Level:// " + ((UseCase) requirement).getLevel());
+		}
+		for (Feature feature : requirement.getFeatures()) {
+			lines.add("//Feature:// " + getFeatureString(feature));
 		}
 		if (requirement.getBenefit() != null && !"".equals(requirement.getBenefit())) {
 			lines.add("//Benefit:// " + requirement.getBenefit());
@@ -111,6 +116,31 @@ public class PlantUMLUseCaseDiagramCreator extends AbstractPlantUMLDiagramCreato
 			sb.append("end note");
 			linebreak();
 		}
+	}
+
+	private String getFeatureString(final Feature feature) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(feature.getVerb());
+		sb.append(" ");
+		if (feature.getEntityArticle() != null && !"".equals(feature.getEntityArticle())) {
+			sb.append(feature.getEntityArticle());
+			sb.append(" ");
+		}
+		sb.append(feature.getEntity());
+		if (feature.getContainerEntity() != null && !"".equals(feature.getContainerEntity())) {
+			sb.append(" ");
+			if (feature.getContainerEntityPreposition() != null
+					&& !"".equals(feature.getContainerEntityPreposition())) {
+				sb.append(feature.getContainerEntityPreposition());
+				sb.append(" ");
+			}
+			if (feature.getContainerEntityArticle() != null && !"".equals(feature.getContainerEntityArticle())) {
+				sb.append(feature.getContainerEntityArticle());
+				sb.append(" ");
+			}
+			sb.append(feature.getContainerEntity());
+		}
+		return sb.toString();
 	}
 
 	private void prepareData(final List<UserRequirement> userRequirements) {

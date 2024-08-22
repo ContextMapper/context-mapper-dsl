@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 The Context Mapper Project Team
+ * Copyright 2023-2024 The Context Mapper Project Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,9 +58,15 @@ class PlantUMLUseCaseDiagramCreatorTest extends AbstractCMLInputFileTest {
 				+ "Actor_1 -- Just_do_something" + System.lineSeparator()
 				+ System.lineSeparator()
 				+ "note bottom of (Get_paid_for_car_accident)" + System.lineSeparator()
-				+ "  //Benefit:// A claimant submits a claim and and gets paid from the insurance company." + System.lineSeparator()
-				+ "  //Level:// Summary" + System.lineSeparator()
 				+ "  //Scope:// Insurance company" + System.lineSeparator()
+				+ "  //Level:// Summary" + System.lineSeparator()
+				+ "  //Feature:// submit a Claim" + System.lineSeparator()
+				+ "  //Feature:// verifyExistanceOf Policy" + System.lineSeparator()
+				+ "  //Feature:// assign an Agent for a Claim" + System.lineSeparator()
+				+ "  //Feature:// verify Policy" + System.lineSeparator()
+				+ "  //Feature:// pay Claimant" + System.lineSeparator()
+				+ "  //Feature:// close Claim" + System.lineSeparator()
+				+ "  //Benefit:// A claimant submits a claim and and gets paid from the insurance company." + System.lineSeparator()
 				+ "end note"
 				+ System.lineSeparator()
 				+ System.lineSeparator()
@@ -98,9 +104,15 @@ class PlantUMLUseCaseDiagramCreatorTest extends AbstractCMLInputFileTest {
 				+ "Get_paid_for_car_accident -- Actor_2" + System.lineSeparator()
 				+ System.lineSeparator()
 				+ "note bottom of (Get_paid_for_car_accident)" + System.lineSeparator()
-				+ "  //Benefit:// A claimant submits a claim and and gets paid from the insurance company." + System.lineSeparator()
-				+ "  //Level:// Summary" + System.lineSeparator()
 				+ "  //Scope:// Insurance company" + System.lineSeparator()
+				+ "  //Level:// Summary" + System.lineSeparator()
+				+ "  //Feature:// submit a Claim" + System.lineSeparator()
+				+ "  //Feature:// verifyExistanceOf Policy" + System.lineSeparator()
+				+ "  //Feature:// assign an Agent for a Claim" + System.lineSeparator()
+				+ "  //Feature:// verify Policy" + System.lineSeparator()
+				+ "  //Feature:// pay Claimant" + System.lineSeparator()
+				+ "  //Feature:// close Claim" + System.lineSeparator()
+				+ "  //Benefit:// A claimant submits a claim and and gets paid from the insurance company." + System.lineSeparator()
 				+ "end note"
 				+ System.lineSeparator()
 				+ System.lineSeparator()
@@ -134,11 +146,18 @@ class PlantUMLUseCaseDiagramCreatorTest extends AbstractCMLInputFileTest {
 				+ "Actor_1 -- Just_do_something" + System.lineSeparator()
 				+ System.lineSeparator()
 				+ "note bottom of (Get_paid_for_car_accident)" + System.lineSeparator()
-				+ "  //Benefit:// A claimant submits a claim and and gets paid from the insurance company." + System.lineSeparator()
-				+ "  //Level:// Summary" + System.lineSeparator()
 				+ "  //Scope:// Insurance company" + System.lineSeparator()
+				+ "  //Level:// Summary" + System.lineSeparator()
+				+ "  //Feature:// submit a Claim" + System.lineSeparator()
+				+ "  //Feature:// verifyExistanceOf Policy" + System.lineSeparator()
+				+ "  //Feature:// assign an Agent for a Claim" + System.lineSeparator()
+				+ "  //Feature:// verify Policy" + System.lineSeparator()
+				+ "  //Feature:// pay Claimant" + System.lineSeparator()
+				+ "  //Feature:// close Claim" + System.lineSeparator()
+				+ "  //Benefit:// A claimant submits a claim and and gets paid from the insurance company." + System.lineSeparator()
 				+ "end note" + System.lineSeparator()
 				+ "note bottom of (Just_do_something)" + System.lineSeparator()
+				+ "  //Feature:// do Nothing" + System.lineSeparator()
 				+ "  //Benefit:// I earn my name" + System.lineSeparator()
 				+ "end note"
 				+ System.lineSeparator()

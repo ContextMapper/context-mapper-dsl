@@ -27,6 +27,7 @@ import org.contextmapper.dsl.contextMappingDSL.SculptorModule;
 import org.contextmapper.dsl.contextMappingDSL.Stakeholders;
 import org.contextmapper.dsl.contextMappingDSL.UseCase;
 import org.contextmapper.dsl.contextMappingDSL.UserRequirement;
+import org.contextmapper.dsl.contextMappingDSL.ValueElicitation;
 import org.contextmapper.dsl.contextMappingDSL.ValueRegister;
 import org.contextmapper.dsl.generator.exception.GeneratorInputException;
 import org.contextmapper.dsl.generator.plantuml.PlantUMLAggregateClassDiagramCreator;
@@ -40,6 +41,7 @@ import org.contextmapper.dsl.generator.plantuml.PlantUMLSubdomainClassDiagramCre
 import org.contextmapper.dsl.generator.plantuml.PlantUMLUseCaseDiagramCreator;
 import org.contextmapper.dsl.generator.plantuml.PlantUMLUseCaseInteractionsSequenceDiagramCreator;
 import org.contextmapper.dsl.generator.plantuml.PlantUMLValueImpactMapGenerator;
+import org.contextmapper.tactic.dsl.tacticdsl.ServiceOperation;
 import org.contextmapper.tactic.dsl.tacticdsl.StateTransition;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.xtext.EcoreUtil2;
@@ -84,7 +86,8 @@ public class PlantUMLGenerator extends AbstractContextMappingModelGenerator {
 	private void generateValueImpactMapsForValueRegisters(ContextMappingModel model, IFileSystemAccess2 fsa,
 			String fileName) {
 		for (ValueRegister valueRegister : model.getValueRegisters()) {
-			if (!(valueRegister.getValueClusters().isEmpty() && valueRegister.getValues().isEmpty())) {
+			if (!(valueRegister.getValueClusters().isEmpty() && valueRegister.getValues().isEmpty())
+					&& !EcoreUtil2.eAllOfType(valueRegister, ValueElicitation.class).isEmpty()) {
 				fsa.generateFile(
 						fileName + "_ValueRegister_" + valueRegister.getName() + "_Value-Impact-Map" + "."
 								+ PLANT_UML_FILE_EXT,

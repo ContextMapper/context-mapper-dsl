@@ -38,6 +38,8 @@ public class PlantUMLStakeholderMapGenerator extends AbstractPlantUMLMindMapDiag
 	protected void printDiagramContent(final Stakeholders stakeholders) {
 		initData(stakeholders);
 
+		printStyles();
+
 		sb.append(STAR).append(" ").append(getStakeholderDiagramContextName(stakeholders.getContexts()));
 		linebreak();
 		printStakeholders(right);
@@ -45,6 +47,19 @@ public class PlantUMLStakeholderMapGenerator extends AbstractPlantUMLMindMapDiag
 		sb.append("left side");
 		linebreak();
 		printStakeholders(left);
+	}
+
+	private void printStyles() {
+		sb.append("<style>");
+		linebreak();
+		sb.append("node {");
+		linebreak();
+		sb.append("    MaximumWidth 300");
+		linebreak();
+		sb.append("}");
+		linebreak();
+		sb.append("</style>");
+		linebreak(2);
 	}
 
 	public String getStakeholderDiagramContextName(final List<BoundedContext> bcs) {
@@ -58,19 +73,32 @@ public class PlantUMLStakeholderMapGenerator extends AbstractPlantUMLMindMapDiag
 			if (s instanceof StakeholderGroup) {
 				printStakeholderGroup((StakeholderGroup) s);
 			} else if (s instanceof Stakeholder) {
-				sb.append(STAR).append(STAR).append(" " + s.getName());
-				linebreak();
+				printGeneralStakeholderLine(2, s.getName(), ((Stakeholder) s).getDescription());
 			}
 		}
 	}
 
 	private void printStakeholderGroup(final StakeholderGroup group) {
-		sb.append(STAR).append(STAR).append(" ").append(group.getName());
-		linebreak();
+		printGeneralStakeholderLine(2, group.getName(), null);
 		for (Stakeholder s : group.getStakeholders()) {
-			sb.append(STAR).append(STAR).append(STAR).append(" ").append(s.getName());
-			linebreak();
+			printGeneralStakeholderLine(3, s.getName(), s.getDescription());
 		}
+	}
+
+	private void printGeneralStakeholderLine(final int level, final String name, final String description) {
+		for (int i = 0; i < level; i++) {
+			sb.append(STAR);
+		}
+		if (description != null && !"".equals(description)) {
+			sb.append(":<b>").append(name).append("</b>");
+			linebreak();
+			sb.append("----");
+			linebreak();
+			sb.append(description).append(";");
+		} else {
+			sb.append(" <b>").append(name).append("</b>");
+		}
+		linebreak();
 	}
 
 	private void initData(final Stakeholders stakeholders) {
