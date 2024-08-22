@@ -2,7 +2,7 @@ Value Register,Context,Value Cluster,Core Value,Demonstrators,Related Values,Opp
 <#list valueRegisters as valueRegister>
 <#if valueRegister.context?has_content><#assign valueRegisterContext = valueRegister.context.name!""><#else><#assign valueRegisterContext = ""></#if>
 <#list valueRegister.valueClusters as valueCluster>
-<#if valueCluster.coreValue7000?has_content><#assign valueClusterCoreValue = valueCluster.coreValue7000!""><#else><#assign valueClusterCoreValue = valueCluster.coreValue!""></#if>
+<#if valueCluster.coreValue7000?has_content && valueCluster.coreValue7000 != "UNDEFINED"><#assign valueClusterCoreValue = valueCluster.coreValue7000><#else><#assign valueClusterCoreValue = valueCluster.coreValue!"UNDEFINED"></#if>
 <#if valueCluster.demonstrators?has_content><#assign valueClusterDemonstrators = valueCluster.demonstrators?join("; ")><#else><#assign valueClusterDemonstrators = ""></#if>
 <#if valueCluster.relatedValues?has_content><#assign valueClusterRelatedValues = valueCluster.relatedValues?join("; ")><#else><#assign valueClusterRelatedValues = ""></#if>
 <#if valueCluster.opposingValues?has_content><#assign valueClusterOpposingValues = valueCluster.opposingValues?join("; ")><#else><#assign valueClusterOpposingValues = ""></#if>
