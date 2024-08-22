@@ -31,12 +31,12 @@ ${stakeholder.description};
   </#if>
   <#list stakeholder.values as value>
 ***:<b>${value.name}</b>
-    <#if value.priority?has_content || value.impact?has_content>
+    <#if (value.priority?has_content && value.priority != "UNDEFINED") || (value.impact?has_content && value.impact != "UNDEFINED")>
 ----
-      <#if value.priority?has_content>
+      <#if value.priority?has_content && value.priority != "UNDEFINED">
 Priority ${value.priority}
       </#if>
-      <#if value.impact?has_content>
+      <#if value.impact?has_content && value.impact != "UNDEFINED">
 Impact ${value.impact}
       </#if>
     </#if>

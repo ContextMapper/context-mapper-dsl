@@ -66,9 +66,6 @@ class PlantUMLValueImpactMapDiagramCreatorTest extends AbstractCMLInputFileTest 
 				+ "<b>System of Interest (SOI)</b>;" + System.lineSeparator()
 				+ "** <b>Drivers</b>" + System.lineSeparator()
 				+ "***:<b>WorkLifeBalance</b>" + System.lineSeparator()
-				+ "----" + System.lineSeparator()
-				+ "Priority HIGH" + System.lineSeparator()
-				+ "Impact HIGH" + System.lineSeparator()
 				+ "; <<yellow>>" + System.lineSeparator()
 				+ "@endmindmap" + System.lineSeparator(), valueImpactMapDiagram);
 	}
