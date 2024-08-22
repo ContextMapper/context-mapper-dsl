@@ -9,6 +9,9 @@ mindmapDiagram {
   .green {
     BackgroundColor lightgreen
   }
+  .yellow {
+    BackgroundColor gold
+  }
   .red {
     BackgroundColor tomato
   }
@@ -47,7 +50,7 @@ Impact ${value.impact}
 -- <#if value.consequenceType == "GOOD">Positive Consequences<#elseif value.consequenceType == "BAD">Negative Consequences<#else>Consequences</#if> --
 <i>${value.consequence}</i>
     </#if>
-;<#if value.consequenceType == "GOOD"> <<green>><#elseif value.consequenceType == "BAD"> <<red>></#if>
+;<#if value.consequenceType == "GOOD"> <<green>><#elseif value.consequenceType == "BAD"> <<red>><#else> <<yellow>></#if>
     <#list value.mitigationActions as mitigationAction>
 **** <b>${mitigationAction.actionType}</b>: ${mitigationAction.action}
     </#list>
