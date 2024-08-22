@@ -420,7 +420,7 @@ ValueCluster:
 Value:
 	'Value' name=ID (OPEN
 		(
-			(coreValue ?= 'isCore')? &
+			(isCore ?= 'isCore')? &
 			('demonstrator' ('=')? demonstrators += STRING)* &
 			('relatedValue' ('=')? relatedValues += STRING)* &
 			('opposingValue' ('=')? opposingValues += STRING)* &
