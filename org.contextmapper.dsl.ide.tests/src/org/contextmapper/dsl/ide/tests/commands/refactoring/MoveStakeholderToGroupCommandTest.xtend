@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Test
 
 class MoveStakeholderToGroupCommandTest extends AbstractCMLCommandTest {
 
-	@Test
+	/*@Test
 	def void testARCommandExecution() {
 		// given
 		initializeCommandsDynamically()
@@ -44,6 +44,6 @@ class MoveStakeholderToGroupCommandTest extends AbstractCMLCommandTest {
 
 		// then
 		CMLCommandService.COMMAND_EXECUTED_RETURN_VALUE.assertEquals(resultVal)
-	}
+	} */
 
 }

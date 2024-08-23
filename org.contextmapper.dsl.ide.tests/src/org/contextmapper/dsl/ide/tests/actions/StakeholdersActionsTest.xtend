@@ -29,10 +29,6 @@ class StakeholdersActionsTest extends AbstractBoundedContextCodeActionTest {
 			'''
 			line = 1
 			expectedCodeActions = '''
-				command : cml.ar.moveStakeholderToGroup.proxy
-				title : Move Stakeholder To New Group
-				args : 
-				    file://«this.root»/MyModel.cml,Tester
 				command : cml.ar.createValueForStakeholder.proxy
 				title : Create Value For Stakeholder
 				args : 

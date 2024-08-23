@@ -116,7 +116,8 @@ public class CMLActionRegistry {
 		codeActions.add(new SuspendPartnershipAction(resource, selectedObjects));
 		codeActions.add(new SwitchFromPartnershipToSharedKernelAction(resource, selectedObjects));
 		codeActions.add(new SwitchFromSharedKernelToPartnershipAction(resource, selectedObjects));
-		codeActions.add(new MoveStakeholderToGroupAction(resource, selectedObjects));
+		// Transformation making problems in VS Code
+		// codeActions.add(new MoveStakeholderToGroupAction(resource, selectedObjects));
 		codeActions.add(new CreateValue4StakeholderAction(resource, selectedObjects));
 		codeActions.add(new AddEthicalValueAssessmentAction(resource, selectedObjects));
 		codeActions.add(new WrapValueInClusterAction(resource, selectedObjects));

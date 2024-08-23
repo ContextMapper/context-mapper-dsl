@@ -91,7 +91,8 @@ public class CMLCommandRegistry {
 		commandMap.put("cml.ar.switchPartnershipToSharedKernel", new SwitchFromPartnershipToSharedKernelCommand(editRecorder));
 		commandMap.put("cml.ar.switchSharedKernelToPartnership", new SwitchFromSharedKernelToPartnershipCommand(editRecorder));
 		commandMap.put("cml.quickfix.command.splitStoryByVerb", new SplitStoryByVerbCommand(editRecorder));
-		commandMap.put("cml.ar.moveStakeholderToGroup", new MoveStakeholderToGroupCommand(editRecorder));
+		// Transformation making problems in VS Code
+		// commandMap.put("cml.ar.moveStakeholderToGroup", new MoveStakeholderToGroupCommand(editRecorder));
 		commandMap.put("cml.ar.createValueForStakeholder", new CreateValue4StakeholderCommand(editRecorder));
 		commandMap.put("cml.ar.addEthicalValueAssessment", new AddEthicalValueAssessmentCommand(editRecorder));
 		commandMap.put("cml.ar.wrapValueInCluster", new WrapValueInClusterCommand(editRecorder));
