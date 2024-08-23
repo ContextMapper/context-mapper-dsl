@@ -72,9 +72,9 @@ public class PlantUMLGenerator extends AbstractContextMappingModelGenerator {
 	}
 
 	private void generateStakeholderDiagrams(ContextMappingModel model, IFileSystemAccess2 fsa, String fileName) {
-		PlantUMLStakeholderMapGenerator stakeholderDiagramGenerator = new PlantUMLStakeholderMapGenerator();
 		int index = 1;
 		for (Stakeholders stakeholders : model.getStakeholders()) {
+			PlantUMLStakeholderMapGenerator stakeholderDiagramGenerator = new PlantUMLStakeholderMapGenerator();
 			fsa.generateFile(fileName + "_BC_"
 					+ stakeholderDiagramGenerator.getStakeholderDiagramContextName(stakeholders.getContexts())
 							.replace(", ", "-").replace(" ", "-")
