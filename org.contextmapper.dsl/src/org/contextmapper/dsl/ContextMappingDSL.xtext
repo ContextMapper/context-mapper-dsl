@@ -58,14 +58,20 @@ BoundedContext:
 			(('domainVisionStatement' ('=')? domainVisionStatement=STRING)? &
 			('type' ('=')? type=BoundedContextType)? &
 			(('responsibilities' ('=')? responsibilities+=STRING) ("," responsibilities+=STRING)*)? &
+			(('businessDecisions' ('=')? businessDecisions+=STRING) ("," businessDecisions+=STRING)*)? &
+			(('assumptions' ('=')? assumptions+=STRING) ("," assumptions+=STRING)*)? &
+			(('verificationMetrics' ('=')? verificationMetrics+=STRING) ("," verificationMetrics+=STRING)*)? &
+			(('openQuestions' ('=')? openQuestions+=STRING) ("," openQuestions+=STRING)*)? &
 			('implementationTechnology' ('=')? implementationTechnology=STRING)? &
 			('knowledgeLevel' ('=')? knowledgeLevel=KnowledgeLevel)?)
 			('businessModel' ('=')? businessModel=STRING)? &
-            ('evolution' ('=')? evolution=Evolution)? &
+            ('evolution' ('=')? evolution=Evolution)?&
+			('roleType' ('=')? roleType=ContextRoleType)? &
 			((application = Application)? &
 			(modules += SculptorModule)* &
 			(aggregates += Aggregate)* &
-			(domainServices += Service)*)
+			(domainServices += Service)* &
+			(domainTerms += DomainTerm)*)
 		CLOSE
 	)?
 ;
@@ -176,6 +182,8 @@ Aggregate :
   "Aggregate" name=ID (OPEN
     (
     	(('responsibilities' ('=')? responsibilities+=STRING) ("," responsibilities+=STRING)*)? &
+    	(('invariants' ('=')? invariants+=STRING) ("," invariants+=STRING)*)? &
+    	(('policies' ('=')? policies+=STRING) ("," policies+=STRING)*)? &
     	(
     		(('useCases' ('=')? userRequirements += [UseCase]) ("," userRequirements += [UseCase])*) |
     		(('userStories' ('=')? userRequirements += [UserStory]) ("," userRequirements += [UserStory])*) |
@@ -190,13 +198,72 @@ Aggregate :
     	('storageSimilarity' ('=')? storageSimilarity=Similarity)? &
     	('securityCriticality' ('=')? securityCriticality=Criticality)? &
     	('securityZone' ('=')? securityZone=STRING)? &
-    	('securityAccessGroup' ('=')? securityAccessGroup=STRING)?
+    	('securityAccessGroup' ('=')? securityAccessGroup=STRING)? &
+		(throughput = Throughput)? &
+		(size = Size)?
     )
     ((services+=Service) |
      (resources+=Resource) |
      (consumers+=Consumer) |
      (domainObjects+=SimpleDomainObject))*
   CLOSE)?
+;
+
+Throughput:
+	"Throughput" name=ID (OPEN
+		((commandHandlingRate = CommandHandlingRate)? &
+		(totalClientsNumber = TotalClientsNumber)? &
+		(concurrencyConflictChance = ConcurrencyConflictChance)?)
+	CLOSE)
+;
+
+Size:
+	"Size" name=ID (OPEN
+		((eventGrowthRate = EventGrowthRate)? &
+		(singleInstanceLifetime = SingleInstanceLifetime)? &
+		(eventsPersistedCount = EventsPersistedCount)?)
+	CLOSE)
+;
+
+CommandHandlingRate:
+	"CommandHandlingRate" name=ID (OPEN
+		(averageMax=AverageMax)
+	CLOSE)
+;
+
+TotalClientsNumber:
+	"TotalClientsNumber" name=ID (OPEN
+		(averageMax=AverageMax)
+	CLOSE)
+;
+
+ConcurrencyConflictChance:
+	"ConcurrencyConflictChance" name=ID (OPEN
+		(averageMax=AverageMax)
+	CLOSE)
+;
+
+EventGrowthRate:
+	"EventGrowthRate" name=ID (OPEN
+		(averageMax=AverageMax)
+	CLOSE)
+;
+
+SingleInstanceLifetime:
+	"SingleInstanceLifetime" name=ID (OPEN
+		(averageMax=AverageMax)
+	CLOSE)
+;
+
+EventsPersistedCount:
+	"EventsPersistedCount" name=ID (OPEN
+		(averageMax=AverageMax)
+	CLOSE)
+;
+
+AverageMax:
+	('average' ('=')? average=STRING)? &
+	('maximum' ('=')? maximum=STRING)?
 ;
 
 Application:
@@ -482,6 +549,15 @@ Action:
 	'action' action=STRING type=('ACT'|'MONITOR'|STRING) 	
 ;
 
+DomainTerm:
+	"DomainTerm" (name=ID)? (OPEN
+		(
+			('term' ('=')? term=STRING) &
+			('description' ('=')? description=STRING)
+		)
+	CLOSE)
+;
+
 
 enum UpstreamRole:
 	PUBLISHED_LANGUAGE = 'PL' | OPEN_HOST_SERVICE = 'OHS'
@@ -511,8 +587,12 @@ enum DownstreamGovernanceRights:
 	INFLUENCER | OPINION_LEADER | VETO_RIGHT | DECISION_MAKER | MONOPOLIST
 ;
 
+enum ContextRoleType :
+	DRAFT | EXECUTION | ANALYSIS | GATEWAY | OTHER
+;
+
 enum KnowledgeLevel :
-  META="META" | CONCRETE="CONCRETE"
+	META="META" | CONCRETE="CONCRETE"
 ;
 
 enum Volatility :
