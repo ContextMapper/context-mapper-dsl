@@ -210,7 +210,7 @@ Aggregate :
 ;
 
 Throughput:
-	"Throughput" name=ID (OPEN
+	"Throughput" (OPEN
 		((commandHandlingRate = CommandHandlingRate)? &
 		(totalClientsNumber = TotalClientsNumber)? &
 		(concurrencyConflictChance = ConcurrencyConflictChance)?)
@@ -218,7 +218,7 @@ Throughput:
 ;
 
 Size:
-	"Size" name=ID (OPEN
+	"Size" (OPEN
 		((eventGrowthRate = EventGrowthRate)? &
 		(singleInstanceLifetime = SingleInstanceLifetime)? &
 		(eventsPersistedCount = EventsPersistedCount)?)
@@ -226,37 +226,37 @@ Size:
 ;
 
 CommandHandlingRate:
-	"CommandHandlingRate" name=ID (OPEN
+	"CommandHandlingRate" (OPEN
 		(averageMax=AverageMax)
 	CLOSE)
 ;
 
 TotalClientsNumber:
-	"TotalClientsNumber" name=ID (OPEN
+	"TotalClientsNumber" (OPEN
 		(averageMax=AverageMax)
 	CLOSE)
 ;
 
 ConcurrencyConflictChance:
-	"ConcurrencyConflictChance" name=ID (OPEN
+	"ConcurrencyConflictChance" (OPEN
 		(averageMax=AverageMax)
 	CLOSE)
 ;
 
 EventGrowthRate:
-	"EventGrowthRate" name=ID (OPEN
+	"EventGrowthRate" (OPEN
 		(averageMax=AverageMax)
 	CLOSE)
 ;
 
 SingleInstanceLifetime:
-	"SingleInstanceLifetime" name=ID (OPEN
+	"SingleInstanceLifetime" (OPEN
 		(averageMax=AverageMax)
 	CLOSE)
 ;
 
 EventsPersistedCount:
-	"EventsPersistedCount" name=ID (OPEN
+	"EventsPersistedCount" (OPEN
 		(averageMax=AverageMax)
 	CLOSE)
 ;
