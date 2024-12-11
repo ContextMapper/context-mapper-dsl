@@ -16,144 +16,192 @@
 package org.contextmapper.tactic.dsl.formatting2
 
 import org.contextmapper.tactic.dsl.tacticdsl.Attribute
-import org.contextmapper.tactic.dsl.tacticdsl.CommandEvent
 import org.contextmapper.tactic.dsl.tacticdsl.ComplexType
-import org.contextmapper.tactic.dsl.tacticdsl.DomainEvent
+import org.contextmapper.tactic.dsl.tacticdsl.DomainObject
 import org.contextmapper.tactic.dsl.tacticdsl.DomainObjectOperation
+import org.contextmapper.tactic.dsl.tacticdsl.Trait
+import org.contextmapper.tactic.dsl.tacticdsl.BasicType
 import org.contextmapper.tactic.dsl.tacticdsl.Entity
 import org.contextmapper.tactic.dsl.tacticdsl.Parameter
 import org.contextmapper.tactic.dsl.tacticdsl.Reference
 import org.contextmapper.tactic.dsl.tacticdsl.Service
-import org.contextmapper.tactic.dsl.tacticdsl.ValueObject
 import org.contextmapper.tactic.dsl.tacticdsl.Enum
 import org.eclipse.xtext.formatting2.AbstractFormatter2
 import org.eclipse.xtext.formatting2.IFormattableDocument
 import org.contextmapper.tactic.dsl.tacticdsl.ServiceOperation
+import org.contextmapper.tactic.dsl.tacticdsl.TacticdslPackage
+import org.eclipse.emf.ecore.EClass
+import org.eclipse.emf.ecore.EStructuralFeature
 
 class TacticDDDLanguageFormatter extends AbstractFormatter2 {
 
 	def dispatch void format(Entity entity, extension IFormattableDocument document) {
+		val EClass clazz = TacticdslPackage.eINSTANCE.getEntity()
+        val EStructuralFeature docFeature = clazz.getEStructuralFeature(TacticdslPackage.ENTITY__DOC)
+		entity.regionFor.feature(docFeature).append[newLine]
+
 		interior(
-			entity.regionFor.keyword('{').append[newLine],
-			entity.regionFor.keyword('}').prepend[newLine].append[newLine]
+			entity.regionFor.keyword('{').prepend[oneSpace].append[newLine],
+			entity.regionFor.keyword('}').prepend[newLine]
 		)[indent]
 
-		entity.regionFor.keyword('aggregateRoot').append[newLine]
-		entity.prepend[newLines = 1]
-		entity.regionFor.keyword('Entity').prepend[newLine]
+		entity.regionFor.keyword('aggregateRoot').prepend[newLine]
+		entity.regionFor.keywords('hint', 'validate', 'belongsTo').forEach[
+			prepend[newLine]
+		]
+        entity.regionFor.keywords('with').forEach[
+            append[noSpace].prepend[oneSpace]
+        ]
+        entity.regionFor.keywords('@').forEach[
+            append[noSpace]
+        ]
 
 		for (attribute : entity.attributes) {
 			attribute.format
-			attribute.append[newLine]
+	        attribute.prepend[newLine]
 		}
 		for (reference : entity.references) {
 			reference.format
-			reference.append[newLine]
+		    reference.prepend[newLine]
 		}
 		for (operation : entity.operations) {
 			operation.format
-			operation.append[newLine]
+			operation.prepend[newLine]
 		}
 	}
-	
-	def dispatch void format(DomainEvent domainEvent, extension IFormattableDocument document) {
-		interior(
-			domainEvent.regionFor.keyword('{').append[newLine],
-			domainEvent.regionFor.keyword('}').prepend[newLine].append[newLine]
+
+	def dispatch void format(DomainObject domainObject, extension IFormattableDocument document) {
+        val EClass clazz = TacticdslPackage.eINSTANCE.getDomainObject()
+        val EStructuralFeature docFeature = clazz.getEStructuralFeature(TacticdslPackage.DOMAIN_OBJECT__DOC)
+        domainObject.regionFor.feature(docFeature).append[newLine]
+
+        interior(
+			domainObject.regionFor.keyword('{').prepend[oneSpace].append[newLine],
+			domainObject.regionFor.keyword('}').prepend[newLine]
 		)[indent]
 
-		domainEvent.regionFor.keyword('aggregateRoot').append[newLine]
-		domainEvent.prepend[newLines = 1]
-		domainEvent.regionFor.keyword('DomainEvent').prepend[newLine]
+		domainObject.regionFor.keyword('aggregateRoot').append[newLine]
+		domainObject.regionFor.keyword('hint').prepend[newLine]
+        domainObject.regionFor.keywords('with').forEach[
+            append[noSpace].prepend[oneSpace]
+        ]
+        domainObject.regionFor.keywords('@').forEach[
+            append[noSpace]
+        ]        
 
-		for (attribute : domainEvent.attributes) {
+		for (attribute : domainObject.attributes) {
 			attribute.format
-			attribute.append[newLine]
+			attribute.prepend[newLine]
 		}
-		for (reference : domainEvent.references) {
+		for (reference : domainObject.references) {
 			reference.format
-			reference.append[newLine]
+			reference.prepend[newLine]
 		}
-		for (operation : domainEvent.operations) {
+		for (operation : domainObject.operations) {
 			operation.format
-			operation.append[newLine]
+			operation.prepend[newLine]
 		}
 	}
-	
-	def dispatch void format(CommandEvent commandEvent, extension IFormattableDocument document) {
+
+	def dispatch void format(Trait trait, extension IFormattableDocument document) {
+		val EClass clazz = TacticdslPackage.eINSTANCE.getTrait()
+        val EStructuralFeature docFeature = clazz.getEStructuralFeature(TacticdslPackage.TRAIT__DOC)
+		trait.regionFor.feature(docFeature).append[newLine]
+
 		interior(
-			commandEvent.regionFor.keyword('{').append[newLine],
-			commandEvent.regionFor.keyword('}').prepend[newLine].append[newLine]
+			trait.regionFor.keyword('{').prepend[oneSpace].append[newLine],
+			trait.regionFor.keyword('}').prepend[newLine]
 		)[indent]
 
-		commandEvent.regionFor.keyword('aggregateRoot').append[newLine]
-		commandEvent.prepend[newLines = 1]
-		commandEvent.regionFor.keyword('CommandEvent').prepend[newLine]
+		trait.regionFor.keyword('hint').prepend[newLine]
 
-		for (attribute : commandEvent.attributes) {
+		for (attribute : trait.attributes) {
 			attribute.format
-			attribute.append[newLine]
+			attribute.prepend[newLine]
 		}
-		for (reference : commandEvent.references) {
+		for (reference : trait.references) {
 			reference.format
-			reference.append[newLine]
+			reference.prepend[newLine]
 		}
-		for (operation : commandEvent.operations) {
+		for (operation : trait.operations) {
 			operation.format
-			operation.append[newLine]
+			operation.prepend[newLine]
 		}
 	}
-	
-	def dispatch void format(ValueObject valueObject, extension IFormattableDocument document) {
-		interior(
-			valueObject.regionFor.keyword('{').append[newLine],
-			valueObject.regionFor.keyword('}').prepend[newLine].append[newLine]
-		)[indent]
 
-		valueObject.prepend[newLines = 1]
-		valueObject.regionFor.keyword('ValueObject').prepend[newLine]
+    def dispatch void format(BasicType basicType, extension IFormattableDocument document) {
+        val EClass clazz = TacticdslPackage.eINSTANCE.getBasicType()
+        val EStructuralFeature docFeature = clazz.getEStructuralFeature(TacticdslPackage.BASIC_TYPE__DOC)
+        basicType.regionFor.feature(docFeature).append[newLine]
 
-		for (attribute : valueObject.attributes) {
-			attribute.format
-			attribute.append[newLine]
-		}
-		for (reference : valueObject.references) {
-			reference.format
-			reference.append[newLine]
-		}
-		for (operation : valueObject.operations) {
-			operation.format
-			operation.append[newLine]
-		}
-	}
-	
+        interior(
+            basicType.regionFor.keyword('{').prepend[oneSpace].append[newLine],
+            basicType.regionFor.keyword('}').prepend[newLine]
+        )[indent]
+
+        basicType.regionFor.keyword('hint').prepend[newLine]
+        basicType.regionFor.keywords('with').forEach[
+            append[noSpace].prepend[oneSpace]
+        ]
+        basicType.regionFor.keywords('@').forEach[
+            append[noSpace]
+        ] 
+        
+        for (attribute : basicType.attributes) {
+            attribute.format
+            attribute.prepend[newLine]
+        }
+        for (reference : basicType.references) {
+            reference.format
+            reference.prepend[newLine]
+        }
+        for (operation : basicType.operations) {
+            operation.format
+            operation.prepend[newLine]
+        }
+    }
+
 	def dispatch void format(Enum enumm, extension IFormattableDocument document) {
+		val EClass clazz = TacticdslPackage.eINSTANCE.getEnum()
+        val EStructuralFeature docFeature = clazz.getEStructuralFeature(TacticdslPackage.ENUM__DOC)
+		enumm.regionFor.feature(docFeature).append[newLine]
+
 		interior(
-			enumm.regionFor.keyword('{').append[newLine],
-			enumm.regionFor.keyword('}').prepend[newLine].append[newLine]
+			enumm.regionFor.keyword('{').prepend[oneSpace].append[newLine],
+			enumm.regionFor.keyword('}').prepend[newLine]
 		)[indent]
 
-		enumm.prepend[newLines = 1]
-		enumm.regionFor.keyword('enum').prepend[newLine]
+        enumm.regionFor.keywords(',').forEach [
+            prepend[noSpace]
+            append[oneSpace]
+        ]
 
 		for (attribute : enumm.attributes) {
 			attribute.format
-			attribute.append[newLine]
+			attribute.prepend[newLine]
 		}
 	}
 
 	def dispatch void format(Attribute attribute, extension IFormattableDocument document) {
+		val EClass attributeClass = TacticdslPackage.eINSTANCE.getAttribute()
+        val EStructuralFeature docFeature = attributeClass.getEStructuralFeature(TacticdslPackage.ATTRIBUTE__DOC)
+
+		attribute.regionFor.feature(docFeature).append[newLine]
 		attribute.regionFor.keyword('<').surround[noSpace]
 		attribute.regionFor.keyword('>').prepend[noSpace]
 	}
 	
 	def dispatch void format(Reference reference, extension IFormattableDocument document) {
+		val EClass referenceClass = TacticdslPackage.eINSTANCE.getReference()
+        val EStructuralFeature docFeature = referenceClass.getEStructuralFeature(TacticdslPackage.REFERENCE__DOC)
+
+		reference.regionFor.feature(docFeature).append[newLine]
 		reference.regionFor.keyword('<').surround[noSpace]
 		reference.regionFor.keyword('>').prepend[noSpace]
 	}
 
 	def dispatch void format(DomainObjectOperation operation, extension IFormattableDocument document) {
-		operation.prepend[newLines = 1]
+		operation.prepend[newLine]
 		
 		operation.regionFor.keyword(';').prepend[noSpace]
 		operation.regionFor.keyword('(').append[noSpace]
@@ -187,11 +235,11 @@ class TacticDDDLanguageFormatter extends AbstractFormatter2 {
 	
 	def dispatch void format(Service service, extension IFormattableDocument document) {
 		interior(
-			service.regionFor.keyword('{').append[newLine],
+			service.regionFor.keyword('{').prepend[oneSpace].append[newLine],
 			service.regionFor.keyword('}').prepend[newLine].append[newLine]
 		)[indent]
 
-		service.prepend[newLines = 1]
+		service.prepend[newLine]
 		service.regionFor.keyword('Service').prepend[newLine]
 
 		for (operation : service.operations) {
@@ -200,7 +248,7 @@ class TacticDDDLanguageFormatter extends AbstractFormatter2 {
 	}
 	
 	def dispatch void format(ServiceOperation operation, extension IFormattableDocument document) {
-		operation.prepend[newLines = 1]
+		operation.prepend[newLine]
 		
 		operation.regionFor.keyword(';').prepend[noSpace]
 		operation.regionFor.keyword('(').append[noSpace]

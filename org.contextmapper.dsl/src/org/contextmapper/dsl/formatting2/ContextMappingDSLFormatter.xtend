@@ -325,10 +325,12 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 
 		for (domainObject : aggregate.domainObjects) {
 			domainObject.format
+			domainObject.prepend[newLine]
 		}
 
 		for (service : aggregate.services) {
 			service.format
+			service.prepend[newLine]
 		}
 	}
 

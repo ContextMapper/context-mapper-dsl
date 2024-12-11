@@ -27,17 +27,17 @@ BoundedContext ClaimsManagement implements ClaimsManagement {
 			Double amountClaimed
 			String desc
 			String claimId key
-			- Agent agent
+			- @Agent agent
 		}
 		Entity Policy {
 			Date startDate
 			Date endDate
 			String policyId key
-			- List<Claim> claims
+			- List<@Claim> claims
 		}
 		Entity Contract {
 			String contractId key
-			- List<Policy> policies
+			- List<@Policy> policies
 		}
 		Entity Agent {
 			Long personalID
@@ -49,7 +49,7 @@ BoundedContext ClaimsManagement implements ClaimsManagement {
 			String firstName
 			String lastName
 			String claimantId key
-			- List<Claim> claims
+			- List<@Claim> claims
 		}
 	}
 }
@@ -60,15 +60,15 @@ Domain Insurance_Application {
 			Date date
 			Double amountClaimed
 			String desc
-			- Agent agent
+			- @Agent agent
 		}
 		Entity Policy {
 			Date startDate
 			Date endDate
-			- List<Claim> claims
+			- List<@Claim> claims
 		}
 		Entity Contract {
-			- List<Policy> policies
+			- List<@Policy> policies
 		}
 		Entity Agent {
 			Long personalID
@@ -78,7 +78,7 @@ Domain Insurance_Application {
 		Entity Claimant {
 			String firstName
 			String lastName
-			- List<Claim> claims
+			- List<@Claim> claims
 		}
 		Service AccidentService {
 			submitClaim;

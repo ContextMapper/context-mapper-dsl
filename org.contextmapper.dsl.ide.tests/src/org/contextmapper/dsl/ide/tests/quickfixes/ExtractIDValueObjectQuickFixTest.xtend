@@ -49,7 +49,7 @@ class ExtractIDValueObjectQuickFixTest extends AbstractCMLLanguageServerTest {
 				            Entity Customer {
 				                String firstname
 				                String lastname
-				                - CustomerId customerId
+				                - @CustomerId customerId
 				            }
 				            ValueObject CustomerId {
 				                String id

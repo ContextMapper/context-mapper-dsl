@@ -31,4 +31,8 @@ class ContextMappingDSLRuntimeModule extends AbstractContextMappingDSLRuntimeMod
 		return ImportUriGlobalScopeProvider
 	}
 	
+	override configure(com.google.inject.Binder binder) {
+       super.configure(binder)
+       binder.bind(org.eclipse.xtext.serializer.tokens.ICrossReferenceSerializer).to(org.contextmapper.dsl.ContextMapperCrossReferenceSerializer);
+   }
 }
