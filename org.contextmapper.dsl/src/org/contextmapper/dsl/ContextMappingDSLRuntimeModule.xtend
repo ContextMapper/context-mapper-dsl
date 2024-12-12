@@ -17,22 +17,24 @@ package org.contextmapper.dsl
 
 import org.eclipse.xtext.util.formallang.PdaUtil
 import org.eclipse.xtext.scoping.impl.ImportUriGlobalScopeProvider
+import org.contextmapper.dsl.ContextMapperCrossReferenceSerializer
 
 /**
  * Use this class to register components to be used at runtime / without the Equinox extension registry.
  */
 class ContextMappingDSLRuntimeModule extends AbstractContextMappingDSLRuntimeModule {
-	
+
 	def Class<? extends PdaUtil> bindPdaUtil() {
 		return ContextMapperPDAUtil
 	}
-	
+
 	override bindIGlobalScopeProvider() {
 		return ImportUriGlobalScopeProvider
 	}
-	
+
 	override configure(com.google.inject.Binder binder) {
-       super.configure(binder)
-       binder.bind(org.eclipse.xtext.serializer.tokens.ICrossReferenceSerializer).to(org.contextmapper.dsl.ContextMapperCrossReferenceSerializer);
-   }
+		super.configure(binder)
+		binder.bind(org.eclipse.xtext.serializer.tokens.ICrossReferenceSerializer).to(
+			ContextMapperCrossReferenceSerializer);
+	}
 }

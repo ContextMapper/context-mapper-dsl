@@ -576,4 +576,3 @@ terminal REF :
 
 terminal ASC :
   ('--'|'association');
-
