@@ -342,6 +342,11 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 		for (aggregate : module.aggregates) {
 			aggregate.format
 		}
+		
+		for (domainObject : module.domainObjects) {
+			domainObject.format
+			domainObject.prepend[newLine]
+		}		
 	}
 	
 	def dispatch void format(Stakeholders stakeholderContainer, extension IFormattableDocument document) {
