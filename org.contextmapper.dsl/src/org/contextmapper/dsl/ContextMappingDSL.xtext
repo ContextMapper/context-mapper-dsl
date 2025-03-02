@@ -65,7 +65,7 @@ BoundedContext:
 			('implementationTechnology' ('=')? implementationTechnology=STRING)? &
 			('knowledgeLevel' ('=')? knowledgeLevel=KnowledgeLevel)?)
 			('businessModel' ('=')? businessModel=STRING)? &
-            ('evolution' ('=')? evolution=Evolution)?&
+			('evolution' ('=')? evolution=Evolution)? &
 			('roleType' ('=')? roleType=ContextRoleType)? &
 			((application = Application)? &
 			(modules += SculptorModule)* &
