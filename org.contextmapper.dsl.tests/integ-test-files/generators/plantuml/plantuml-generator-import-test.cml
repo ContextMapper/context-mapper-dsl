@@ -1,0 +1,10 @@
+/* Import other contexts */
+import "./imported-contexts.cml"
+
+/* Define the context map that includes imported contexts */
+ContextMap TestMap {
+  contains ImportedContext1
+  contains ImportedContext2
+
+  ImportedContext1 [U]->[D] ImportedContext2
+} 
