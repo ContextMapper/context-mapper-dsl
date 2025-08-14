@@ -1,0 +1,16 @@
+/* Simple bounded contexts */
+BoundedContext ImportedContext1 {
+  Module importedModule1 {
+    Aggregate ImportedAggregate1 {
+      Entity ImportedEntity1
+    }
+  }
+}
+
+BoundedContext ImportedContext2 {
+  Module importedModule2 {
+    Aggregate ImportedAggregate2 {
+      Entity ImportedEntity2
+    }
+  }
+} 

@@ -274,6 +274,23 @@ class PlantUMLGeneratorTest extends AbstractCMLInputFileTest {
 		});
 	}
 
+	@Test
+	void canGeneratePlantUMLWithImportedBoundedContexts() throws IOException {
+		// given
+		ContextMappingModel model = getOriginalResourceOfTestCML("plantuml-generator-import-test.cml")
+				.getContextMappingModel();
+
+		// when
+		IFileSystemAccess2Mock filesystem = new IFileSystemAccess2Mock();
+		this.generator.doGenerate(new ContextMappingModelResourceMock(model, "testmodel", "cml"), filesystem,
+				new IGeneratorContextMock());
+
+		// then
+		assertTrue(filesystem.getGeneratedFilesSet().contains("testmodel_ContextMap.puml"));
+		assertTrue(filesystem.getGeneratedFilesSet().contains("testmodel_BC_ImportedContext1.puml"));
+		assertTrue(filesystem.getGeneratedFilesSet().contains("testmodel_BC_ImportedContext2.puml"));
+	}
+
 	private Entity createTestEntity(String name) {
 		Entity testEntity = TacticdslFactory.eINSTANCE.createEntity();
 		testEntity.setName(name);

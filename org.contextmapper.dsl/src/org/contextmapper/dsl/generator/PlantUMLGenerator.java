@@ -17,6 +17,8 @@ package org.contextmapper.dsl.generator;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.HashSet;
 
 import org.contextmapper.dsl.cml.CMLModelDomainAndSubdomainResolver;
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
@@ -126,8 +128,14 @@ public class PlantUMLGenerator extends AbstractContextMappingModelGenerator {
 
 	private void generateClassAndStateDiagramsForBoundedContexts(ContextMappingModel model, IFileSystemAccess2 fsa,
 			String fileName) {
-		for (BoundedContext boundedContext : model.getBoundedContexts()) {
+		// Get all bounded contexts, including those referenced in the context map
+		Set<BoundedContext> boundedContexts = new HashSet<>();
+		boundedContexts.addAll(model.getBoundedContexts());
+		if (model.getMap() != null) {
+			boundedContexts.addAll(model.getMap().getBoundedContexts());
+		}
 
+		for (BoundedContext boundedContext : boundedContexts) {
 			// class diagram for complete BC
 			fsa.generateFile(fileName + "_BC_" + boundedContext.getName() + "." + PLANT_UML_FILE_EXT,
 					new PlantUMLBoundedContextClassDiagramCreator().createDiagram(boundedContext));
