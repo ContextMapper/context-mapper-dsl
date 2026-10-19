@@ -28,6 +28,8 @@ import org.contextmapper.dsl.cml.CMLResource;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
+import org.contextmapper.dsl.contextMappingDSL.Relationship;
+import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
 import org.contextmapper.dsl.generator.ContextMapGenerator;
 import org.contextmapper.dsl.generator.contextmap.ContextMapFormat;
 import org.contextmapper.dsl.refactoring.SplitBoundedContextByOwner;
@@ -63,6 +65,27 @@ public class StandaloneAPITest {
 		assertNotNull(cml);
 		assertEquals(1, cml.getContextMappingModel().getBoundedContexts().size());
 		assertEquals("HelloWorldContext", cml.getContextMappingModel().getBoundedContexts().get(0).getName());
+	}
+
+	@Test
+	public void canReadContextMapRelationships() {
+		// given (same code as in the README)
+		StandaloneContextMapperAPI contextMapper = ContextMapperStandaloneSetup.getStandaloneAPI();
+		CMLResource cml = contextMapper.loadCML("./integ-test-files/standalone/transit-context-map.cml");
+		StringBuilder output = new StringBuilder();
+
+		// when
+		for (Relationship relationship : cml.getContextMappingModel().getMap().getRelationships()) {
+			if (relationship instanceof UpstreamDownstreamRelationship) {
+				UpstreamDownstreamRelationship upDown = (UpstreamDownstreamRelationship) relationship;
+				output.append(upDown.getUpstream().getName() + " " + upDown.getUpstreamRoles() + " -> "
+						+ upDown.getDownstream().getName() + " " + upDown.getDownstreamRoles() + "\n");
+			}
+		}
+
+		// then
+		assertEquals("TicketSales [OHS, PL] -> AccessControl []\n"
+				+ "PaymentProvider [OHS] -> TicketSales [ACL]\n", output.toString());
 	}
 
 	@Test
