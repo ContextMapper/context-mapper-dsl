@@ -61,6 +61,7 @@ BoundedContext:
 			(('nonResponsibilities' ('=')? nonResponsibilities+=STRING) ("," nonResponsibilities+=STRING)*)? &
 			('implementationTechnology' ('=')? implementationTechnology=STRING)? &
 			('basePackage' ('=')? basePackage=JavaIdentifier)? &
+			('owner' ('=')? owner=[BoundedContext])? &
 			('knowledgeLevel' ('=')? knowledgeLevel=KnowledgeLevel)?)
 			('businessModel' ('=')? businessModel=STRING)? &
             ('evolution' ('=')? evolution=Evolution)? &
