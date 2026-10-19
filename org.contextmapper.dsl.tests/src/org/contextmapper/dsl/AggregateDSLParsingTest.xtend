@@ -83,6 +83,35 @@ class AggregateDSLParsingTest {
 	}
 
 	@Test
+	def void canDefineAggregateInvariants() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext testContext {
+				Aggregate Tickets {
+					Entity Ticket {
+						aggregateRoot
+						String zone
+					}
+					Invariant "The sum of refunds never exceeds the price paid"
+					Invariant ValidatedTicketsAreNotRefundable "A validated ticket cannot be refunded"
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		val aggregate = result.boundedContexts.get(0).aggregates.get(0);
+		assertEquals(1, aggregate.domainObjects.size);
+		assertEquals(2, aggregate.invariants.size);
+		assertNull(aggregate.invariants.get(0).name);
+		assertEquals("The sum of refunds never exceeds the price paid", aggregate.invariants.get(0).description);
+		assertEquals("ValidatedTicketsAreNotRefundable", aggregate.invariants.get(1).name);
+		assertEquals("A validated ticket cannot be refunded", aggregate.invariants.get(1).description);
+	}
+
+	@Test
 	def void canDefineAggregateKnowledgeLevel() {
 		// given
 		val String dslSnippet = '''
