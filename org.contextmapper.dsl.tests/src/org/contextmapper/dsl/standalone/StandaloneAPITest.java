@@ -29,6 +29,7 @@ import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.generator.ContextMapGenerator;
+import org.contextmapper.dsl.generator.PlantUMLGenerator;
 import org.contextmapper.dsl.generator.contextmap.ContextMapFormat;
 import org.contextmapper.dsl.refactoring.SplitBoundedContextByOwner;
 import org.eclipse.xtext.resource.SaveOptions;
@@ -135,6 +136,22 @@ public class StandaloneAPITest {
 		contextMapper.callGenerator(cml, generator, "./out");
 
 		// then
+		assertTrue(expectedOutput.exists());
+	}
+
+	@Test
+	public void canLoadCMLWithImportsViaRelativePathAndCallGenerator() {
+		// given
+		StandaloneContextMapperAPI contextMapper = ContextMapperStandaloneSetup.getStandaloneAPI();
+		CMLResource cml = contextMapper.loadCML("./integ-test-files/standalone/imports/ContextMap.cml");
+		File expectedOutput = new File("./out/imports/ContextMap_ContextMap.puml");
+		ensureFileDoesNotExist(expectedOutput);
+
+		// when
+		contextMapper.callGenerator(cml, new PlantUMLGenerator(), "./out/imports");
+
+		// then
+		assertTrue(cml.getURI().isFile());
 		assertTrue(expectedOutput.exists());
 	}
 

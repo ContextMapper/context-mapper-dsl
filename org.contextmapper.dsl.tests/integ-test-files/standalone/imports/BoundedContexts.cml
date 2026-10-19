@@ -1,0 +1,22 @@
+Domain Insurance {
+	Subdomain CustomerDomain
+	Subdomain PolicyDomain
+}
+
+BoundedContext CustomerManagement implements CustomerDomain {
+	Aggregate Customers {
+		Entity Customer {
+			aggregateRoot
+			String firstname
+		}
+	}
+}
+
+BoundedContext PolicyManagement implements PolicyDomain {
+	Aggregate Policies {
+		Entity Policy {
+			aggregateRoot
+			String policyNr
+		}
+	}
+}
