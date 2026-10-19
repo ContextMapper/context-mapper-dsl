@@ -50,4 +50,14 @@ public class TeamSemanticsValidator extends AbstractDeclarativeValidator {
 			error(String.format(OWNER_BC_IS_NOT_TEAM, owner.getName()), aggregate, ContextMappingDSLPackage.Literals.AGGREGATE__OWNER);
 	}
 
+	@Check
+	public void checkThatBoundedContextOwnersAreTeams(final BoundedContext boundedContext) {
+		if (boundedContext.getOwner() == null)
+			return;
+
+		BoundedContext owner = boundedContext.getOwner();
+		if (owner.getType() == null || !BoundedContextType.TEAM.equals(owner.getType()))
+			error(String.format(OWNER_BC_IS_NOT_TEAM, owner.getName()), boundedContext, ContextMappingDSLPackage.Literals.BOUNDED_CONTEXT__OWNER);
+	}
+
 }
