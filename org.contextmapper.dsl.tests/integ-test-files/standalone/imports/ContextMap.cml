@@ -1,0 +1,7 @@
+import "./BoundedContexts.cml"
+
+ContextMap InsuranceContextMap {
+	contains CustomerManagement, PolicyManagement
+
+	CustomerManagement [U,OHS,PL] -> [D,ACL] PolicyManagement
+}

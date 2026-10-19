@@ -43,7 +43,17 @@ public class StandaloneContextMapper implements StandaloneContextMapperAPI {
 
 	@Override
 	public CMLResource loadCML(String filepath) {
-		return new CMLResource(new ResourceSetImpl().getResource(URI.createURI(filepath), true));
+		return new CMLResource(new ResourceSetImpl().getResource(toURI(filepath), true));
+	}
+
+	private URI toURI(String filepath) {
+		URI uri = URI.createURI(filepath);
+		// plain file paths (relative or absolute, without scheme) are converted into absolute file URIs;
+		// otherwise imports cannot be resolved against the URI of the loaded resource (see issue #364)
+		// a single letter scheme is a Windows drive letter (C:\...)
+		if (uri.scheme() == null || uri.scheme().length() == 1)
+			return URI.createFileURI(new File(filepath).getAbsolutePath());
+		return uri;
 	}
 
 	@Override
