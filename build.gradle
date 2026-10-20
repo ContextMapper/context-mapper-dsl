@@ -8,7 +8,7 @@ buildscript {
 	}
 }
 
-def pomXml = new XmlSlurper().parse('pom.xml')
+def pomXml = new groovy.xml.XmlSlurper().parse('pom.xml')
 
 subprojects {
 	ext.xtextVersion = '2.42.0'

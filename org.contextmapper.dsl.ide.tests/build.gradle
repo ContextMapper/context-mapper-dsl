@@ -1,7 +1,7 @@
 dependencies {
 	implementation project(':context-mapper-dsl')
 	implementation project(':context-mapper-lsp')
-	implementation group: 'commons-io', name: 'commons-io', version: '2.22.0'
+	implementation 'commons-io:commons-io:2.22.0'
 	testImplementation "org.junit.jupiter:junit-jupiter-api"
 	testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
 	testRuntimeOnly "org.junit.platform:junit-platform-launcher"

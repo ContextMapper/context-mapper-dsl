@@ -7,10 +7,10 @@ dependencies {
 	testImplementation "org.eclipse.xtext:org.eclipse.xtext.testing:${xtextVersion}"
 	testImplementation "org.eclipse.xtext:org.eclipse.xtext.xbase.testing:${xtextVersion}"
 
-	implementation group: 'commons-io', name: 'commons-io', version: '2.22.0'
-	implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.21.0'
-	implementation group: 'org.freemarker', name: 'freemarker', version: '2.3.35'
-	implementation group: 'org.contextmapper', name: 'context-map-generator', version: '1.2.1'
+	implementation 'commons-io:commons-io:2.22.0'
+	implementation 'org.apache.commons:commons-lang3:3.21.0'
+	implementation 'org.freemarker:freemarker:2.3.35'
+	implementation 'org.contextmapper:context-map-generator:1.2.1'
 }
 
 configurations {
@@ -70,9 +70,7 @@ task javadocJar(type: Jar) {
     archiveClassifier = 'javadoc'
 }
 
-artifacts {
-    archives javadocJar, sourcesJar
-}
+assemble.dependsOn javadocJar, sourcesJar
 
 signing {
     sign(publishing.publications)
@@ -151,9 +149,6 @@ def customizePom(pom) {
     }
 }
 
-model {
-    tasks.generatePomFileForMavenJavaPublication {
-        destination = file("$buildDir/generated-pom.xml")
-    }
-
+tasks.withType(GenerateMavenPom).configureEach {
+    destination = layout.buildDirectory.file("generated-pom.xml").get().asFile
 }

@@ -26,9 +26,7 @@ task javadocJar(type: Jar) {
     archiveClassifier = 'javadoc'
 }
 
-artifacts {
-    archives javadocJar, sourcesJar
-}
+assemble.dependsOn javadocJar, sourcesJar
 
 signing {
     sign(publishing.publications)
@@ -109,10 +107,8 @@ def customizePom(pom) {
     }
 }
 
-model {
-    tasks.generatePomFileForMavenJavaPublication {
-        destination = file("$buildDir/generated-pom.xml")
-    }
+tasks.withType(GenerateMavenPom).configureEach {
+    destination = layout.buildDirectory.file("generated-pom.xml").get().asFile
 }
 
 tasks.withType(CreateStartScripts).each { task ->

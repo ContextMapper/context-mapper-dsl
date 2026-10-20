@@ -1,8 +1,8 @@
 dependencies {
 	implementation project(':context-mapper-dsl')
-	implementation group: 'org.contextmapper', name: 'context-map-generator', version: '1.2.1'
-	implementation group: 'commons-io', name: 'commons-io', version: '2.22.0'
-	implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.21.0'
+	implementation 'org.contextmapper:context-map-generator:1.2.1'
+	implementation 'commons-io:commons-io:2.22.0'
+	implementation 'org.apache.commons:commons-lang3:3.21.0'
 	
 	testImplementation "org.junit.jupiter:junit-jupiter-api"
 	testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
