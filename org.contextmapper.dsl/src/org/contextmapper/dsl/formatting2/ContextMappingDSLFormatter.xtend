@@ -120,7 +120,7 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 		boundedContext.regionFor.keyword("domainVisionStatement").prepend[newLine]
 		boundedContext.regionFor.keyword("type").prepend[newLine]
 		boundedContext.regionFor.keyword("responsibilities").prepend[newLine]
-		boundedContext.regionFor.keyword("notResponsibleFor").prepend[newLine]
+		boundedContext.regionFor.keyword("nonResponsibilities").prepend[newLine]
 		boundedContext.regionFor.keyword("implementationTechnology").prepend[newLine]
 		boundedContext.regionFor.keyword("knowledgeLevel").prepend[newLine]
 

@@ -197,7 +197,7 @@ public class MergeBoundedContextsTest extends AbstractRefactoringTest {
 	}
 
 	@Test
-	void canMergeNotResponsibleFor() throws IOException {
+	void canMergeNonResponsibilities() throws IOException {
 		// given
 		String inputModelName = "merge-bounded-contexts-test-12-input.cml";
 		CMLResource input = getResourceCopyOfTestCML(inputModelName);
@@ -211,7 +211,7 @@ public class MergeBoundedContextsTest extends AbstractRefactoringTest {
 		assertEquals(1, model.getBoundedContexts().size());
 		BoundedContext bc = model.getBoundedContexts().get(0);
 		assertEquals(3, bc.getResponsibilities().size());
-		assertEquals(List.of("Gate validation", "Payment processing"), bc.getNotResponsibleFor());
+		assertEquals(List.of("Gate validation", "Payment processing"), bc.getNonResponsibilities());
 	}
 
 	@Test
