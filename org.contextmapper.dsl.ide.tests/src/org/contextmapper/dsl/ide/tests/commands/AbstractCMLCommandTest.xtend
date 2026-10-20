@@ -17,20 +17,15 @@ package org.contextmapper.dsl.ide.tests.commands
 
 import java.io.File
 import org.contextmapper.dsl.ide.tests.AbstractCMLLanguageServerTest
-import org.eclipse.lsp4j.ClientCapabilities
 import org.eclipse.lsp4j.ExecuteCommandCapabilities
-import org.eclipse.lsp4j.WorkspaceClientCapabilities
 
 abstract class AbstractCMLCommandTest extends AbstractCMLLanguageServerTest {
 
 	def void initializeCommandsDynamically() {
+		// extend the capabilities prepared by Xtext; they enable the workspace folders
 		initialize[
-			capabilities = new ClientCapabilities => [
-				workspace = new WorkspaceClientCapabilities => [
-					executeCommand = new ExecuteCommandCapabilities => [
-						dynamicRegistration = true
-					]
-				]
+			capabilities.workspace.executeCommand = new ExecuteCommandCapabilities => [
+				dynamicRegistration = true
 			]
 		]
 	}

@@ -7,13 +7,16 @@ dependencies {
 }
 
 apply plugin: 'application'
-mainClassName = "org.eclipse.xtext.ide.server.ServerLauncher"
+application {
+	mainClass = "org.eclipse.xtext.ide.server.ServerLauncher"
+}
 
 //this is an eclipse plugin project
 eclipseClasspath.enabled=false
 cleanEclipseClasspath.enabled=false
 
 task sourcesJar(type: Jar) {
+    dependsOn generateXtext
     from sourceSets.main.allJava
     archiveClassifier = 'sources'
 }
@@ -23,13 +26,11 @@ task javadocJar(type: Jar) {
     archiveClassifier = 'javadoc'
 }
 
-artifacts {
-    archives javadocJar, sourcesJar
-}
+assemble.dependsOn javadocJar, sourcesJar
 
 signing {
     sign(publishing.publications)
-    required { gradle.taskGraph.hasTask("publishMavenJavaPublicationToMavenLocal") || gradle.taskGraph.hasTask("publishMavenJavaPublicationToMavenRepository") }
+    required = { gradle.taskGraph.hasTask("publishMavenJavaPublicationToMavenLocal") || gradle.taskGraph.hasTask("publishMavenJavaPublicationToMavenRepository") }
 }
 
 publishing {
@@ -49,13 +50,13 @@ publishing {
     }
     repositories {
         maven {
-            def releasesRepoUrl = "${ossReleaseStagingRepository}"
-            def snapshotsRepoUrl = "${ossSnapshotRepository}"
+            def releasesRepoUrl = "${centralReleaseStagingRepository}"
+            def snapshotsRepoUrl = "${centralSnapshotRepository}"
             url = project.version.text().endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
             
             credentials {
-                username = System.getenv('OSSRH_USERNAME')
-                password = System.getenv('OSSRH_PASSWORD')
+                username = System.getenv('CENTRAL_USERNAME')
+                password = System.getenv('CENTRAL_PASSWORD')
             }
         }
     }
@@ -106,10 +107,8 @@ def customizePom(pom) {
     }
 }
 
-model {
-    tasks.generatePomFileForMavenJavaPublication {
-        destination = file("$buildDir/generated-pom.xml")
-    }
+tasks.withType(GenerateMavenPom).configureEach {
+    destination = layout.buildDirectory.file("generated-pom.xml").get().asFile
 }
 
 tasks.withType(CreateStartScripts).each { task ->

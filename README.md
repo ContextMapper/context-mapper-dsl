@@ -36,7 +36,7 @@ The Context Mapper project has originally been developed as part of research pro
 ## System Requirements
 To use the ContextMapper DSL (CML) you need the following tools:
 
-* [Java JDK](https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) (JDK 11 or newer)
+* [Java JDK](https://adoptium.net/) (JDK 17 or newer)
 * [Eclipse](https://www.eclipse.org/downloads/packages/) or [Visual Studio Code](https://code.visualstudio.com/)
 * If you want to use our [Context Map generator](https://contextmapper.org/docs/context-map-generator/) you need to have [Graphviz](https://www.graphviz.org/) installed on your system.
     * Ensure that the binaries are part of the _PATH_ environment variable and can be called from the terminal.

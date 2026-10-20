@@ -15,7 +15,7 @@ Require-Bundle: org.contextmapper.dsl.ui,
  org.eclipse.ui.workbench;resolution:=optional
 Import-Package: org.junit.jupiter.api;version="[5.1.0,6.0.0)",
  org.junit.jupiter.api.extension;version="[5.1.0,6.0.0)"
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Export-Package: org.contextmapper.dsl.ui.tests;x-internal=true,
  org.contextmapper.tactic.dsl.ui.tests;x-internal=true,
  org.contextmapper.servicecutter.dsl.ui.tests;x-internal=true
