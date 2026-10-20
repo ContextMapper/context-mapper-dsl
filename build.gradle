@@ -4,14 +4,14 @@ buildscript {
 		gradlePluginPortal()
 	}
 	dependencies {
-		classpath 'org.xtext:xtext-gradle-plugin:3.0.2'
+		classpath 'org.xtext:xtext-gradle-plugin:4.0.0'
 	}
 }
 
 def pomXml = new XmlSlurper().parse('pom.xml')
 
 subprojects {
-	ext.xtextVersion = '2.32.0'
+	ext.xtextVersion = '2.42.0'
 	repositories {
 		mavenCentral()
 	}
@@ -30,8 +30,10 @@ subprojects {
 	group = 'org.contextmapper'
 	version = pomXml.version
 			
-	sourceCompatibility = '11'
-	targetCompatibility = '11'
+	java {
+		sourceCompatibility = JavaVersion.VERSION_17
+		targetCompatibility = JavaVersion.VERSION_17
+	}
 	
 	configurations.all {
 		exclude group: 'asm'

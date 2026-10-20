@@ -7,12 +7,9 @@ dependencies {
 	testImplementation "org.eclipse.xtext:org.eclipse.xtext.testing:${xtextVersion}"
 	testImplementation "org.eclipse.xtext:org.eclipse.xtext.xbase.testing:${xtextVersion}"
 
-	implementation group: 'commons-io', name: 'commons-io', version: '2.6'
-	implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
-	implementation group: 'org.freemarker', name: 'freemarker', version: '2.3.30'
-	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.9'
-	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.9.9'
-	implementation group: 'org.yaml', name: 'snakeyaml', version: '1.14'
+	implementation group: 'commons-io', name: 'commons-io', version: '2.22.0'
+	implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.21.0'
+	implementation group: 'org.freemarker', name: 'freemarker', version: '2.3.35'
 	implementation group: 'org.contextmapper', name: 'context-map-generator', version: '1.2.1'
 }
 
@@ -54,6 +51,7 @@ clean {
 }
 
 task sourcesJar(type: Jar) {
+    dependsOn generateXtext
     from sourceSets.main.allJava
     archiveClassifier = 'sources'
 }
@@ -78,7 +76,7 @@ artifacts {
 
 signing {
     sign(publishing.publications)
-    required { gradle.taskGraph.hasTask("publishMavenJavaPublicationToMavenLocal") || gradle.taskGraph.hasTask("publishMavenJavaPublicationToMavenRepository") }
+    required = { gradle.taskGraph.hasTask("publishMavenJavaPublicationToMavenLocal") || gradle.taskGraph.hasTask("publishMavenJavaPublicationToMavenRepository") }
 }
 
 publishing {

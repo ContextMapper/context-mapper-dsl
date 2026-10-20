@@ -46,6 +46,7 @@ class OpenFlowInBPMNSketchMinerActionTest extends AbstractCMLCommandTest {
 				kind : quickfix
 				command : Command [
 				  title = "Open flow in BPMN Sketch Miner"
+				  tooltip = null
 				  command = "cml.flow.open.sketch.miner"
 				  arguments = LinkedList (
 				    "https://www.bpmn-sketch-miner.ai/index.html#EYBwNgdgXAbgjAKALRIQYQPYQC4FMAe2AggAREjgCWAxgIbaVZQIIDOuATjDbiZgLb9aEACYAhBAAoAojFw4iAShZA"

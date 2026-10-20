@@ -209,10 +209,11 @@ public class CMLActionRegistry {
 
 	private List<Either<Command, CodeAction>> createQuickFixes4XtextDiagnostics(Diagnostic diagnostic, ICodeActionService2.Options options) {
 		List<Either<Command, CodeAction>> quickFixCodeActions = Lists.newLinkedList();
+		String message = diagnostic.getMessage().isLeft() ? diagnostic.getMessage().getLeft() : diagnostic.getMessage().getRight().getValue();
 		if (diagnostic.getCode().get().equals(org.eclipse.xtext.diagnostics.Diagnostic.LINKING_DIAGNOSTIC)
-				&& diagnostic.getMessage().matches(String.format(CreateMissingBoundedContextQuickFix.LINK_DIAGNOSTIC_MESSAGE_PATTERN, "BoundedContext"))) {
+				&& message.matches(String.format(CreateMissingBoundedContextQuickFix.LINK_DIAGNOSTIC_MESSAGE_PATTERN, "BoundedContext"))) {
 			Pattern pattern = Pattern.compile(String.format(CreateMissingBoundedContextQuickFix.LINK_DIAGNOSTIC_MESSAGE_PATTERN, "BoundedContext"));
-			Matcher matcher = pattern.matcher(diagnostic.getMessage());
+			Matcher matcher = pattern.matcher(message);
 			if (matcher.find()) {
 				CreateMissingBoundedContextQuickFix quickFix = new CreateMissingBoundedContextQuickFix(matcher.group(1));
 				quickFixCodeActions.add(Either.forRight(createQuickFixCodeAction(quickFix, diagnostic, options, true)));

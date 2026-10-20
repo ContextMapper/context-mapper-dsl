@@ -65,6 +65,7 @@ class UserStoryActionsTest extends AbstractBoundedContextCodeActionTest {
 				kind : quickfix
 				command : Command [
 				  title = "Split Story by Verb/Operation"
+				  tooltip = null
 				  command = "cml.quickfix.command.splitStoryByVerb.proxy"
 				  arguments = LinkedList (
 				    "file://«this.root»/MyModel.cml",

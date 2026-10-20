@@ -44,6 +44,7 @@ class OpenCoordinationInBPMNSketchMinerActionTest extends AbstractCMLCommandTest
 				kind : quickfix
 				command : Command [
 				  title = "Open coordination in BPMN Sketch Miner"
+				  tooltip = null
 				  command = "cml.coordination.open.sketch.miner"
 				  arguments = LinkedList (
 				    "https://www.bpmn-sketch-miner.ai/index.html#EYBwNgdgXAbgjAKALRIQYQPYQC4FMAe2AglAggM64BOMAlgMa4AEAKrudgMrV2MB0eDgHkQ1AIbZaWMkA"
