@@ -77,7 +77,7 @@ public class MergeBoundedContextsRefactoring extends AbstractRefactoring impleme
 		if (bc1.getType().equals(BoundedContextType.TEAM))
 			bc1.getRealizedBoundedContexts().addAll(bc2.getRealizedBoundedContexts());
 		bc1.getResponsibilities().addAll(bc2.getResponsibilities());
-		mergeNotResponsibleFor(bc1, bc2);
+		mergeNonResponsibilities(bc1, bc2);
 		bc1.setImplementationTechnology(mergeImplementationTechnologies(bc1.getImplementationTechnology(), bc2.getImplementationTechnology()));
 
 		// remove BC2
@@ -92,13 +92,13 @@ public class MergeBoundedContextsRefactoring extends AbstractRefactoring impleme
 			bc2Model.setTopComment("// Due to the application of 'Merge Bounded Contexts' this file no longer contains any Bounded Contexts.");
 	}
 
-	private void mergeNotResponsibleFor(BoundedContext bc1, BoundedContext bc2) {
-		for (String notResponsibleFor : bc2.getNotResponsibleFor()) {
-			if (!bc1.getNotResponsibleFor().contains(notResponsibleFor))
-				bc1.getNotResponsibleFor().add(notResponsibleFor);
+	private void mergeNonResponsibilities(BoundedContext bc1, BoundedContext bc2) {
+		for (String nonResponsibility : bc2.getNonResponsibilities()) {
+			if (!bc1.getNonResponsibilities().contains(nonResponsibility))
+				bc1.getNonResponsibilities().add(nonResponsibility);
 		}
 		// the merged context is responsible for everything one of the two contexts was responsible for
-		bc1.getNotResponsibleFor().removeAll(bc1.getResponsibilities());
+		bc1.getNonResponsibilities().removeAll(bc1.getResponsibilities());
 	}
 
 	private String mergeImplementationTechnologies(String implementationTechnology1, String implementationTechnology2) {

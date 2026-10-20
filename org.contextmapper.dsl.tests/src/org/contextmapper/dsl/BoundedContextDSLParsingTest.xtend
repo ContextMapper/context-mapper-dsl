@@ -259,12 +259,12 @@ class BoundedContextDSLParsingTest {
 	}
 
 	@Test
-	def void canDefineWhatContextIsNotResponsibleFor() {
+	def void canDefineNonResponsibilities() {
 		// given
 		val String dslSnippet = '''
 			BoundedContext testContext {
 				responsibilities = "Selling fare products", "Refunds"
-				notResponsibleFor = "Gate validation", "Support cases"
+				nonResponsibilities = "Gate validation", "Support cases"
 			}
 		''';
 		// when
@@ -272,18 +272,18 @@ class BoundedContextDSLParsingTest {
 		// then
 		assertThatNoParsingErrorsOccurred(result);
 		assertThatNoValidationErrorsOccurred(result);
-		val notResponsibleFor = result.boundedContexts.get(0).notResponsibleFor;
-		assertEquals(2, notResponsibleFor.size);
-		assertEquals("Gate validation", notResponsibleFor.get(0));
-		assertEquals("Support cases", notResponsibleFor.get(1));
+		val nonResponsibilities = result.boundedContexts.get(0).nonResponsibilities;
+		assertEquals(2, nonResponsibilities.size);
+		assertEquals("Gate validation", nonResponsibilities.get(0));
+		assertEquals("Support cases", nonResponsibilities.get(1));
 	}
 
 	@Test
-	def void canDefineNotResponsibleForWithoutEqualSign() {
+	def void canDefineNonResponsibilitiesWithoutEqualSign() {
 		// given
 		val String dslSnippet = '''
 			BoundedContext testContext {
-				notResponsibleFor "Gate validation"
+				nonResponsibilities "Gate validation"
 			}
 		''';
 		// when
@@ -291,8 +291,8 @@ class BoundedContextDSLParsingTest {
 		// then
 		assertThatNoParsingErrorsOccurred(result);
 		assertThatNoValidationErrorsOccurred(result);
-		assertEquals(1, result.boundedContexts.get(0).notResponsibleFor.size);
-		assertEquals("Gate validation", result.boundedContexts.get(0).notResponsibleFor.get(0));
+		assertEquals(1, result.boundedContexts.get(0).nonResponsibilities.size);
+		assertEquals("Gate validation", result.boundedContexts.get(0).nonResponsibilities.get(0));
 	}
 
 	@Test
