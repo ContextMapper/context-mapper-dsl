@@ -73,6 +73,27 @@ implementation 'org.contextmapper:context-mapper-dsl:6.12.0'
   <version>6.12.0</version>
 </dependency>
 ```
+The library runs on Java 17 or newer (tested with Java 17 and 21).
+
+### Reading a CML Model in Your Code or Tests
+The following snippet loads a CML file and iterates over the relationships of its context map, for example to derive architecture tests or other checks from your model:
+
+```java
+StandaloneContextMapperAPI contextMapper = ContextMapperStandaloneSetup.getStandaloneAPI();
+CMLResource cml = contextMapper.loadCML("./src/main/cml/transit.cml");
+
+for (Relationship relationship : cml.getContextMappingModel().getMap().getRelationships()) {
+    if (relationship instanceof UpstreamDownstreamRelationship) {
+        UpstreamDownstreamRelationship upDown = (UpstreamDownstreamRelationship) relationship;
+        System.out.println(upDown.getUpstream().getName() + " " + upDown.getUpstreamRoles() + " -> "
+                + upDown.getDownstream().getName() + " " + upDown.getDownstreamRoles());
+    }
+}
+// prints for example: PaymentProvider [OHS] -> TicketSales [ACL]
+```
+
+The model classes (`BoundedContext`, `Aggregate`, `UpstreamDownstreamRelationship`, etc.) are located in the package `org.contextmapper.dsl.contextMappingDSL`; the API in `org.contextmapper.dsl.standalone`.
+
 In our [context-mapper-standalone-example](https://github.com/ContextMapper/context-mapper-standalone-example) repository you find an example project showing how to include the library within your project. It further contains code examples illustrating how to use the CML models and the generator tools (PlantUML, MDSL, etc.).
 
 ## Development

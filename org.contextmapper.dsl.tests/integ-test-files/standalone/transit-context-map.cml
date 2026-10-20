@@ -1,0 +1,11 @@
+ContextMap TransitTicketing {
+	contains TicketSales, AccessControl, PaymentProvider
+
+	TicketSales [U,OHS,PL] -> [D] AccessControl
+
+	TicketSales [D,ACL] <- [U,OHS] PaymentProvider
+}
+
+BoundedContext TicketSales
+BoundedContext AccessControl
+BoundedContext PaymentProvider
