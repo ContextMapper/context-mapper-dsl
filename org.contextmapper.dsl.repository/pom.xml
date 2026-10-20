@@ -202,8 +202,8 @@
 			<build>
 				<plugins>
 					<plugin>
-						<groupId>org.eclipse.tycho.extras</groupId>
-						<artifactId>tycho-eclipserun-plugin</artifactId>
+						<groupId>org.eclipse.tycho</groupId>
+						<artifactId>tycho-eclipse-plugin</artifactId>
 						<version>${tycho-version}</version>
 						<configuration>
 							<!-- Update p2 composite metadata or create it -->
@@ -216,7 +216,7 @@
 								<repository>
 									<id>2022-09</id>
 									<layout>p2</layout>
-									<url>http://download.eclipse.org/releases/2022-09</url>
+									<url>https://download.eclipse.org/releases/2022-09</url>
 								</repository>
 							</repositories>
 							<dependencies>
@@ -268,8 +268,8 @@
 			<build>
 				<plugins>
 					<plugin>
-						<groupId>org.eclipse.tycho.extras</groupId>
-						<artifactId>tycho-eclipserun-plugin</artifactId>
+						<groupId>org.eclipse.tycho</groupId>
+						<artifactId>tycho-eclipse-plugin</artifactId>
 						<version>${tycho-version}</version>
 						<configuration>
 							<!-- Update p2 composite metadata or create it -->
@@ -282,7 +282,7 @@
 								<repository>
 									<id>2022-09</id>
 									<layout>p2</layout>
-									<url>http://download.eclipse.org/releases/2022-09</url>
+									<url>https://download.eclipse.org/releases/2022-09</url>
 								</repository>
 							</repositories>
 							<dependencies>

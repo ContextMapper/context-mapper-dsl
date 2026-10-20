@@ -6,13 +6,13 @@
 	<packaging>pom</packaging>
 
 	<properties>
-		<xtextVersion>2.32.0</xtextVersion>
-		<mwe2Version>2.15.0</mwe2Version>
+		<xtextVersion>2.42.0</xtextVersion>
+		<mwe2Version>2.25.0</mwe2Version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>11</maven.compiler.source>
-		<maven.compiler.target>11</maven.compiler.target>
+		<maven.compiler.source>17</maven.compiler.source>
+		<maven.compiler.target>17</maven.compiler.target>
 		<!-- Tycho settings -->
-		<tycho-version>2.7.5</tycho-version>
+		<tycho-version>4.0.13</tycho-version>
 		<!-- Define overridable properties for tycho-surefire-plugin -->
 		<platformSystemProperties />
 		<moduleProperties />
@@ -132,6 +132,8 @@
 							<version>${project.version}</version>
 						</artifact>
 					</target>
+					<!-- our bundles require Java 17, but the Eclipse platform of the target requires Java 21 (build runs on JDK 21) -->
+					<resolveWithExecutionEnvironmentConstraints>false</resolveWithExecutionEnvironmentConstraints>
 					<environments>
 						<environment>
 							<os>macosx</os>
@@ -172,7 +174,7 @@
 		<pluginManagement>
 			<plugins>
 				<plugin>
-					<groupId>org.eclipse.xtend</groupId>
+					<groupId>org.eclipse.xtext</groupId>
 					<artifactId>xtend-maven-plugin</artifactId>
 					<version>${xtextVersion}</version>
 					<executions>
