@@ -327,6 +327,9 @@ class ContextMappingDSLFormatter extends TacticDDDLanguageFormatter {
 		for (domainObject : aggregate.domainObjects) {
 			domainObject.format
 		}
+		for (invariant : aggregate.invariants) {
+			invariant.regionFor.keyword('Invariant').prepend[newLine]
+		}
 
 		for (service : aggregate.services) {
 			service.format

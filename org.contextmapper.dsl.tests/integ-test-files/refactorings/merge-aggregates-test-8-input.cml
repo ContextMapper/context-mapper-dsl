@@ -1,0 +1,17 @@
+BoundedContext TicketSales {
+	Aggregate Tickets {
+		Entity Ticket {
+			aggregateRoot
+			String zone
+		}
+		Invariant RefundsNeverExceedPrice "The sum of refunds never exceeds the price paid"
+	}
+
+	Aggregate Refunds {
+		Entity Refund {
+			aggregateRoot
+			long amountInCents
+		}
+		Invariant "A refund amount is always positive"
+	}
+}
