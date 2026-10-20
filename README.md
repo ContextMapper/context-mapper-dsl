@@ -73,7 +73,7 @@ implementation 'org.contextmapper:context-mapper-dsl:6.12.0'
   <version>6.12.0</version>
 </dependency>
 ```
-The library runs on Java 11 or newer (tested with Java 11, 17 and 21).
+The library runs on Java 17 or newer (tested with Java 17 and 21).
 
 ### Reading a CML Model in Your Code or Tests
 The following snippet loads a CML file and iterates over the relationships of its context map, for example to derive architecture tests or other checks from your model:
