@@ -1,0 +1,9 @@
+BoundedContext TicketSales {
+	responsibilities = "Selling fare products", "Refunds"
+	nonResponsibilities = "Gate validation", "Support cases"
+}
+
+BoundedContext CustomerCare {
+	responsibilities = "Support cases"
+	nonResponsibilities = "Payment processing", "Gate validation"
+}

@@ -58,6 +58,7 @@ BoundedContext:
 			(('domainVisionStatement' ('=')? domainVisionStatement=STRING)? &
 			('type' ('=')? type=BoundedContextType)? &
 			(('responsibilities' ('=')? responsibilities+=STRING) ("," responsibilities+=STRING)*)? &
+			(('nonResponsibilities' ('=')? nonResponsibilities+=STRING) ("," nonResponsibilities+=STRING)*)? &
 			('implementationTechnology' ('=')? implementationTechnology=STRING)? &
 			('knowledgeLevel' ('=')? knowledgeLevel=KnowledgeLevel)?)
 			('businessModel' ('=')? businessModel=STRING)? &
