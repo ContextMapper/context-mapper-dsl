@@ -49,13 +49,13 @@ publishing {
     }
     repositories {
         maven {
-            def releasesRepoUrl = "${ossReleaseStagingRepository}"
-            def snapshotsRepoUrl = "${ossSnapshotRepository}"
+            def releasesRepoUrl = "${centralReleaseStagingRepository}"
+            def snapshotsRepoUrl = "${centralSnapshotRepository}"
             url = project.version.text().endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
             
             credentials {
-                username = System.getenv('OSSRH_USERNAME')
-                password = System.getenv('OSSRH_PASSWORD')
+                username = System.getenv('CENTRAL_USERNAME')
+                password = System.getenv('CENTRAL_PASSWORD')
             }
         }
     }
