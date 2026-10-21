@@ -46,7 +46,7 @@ class GenericTextFileGeneratorCommandTest extends AbstractCMLCommandTest {
 		val paramObject = new JsonObject
 		paramObject.add("templateUri",
 			new JsonPrimitive(
-				new File("./../org.contextmapper.dsl.ui/samples/freemarker/jhipster/JDL.ftl").toURI.toString))
+				new File("./../samples/freemarker/jhipster/JDL.ftl").toURI.toString))
 		paramObject.add("outputFileName", new JsonPrimitive("entities.jdl"))
 		val paramArray = new JsonArray
 		paramArray.add(paramObject)
@@ -100,7 +100,7 @@ class GenericTextFileGeneratorCommandTest extends AbstractCMLCommandTest {
 		// when
 		val paramObject = new JsonObject
 		paramObject.add("templateUri",
-			new JsonPrimitive(new File("./../org.contextmapper.dsl.ui/samples/freemarker/jhipster/JDL.ftl").toString)) // no correct URI (does not start with file:)
+			new JsonPrimitive(new File("./../samples/freemarker/jhipster/JDL.ftl").toString)) // no correct URI (does not start with file:)
 		paramObject.add("outputFileName", new JsonPrimitive("entities.jdl"))
 		val paramArray = new JsonArray
 		paramArray.add(paramObject)
