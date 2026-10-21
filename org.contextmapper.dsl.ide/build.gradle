@@ -52,7 +52,7 @@ publishing {
         maven {
             def releasesRepoUrl = "${centralReleaseStagingRepository}"
             def snapshotsRepoUrl = "${centralSnapshotRepository}"
-            url = project.version.text().endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+            url = project.version.toString().endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
             
             credentials {
                 username = System.getenv('CENTRAL_USERNAME')
