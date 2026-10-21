@@ -12,10 +12,6 @@ dependencies {
 test {
 	useJUnitPlatform()
 }
-//this is an eclipse plugin project
-eclipseClasspath.enabled=false
-cleanEclipseClasspath.enabled=false
-
 jacocoTestReport {
 	sourceSets project(':context-mapper-lsp').sourceSets.main
 	

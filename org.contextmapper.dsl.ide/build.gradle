@@ -11,10 +11,6 @@ application {
 	mainClass = "org.eclipse.xtext.ide.server.ServerLauncher"
 }
 
-//this is an eclipse plugin project
-eclipseClasspath.enabled=false
-cleanEclipseClasspath.enabled=false
-
 task sourcesJar(type: Jar) {
     dependsOn generateXtext
     from sourceSets.main.allJava
