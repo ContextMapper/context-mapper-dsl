@@ -19,24 +19,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.contextmapper.dsl.hover.impl.HTMLHoverTextProvider4CML;
 import org.contextmapper.dsl.hover.impl.MarkdownHoverTextProvider4CML;
 import org.junit.jupiter.api.Test;
 
 public class CMLHoverTextProviderTest {
-
-	@Test
-	public void canProvideHoverTextsAsHTML() {
-		// given
-		CMLHoverTextProvider textProvider = new HTMLHoverTextProvider4CML();
-
-		// when
-		String sampleHoverText = textProvider.getHoverText("ContextMap");
-
-		// then
-		assertNotNull(sampleHoverText);
-		assertFalse("".equals(sampleHoverText));
-	}
 
 	@Test
 	public void canProvideHoverTextsAsMarkdown() {
@@ -54,7 +40,7 @@ public class CMLHoverTextProviderTest {
 	@Test
 	public void canReturnEmptyString4NonExistentKeyword() {
 		// given
-		CMLHoverTextProvider textProvider = new HTMLHoverTextProvider4CML();
+		CMLHoverTextProvider textProvider = new MarkdownHoverTextProvider4CML();
 
 		// when
 		String sampleHoverText = textProvider.getHoverText("ThisKeywordDoesNotExist");
@@ -67,7 +53,7 @@ public class CMLHoverTextProviderTest {
 	@Test
 	public void canTellIfKeywordExists() {
 		// given
-		CMLHoverTextProvider textProvider = new HTMLHoverTextProvider4CML();
+		CMLHoverTextProvider textProvider = new MarkdownHoverTextProvider4CML();
 
 		// when
 		boolean existing = textProvider.isKeywordRegistered("ContextMap");

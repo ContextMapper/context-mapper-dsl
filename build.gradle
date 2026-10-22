@@ -8,8 +8,6 @@ buildscript {
 	}
 }
 
-def pomXml = new groovy.xml.XmlSlurper().parse('pom.xml')
-
 subprojects {
 	ext.xtextVersion = '2.42.0'
 	repositories {
@@ -28,7 +26,6 @@ subprojects {
 	apply plugin: 'jacoco'
 	
 	group = 'org.contextmapper'
-	version = pomXml.version
 			
 	java {
 		sourceCompatibility = JavaVersion.VERSION_17

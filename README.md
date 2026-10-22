@@ -1,6 +1,6 @@
 ![Context Mapper](https://raw.githubusercontent.com/wiki/ContextMapper/context-mapper-dsl/logo/cm-logo-github-small.png) 
 # Context Mapper DSL (CML) 
-[![Build (master)](https://github.com/ContextMapper/context-mapper-dsl/workflows/Build%20(master)/badge.svg)](https://github.com/ContextMapper/context-mapper-dsl/actions) [![codecov](https://codecov.io/gh/ContextMapper/context-mapper-dsl/branch/master/graph/badge.svg)](https://codecov.io/gh/ContextMapper/context-mapper-dsl) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) [![Maven Central](https://img.shields.io/maven-central/v/org.contextmapper/context-mapper-dsl.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22org.contextmapper%22%20AND%20a:%22context-mapper-dsl%22)
+[![Build (master)](https://github.com/ContextMapper/context-mapper-dsl/actions/workflows/build_master.yml/badge.svg)](https://github.com/ContextMapper/context-mapper-dsl/actions/workflows/build_master.yml) [![codecov](https://codecov.io/gh/ContextMapper/context-mapper-dsl/branch/master/graph/badge.svg)](https://codecov.io/gh/ContextMapper/context-mapper-dsl) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) [![Maven Central](https://img.shields.io/maven-central/v/org.contextmapper/context-mapper-dsl.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22org.contextmapper%22%20AND%20a:%22context-mapper-dsl%22)
 
 ContextMapper is an open source tool providing a Domain-specific Language based on Domain-Driven Design (DDD) patterns for context mapping and service decomposition. 
 
@@ -10,12 +10,10 @@ Checkout our website [https://contextmapper.org/](https://contextmapper.org/) to
 The Context Mapper project has originally been developed as part of research projects at [OST (former HSR)](https://www.ost.ch). You can find the project reports and further background information [here](https://contextmapper.org/background-and-publications/).
 
  * **Installation links:**
- Context Mapper is available for Visual Studio Code and Eclipse:
-   * VS Code:
-     * [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=contextmapper.context-mapper-vscode-extension)
-   * Eclipse:
-     * [Eclipse Marketplace](https://marketplace.eclipse.org/content/context-mapper)
-     * Update Site: [https://contextmapper.org/eclipse-update-site/](https://contextmapper.org/eclipse-update-site/)
+ Context Mapper is available for Visual Studio Code (and other editors supporting VS Code extensions):
+   * [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=contextmapper.context-mapper-vscode-extension)
+   * [Open VSX Registry](https://open-vsx.org/extension/contextmapper/context-mapper-vscode-extension)
+ * **Eclipse:** The Eclipse plugin is discontinued. Version 6.12.0 is the last version available for Eclipse ([Eclipse Marketplace](https://marketplace.eclipse.org/content/context-mapper), update site: [https://contextmapper.org/eclipse-update-site/](https://contextmapper.org/eclipse-update-site/)). This repository provides the language server (LSP) for the VS Code extension and the standalone library.
  * [Release notes for latest releases](https://contextmapper.org/allnews)
 
 ## Features
@@ -37,21 +35,17 @@ The Context Mapper project has originally been developed as part of research pro
 To use the ContextMapper DSL (CML) you need the following tools:
 
 * [Java JDK](https://adoptium.net/) (JDK 17 or newer)
-* [Eclipse](https://www.eclipse.org/downloads/packages/) or [Visual Studio Code](https://code.visualstudio.com/)
+* [Visual Studio Code](https://code.visualstudio.com/)
 * If you want to use our [Context Map generator](https://contextmapper.org/docs/context-map-generator/) you need to have [Graphviz](https://www.graphviz.org/) installed on your system.
     * Ensure that the binaries are part of the _PATH_ environment variable and can be called from the terminal.
     * Especially on Windows this is not the case after the installation of [Graphviz](https://www.graphviz.org/). The default installation path is
       `C:\Program Files (x86)\GraphvizX.XX`, which means you have to add `C:\Program Files (x86)\GraphvizX.XX\bin` to your _PATH_ variable.
-* You may want to install one of the following two plugins to display the plantUML diagrams directly in Eclipse:
-    * [Asciidoctor Editor](https://marketplace.eclipse.org/content/asciidoctor-editor) (Update site: [https://dl.bintray.com/de-jcup/asciidoctoreditor](https://dl.bintray.com/de-jcup/asciidoctoreditor))
-    * [PlantUML Eclipse Plugin](https://github.com/hallvard/plantuml) (Update site: [http://hallvard.github.io/plantuml/](http://hallvard.github.io/plantuml/))
-    * **Note:** Both plugins require [Graphviz](http://www.graphviz.org/) to be installed on your machine!
+* You may want to install a [PlantUML](https://plantuml.com/) extension to display the generated PlantUML diagrams directly in VS Code (for example [PlantUML](https://marketplace.visualstudio.com/items?itemName=jebbs.plantuml)).
     * Alternatively you can use the [plantUML online server](http://www.plantuml.com/plantuml/uml).
 
 ## Getting Started
-If you want to use our Context Mapper tool, install the plugin in Eclipse or the extension in VS Code:
+If you want to use our Context Mapper tool, install the extension in VS Code:
  1. Installation of Context Mapper:
-     * [Eclipse Marketplace](https://marketplace.eclipse.org/content/context-mapper) 
      * [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=contextmapper.context-mapper-vscode-extension)
  2. Find a detailed manual how to create your first CML project [here](https://contextmapper.org/docs/getting-started-create-project/).
  3. Examples which introduce the language (CML) capabilities can be found here: [https://github.com/ContextMapper/context-mapper-examples](https://github.com/ContextMapper/context-mapper-examples)
@@ -76,49 +70,37 @@ implementation 'org.contextmapper:context-mapper-dsl:6.12.0'
 In our [context-mapper-standalone-example](https://github.com/ContextMapper/context-mapper-standalone-example) repository you find an example project showing how to include the library within your project. It further contains code examples illustrating how to use the CML models and the generator tools (PlantUML, MDSL, etc.).
 
 ## Development
-If you want to contribute and setup the IDE for this project on your local system follow the following instructions. [Here](./wiki/Development) you get the instructions in more details.
+If you want to contribute and setup the IDE for this project on your local system follow the following instructions.
+
+### Project Structure
+ * `org.contextmapper.dsl`: the CML language (Xtext grammars), validators, generators and refactorings; published as standalone library `context-mapper-dsl`
+ * `org.contextmapper.dsl.ide`: the language server (LSP) used by the [VS Code extension](https://github.com/ContextMapper/vscode-extension); published as `context-mapper-lsp`
+ * `org.contextmapper.dsl.tests` and `org.contextmapper.dsl.ide.tests`: the corresponding tests
+ * `samples/freemarker`: sample templates for the [generic Freemarker generator](https://contextmapper.org/docs/generic-freemarker-generator/)
 
 ### Building the Project
-The project currently has two builds since we have to use Maven for building the Eclipse plugin but prefer Gradle in the standalone case.
-With Gradle you can only build the DSL and the IDE (LSP) project. It is further used to deploy these standalone JARs to the Maven central.
-
-#### Complete Build with Eclipse Plugin (Maven)
-The project uses the [Maven Wrapper](https://github.com/takari/maven-wrapper). 
-
-After cloning the project it can be built with the following command within the root directory of the project:
-
-`./mvnw clean install`
-
-**Note:** This is an Xtext project and the tests which are evaluating the correctness of the language grammar need an additional maven goal besides _test_ to be executed. Use this command if you want to execute the tests:
-
-`./mvnw clean integration-test`
-
-Of course they are also executed with a _clean install_.
-
-#### Standalone Build Only (Gradle)
-To build the standalone projects only, you can use the Gradle Wrapper:
+The project is built with the Gradle Wrapper (JDK 17 or newer):
 
 `./gradlew clean build`
+
+This generates the Xtext language infrastructure (parser, EMF model, etc.) from the grammars first (task `generateXtextLanguage`), then compiles the project and runs all tests. The language server distribution (as used by the VS Code extension) can be found in `org.contextmapper.dsl.ide/build/distributions` afterwards.
 
 **Note:** If you want to deploy the libraries into your local Maven repository, you need a GPG key to sign the artifacts:
 
 `./gradlew clean publishToMavenLocal -Psigning.keyId=<your-gpg-key-id> -Psigning.password=<gpg-passphrase> -Psigning.secretKeyRingFile=<path-to-gpg-keyring-file>` 
 
-### Setup Eclipse IDE
-Since this is an Xtext project you need an Eclipse IDE to work on it. Download the **Eclipse IDE for Java and DSL Developers** from [here](https://www.eclipse.org/downloads/packages/). The latest version of Eclipse we worked with is [2019-12](https://www.eclipse.org/downloads/packages/release/2019-12/r/eclipse-ide-java-and-dsl-developers).
+### Setup the IDE
+Import the project as Gradle project into your IDE (IntelliJ IDEA, Eclipse with Buildship, VS Code with the Java extensions). Run `./gradlew build` once before (or after) importing, so that the generated sources (`src-gen` and `xtend-gen` folders) exist. Whenever you change one of the grammars (`*.xtext` files), run the build again to regenerate the language infrastructure.
 
-#### Importing the project
-You can import the project with as an existing maven project (_Import -> Existing Maven Project_).
+**Note:** Syntax highlighting and validation for the Xtext grammar and the Xtend files (some of the tests are written in [Xtend](https://eclipse.dev/Xtext/xtend/)) are only available in an Eclipse IDE with the Xtext SDK installed ("Eclipse IDE for Java and DSL Developers").
 
-#### Build in Eclipse
-After importing the project you will have lots of build errors. This is because you have to generate some Xtext sources first. There exists an eclipse launch configuration called 'GenerateContextMappingDSLInfrastructure' delivered with the project. Run this launch configuration (yes, even if there exist build errors). As soon this has completed, execute a clean build with _Project -> Clean... -> Clean all projects_. 
-
-That's it. You should have a clean workspace now without build errors.
+### Releasing
+Releases are triggered manually with the GitHub workflow "Trigger Release (manual)" on the master branch. It sets the release version, tags the release (`vX.Y.Z`) and sets the next development version. The tag triggers the release workflow, which publishes the libraries to Maven Central (the deployment has to be published manually in the [Central Portal](https://central.sonatype.com/publishing/deployments)).
 
 ## Contributing
 Contribution is always welcome! Here are some ways how you can contribute:
  * Create GitHub issues if you find bugs or just want to give suggestions for improvements.
- * This is an open source project: if you want to code, [create pull requests](https://help.github.com/articles/creating-a-pull-request/) from [forks of this repository](https://help.github.com/articles/fork-a-repo/). Please refer to a Github issue if you contribute this way. In our [wiki](https://github.com/ContextMapper/context-mapper-dsl/wiki/IDE-Setup) you can find out how to build the project and setup the development environment locally.
+ * This is an open source project: if you want to code, [create pull requests](https://help.github.com/articles/creating-a-pull-request/) from [forks of this repository](https://help.github.com/articles/fork-a-repo/). Please refer to a Github issue if you contribute this way. The [Development](#development) section above explains how to build the project and setup the development environment locally.
  * If you want to contribute to our documentation and user guides on our website [https://contextmapper.org/](https://contextmapper.org/), create pull requests from forks of the corresponding page repo [https://github.com/ContextMapper/contextmapper.github.io](https://github.com/ContextMapper/contextmapper.github.io) or create issues [there](https://github.com/ContextMapper/contextmapper.github.io/issues).
 
 ## Licence

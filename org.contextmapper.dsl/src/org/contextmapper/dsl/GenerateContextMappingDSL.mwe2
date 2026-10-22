@@ -30,13 +30,6 @@ Workflow {
 				runtimeTest = {
 					enabled = true
 				}
-				eclipsePlugin = {
-					enabled = true
-				}
-				eclipsePluginTest = {
-					enabled = true
-				}
-				createEclipseMetaData = true
 				genericIde = {
 					enabled = true
 				}
@@ -53,14 +46,6 @@ Workflow {
 
 			fragment = exporting.SimpleNamesFragment2 {}
 			fragment = builder.BuilderIntegrationFragment2 {}
-			fragment = ui.labeling.LabelProviderFragment2 {}
-			fragment = ui.outline.QuickOutlineFragment2 {}
-			fragment = ui.outline.OutlineTreeProviderFragment2 {}
-			fragment = ui.quickfix.QuickfixProviderFragment2 {}
-			fragment = ui.contentAssist.ContentAssistFragment2 {}
-			fragment = ui.refactoring.RefactorElementNameFragment2 {}
-			fragment = ui.templates.CodetemplatesGeneratorFragment2 {}
-			fragment = ui.compare.CompareFragment2 {}
 
 			serializer = {
 				generateStub = false
@@ -117,14 +102,6 @@ Workflow {
 
 			fragment = exporting.SimpleNamesFragment2 {}
 			fragment = builder.BuilderIntegrationFragment2 {}
-			fragment = ui.labeling.LabelProviderFragment2 {}
-			fragment = ui.outline.QuickOutlineFragment2 {}
-			fragment = ui.outline.OutlineTreeProviderFragment2 {}
-			fragment = ui.quickfix.QuickfixProviderFragment2 {}
-			fragment = ui.contentAssist.ContentAssistFragment2 {}
-			fragment = ui.refactoring.RefactorElementNameFragment2 {}
-			fragment = ui.templates.CodetemplatesGeneratorFragment2 {}
-			fragment = ui.compare.CompareFragment2 {}
 
 			serializer = {
 				generateStub = false

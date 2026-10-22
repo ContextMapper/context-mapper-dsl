@@ -19,14 +19,14 @@ A clear and concise description of what you expected to happen.
 
 **Screenshots / Exceptions**
 If applicable, add screenshots to help explain your problem.
-Provide error messages and exceptions you may got in the eclipse plugin (see error log view).
+Provide error messages and exceptions you may got in VS Code (Output view, channel "CML Language Server") or in your application (standalone library).
 
 **Input files to reproduce**
 If possible, provide input files which allow reproducing the problem (CML or SCL files).
 
-**IDE and Plugin (please complete the following information):**
- - Eclipse version
- - ContextMapper plugin version
+**Environment (please complete the following information):**
+ - VS Code version and Context Mapper extension version, or version of the standalone library
+ - Java version
 
 **Additional context**
 Add any other context about the problem here.

@@ -41,10 +41,6 @@ processResources.dependsOn(generateXtextLanguage)
 generateXtext.dependsOn(generateXtextLanguage)
 clean.dependsOn(cleanGenerateXtextLanguage)
 eclipse.classpath.plusConfigurations += [configurations.mwe2]
-//this is an eclipse plugin project
-eclipseClasspath.enabled=false
-cleanEclipseClasspath.enabled=false
-
 clean {
     delete 'xtend-gen'
     delete 'model'
@@ -94,7 +90,7 @@ publishing {
         maven {
             def releasesRepoUrl = "${centralReleaseStagingRepository}"
             def snapshotsRepoUrl = "${centralSnapshotRepository}"
-            url = project.version.text().endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+            url = project.version.toString().endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
             
             credentials {
                 username = System.getenv('CENTRAL_USERNAME')

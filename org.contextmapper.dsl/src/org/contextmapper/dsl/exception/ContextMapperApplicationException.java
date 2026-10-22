@@ -16,7 +16,7 @@
 package org.contextmapper.dsl.exception;
 
 /**
- * Exception that is catched in Eclipse UI project to show message box.
+ * Exception with a message that is shown to the user (for example by the language server).
  * 
  * @author Stefan Kapferer
  *
