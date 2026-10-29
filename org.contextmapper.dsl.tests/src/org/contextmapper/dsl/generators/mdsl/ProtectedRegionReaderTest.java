@@ -67,6 +67,49 @@ public class ProtectedRegionReaderTest {
 	}
 
 	@Test
+	void canReadEmptyProtectedRegion() {
+		// given
+		String mdslInput = "API description Test\n" + "// ** BEGIN PROTECTED REGION for data types\n"
+				+ "// ** END PROTECTED REGION for data types\n";
+
+		// when
+		String protectedRegion = new ProtectedRegionReader().getProtectedRegionContent(mdslInput,
+				ProtectedRegionIdentifier.DATA_TYPE_REGION);
+
+		// then
+		assertEquals("", protectedRegion);
+	}
+
+	@Test
+	void canReadProtectedRegionWithEmptyLine() {
+		// given
+		String mdslInput = "API description Test\n" + "// ** BEGIN PROTECTED REGION for API providers\n" + "\n"
+				+ "// ** END PROTECTED REGION for API providers\n";
+
+		// when
+		String protectedRegion = new ProtectedRegionReader().getProtectedRegionContent(mdslInput,
+				ProtectedRegionIdentifier.PROVIDER_REGION);
+
+		// then
+		assertEquals("", protectedRegion);
+	}
+
+	@Test
+	void canReadProtectedRegionWithWindowsLineEndings() {
+		// given
+		String mdslInput = "API description Test\r\n" + "// ** BEGIN PROTECTED REGION for data types\r\n"
+				+ "data type Parameter1Type P\r\n" + "data type YetAnotherDataType P\r\n"
+				+ "// ** END PROTECTED REGION for data types\r\n";
+
+		// when
+		String protectedRegion = new ProtectedRegionReader().getProtectedRegionContent(mdslInput,
+				ProtectedRegionIdentifier.DATA_TYPE_REGION);
+
+		// then
+		assertEquals("data type Parameter1Type P\r\ndata type YetAnotherDataType P", protectedRegion);
+	}
+
+	@Test
 	void canGetIdentifiersInDataTypeProtectedRegion() throws IOException {
 		// given
 		File expectedResultFile = new File(Paths.get("").toAbsolutePath().toString(),

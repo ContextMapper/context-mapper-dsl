@@ -30,11 +30,21 @@ import com.google.common.collect.Sets;
 public class ProtectedRegionReader {
 
 	public String getProtectedRegionContent(String mdslInput, ProtectedRegionIdentifier regionIdentifier) {
-		String regionStartString = getRegionStartString(regionIdentifier);
-		if (containsProtectedRegion(mdslInput, regionIdentifier))
-			return mdslInput.substring(mdslInput.indexOf(regionStartString) + regionStartString.length() + System.lineSeparator().length(),
-					mdslInput.lastIndexOf(getRegionEndString(regionIdentifier)) - System.lineSeparator().length());
-		return null;
+		if (!containsProtectedRegion(mdslInput, regionIdentifier))
+			return null;
+
+		// the content starts after the line break of the start line and ends before the line break of the end line
+		int startLineEnd = mdslInput.indexOf('\n', mdslInput.indexOf(getRegionStartString(regionIdentifier)));
+		int endIndex = mdslInput.lastIndexOf(getRegionEndString(regionIdentifier));
+		if (startLineEnd < 0 || endIndex <= startLineEnd)
+			return "";
+
+		String content = mdslInput.substring(startLineEnd + 1, endIndex);
+		if (content.endsWith("\n"))
+			content = content.substring(0, content.length() - 1);
+		if (content.endsWith("\r"))
+			content = content.substring(0, content.length() - 1);
+		return content;
 	}
 
 	public boolean containsProtectedRegion(String mdslInput, ProtectedRegionIdentifier regionIdentifier) {
