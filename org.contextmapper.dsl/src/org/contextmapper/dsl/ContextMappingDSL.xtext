@@ -196,8 +196,13 @@ Aggregate :
     ((services+=Service) |
      (resources+=Resource) |
      (consumers+=Consumer) |
-     (domainObjects+=SimpleDomainObject))*
+     (domainObjects+=SimpleDomainObject) |
+     (invariants+=Invariant))*
   CLOSE)?
+;
+
+Invariant:
+	'Invariant' (name=ID)? description=STRING
 ;
 
 Application:

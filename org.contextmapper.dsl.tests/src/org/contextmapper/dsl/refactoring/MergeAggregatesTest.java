@@ -55,6 +55,24 @@ public class MergeAggregatesTest extends AbstractRefactoringTest {
 	}
 
 	@Test
+	void canMergeInvariants() throws IOException {
+		// given
+		String inputModelName = "merge-aggregates-test-8-input.cml";
+		CMLResource input = getResourceCopyOfTestCML(inputModelName);
+		MergeAggregatesRefactoring refactoring = new MergeAggregatesRefactoring("Tickets", "Refunds");
+
+		// when
+		refactoring.refactor(input);
+
+		// then
+		Aggregate agg = input.getContextMappingModel().getBoundedContexts().get(0).getAggregates().get(0);
+		assertEquals("Tickets", agg.getName());
+		assertEquals(2, agg.getInvariants().size());
+		assertEquals("RefundsNeverExceedPrice", agg.getInvariants().get(0).getName());
+		assertEquals("A refund amount is always positive", agg.getInvariants().get(1).getDescription());
+	}
+
+	@Test
 	void canMergeAggregatesInModule() throws IOException {
 		// given
 		String inputModelName = "merge-aggregates-test-2-input.cml";
