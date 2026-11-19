@@ -296,6 +296,56 @@ class BoundedContextDSLParsingTest {
 	}
 
 	@Test
+	def void canDefineBasePackage() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext TicketSales {
+				basePackage = com.transit.ticketsales
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		assertEquals("com.transit.ticketsales", result.boundedContexts.get(0).basePackage);
+	}
+
+	@Test
+	def void canDefineBasePackageWithoutEqualSign() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext TicketSales {
+				basePackage com.transit.ticketsales
+				Module refunds {
+					basePackage = com.transit.ticketsales.refunds
+				}
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		assertEquals("com.transit.ticketsales", result.boundedContexts.get(0).basePackage);
+		assertEquals("com.transit.ticketsales.refunds", result.boundedContexts.get(0).modules.get(0).basePackage);
+	}
+
+	@Test
+	def void cannotDefineInvalidBasePackage() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext TicketSales {
+				basePackage = com..transit
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertFalse(result.eResource.errors.isEmpty);
+	}
+
+	@Test
 	def void canDefineAttributesWithoutEqualSign() {
 		// given
 		val String dslSnippet = '''

@@ -60,6 +60,7 @@ BoundedContext:
 			(('responsibilities' ('=')? responsibilities+=STRING) ("," responsibilities+=STRING)*)? &
 			(('nonResponsibilities' ('=')? nonResponsibilities+=STRING) ("," nonResponsibilities+=STRING)*)? &
 			('implementationTechnology' ('=')? implementationTechnology=STRING)? &
+			('basePackage' ('=')? basePackage=JavaIdentifier)? &
 			('knowledgeLevel' ('=')? knowledgeLevel=KnowledgeLevel)?)
 			('businessModel' ('=')? businessModel=STRING)? &
             ('evolution' ('=')? evolution=Evolution)? &
