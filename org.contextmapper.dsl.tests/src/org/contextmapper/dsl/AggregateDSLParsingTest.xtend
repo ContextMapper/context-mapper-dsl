@@ -198,6 +198,62 @@ class AggregateDSLParsingTest {
 	}
 
 	@Test
+	def void canAssignOwnerThatOwnsOrRealizesTheContext() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext testContext {
+				owner = teamA
+				Aggregate ownedByContextOwner {
+					owner = teamA
+				}
+				Aggregate ownedByRealizingTeam {
+					owner = teamB
+				}
+			}
+			
+			BoundedContext teamA realizes testContext {
+				type = TEAM
+			}
+			
+			BoundedContext teamB realizes testContext {
+				type = TEAM
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		validationTestHelper.assertNoIssues(result);
+	}
+
+	@Test
+	def void showWarningIfOwnerNeitherOwnsNorRealizesTheContext() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext testContext {
+				owner = teamA
+				Aggregate myAggregate {
+					owner = teamB
+				}
+			}
+			
+			BoundedContext teamA {
+				type = TEAM
+			}
+			
+			BoundedContext teamB {
+				type = TEAM
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		validationTestHelper.assertWarning(result, ContextMappingDSLPackage.Literals.AGGREGATE, "",
+			String.format(AGGREGATE_OWNER_NOT_TEAM_OF_CONTEXT, "teamB", "testContext"));
+	}
+
+	@Test
 	def void canDefineLikelihoodForChange() {
 		// given
 		val String dslSnippet = '''
