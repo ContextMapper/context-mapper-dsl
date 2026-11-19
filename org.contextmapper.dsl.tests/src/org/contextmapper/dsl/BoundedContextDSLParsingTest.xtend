@@ -259,6 +259,43 @@ class BoundedContextDSLParsingTest {
 	}
 
 	@Test
+	def void canDefineNonResponsibilities() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext testContext {
+				responsibilities = "Selling fare products", "Refunds"
+				nonResponsibilities = "Gate validation", "Support cases"
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		val nonResponsibilities = result.boundedContexts.get(0).nonResponsibilities;
+		assertEquals(2, nonResponsibilities.size);
+		assertEquals("Gate validation", nonResponsibilities.get(0));
+		assertEquals("Support cases", nonResponsibilities.get(1));
+	}
+
+	@Test
+	def void canDefineNonResponsibilitiesWithoutEqualSign() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext testContext {
+				nonResponsibilities "Gate validation"
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		assertEquals(1, result.boundedContexts.get(0).nonResponsibilities.size);
+		assertEquals("Gate validation", result.boundedContexts.get(0).nonResponsibilities.get(0));
+	}
+
+	@Test
 	def void canDefineAttributesWithoutEqualSign() {
 		// given
 		val String dslSnippet = '''
