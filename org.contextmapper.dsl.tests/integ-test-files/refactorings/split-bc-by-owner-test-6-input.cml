@@ -1,0 +1,19 @@
+BoundedContext Ticketing {
+	owner = SalesTeam
+	Aggregate Pricing {
+		owner = PricingTeam
+	}
+	Aggregate Tickets {
+		owner = SalesTeam
+	}
+	Aggregate Customers {
+	}
+}
+
+BoundedContext SalesTeam realizes Ticketing {
+	type = TEAM
+}
+
+BoundedContext PricingTeam realizes Ticketing {
+	type = TEAM
+}

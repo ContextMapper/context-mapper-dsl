@@ -16,7 +16,10 @@
 package org.contextmapper.dsl.refactoring;
 
 import org.contextmapper.dsl.cml.CMLResource;
+import org.contextmapper.dsl.contextMappingDSL.Aggregate;
+import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.xtext.EcoreUtil2;
 import org.eclipse.xtext.serializer.ISerializer;
 
 import com.google.common.collect.Sets;
@@ -26,12 +29,26 @@ public class SplitBoundedContextByOwner implements SemanticCMLRefactoring {
 	private SplitBoundedContextByAggregateAttribute coreAR;
 
 	public SplitBoundedContextByOwner(String boundedContextName) {
-		this.coreAR = new SplitBoundedContextByAggregateAttribute(aggregate -> {
-			if (aggregate.getOwner() != null)
-				return new CompoundKey(Sets.newHashSet(aggregate.getOwner().getName()));
-			else
-				return new CompoundKey(Sets.newHashSet());
-		}, boundedContextName);
+		this.coreAR = new SplitBoundedContextByAggregateAttribute(aggregate -> toKey(getOwner(aggregate)), boundedContextName);
+
+		// if the context has an owner, the owner's aggregates stay in the context and the new contexts are owned by the team of their aggregates
+		this.coreAR.setKeyOfSetStayingInOriginalBCFunction(bc -> bc.getOwner() != null ? toKey(bc.getOwner()) : null);
+		this.coreAR.setNewBCInitializer((originalBC, newBC) -> {
+			if (originalBC.getOwner() != null && !newBC.getAggregates().isEmpty())
+				newBC.setOwner(newBC.getAggregates().get(0).getOwner());
+		});
+	}
+
+	// aggregates without an owner belong to the owner of their context
+	private BoundedContext getOwner(Aggregate aggregate) {
+		if (aggregate.getOwner() != null)
+			return aggregate.getOwner();
+		BoundedContext boundedContext = EcoreUtil2.getContainerOfType(aggregate, BoundedContext.class);
+		return boundedContext != null ? boundedContext.getOwner() : null;
+	}
+
+	private CompoundKey toKey(BoundedContext owner) {
+		return owner != null ? new CompoundKey(Sets.newHashSet(owner.getName())) : new CompoundKey(Sets.newHashSet());
 	}
 
 	@Override
