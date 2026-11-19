@@ -346,6 +346,113 @@ class BoundedContextDSLParsingTest {
 	}
 
 	@Test
+	def void canDefineOwner() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext TicketSales {
+				owner = FareProductTeam
+			}
+
+			BoundedContext FareProductTeam realizes TicketSales {
+				type = TEAM
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		assertEquals("FareProductTeam", result.boundedContexts.get(0).owner.name);
+	}
+
+	@Test
+	def void canDefineOwnerWithoutEqualSign() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext TicketSales {
+				owner FareProductTeam
+			}
+
+			BoundedContext FareProductTeam {
+				type TEAM
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		assertThatNoValidationErrorsOccurred(result);
+		assertEquals("FareProductTeam", result.boundedContexts.get(0).owner.name);
+	}
+
+	@Test
+	def void throwErrorIfOwnerOfBoundedContextIsNotTeam() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext TicketSales {
+				owner = AccessControl
+			}
+
+			BoundedContext AccessControl {
+				type = FEATURE
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		validationTestHelper.assertError(result, ContextMappingDSLPackage.Literals.BOUNDED_CONTEXT, "",
+			String.format(OWNER_BC_IS_NOT_TEAM, "AccessControl"));
+	}
+
+	@Test
+	def void showWarningIfOwnerDoesNotRealizeContextButOtherTeamsDo() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext TicketSales {
+				owner = FareProductTeam
+			}
+
+			BoundedContext FareProductTeam {
+				type = TEAM
+			}
+
+			BoundedContext CheckoutTeam realizes TicketSales {
+				type = TEAM
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		validationTestHelper.assertWarning(result, ContextMappingDSLPackage.Literals.BOUNDED_CONTEXT, "",
+			String.format(BOUNDED_CONTEXT_OWNER_DOES_NOT_REALIZE_CONTEXT, "FareProductTeam", "TicketSales", "CheckoutTeam"));
+	}
+
+	@Test
+	def void noWarningIfOwnerIsOneOfTheRealizingTeams() {
+		// given
+		val String dslSnippet = '''
+			BoundedContext TicketSales {
+				owner = FareProductTeam
+			}
+
+			BoundedContext FareProductTeam realizes TicketSales {
+				type = TEAM
+			}
+
+			BoundedContext CheckoutTeam realizes TicketSales {
+				type = TEAM
+			}
+		''';
+		// when
+		val ContextMappingModel result = parseHelper.parse(dslSnippet);
+		// then
+		assertThatNoParsingErrorsOccurred(result);
+		validationTestHelper.assertNoIssues(result);
+	}
+
+	@Test
 	def void canDefineAttributesWithoutEqualSign() {
 		// given
 		val String dslSnippet = '''

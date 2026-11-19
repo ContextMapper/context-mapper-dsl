@@ -20,9 +20,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.contextmapper.dsl.cml.CMLResource;
+import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingModel;
 import org.contextmapper.dsl.contextMappingDSL.UpstreamDownstreamRelationship;
 import org.contextmapper.dsl.refactoring.SplitBoundedContextByOwner;
@@ -126,6 +128,26 @@ public class SplitBoundedContextByOwnerTest extends AbstractRefactoringTest {
 		UpstreamDownstreamRelationship rel2 = (UpstreamDownstreamRelationship) model.getMap().getRelationships().get(1);
 		assertEquals(1, rel1.getUpstreamExposedAggregates().size());
 		assertEquals(1, rel2.getUpstreamExposedAggregates().size());
+	}
+
+	@Test
+	void aggregatesWithoutOwnerStayWithOwnerOfContext() throws IOException {
+		// given
+		CMLResource input = getResourceCopyOfTestCML("split-bc-by-owner-test-6-input.cml");
+
+		// when
+		SplitBoundedContextByOwner ar = new SplitBoundedContextByOwner("Ticketing");
+		ar.refactor(input);
+
+		// then
+		ContextMappingModel model = input.getContextMappingModel();
+		assertEquals(4, model.getBoundedContexts().size());
+		BoundedContext ticketing = model.getBoundedContexts().stream().filter(bc -> bc.getName().equals("Ticketing")).findFirst().get();
+		assertEquals("SalesTeam", ticketing.getOwner().getName());
+		assertEquals(Set.of("Tickets", "Customers"), ticketing.getAggregates().stream().map(agg -> agg.getName()).collect(Collectors.toSet()));
+		BoundedContext newContext = model.getBoundedContexts().stream().filter(bc -> bc.getName().equals("NewBoundedContext1")).findFirst().get();
+		assertEquals("PricingTeam", newContext.getOwner().getName());
+		assertEquals(List.of("Pricing"), newContext.getAggregates().stream().map(agg -> agg.getName()).collect(Collectors.toList()));
 	}
 
 }

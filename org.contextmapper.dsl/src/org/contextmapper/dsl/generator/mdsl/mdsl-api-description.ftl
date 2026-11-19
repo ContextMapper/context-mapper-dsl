@@ -128,6 +128,9 @@ API provider ${provider.name}
 	<#if provider.domainVisionStatement?has_content>
 	// ${provider.domainVisionStatement}
 	</#if>
+	<#if provider.owner?has_content>
+	// Owner: ${provider.owner}
+	</#if>
 	<#list provider.endpointOffers as offer>
 	offers ${offer.offeredEndpoint.name}
 	at endpoint location "${offer.location}"
@@ -151,6 +154,9 @@ ${serviceSpecification.clientProtectedRegion}
 API client ${client.name}
 	<#if client.domainVisionStatement?has_content>
 	// ${client.domainVisionStatement}
+	</#if>
+	<#if client.owner?has_content>
+	// Owner: ${client.owner}
 	</#if>
 	<#list client.consumedOfferNames as offername>
 	consumes ${offername}

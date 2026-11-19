@@ -16,11 +16,11 @@
 package org.contextmapper.dsl.refactoring;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -39,10 +39,30 @@ public class SplitBoundedContextByAggregateAttribute extends AbstractRefactoring
 	private Map<CompoundKey, List<Aggregate>> splittingKeyToAggregatesMapping;
 
 	private Function<Aggregate, CompoundKey> aggregateToSetKeyMappingFunction;
+	private Function<BoundedContext, CompoundKey> keyOfSetStayingInOriginalBCFunction = bc -> null;
+	private BiConsumer<BoundedContext, BoundedContext> newBCInitializer = (originalBC, newBC) -> {
+	};
 
 	public SplitBoundedContextByAggregateAttribute(Function<Aggregate, CompoundKey> aggregateToSetKeyMappingFunction, String boundedContextName) {
 		this.aggregateToSetKeyMappingFunction = aggregateToSetKeyMappingFunction;
 		this.boundedContextName = boundedContextName;
+	}
+
+	/**
+	 * Defines which aggregate set stays in the original Bounded Context. If the
+	 * function returns null (default) or a key without aggregates, the first set
+	 * stays.
+	 */
+	public void setKeyOfSetStayingInOriginalBCFunction(Function<BoundedContext, CompoundKey> keyOfSetStayingInOriginalBCFunction) {
+		this.keyOfSetStayingInOriginalBCFunction = keyOfSetStayingInOriginalBCFunction;
+	}
+
+	/**
+	 * Called with the original and the new Bounded Context for every new context,
+	 * after its aggregates have been moved.
+	 */
+	public void setNewBCInitializer(BiConsumer<BoundedContext, BoundedContext> newBCInitializer) {
+		this.newBCInitializer = newBCInitializer;
 	}
 
 	@Override
@@ -69,15 +89,16 @@ public class SplitBoundedContextByAggregateAttribute extends AbstractRefactoring
 		if (this.splittingKeyToAggregatesMapping.size() <= 1)
 			return;
 
-		Iterator<Entry<CompoundKey, List<Aggregate>>> it = this.splittingKeyToAggregatesMapping.entrySet().iterator();
+		CompoundKey keyOfSetStayingInOriginalBC = this.keyOfSetStayingInOriginalBCFunction.apply(originalBC);
+		if (keyOfSetStayingInOriginalBC == null || !this.splittingKeyToAggregatesMapping.containsKey(keyOfSetStayingInOriginalBC))
+			keyOfSetStayingInOriginalBC = this.splittingKeyToAggregatesMapping.keySet().iterator().next();
 
-		// first set stays in current BC
-		it.next();
-
-		// extract other sets to new BCs
+		// extract the other sets to new BCs
 		int i = 1;
-		while (it.hasNext()) {
-			List<Aggregate> aggregates = it.next().getValue();
+		for (Entry<CompoundKey, List<Aggregate>> set : this.splittingKeyToAggregatesMapping.entrySet()) {
+			if (set.getKey().equals(keyOfSetStayingInOriginalBC))
+				continue;
+			List<Aggregate> aggregates = set.getValue();
 			this.originalBC.getAggregates().removeAll(aggregates);
 			ContextMappingModel bcModel = getResource(originalBC).getContextMappingModel();
 
@@ -86,6 +107,7 @@ public class SplitBoundedContextByAggregateAttribute extends AbstractRefactoring
 			addElementsToEList(newBC.getAggregates(), aggregates);
 			addElementToEList(bcModel.getBoundedContexts(), newBC);
 			adjustContextMaps(newBC, aggregates);
+			newBCInitializer.accept(originalBC, newBC);
 		}
 	}
 

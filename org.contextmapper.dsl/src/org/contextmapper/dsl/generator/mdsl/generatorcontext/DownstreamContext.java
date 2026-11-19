@@ -62,4 +62,8 @@ public class DownstreamContext {
 		return this.downstreamContext.getDomainVisionStatement();
 	}
 
+	public BoundedContext getOwner() {
+		return this.downstreamContext.getOwner();
+	}
+
 }

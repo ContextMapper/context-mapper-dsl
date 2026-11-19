@@ -1,0 +1,34 @@
+// Generated from DDD Context Map.
+API description CustomerManagementContextAPI
+
+
+data type Address P // the type Address has not been specified or does not contain any attributes in CML
+data type Parameter1Type P // the type Parameter1Type has not been specified or does not contain any attributes in CML
+data type Parameter2Type P // the type Parameter2Type has not been specified or does not contain any attributes in CML
+data type ReturnType P // the type ReturnType has not been specified or does not contain any attributes in CML
+data type anotherMethodParameter { "param1":Parameter1Type, "param2":Parameter2Type }
+
+
+endpoint type Customers
+	exposes
+		operation updateAddress
+			expecting
+				payload Address
+			delivering
+				payload ReturnType
+		operation anotherMethod
+			expecting
+				payload anotherMethodParameter
+
+
+API provider CustomerManagementContextProvider
+	// Customers vision statement ...
+	// Owner: CustomersTeam
+	offers Customers
+	at endpoint location "http://localhost:8000"
+		via protocol "RESTful HTTP"
+
+
+API client ContractManagementContextClient
+	// Owner: ContractsTeam
+	consumes Customers

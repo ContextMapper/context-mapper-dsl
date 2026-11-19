@@ -404,6 +404,8 @@ public class MDSLModelCreator {
 		}
 		if (context.getUpstreamContext().getDomainVisionStatement() != null && !"".equals(context.getUpstreamContext().getDomainVisionStatement()))
 			provider.setDomainVisionStatement(context.getUpstreamContext().getDomainVisionStatement());
+		if (context.getUpstreamContext().getOwner() != null)
+			provider.setOwner(context.getUpstreamContext().getOwner().getName());
 		return provider;
 	}
 
@@ -421,6 +423,8 @@ public class MDSLModelCreator {
 		}
 		if (downstreamContext.getDomainVisionStatement() != null && !"".equals(downstreamContext.getDomainVisionStatement()))
 			client.setDomainVisionStatement(downstreamContext.getDomainVisionStatement());
+		if (downstreamContext.getOwner() != null)
+			client.setOwner(downstreamContext.getOwner().getName());
 		return client;
 	}
 

@@ -26,6 +26,8 @@ public class ValidationMessages {
 	public static final String EXPOSED_AGGREGATE_NOT_PART_OF_UPSTREAM_CONTEXT = "The aggregate '%s' is not part of the upstream context '%s'.";
 	public static final String SELF_RELATIONSHIP_NOT_ALLOWED = "Bounded context relationships must be declared between two different bounded contexts.";
 	public static final String OWNER_BC_IS_NOT_TEAM = "'%s' is not a team. The owner attribute must refer to a Bounded Context representing a team (type = TEAM)!";
+	public static final String BOUNDED_CONTEXT_OWNER_DOES_NOT_REALIZE_CONTEXT = "The owner '%s' does not realize the Bounded Context '%s', but other teams do (%s). The owner should be one of the teams realizing the context.";
+	public static final String AGGREGATE_OWNER_NOT_TEAM_OF_CONTEXT = "The owner '%s' neither owns nor realizes the Bounded Context '%s' of this Aggregate.";
 	public static final String AGGREGATE_CAN_ONLY_HAVE_ONE_AGGREGATE_ROOT = "Your aggregate '%s' contains multiple aggregate roots. An aggregate must only contain one root.";
 	public static final String AGGREGATE_CAN_ONLY_HAVE_ONE_STATES_ENUM = "Your aggregate '%s' contains multiple enums that define its states. Ensure that only one enum declares the states of the Aggregate.";
 	public static final String ALREADY_IMPLEMENTED_SUBDOMAIN = "The subdomain '%s' is already implemented through its domain '%s'.";

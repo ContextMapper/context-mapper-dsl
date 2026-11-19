@@ -25,6 +25,7 @@ public class EndpointProvider {
 	private List<EndpointOffer> endpointOffers = Lists.newArrayList();
 	private List<String> comments = Lists.newArrayList();
 	private String domainVisionStatement;
+	private String owner;
 
 	public String getName() {
 		return name;
@@ -60,6 +61,14 @@ public class EndpointProvider {
 	
 	public String getDomainVisionStatement() {
 		return domainVisionStatement;
+	}
+
+	public void setOwner(String owner) {
+		this.owner = owner;
+	}
+
+	public String getOwner() {
+		return owner;
 	}
 	
 }
