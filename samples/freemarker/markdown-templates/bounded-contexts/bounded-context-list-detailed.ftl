@@ -4,6 +4,10 @@
 
     *${bc.name}* has this domain vision statement: ${bc.domainVisionStatement!"[domain vision of the context not defined]"}<#lt>
 
+    <#if bc.owner??>
+    *${bc.name}* is owned by the team *${bc.owner.name}*.<#lt>
+    </#if>
+
     <#list bc.aggregates as agg>
         ### Aggregate ${agg.name}<#lt>
         This aggregate can be classified as ${agg.doc!"[n/a]"}. <#if agg.responsibilities?has_content>Its responsibilities are:<#lt>        

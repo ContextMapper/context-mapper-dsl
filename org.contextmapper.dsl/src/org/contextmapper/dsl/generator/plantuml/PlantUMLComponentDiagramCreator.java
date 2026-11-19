@@ -92,23 +92,30 @@ public class PlantUMLComponentDiagramCreator extends AbstractPlantUMLDiagramCrea
 	private void printComponent(BoundedContext bc) {
 		sb.append("component").append(" ").append("[" + bc.getName() + "]");
 		linebreak();
-		if (bc.getDomainVisionStatement() != null && !"".equals(bc.getDomainVisionStatement()))
-			printNoteForComponent(bc.getDomainVisionStatement(), bc.getName());
+		boolean hasDomainVisionStatement = bc.getDomainVisionStatement() != null && !"".equals(bc.getDomainVisionStatement());
+		if (hasDomainVisionStatement || bc.getOwner() != null)
+			printNoteForComponent(hasDomainVisionStatement ? bc.getDomainVisionStatement() : null, bc.getOwner() != null ? bc.getOwner().getName() : null, bc.getName());
 	}
 
-	private void printNoteForComponent(String note, String component) {
+	private void printNoteForComponent(String note, String owner, String component) {
 		sb.append("note right of ").append("[").append(component).append("]");
 		linebreak();
-		int charCounter = 0;
-		for (String word : note.split(" ")) {
-			sb.append(word).append(" ");
-			charCounter += word.length() + 1;
-			if (charCounter >= 30) {
-				charCounter = 0;
-				linebreak();
+		if (note != null) {
+			int charCounter = 0;
+			for (String word : note.split(" ")) {
+				sb.append(word).append(" ");
+				charCounter += word.length() + 1;
+				if (charCounter >= 30) {
+					charCounter = 0;
+					linebreak();
+				}
 			}
+			linebreak();
 		}
-		linebreak();
+		if (owner != null) {
+			sb.append("Owner: ").append(owner);
+			linebreak();
+		}
 		sb.append("end note");
 		linebreak();
 	}

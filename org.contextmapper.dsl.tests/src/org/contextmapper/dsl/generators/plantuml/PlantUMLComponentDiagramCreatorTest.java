@@ -19,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.contextmapper.dsl.contextMappingDSL.Aggregate;
 import org.contextmapper.dsl.contextMappingDSL.BoundedContext;
+import org.contextmapper.dsl.contextMappingDSL.BoundedContextType;
 import org.contextmapper.dsl.contextMappingDSL.ContextMap;
 import org.contextmapper.dsl.contextMappingDSL.ContextMappingDSLFactory;
 import org.contextmapper.dsl.contextMappingDSL.CustomerSupplierRelationship;
@@ -502,6 +503,47 @@ class PlantUMLComponentDiagramCreatorTest {
 		assertTrue(plantUML.contains("this is my super and very long " + System.lineSeparator()));
 		assertTrue(plantUML.contains("test vision statement " + System.lineSeparator()));
 		assertTrue(plantUML.contains("end note" + System.lineSeparator()));
+	}
+
+	@Test
+	public void canAddOwnerForBC() {
+		// given
+		ContextMap contextMap = ContextMappingDSLFactory.eINSTANCE.createContextMap();
+		BoundedContext team = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
+		team.setName("FareProductTeam");
+		team.setType(BoundedContextType.TEAM);
+		BoundedContext boundedContext = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
+		boundedContext.setName("TicketSales");
+		boundedContext.setDomainVisionStatement("sells tickets");
+		boundedContext.setOwner(team);
+		contextMap.getBoundedContexts().add(boundedContext);
+
+		// when
+		String plantUML = this.creator.createDiagram(contextMap);
+
+		// then
+		assertTrue(plantUML.contains("note right of [TicketSales]" + System.lineSeparator() + "sells tickets " + System.lineSeparator() + "Owner: FareProductTeam"
+				+ System.lineSeparator() + "end note" + System.lineSeparator()));
+	}
+
+	@Test
+	public void canAddOwnerForBCWithoutDomainVisionStatement() {
+		// given
+		ContextMap contextMap = ContextMappingDSLFactory.eINSTANCE.createContextMap();
+		BoundedContext team = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
+		team.setName("FareProductTeam");
+		team.setType(BoundedContextType.TEAM);
+		BoundedContext boundedContext = ContextMappingDSLFactory.eINSTANCE.createBoundedContext();
+		boundedContext.setName("TicketSales");
+		boundedContext.setOwner(team);
+		contextMap.getBoundedContexts().add(boundedContext);
+
+		// when
+		String plantUML = this.creator.createDiagram(contextMap);
+
+		// then
+		assertTrue(plantUML.contains("note right of [TicketSales]" + System.lineSeparator() + "Owner: FareProductTeam" + System.lineSeparator() + "end note"
+				+ System.lineSeparator()));
 	}
 
 }

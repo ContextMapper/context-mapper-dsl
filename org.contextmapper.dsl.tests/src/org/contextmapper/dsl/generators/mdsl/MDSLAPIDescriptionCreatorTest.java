@@ -145,6 +145,11 @@ public class MDSLAPIDescriptionCreatorTest extends AbstractCMLInputFileTest {
 	}
 
 	@Test
+	void canCreateOwnerComments() throws IOException {
+		testCMLInputAndMDSLOutputFiles("mdsl-owner-test");
+	}
+
+	@Test
 	void canCreateUsageContextCommunityAPI() throws IOException {
 		testCMLInputAndMDSLOutputFiles("mdsl-usage-context-community-api");
 	}
